@@ -1,0 +1,33 @@
+import {
+  MaterialCommunityIcons,
+  SimpleLineIcons,
+  MaterialIcons,
+  FontAwesome,
+  FontAwesome5,
+  Foundation,
+  EvilIcons,
+  Ionicons,
+  Octicons,
+  Feather,
+  Entypo,
+  Zocial,
+  Fontisto,
+  AntDesign,
+} from 'react-native-vector-icons';
+
+export default {
+  MaterialCommunityIcons,
+  SimpleLineIcons,
+  MaterialIcons,
+  FontAwesome,
+  FontAwesome5,
+  Foundation,
+  EvilIcons,
+  Ionicons,
+  Octicons,
+  Feather,
+  Entypo,
+  Zocial,
+  Fontisto,
+  AntDesign,
+};
