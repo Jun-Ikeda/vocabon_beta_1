@@ -1,11 +1,15 @@
-import { } from 'react-native';
+import { getRandomImage } from '../../src/config/Unsplash';
 
 const Button = [
   {
-    title: 'console',
-    onPress: () => {
-      console.log('test');
-      alert('test');
+    title: 'test',
+    onPress: () => console.log('test'),
+  },
+  {
+    title: 'Unsplash',
+    onPress: async () => {
+      const thumb = getRandomImage();
+      console.log(thumb);
     },
   },
 ];

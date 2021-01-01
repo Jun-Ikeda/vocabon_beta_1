@@ -45,11 +45,15 @@ export const func = {
 
 export const deck = {
   formatArrayContent: (array) => {
-    let str = '';
-    array.forEach((element) => {
-      str = `${str}${element}, `;
-    });
-    return str.slice(0, -2);
+    try {
+      let str = '';
+      array.forEach((element) => {
+        str = `${str}${element}, `;
+      });
+      return str.slice(0, -2);
+    } catch (error) {
+      return array;
+    }
   },
 };
 

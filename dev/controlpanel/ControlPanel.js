@@ -1,10 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
+  ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 
 import Button from './Button';
@@ -48,16 +44,12 @@ const renderButtons = () => Button.map((button, index) => {
   );
 });
 
-class ControlPanel extends Component {
-  render() {
-    return (
-      <View>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal>
-          {renderButtons()}
-        </ScrollView>
-      </View>
-    );
-  }
-}
+const ControlPanel = () => (
+  <View>
+    <ScrollView showsVerticalScrollIndicator={false} horizontal>
+      {renderButtons()}
+    </ScrollView>
+  </View>
+);
 
 export default ControlPanel;

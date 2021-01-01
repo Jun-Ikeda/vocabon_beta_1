@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-
-// import Nav from './src/nav/Nav';
+import React from 'react';
+import {
+  Platform, StyleSheet, UIManager, View,
+} from 'react-native';
+import { RecoilRoot } from 'recoil';
 
 import Switch from './dev/Switch';
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const style = StyleSheet.create({
   container: {
@@ -12,14 +17,12 @@ const style = StyleSheet.create({
   },
 });
 
-class App extends Component {
-  render() {
-    return (
-      <View style={style.container}>
-        <Switch />
-      </View>
-    );
-  }
-}
+const App = () => (
+  <RecoilRoot>
+    <View style={style.container}>
+      <Switch />
+    </View>
+  </RecoilRoot>
+);
 
 export default App;

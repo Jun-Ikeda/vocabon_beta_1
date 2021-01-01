@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, Text,
+  View, StyleSheet, TouchableOpacity, Text, Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Color from '../../config/Color';
@@ -20,6 +20,11 @@ const style = StyleSheet.create({
     color: Color.white3,
     fontSize: 20,
   },
+  test: {
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width,
+    backgroundColor: 'red',
+  },
 });
 
 /**
@@ -36,7 +41,52 @@ const style = StyleSheet.create({
 *  />
  * ```
  */
-class PopUpMenu extends Component {
+const PopUpMenu = (props) => {
+  const {
+    isVisible,
+    renderMenu,
+    overlayStyle,
+    setVisible,
+    onLayout,
+  } = props;
+  if (isVisible) {
+    return (
+      <View style={StyleSheet.absoluteFill}>
+        <TouchableOpacity
+          style={[style.overlay, overlayStyle]}
+          onPress={() => setVisible(false)}
+          onLayout={onLayout}
+        />
+        {renderMenu()}
+      </View>
+    );
+  }
+  return null;
+};
+
+PopUpMenu.propTypes = {
+  isVisible: PropTypes.bool,
+  renderMenu: PropTypes.node,
+  overlayStyle: PropTypes.object,
+  setVisible: PropTypes.func,
+  onLayout: PropTypes.func,
+};
+
+PopUpMenu.defaultProps = {
+  isVisible: false,
+  renderMenu: () => (
+    <TouchableOpacity style={style.defaultMenu} onPress={() => console.log('Menu is clicked')}>
+      <Text style={style.defaultMenuText}>Pop Up Menu</Text>
+    </TouchableOpacity>
+  ),
+  overlayStyle: {},
+  setVisible: () => {},
+  onLayout: () => {},
+};
+
+export default PopUpMenu;
+
+/* class PopUpMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,26 +115,4 @@ class PopUpMenu extends Component {
     }
     return <View />;
   }
-}
-
-PopUpMenu.propTypes = {
-  isVisible: PropTypes.bool,
-  renderMenu: PropTypes.node,
-  overlayStyle: PropTypes.object,
-  setVisible: PropTypes.func,
-  onLayout: PropTypes.func,
-};
-
-PopUpMenu.defaultProps = {
-  isVisible: false,
-  renderMenu: () => (
-    <TouchableOpacity style={style.defaultMenu} onPress={() => console.log('Menu is clicked')}>
-      <Text style={style.defaultMenuText}>Pop Up Menu</Text>
-    </TouchableOpacity>
-  ),
-  overlayStyle: {},
-  setVisible: () => {},
-  onLayout: () => {},
-};
-
-export default PopUpMenu;
+} */

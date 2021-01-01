@@ -8,6 +8,8 @@ module.exports = {
   extends: [
     'plugin:react/recommended',
     'airbnb',
+    'plugin:import/errors',
+    'plugin:import/warnings',
   ],
   parserOptions: {
     ecmaFeatures: {
@@ -18,15 +20,30 @@ module.exports = {
   },
   parser: 'babel-eslint',
   plugins: [
-    'react', 'react-native',
+    'react', 'react-native', 'import', 'unused-imports',
   ],
   rules: {
-    'react/prefer-stateless-function': ['off'],
     'react/jsx-filename-extension': ['off'],
-    'linebreak-style': ['off'],
-    'no-console': ['off'],
-    'no-alert': ['off'],
     'react/forbid-prop-types': ['off'],
     'no-nested-ternary': ['off'],
+    'import/order': ['error'],
+    'no-unused-vars': 'off',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_',
+      },
+    ],
+    'no-plusplus': ['off'],
+    'import/no-cycle': ['off'],
+    'max-len': [1, 120, 4],
+
+    'unused-imports/no-unused-imports': 'off',
+
+    'no-console': ['off'],
+    'no-alert': ['off'],
+    'no-empty-pattern': ['off'],
+    'linebreak-style': ['off'],
+
   },
 };

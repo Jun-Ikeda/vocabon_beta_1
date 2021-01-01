@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+
 import { View, StyleSheet } from 'react-native';
 import { func } from '../config/Const';
 
@@ -24,22 +25,17 @@ const style = StyleSheet.create({
   },
 });
 
-class ScreenDivision extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isExamined: false,
-      isPortrait: false,
-    };
-  }
+const ScreenDivision = (/* props */) => {
+  const [isExamined, setIsexamined] = useState(false);
+  const [isPortrait, setIsPortrait] = useState(false);
 
-  onLayout = (e) => {
+  const onLayout = (e) => {
     const { height, width } = func.onLayoutContainer(e);
-    this.setState({ isPortrait: height > width, isExamined: true });
-  }
+    setIsPortrait(height > width);
+    setIsexamined(true);
+  };
 
-  renderMinorNav = () => {
-    const { isPortrait } = this.state;
+  const renderMinorNav = () => {
     if (!(isPortrait)) {
       return (
         <View style={style.minorNavContainer}>
@@ -48,39 +44,36 @@ class ScreenDivision extends Component {
       );
     }
     return null;
-  }
+  };
 
-  renderMajorNav = () => (
+  const renderMajorNav = () => (
     <View style={style.majorNavContainer}>
       <Nav />
     </View>
-  )
+  );
 
-  renderNavs() {
-    const { isExamined } = this.state;
+  const renderNavs = () => {
     if (isExamined) {
       return (
         <View
           style={style.landscapeContainer}
         >
-          {this.renderMajorNav()}
-          {/* {this.renderMinorNav()} */}
+          {renderMinorNav()}
+          {renderMajorNav()}
         </View>
       );
     }
     return <View style={style.tabularasa} />;
-  }
+  };
 
-  render() {
-    return (
-      <View
-        style={style.container}
-        onLayout={this.onLayout}
-      >
-        {this.renderNavs()}
-      </View>
-    );
-  }
-}
+  return (
+    <View
+      style={style.container}
+      onLayout={onLayout}
+    >
+      {renderNavs()}
+    </View>
+  );
+};
 
 export default ScreenDivision;

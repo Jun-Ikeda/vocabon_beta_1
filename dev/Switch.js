@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
 } from 'react-native';
 
 import ControlPanel from './controlpanel/ControlPanel';
 import Demo from './Demo';
-
 import Nav from '../src/nav/Nav';
+import Edit from '../src/screens/deck/edit/_edit/Edit';
+import Options from '../src/screens/deck/play/_options/Options';
+import Play from '../src/screens/deck/play/_play/Play';
 
 const style = StyleSheet.create({
   container: {
@@ -27,70 +29,62 @@ const style = StyleSheet.create({
 const buttons = [
   { title: 'Product', element: <Nav /> },
   { title: 'Demo', element: <Demo /> },
+  { title: 'Suzuki', element: <Edit navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
+  { title: 'Iwasaki', element: <Options navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
+  { title: 'Kochiya', element: <Play navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
 ];
 
-class SwitchDevPro extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: 0,
-    };
-  }
+const Switch = () => {
+  const [visibleIndex, setVisibleIndex] = useState(0);
 
-  renderScreens = () => {
-    const { visible } = this.state;
-    return (
-      <View style={style.container}>
+  const renderScreens = () => (
+    <View style={style.container}>
+      {buttons.map((button, index) => {
+        if (index === visibleIndex) {
+          return (
+            <View
+              style={StyleSheet.absoluteFill}
+              key={button.title.toLowerCase()}
+            >
+              {button.element}
+            </View>
+          );
+        }
+        return null;
+      })}
+    </View>
+  );
+
+  const renderButtons = () => (
+    <View style={style.buttonsContainer}>
+      <ScrollView showsVerticalScrollIndicator={false} horizontal>
         {buttons.map((button, index) => {
-          if (index === visible) {
-            return (
-              <View style={StyleSheet.absoluteFill} key={button.title.toLowerCase()}>
-                {button.element}
-              </View>
-            );
-          }
-          return null;
+          const isVisible = index === visibleIndex;
+          return (
+            <TouchableOpacity
+              onPress={() => setVisibleIndex(index)}
+              style={[style.button, { backgroundColor: isVisible ? 'black' : 'white' }]}
+              key={button.title.toLowerCase()}
+            >
+              <Text style={{ color: isVisible ? 'white' : 'black' }}>{button.title}</Text>
+            </TouchableOpacity>
+          );
         })}
-      </View>
-    );
-  }
+      </ScrollView>
+    </View>
+  );
 
-  renderButtons = () => {
-    const { visible } = this.state;
-    return (
-      <View style={style.buttonsContainer}>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal>
-          {buttons.map((button, index) => {
-            const isVisible = index === visible;
-            return (
-              <TouchableOpacity
-                onPress={() => this.setState({ visible: index })}
-                style={[style.button, { backgroundColor: isVisible ? 'black' : 'white' }]}
-                key={button.title.toLowerCase()}
-              >
-                <Text style={{ color: isVisible ? 'white' : 'black' }}>{button.title}</Text>
-              </TouchableOpacity>
-
-            );
-          })}
-        </ScrollView>
-      </View>
-    );
-  }
-
-  renderControlPanel = () => (
+  const renderControlPanel = () => (
     <ControlPanel />
-  )
+  );
 
-  render() {
-    return (
-      <View style={style.container}>
-        {this.renderScreens()}
-        {this.renderButtons()}
-        {this.renderControlPanel()}
-      </View>
-    );
-  }
-}
+  return (
+    <View style={style.container}>
+      {renderScreens()}
+      {renderButtons()}
+      {renderControlPanel()}
+    </View>
+  );
+};
 
-export default SwitchDevPro;
+export default Switch;

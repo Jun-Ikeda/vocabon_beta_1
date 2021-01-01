@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -17,16 +17,15 @@ const style = StyleSheet.create({
  *  message="Hi, use me in this way" />
  * ```
  */
-class TempComponent extends Component {
-  render() {
-    const { message } = this.props;
-    return (
-      <View style={style.container}>
-        <Text>{message}</Text>
-      </View>
-    );
-  }
-}
+const TempComponent = (props) => {
+  const { message } = props;
+  return (
+    <View style={style.container}>
+      <Text>This is TempComponent</Text>
+      <Text>{message}</Text>
+    </View>
+  );
+};
 
 TempComponent.propTypes = {
   message: PropTypes.string,
