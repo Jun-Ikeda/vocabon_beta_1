@@ -38,6 +38,7 @@ const style = StyleSheet.create({
  *  renderMenu={renderMenu}
  *  overlayStyle={overlayStyle}
  *  onLayout={onLayout}
+ *  onPress={onPress}
 *  />
  * ```
  */
@@ -48,13 +49,14 @@ const PopUpMenu = (props) => {
     overlayStyle,
     setVisible,
     onLayout,
+    onPress,
   } = props;
   if (isVisible) {
     return (
       <View style={StyleSheet.absoluteFill}>
         <TouchableOpacity
           style={[style.overlay, overlayStyle]}
-          onPress={() => setVisible(false)}
+          onPress={[() => setVisible(false), onPress]}
           onLayout={onLayout}
         />
         {renderMenu()}

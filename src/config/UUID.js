@@ -1,7 +1,7 @@
 const UUID = {
-  generate: () => {
+  generate: (length = 15) => {
     let str = '';
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < length; i += 1) {
       const index = UUID.getRandom({ max: UUID.characters.length });
       str += UUID.characters[index];
     }

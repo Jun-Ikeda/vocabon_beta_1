@@ -1,12 +1,11 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Text,
+  View, StyleSheet,
 } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { atom, useRecoilState, useRecoilValue } from 'recoil';
+import { atom } from 'recoil';
 
-import { deck, func } from '../../../../config/Const';
+import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 
 import PopUpMenu from '../../../../components/menu/PopUpMenu';
@@ -16,7 +15,7 @@ import EditPopUp from './EditPopUp';
 import EditButtons from './EditButtons';
 import EditDelete from './EditDelete';
 
-import { decksState } from '../../../../nav/main/MainNav';
+import { decksContent } from '../../../../config/deck/Deck';
 
 export const termState = atom({
   key: 'termState',
@@ -101,27 +100,24 @@ const style = StyleSheet.create({
  */
 const Edit = (props) => {
   // props
-  const { navigation, route: { params: { deckID: deckIDprop } } } = props;
+  const { navigation, route: { params: { deckID } } } = props;
   // recoil
-  const decks = useRecoilValue(decksState);
+  // const generals = useRecoilValue(decksGeneral);
   // state
-  const [deckID, setDeckID] = useState(deckIDprop);
-  const [general, setGeneral] = useState(decks[deckIDprop].general);
-  const [content, setContent] = useState(decks[deckIDprop].content);
-  const [deleteVisible, setDeleteVisible] = useState(false);
+  const [content, setContent] = useState(decksContent[deckID]);
+  // const content = decksContent[deckID];
+  const [deleteVisible, setDeleteVisible, backVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
   const [layout, setLayout] = useState({ height: 300, width: 300 });
 
   const renderDeleteView = () => <EditDelete content={content} />;
 
   const renderBasicView = () => (
-    <View style={{ flex: 1 }}>
-      <ScrollView style={style.containers}>
-        <EditContent
-          content={content}
-          setVisible={setEditVisible}
-        />
-      </ScrollView>
+    <View style={style.container}>
+      <EditContent
+        content={content}
+        setVisible={setEditVisible}
+      />
     </View>
   );
 
@@ -132,7 +128,10 @@ const Edit = (props) => {
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
         <View style={style.popview}>
-          <EditPopUp width={layout.width} />
+          <EditPopUp
+            width={layout.width}
+            setVisible={setEditVisible}
+          />
         </View>
       </View>
     );
@@ -142,6 +141,7 @@ const Edit = (props) => {
         setVisible={setEditVisible}
         renderMenu={renderMenuView}
         overlayStyle={style.overlayStyle}
+        onPress={() => {}}
       />
     );
   };
@@ -151,6 +151,7 @@ const Edit = (props) => {
       <View style={{ flex: 1 }}>
         <EditButtons
           deleteVisible={deleteVisible}
+          backVisible={backVisible}
           setVisible={setDeleteVisible}
         />
         {deleteVisible ? renderDeleteView() : renderBasicView()}

@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, Text,
+  View, StyleSheet, TouchableOpacity, Text, LayoutAnimation,
 } from 'react-native';
 import { List, CheckBox, Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -13,39 +13,35 @@ const backgroundColor = Color.white1;
 const iconSize = 20;
 
 const style = StyleSheet.create({
-  box: {
+  container: {
     flex: 1,
+    backgroundColor: Color.defaultBackground,
+  },
+  box: {
     marginHorizontal: 20,
     marginVertical: 10,
+    borderRadius: 10,
+    backgroundColor: Color.white1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 82,
   },
-  termanddef: {
-    // marginVertical: 1,
+  textbox: {
+    borderWidth: 0,
+    marginLeft: 16,
+    justifyContent: 'center',
+  },
+  text: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Color.black,
   },
-  list: {
-    backgroundColor,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  listItem: {
-    backgroundColor,
-    paddingVertical: 0,
-  },
-  listItemLast: {
-    backgroundColor,
-    borderBottomRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    paddingTop: 0,
-    paddingBottom: 10,
-  },
-  editButton: {
+  checkbox: {
+    justifyContent: 'center',
+    marginLeft: 'auto',
+    marginRight: 20,
+    alignItems: 'center',
+    height: 60,
     width: 60,
-    padding: 20,
-    position: 'absolute',
-    right: 60,
-    top: 10,
   },
 });
 
@@ -64,9 +60,21 @@ const EditDelete = (props) => {
       }
       setCheckedIndex(newcheckedIndex);
     };
+    // const isDeleted = checkedIndex.includes(index);
+    // const toggleChecked = () => {
+    //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    //   let newcheckedIndex = [];
+    //   if (isDeleted) {
+    //     newcheckedIndex = checkedIndex.filter((_index) => _index !== index);
+    //     setCheckedIndex(newcheckedIndex);
+    //   } else {
+    //     setCheckedIndex([...checkedIndex, index]);
+    //   }
+    // };
     return (
-      <View
+      <TouchableOpacity
         style={style.box}
+        onPress={toggleChecked}
       >
         <View style={style.textbox}>
           <Text style={style.text}>{vocab.term}</Text>
@@ -79,7 +87,7 @@ const EditDelete = (props) => {
             color={Color.cud.blue}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     );
   });
 

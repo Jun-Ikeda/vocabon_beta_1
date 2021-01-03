@@ -1,68 +1,48 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TouchableOpacity,
   StyleSheet,
+  Text,
   // TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import DeckSwiper from 'react-native-deck-swiper';
 
 import { Button } from 'react-native-paper';
-import { useRecoilValue } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
-import { decksState } from '../../../../nav/main/MainNav';
-
-// import HeaderWithBack from '../../../../components/header/HeaderWithBack';
 
 import PlayCard from './PlayCard';
 import PlayCounter from './PlayCounter';
 import PlayButtons from './PlayButtons';
+import { decksContent } from '../../../../config/deck/Deck';
 
 // import { DeckGeneral, DeckContent } from '../../../../../dev/TestData';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'powderblue',
   },
   checker: {
-    flex: 1,
     textAlign: 'center',
     fontSize: 30,
     // backgroundColor: 'red',
   },
 });
 
-const modifyValidIndex = (validIndex, content) => {
-  let result = [];
-  if (validIndex === undefined) {
-    result = [...Array(content.length)].map((v, i) => i);
+const returnValidVocabIDs = (content, validVocabIDs) => {
+  let validVocabIDsModified = [];
+  if (validVocabIDs === undefined) {
+    validVocabIDsModified = Object.keys(content);
   } else {
-    result = validIndex;
+    validVocabIDsModified = validVocabIDs;
   }
-  return result;
+  return validVocabIDsModified;
 };
-const returnInvalidIndex = (validIndex, content) => {
-  let result = [];
-  if (validIndex === undefined) {
-    result = [];
-  } else {
-    const allIndex = [...Array(content.length)].map((v, i) => i);
-    result = allIndex.filter((i) => validIndex.indexOf(i) === -1);
-  }
-  return result;
-};
-const returnContentCVT = (validIndex, content) => {
-  let result = [];
-  if (validIndex === undefined) {
-    result = content;
-  } else {
-    for (let i = 0; i < validIndex.length; i++) {
-      result.push(content[validIndex[i]]);
-    }
+const returnValidVocab = (content, validVocabIDs) => {
+  const result = [];
+  for (let i = 0; i < validVocabIDs.length; i++) {
+    result.push(content[validVocabIDs[i]]);
   }
   return result;
 };
@@ -71,84 +51,67 @@ const returnContentCVT = (validIndex, content) => {
  * @augments {Component<Props, State>}
  * Usage :
  * ```js
- * navigation.navigate('play', { deckID, validIndex });
+ * navigation.navigate('play', { deckID, validVocabIDs });
  * props: { navigation, route }
- * recoil: { decksState }
- * state: { layout, deckID, general, content, playLaw, contentCVT, leftCVT, rightCVT }
  * ```
  */
 const Play = (props) => {
   // props
-  const { navigation, route: { params: { deckID: deckIDprop, validIndex } } } = props;
+  const { navigation, route: { params: { deckID, validVocabIDs: validVocabIDsProp } } } = props;
   // recoil
-  const decks = useRecoilValue(decksState);
   // state
-  const [deckID, setDeckID] = useState(deckIDprop);
-  const [general, setGeneral] = useState(decks[deckIDprop].general);
-  const [content, setContent] = useState(decks[deckIDprop].content);
+  const content = decksContent[deckID];
+  const validVocabIDs = returnValidVocabIDs(content, validVocabIDsProp);
+  const validVocab = returnValidVocab(content, validVocabIDs);
   const [layout, setLayout] = useState({ height: 0, width: 0 });
-  const [playLaw, setPlayLaw] = useState({
-    valid: modifyValidIndex(validIndex, content),
-    invalid: returnInvalidIndex(validIndex, content),
-  });
-  const [contentCVT, setContentCVT] = useState(returnContentCVT(validIndex, content));
-  const [leftIndexCVT, setLeftIndexCVT] = useState([]);
-  const [rightIndexCVT, setRightIndexCVT] = useState([]);
+  const [rightVocabID, setRightVocabID] = useState([]);
+  const [leftVocabID, setLeftVocabID] = useState([]);
+  const finished = (validVocabIDs.length === rightVocabID.length + leftVocabID.length);
   // ref
   const [card, setCard] = useState({}); // 例外的にstateに
   let swiper = {};
 
-  // const renderChecker = () => (
-  //   <View style={style.checker}>
-  //     {leftIndexCVT.length + rightIndexCVT.length + 1}
-  //     /
-  //     {contentCVT.length}
-  //   </View>
-  // );
+  const renderCounterTop = () => (
+    <Text style={style.checker}>
+      {leftVocabID.length + rightVocabID.length + 1}
+      /
+      {validVocabIDs.length}
+    </Text>
+  );
 
   const renderSwiper = () => {
     if (!(layout.height === 0)) {
       return (
-        <View>
-          <Text style={style.checker}>
-            {leftIndexCVT.length + rightIndexCVT.length + 1}
-            /
-            {contentCVT.length}
-          </Text>
-          <DeckSwiper
-            cards={contentCVT}
-            renderCard={(vocab, index) => (<PlayCard vocab={vocab} ref={(ref) => { setCard(ref); }} />)}
-            onSwipedRight={(index) => setRightIndexCVT([...rightIndexCVT, index])}
-            onSwipedLeft={(index) => setLeftIndexCVT([...leftIndexCVT, index])}
-            disableTopSwipe
-            disableBottomSwipe
-            horizontalThreshold={layout.width / 8}
-            cardIndex={0}
-            backgroundColor="transparent"
-            ref={(ref) => { swiper = ref; }}
-            stackSize={1}
-            cardVerticalMargin={20}
-            useViewOverflow={false}
-            cardStyle={{ height: layout.height - 40 }}
-            swipeBackCard
-          />
-        </View>
+        <DeckSwiper
+          cards={validVocab}
+          renderCard={(vocab) => (<PlayCard vocab={vocab} ref={(ref) => { setCard(ref); }} />)}
+          onSwipedRight={(index) => setRightVocabID([...rightVocabID, validVocabIDs[index]])}
+          onSwipedLeft={(index) => setLeftVocabID([...leftVocabID, validVocabIDs[index]])}
+          disableTopSwipe
+          disableBottomSwipe
+          horizontalThreshold={layout.width / 8}
+          cardIndex={0}
+          backgroundColor="transparent"
+          ref={(ref) => { swiper = ref; }}
+          stackSize={1}
+          cardVerticalMargin={20}
+          useViewOverflow={false}
+          cardStyle={{ height: layout.height - 40 }}
+          swipeBackCard
+        />
       );
     }
     return null;
   };
 
   const renderFinishButton = () => {
-    const rightIndex = rightIndexCVT.map((index) => playLaw.valid[index]);
-    const leftIndex = leftIndexCVT.map((index) => playLaw.valid[index]);
-    const finish = (contentCVT.length === rightIndexCVT.length + leftIndexCVT.length);
     const goToResult = () => {
-      console.log({ rightIndex, leftIndex, invalidIndex: playLaw.invalid });
+      console.log({ rightVocabID, leftVocabID });
       navigation.push('results', {
-        rightIndex, leftIndex, invalidIndex: playLaw.invalid, deckID,
+        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs: Object.keys(content),
       });
     };
-    if (finish) {
+    if (finished) {
       return (
         <View style={[StyleSheet.absoluteFill, { right: 20, left: 20, justifyContent: 'center' }]}>
           <Button color={Color.green3} mode="contained" onPress={goToResult}>
@@ -161,20 +124,19 @@ const Play = (props) => {
   };
 
   const renderCounter = () => (
-    <PlayCounter leftIndex={leftIndexCVT} rightIndex={rightIndexCVT} />
+    <PlayCounter leftVocabID={leftVocabID} rightVocabID={rightVocabID} />
   );
 
   const renderButtons = () => {
-    const swipeBack = () => {
-      swiper.swipeBack(swiper.previousCardIndex);
-      const rightL = rightIndexCVT.length;
-      const leftL = leftIndexCVT.length;
-      setRightIndexCVT(rightIndexCVT.filter((index) => index !== rightL + leftL - 1));
-      setLeftIndexCVT(leftIndexCVT.filter((index) => index !== rightL + leftL - 1));
+    const swipeBack = async () => {
+      const previousCardIndex = rightVocabID.length + leftVocabID.length - 1;
+      await swiper.jumpToCardIndex(previousCardIndex);
+      setRightVocabID(rightVocabID.filter((vocabID) => vocabID !== validVocabIDs[previousCardIndex]));
+      setLeftVocabID(leftVocabID.filter((vocabID) => vocabID !== validVocabIDs[previousCardIndex]));
     };
     return (
       <PlayButtons
-        finished={contentCVT.length === leftIndexCVT.length + rightIndexCVT.length}
+        finished={finished}
         flip={() => card.flip()}
         swipeLeft={() => swiper.swipeLeft()}
         swipeRight={() => swiper.swipeRight()}
@@ -185,8 +147,9 @@ const Play = (props) => {
 
   return (
     <View style={style.container}>
+      {renderCounterTop()}
       <View
-        style={style.container}
+        style={{ flex: 1 }}
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
         {/* {renderChecker()} */}

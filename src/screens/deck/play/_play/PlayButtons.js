@@ -6,13 +6,14 @@ import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: 'skyblue',
-    height: 140,
+    // backgroundColor: 'skyblue',
+    // height: 120,
+    // flex: 1
   },
   columnContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    flex: 1,
+    // flex: 1,
     // backgroundColor: 'red',
   },
   // containerThree: {
@@ -27,6 +28,7 @@ const style = StyleSheet.create({
     // borderWidth: 2,
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 10,
     backgroundColor: Color.white1,
     // backgroundColor: 'blue',

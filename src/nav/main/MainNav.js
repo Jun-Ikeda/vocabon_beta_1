@@ -1,7 +1,6 @@
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import PropTypes from 'prop-types';
-import { atom } from 'recoil';
 
 import Color from '../../config/Color';
 
@@ -14,11 +13,6 @@ import SettingNav from './setting/SettingNav';
 // import TempScreen from '../../../dev/template/TempScreen';
 
 const Tab = createMaterialBottomTabNavigator();
-
-export const decksState = atom({
-  key: 'decksState',
-  default: {},
-});
 
 const renderIcon = ({ icon }) => {
   const renderIconReturn = ({ focused }) => (

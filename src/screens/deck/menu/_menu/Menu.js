@@ -11,6 +11,7 @@ import { decksState } from '../../../../nav/main/MainNav';
 import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
+import { decksGeneral } from '../../../../config/deck/Deck';
 
 // import DeckMenuButtons from './DeckMenuButtons';
 // import DeckMenuUtilities from './DeckMenuUtilities';
@@ -53,13 +54,13 @@ const style = StyleSheet.create({
  */
 const Menu = (props) => {
   // props
-  const { navigation, route: { params: { deckID: deckIDprop } } } = props;
+  const { navigation, route: { params: { deckID } } } = props;
   // recoil
-  const decks = useRecoilValue(decksState);
+  const generals = useRecoilValue(decksGeneral);
   // state
-  const [layout, setLayout] = useState({ height: 100, width: 100 });
-  const [deckID, setDeckID] = useState(deckIDprop);
-  const [general, setGeneral] = useState(decks[deckID].general);
+  // const [layout, setLayout] = useState({ height: 100, width: 100 });
+  // const [deckID, setDeckID] = useState(deckIDprop);
+  const general = generals[deckID];
 
   const renderThumbnail = () => (
     <View>
@@ -84,7 +85,7 @@ const Menu = (props) => {
   return (
     <View
       style={style.container}
-      onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+      // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
     >
       {renderThumbnail()}
       {renderContent()}

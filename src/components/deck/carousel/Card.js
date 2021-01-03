@@ -8,6 +8,7 @@ import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
 import { unshortenURI } from '../../../config/Unsplash';
 import { decksState } from '../../../nav/main/MainNav';
+import { decksGeneral } from '../../../config/deck/Deck';
 
 const style = StyleSheet.create({
   cardContainer: {
@@ -23,6 +24,7 @@ const style = StyleSheet.create({
     right: 0,
     left: 0,
   },
+  languageText: { color: Color.white2 },
 });
 
 /**
@@ -40,13 +42,13 @@ const style = StyleSheet.create({
  */
 const Card = (props) => {
   // props
-  const { deckID: deckIDprop, cardStyle, onPress } = props;
+  const { deckID, cardStyle, onPress } = props;
   // recoil
-  const decks = useRecoilValue(decksState);
+  const generals = useRecoilValue(decksGeneral);
   // state
-  const [deckID, setDeckID] = useState(deckIDprop);
-  const [general, setGeneral] = useState(decks[deckID].general);
-  const [content, setContent] = useState(decks[deckID].content);
+  // const [deckID, setDeckID] = useState(deckIDprop);
+  const general = generals[deckID];
+  // const [general, setGeneral] = useState(generals[deckID]);
 
   useEffect(() => {
   }, []);
@@ -54,7 +56,7 @@ const Card = (props) => {
   const renderBackgroundImage = () => (
     <View style={cardStyle}>
       <Image
-        source={{ uri: unshortenURI(general.thumbnail.uri) }}
+        source={{ uri: unshortenURI(general?.thumbnail.uri) }}
         style={cardStyle}
         blurRadius={0.5}
       />
@@ -73,7 +75,7 @@ const Card = (props) => {
         color: Color.white1,
       }}
       >
-        {general.title}
+        {general?.title}
       </Text>
       <Text style={{
         fontSize: cardStyle.height * 0.08,
@@ -83,8 +85,12 @@ const Card = (props) => {
         n views, m reviews
       </Text>
       <View>
-        <Text style={{ fontSize: cardStyle.height * 0.06, color: Color.white2 }}>{`Term in ${general.language.term}`}</Text>
-        <Text style={{ fontSize: cardStyle.height * 0.06, color: Color.white2 }}>{`Definition in ${general.language.definition}`}</Text>
+        <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
+          {`Term in ${general?.language.term}`}
+        </Text>
+        <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
+          {`Definition in ${general?.language.definition}`}
+        </Text>
       </View>
     </View>
   );

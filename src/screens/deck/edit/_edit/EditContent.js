@@ -1,10 +1,10 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, Text, LayoutAnimation,
+  View, StyleSheet, TouchableOpacity, LayoutAnimation, FlatList,
 } from 'react-native';
-import { List, CheckBox } from 'react-native-paper';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { List } from 'react-native-paper';
+import { useSetRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 
 import Icon from '../../../../components/Icon';
@@ -81,7 +81,9 @@ const EditContent = (props) => {
   // state
   const [expandedIndex, setExpandedIndex] = useState([]);
 
-  const renderMainContents = () => content.map((vocab, index) => {
+  // const content = contentProps.filter((_, index) => index < 50);
+
+  const renderMainContent = ({ item, index }) => {
     const isExpanded = expandedIndex.includes(index);
     const toggleExpand = () => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -96,13 +98,13 @@ const EditContent = (props) => {
     return (
       <View
         style={style.box}
-        key={vocab.term.toLowerCase()}
+        // key={item?.term.toLowerCase()}
       >
         <List.Accordion
-          expand={isExpanded}
+          expanded={isExpanded}
           onPress={toggleExpand}
-          title={vocab.term}
-          description={deck.formatArrayContent(vocab.definition)}
+          title={item?.term}
+          description={deck.formatArrayContent(item?.definition)}
           titleStyle={style.termanddef}
           descriptionStyle={style.termanddef}
           style={[
@@ -112,26 +114,26 @@ const EditContent = (props) => {
               borderBottomRightRadius: isExpanded ? 0 : 10,
             }]}
         >
-          <List.Item style={style.listItem} title={`Synonym: ${deck.formatArrayContent(vocab.synonym)}`} />
-          <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(vocab.antonym)}`} />
-          <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(vocab.prefix)}`} />
-          <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(vocab.sufix)}`} />
-          <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(vocab.exampleT)}`} />
-          <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(vocab.exampleD)}`} />
-          <List.Item style={style.listItemLast} title={`Cf: ${deck.formatArrayContent(vocab.cf)}`} />
+          <List.Item style={style.listItem} title={`Synonym: ${deck.formatArrayContent(item?.synonym)}`} />
+          <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(item?.antonym)}`} />
+          <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(item?.prefix)}`} />
+          <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(item?.sufix)}`} />
+          <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(item?.exampleT)}`} />
+          <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(item?.exampleD)}`} />
+          <List.Item style={style.listItemLast} title={`Cf: ${deck.formatArrayContent(item?.cf)}`} />
         </List.Accordion>
         <TouchableOpacity
           onPress={async () => {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            await setTerm(deck.formatArrayContent(vocab.term));
-            await setDefinition(deck.formatArrayContent(vocab.definition));
-            await setSynonym(deck.formatArrayContent(vocab.synonym));
-            await setAntonym(deck.formatArrayContent(vocab.antonym));
-            await setPrefix(deck.formatArrayContent(vocab.prefix));
-            await setSuffix(deck.formatArrayContent(vocab.suffix));
-            await setExampleT(deck.formatArrayContent(vocab.exampleT));
-            await setExampleD(deck.formatArrayContent(vocab.exampleD));
-            await setCf(deck.formatArrayContent(vocab.cf));
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); // Android, iOSでのみ見える簡易アニメーション setStateで突然変わるところをアニメーションにできる
+            await setTerm(deck.formatArrayContent(item?.term));
+            await setDefinition(deck.formatArrayContent(item?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
+            await setSynonym(deck.formatArrayContent(item?.synonym));
+            await setAntonym(deck.formatArrayContent(item?.antonym));
+            await setPrefix(deck.formatArrayContent(item?.prefix));
+            await setSuffix(deck.formatArrayContent(item?.suffix));
+            await setExampleT(deck.formatArrayContent(item?.exampleT));
+            await setExampleD(deck.formatArrayContent(item?.exampleD));
+            await setCf(deck.formatArrayContent(item?.cf));
             setVisible(true);
           }}
           style={style.editButton}
@@ -143,9 +145,15 @@ const EditContent = (props) => {
         </TouchableOpacity>
       </View>
     );
-  });
+  };
 
-  return renderMainContents();
+  return (
+    <FlatList
+      data={content}
+      renderItem={renderMainContent}
+      keyExtractor={(item, index) => index}
+    />
+  );
 };
 
 EditContent.propTypes = {

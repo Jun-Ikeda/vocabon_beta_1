@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 
 import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
+import { decksContent, decksGeneral } from '../../../../config/deck/Deck';
 import { decksState } from '../../../../nav/main/MainNav';
 
 const style = StyleSheet.create({
@@ -32,9 +34,10 @@ const Property = (props) => {
   // props
   const { route: { params: { deckID } } } = props;
   // recoil
-  const decks = useRecoilValue(decksState);
+  const generals = useRecoilValue(decksGeneral);
   // state
-  const [general, setGeneral] = useState(decks[deckID].general);
+  // const [general, setGeneral] = useState(decks[deckID].general);
+  const general = generals[deckID];
   const [title, setTitle] = useState(general.title);
   const [language, setLanguage] = useState(general.language);
 
@@ -57,6 +60,10 @@ const Property = (props) => {
     </View>
 
   );
+};
+
+Property.propTypes = {
+  route: PropTypes.object.isRequired,
 };
 
 export default Property;

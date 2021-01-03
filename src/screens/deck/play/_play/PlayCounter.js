@@ -17,32 +17,32 @@ const style = StyleSheet.create({
  * Usage :
  * ```js
  * <PlayCounter
- *  leftIndex={[ array ]}
- *  rightIndex={[ array ]}
+ *  leftVocabID={[ array ]}
+ *  rightVocabID={[ array ]}
  * />
  *
  * ```
  */
 const PlayCounter = (props) => {
-  const { leftIndex, rightIndex } = props;
+  const { leftVocabID, rightVocabID } = props;
 
   return (
     <View style={style.container}>
-      <Text style={style.label}>{`Marked: ${leftIndex.length}`}</Text>
+      <Text style={style.label}>{`Marked: ${leftVocabID.length}`}</Text>
       <View style={style.lebel} />
-      <Text style={style.label}>{`Clear: ${rightIndex.length}`}</Text>
+      <Text style={style.label}>{`Clear: ${rightVocabID.length}`}</Text>
     </View>
   );
 };
 
 PlayCounter.propTypes = {
-  leftIndex: PropTypes.array,
-  rightIndex: PropTypes.array,
+  leftVocabID: PropTypes.array,
+  rightVocabID: PropTypes.array,
 };
 
 PlayCounter.defaultProps = {
-  leftIndex: [],
-  rightIndex: [],
+  leftVocabID: [],
+  rightVocabID: [],
 };
 
 export default PlayCounter;

@@ -4,17 +4,17 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Button,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 // import HeaderInMain from '../../../../../components/header/HeaderInMain';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import AddButton from './AddButton';
 
 import { Deck } from '../../../../../dev/TestData';
 import Carousel from '../../../../components/deck/carousel/Carousel';
-import { decksState } from '../../MainNav';
+import { decksContent, decksGeneral } from '../../../../config/deck/Deck';
+// import { decksState } from '../../MainNav';
 
 const style = StyleSheet.create({
   container: {
@@ -40,24 +40,30 @@ const Home = (props) => {
   // props
   const { navigation } = props;
   // recoil
-  const [decks, setDecks] = useRecoilState(decksState);
+  const setGeneral = useSetRecoilState(decksGeneral);
+  // deckIDを配列で取得
+  const deckIDs = Object.keys(Deck);
 
   useEffect(() => {
-    // deckIDを配列で取得
-    const deckIDs = Object.keys(Deck);
-    // deckIDからgeneral, contentを取得
-    const newDecks = {};
+    // deckIDからgeneralを取得, decksGeneralに代入
+    const newGeneral = {};
     for (let i = 0; i < deckIDs.length; i++) {
-      newDecks[deckIDs[i]] = { general: Deck[deckIDs[i]].general, content: Deck[deckIDs[i]].content };
+      newGeneral[deckIDs[i]] = Deck[deckIDs[i]].general;
     }
-    setDecks(newDecks);
+    console.log(newGeneral);
+    setGeneral(newGeneral);
+
+    // deckIDからcontentを取得, decksContentに代入
+    for (let i = 0; i < deckIDs.length; i++) {
+      decksContent[deckIDs[i]] = Deck[deckIDs[i]].content;
+    }
   }, []);
 
   const renderRow = ({ title }) => (
     <View>
       <Text>{title}</Text>
       <Carousel
-        deckIDs={Object.keys(decks)} // 情報のやり取りは基本deckIDで
+        deckIDs={deckIDs} // 情報のやり取りは基本deckIDで
         onPressCard={(deckID) => navigation.navigate('menu', { deckID })}
       />
     </View>

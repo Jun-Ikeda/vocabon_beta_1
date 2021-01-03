@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
+import Color from '../../../../config/Color';
 
 import {
   termState,
@@ -24,10 +25,31 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    height: 60,
-    lineHeight: 60,
-    fontSize: 20,
+    height: 30,
+    lineHeight: 30,
+    fontSize: 18,
   },
+  button: {
+    // width: 180,
+    flex: 1,
+    height: 25,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: Color.green2,
+    // marginHorizontal: 10,
+    paddingHorizontal: 10,
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  text: {
+    fontSize: 16,
+    // fontWeight: 'bold',
+  }
 });
 
 /**
@@ -57,7 +79,7 @@ const style = StyleSheet.create({
 
 const EditPopUp = (props) => {
   // props
-  const { width } = props;
+  const { width,setVisible } = props;
   // recoil
   const [term, setTerm] = useRecoilState(termState);
   const [definition, setDefinition] = useRecoilState(definitionState);
@@ -118,7 +140,7 @@ const EditPopUp = (props) => {
       },
     ];
     return items.map((item) => (
-      <View style={style.menu} key={item.label.toLowerCase()}>
+      <View key={item.label.toLowerCase()}>
         <TextInput
           label={item.label}
           value={item.value}
@@ -131,7 +153,26 @@ const EditPopUp = (props) => {
   };
   return (
     <ScrollView>
-      {renderMenu()}
+      <View style={style.menu}>
+        {renderMenu()}
+        <View style={style.buttons}>
+          <TouchableOpacity 
+            style={[style.button, { marginRight: 10 }]}
+            onPress={() => setVisible(false)}
+          >
+            <Text style={style.text}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[style.button, { marginLeft: 10 }]}
+            onPress={() => {
+              setVisible(false);
+              console.log('saved');
+            }}
+            >
+            <Text style={style.text}>Done</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </ScrollView>
   );
 };

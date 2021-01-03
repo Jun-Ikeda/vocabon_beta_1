@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import {
   View, Text, Image, TouchableOpacity, StyleSheet,
 } from 'react-native';
@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 
 import { useRecoilValue } from 'recoil';
 import Color from '../../../../config/Color';
-import Unsplash, { unshortenURI } from '../../../../config/Unsplash';
-import { decksState } from '../../../../nav/main/MainNav';
+import { unshortenURI } from '../../../../config/Unsplash';
+import { decksGeneral } from '../../../../config/deck/Deck';
 
 // import Home from '../../../../nav/main/home/screens/home/Home';
 // import TestData from '../../../../../dev/TestData';
@@ -87,18 +87,18 @@ const Results = (props) => {
   const {
     navigation, route: {
       params: {
-        rightIndex: propRight, leftIndex: propLeft, invalidIndex: propInvalid, deckID: deckIDprop,
+        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs,
       },
     },
   } = props;
   // recoil
-  const decks = useRecoilValue(decksState);
+  const generals = useRecoilValue(decksGeneral);
   // state
-  const [leftIndex, setLeftIndex] = useState(propLeft);
-  const [rightIndex, setRightIndex] = useState(propRight);
-  const [invalidIndex, setInvalidIndex] = useState(propInvalid);
-  const [deckID, setDeckID] = useState(deckIDprop);
-  const [general, setGeneral] = useState(decks[deckIDprop].general);
+  const general = generals[deckID];
+  // const [leftIndex, setLeftIndex] = useState(propLeft);
+  // const [rightIndex, setRightIndex] = useState(propRight);
+  // const [invalidIndex, setInvalidIndex] = useState(propInvalid);
+  // const [deckID, setDeckID] = useState(deckIDprop);
 
   const renderThumbnail = () => (
     <View style={{ height: imgHeight, width: '100%' }}>
@@ -117,15 +117,21 @@ const Results = (props) => {
     const buttons = [
       {
         title: 'Replay',
-        num: `(${rightIndex.length + leftIndex.length + invalidIndex.length})`,
-        onPress: () => { navigation.push('play', { deckID }); },
+        num: `(${validVocabIDs.length})`,
+        onPress: () => { navigation.push('play', { deckID, validVocabIDs }); },
         isVisible: true,
       },
       {
-        title: 'Play mistaken cards',
-        num: `(${leftIndex.length})`,
-        onPress: () => navigation.push('play', { validIndex: leftIndex, deckID }),
-        isVisible: !(leftIndex.length === 0),
+        title: 'Play all the deck',
+        num: `(${vocabIDs.length})`,
+        onPress: () => { navigation.push('play', { deckID, validVocabIDs: vocabIDs }); },
+        isVisible: validVocabIDs.length !== vocabIDs.length,
+      },
+      {
+        title: 'Play marked cards',
+        num: `(${leftVocabID.length})`,
+        onPress: () => navigation.push('play', { deckID, validVocabIDs: leftVocabID }),
+        isVisible: ((leftVocabID.length !== 0) && (rightVocabID.length !== 0)),
       },
       {
         title: 'Options', // go back to options
@@ -159,8 +165,8 @@ const Results = (props) => {
 
   const renderCounter = () => {
     const counters = [
-      { title: 'Marked', num: leftIndex.length },
-      { title: 'Clear', num: rightIndex.length },
+      { title: 'Marked', num: leftVocabID.length },
+      { title: 'Clear', num: rightVocabID.length },
     ];
     return (
       <View style={style.countersContainer}>
@@ -175,7 +181,7 @@ const Results = (props) => {
   };
 
   const renderMessage = () => {
-    const correctRate = rightIndex.length / (rightIndex.length + leftIndex.length);
+    const correctRate = rightVocabID.length / (rightVocabID.length + leftVocabID.length);
     const message = switchMessage(correctRate);
     return (
       <Text style={{

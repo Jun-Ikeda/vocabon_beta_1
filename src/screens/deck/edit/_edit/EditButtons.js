@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, LayoutAnimation,
+  View, TouchableOpacity, StyleSheet, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -19,6 +19,11 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button: {
+    width: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trashbutton: {
     width: 60,
     alignItems: 'center',
     justifyContent: 'center',
@@ -42,20 +47,26 @@ const style = StyleSheet.create({
  */
 const EditButtons = (props) => {
   // props
-  const { setVisible, deleteVisible } = props;
+  const { setVisible, deleteVisible, backVisible } = props;
 
   const renderTrashBin = () => (
     <TouchableOpacity
       style={style.button}
       onPress={() => {
-        setVisible(!deleteVisible);
+        // setVisible(!deleteVisible);
+        if (deleteVisible === false) {
+          setVisible(!deleteVisible);
+          setVisible(!backVisible);
+        } else {
+          alert('Are you sure you delete the cards you chose? (You can not undo)');
+        }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       }}
     >
       <Icon.FontAwesome
         name="trash"
         size={iconSize}
-        style={{ color: deleteVisible ? Color.gray2 : Color.black }}
+        style={{ color: deleteVisible ? Color.cud.red : Color.black }}
       />
     </TouchableOpacity>
   );
@@ -71,8 +82,27 @@ const EditButtons = (props) => {
     </TouchableOpacity>
   );
 
+  const backButton = () => (
+    <TouchableOpacity
+      style={style.button}
+    >
+      <Icon.MaterialCommunityIcons
+        name="cancel"
+        size={iconSize}
+      />
+    </TouchableOpacity>
+  );
+
+  const renderBackButton = () => {
+    if (backVisible === true) {
+      return backButton(); // 天才
+    } // 今日は昼にある程度仕事したからだらだら市川のを直したりしてる
+    return null;
+  };
+
   return (
     <View style={style.container}>
+      {renderBackButton()}
       {renderTrashBin()}
       {renderHelp()}
     </View>
@@ -82,11 +112,13 @@ const EditButtons = (props) => {
 EditButtons.propTypes = {
   setVisible: PropTypes.func,
   deleteVisible: PropTypes.bool,
+  backVisible: PropTypes.bool,
 };
 
 EditButtons.defaultProps = {
   setVisible: () => {},
   deleteVisible: false,
+  backVisible: false,
 };
 
 export default EditButtons;

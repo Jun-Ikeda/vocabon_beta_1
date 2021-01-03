@@ -165,7 +165,11 @@ const MenuButtons = (props) => {
       ],
     ];
     if (visible) {
-      return buttonsMultiDim.map((buttons) => renderColumn(buttons));
+      return buttonsMultiDim.map((buttons) => (
+        <View key={buttons[0].title.toLowerCase()}>
+          {renderColumn(buttons)}
+        </View>
+      ));
     }
     return null;
   };

@@ -1,9 +1,12 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Button, TouchableOpacity, View, Text } from 'react-native';
+import GlobalStateTest from './GlobalStateTest';
 
 const renderDemo = () => (
   <View>
-    aaa
+    <Text>
+      {GlobalStateTest.test}
+    </Text>
   </View>
 );
 
