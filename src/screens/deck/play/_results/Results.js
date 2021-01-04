@@ -122,7 +122,7 @@ const Results = (props) => {
         isVisible: true,
       },
       {
-        title: 'Play all the deck',
+        title: 'Play the whole deck',
         num: `(${vocabIDs.length})`,
         onPress: () => { navigation.push('play', { deckID, validVocabIDs: vocabIDs }); },
         isVisible: validVocabIDs.length !== vocabIDs.length,

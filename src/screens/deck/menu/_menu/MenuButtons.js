@@ -44,7 +44,7 @@ const style = StyleSheet.create({
  */
 const MenuButtons = (props) => {
   // props
-  const { navigation, deckID } = props;
+  const { navigation, deckID, userID } = props;
   // state
   const [visible, setVisible] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
@@ -119,6 +119,12 @@ const MenuButtons = (props) => {
           textStyle: {},
         },
         {
+          title: 'Duplicate',
+          icon: () => <Icon.Feather name="copy" size={iconsize} style={style.icon} />,
+          onPress: () => alert('duplicate'),
+          textStyle: {},
+        },
+        {
           title: 'Import',
           icon: () => <Icon.Feather name="download" size={iconsize} style={style.icon} />,
           onPress: () => alert('import'),
@@ -128,12 +134,6 @@ const MenuButtons = (props) => {
           title: 'Export',
           icon: () => <Icon.Feather name="upload" size={iconsize} style={style.icon} />,
           onPress: () => navigation.navigate('export'),
-          textStyle: {},
-        },
-        {
-          title: 'Duplicate',
-          icon: () => <Icon.Feather name="copy" size={iconsize} style={style.icon} />,
-          onPress: () => alert('duplicate'),
           textStyle: {},
         },
       ],
@@ -185,6 +185,7 @@ const MenuButtons = (props) => {
 MenuButtons.propTypes = {
   navigation: PropTypes.object.isRequired,
   deckID: PropTypes.string.isRequired,
+  userID: PropTypes.string.isRequired,
 };
 
 MenuButtons.defaultProps = {

@@ -1,11 +1,21 @@
-import { decksContent } from '../../src/config/deck/Deck';
+import { useRecoilValue } from 'recoil';
+import { decksContent, decksGeneral } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
+import { users } from '../../src/config/user/User';
 import UUID from '../../src/config/UUID';
 
 const Button = [
   {
     title: 'Deck',
-    onPress: () => ({ decksContent }),
+    onPress: () => ({ decksGeneral, decksContent }),
+  },
+  {
+    title: 'User',
+    onPress: () => ({ users }),
+  },
+  {
+    title: 'Account',
+    onPress: () => {},
   },
   {
     title: 'UUID',

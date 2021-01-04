@@ -1,24 +1,26 @@
 // デッキの情報の変数を定義する所
 
 import { atom } from 'recoil';
-import usersContent from './UserModule';
+import users from './UserModule';
 
-export const usersGeneral = atom({
-  key: 'usersGeneral',
-  default: {},
-});
+// export const usersGeneral = atom({
+//   key: 'usersGeneral',
+//   default: {},
+// });
 
-export { usersContent };
+export { users };
 
-export default { usersContent, usersGeneral };
+export default { users /* usersGeneral */ };
 
 /*
-usersGeneral = {
-    [id]: {
-        title: '...', ,,,
-    },
-    [id]: {
-        title: '...', ,,,
-    }
-}
-*/
+users = {
+  KgZLhZvgTiTSYJ7VBFbfutjjtUE2: {
+    name: 'Sumio',
+    icon: { uri: 'https://spring-js.com/wp-content/uploads/2017/06/01-1.jpg' },
+  },
+  WUgzMNtDDAap5TkAXZbrPwF97Bu2: {
+    name: 'Vocabon',
+    icon: { color: PastelColors[UUID.getRandom({ max: PastelColors.length })] },
+  },
+};
+ */

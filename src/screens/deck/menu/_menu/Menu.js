@@ -56,29 +56,27 @@ const Menu = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // recoil
-  const generals = useRecoilValue(decksGeneral);
-  // state
-  // const [layout, setLayout] = useState({ height: 100, width: 100 });
-  // const [deckID, setDeckID] = useState(deckIDprop);
-  const general = generals[deckID];
+  const decksGeneralState = useRecoilValue(decksGeneral);
+  //
+  const deckGeneral = decksGeneralState[deckID];
 
   const renderThumbnail = () => (
     <View>
       <Image
         style={{ width: '100%', height: imgHeight }}
-        source={{ uri: unshortenURI(general.thumbnail.uri) }}
+        source={{ uri: unshortenURI(deckGeneral.thumbnail.uri) }}
       />
       <View style={style.overlay} />
     </View>
   );
 
   const renderContent = () => (
-    <MenuUtility title={general.title} language={general.language} thumbnail={general.thumbnail} user={general.user} />
+    <MenuUtility deckGeneral={deckGeneral} />
   );
 
   const renderButtons = () => (
     <View style={style.buttonContainer}>
-      <MenuButtons navigation={navigation} deckID={deckID} />
+      <MenuButtons navigation={navigation} deckID={deckID} userID={deckGeneral.user} />
     </View>
   );
 

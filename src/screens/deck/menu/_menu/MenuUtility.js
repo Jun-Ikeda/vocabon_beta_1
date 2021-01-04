@@ -47,9 +47,10 @@ const styles = StyleSheet.create({
  * ```
  */
 const MenuUtility = (props) => {
+  const { deckGeneral } = props;
   const {
     user, title, language, thumbnail,
-  } = props;
+  } = deckGeneral;
 
   const renderTitle = () => (
     <View>
@@ -108,18 +109,10 @@ const MenuUtility = (props) => {
 };
 
 MenuUtility.propTypes = {
-  title: PropTypes.string,
-  language: PropTypes.shape({
-    definition: PropTypes.string,
-    term: PropTypes.string,
-  }),
-  thumbnail: PropTypes.object,
+  deckGeneral: PropTypes.object.isRequired,
 };
 
 MenuUtility.defaultProps = {
-  title: '',
-  language: { definition: 'English', term: 'English' },
-  thumbnail: {},
 };
 
 export default MenuUtility;

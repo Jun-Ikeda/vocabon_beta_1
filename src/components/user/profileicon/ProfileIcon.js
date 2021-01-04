@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 import { func } from '../../../config/Const';
-import { usersGeneral } from '../../../config/user/User';
+import { users, usersGeneral } from '../../../config/user/User';
 
 const style = StyleSheet.create({
   container: {
@@ -32,8 +32,8 @@ const ProfileIcon = (props) => {
     userID, onPress, size, style: propStyle, color, char, // color, char暫時
   } = props;
   // recoil
-  const generals = useRecoilValue(usersGeneral);
-  const general = generals[userID];
+  // const generals = useRecoilValue(usersGeneral);
+  const general = users[userID];
   const circle = {
     height: size, width: size, borderRadius: size / 2,
   };

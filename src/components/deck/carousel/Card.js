@@ -45,14 +45,9 @@ const Card = (props) => {
   // props
   const { deckID, cardStyle, onPress } = props;
   // recoil
-  const deckGenerals = useRecoilValue(decksGeneral);
-  // state
-  // const [deckID, setDeckID] = useState(deckIDprop);
-  const deckGeneral = deckGenerals[deckID];
-  // const [general, setGeneral] = useState(generals[deckID]);
-
-  useEffect(() => {
-  }, []);
+  const decksGeneralState = useRecoilValue(decksGeneral);
+  //
+  const deckGeneral = decksGeneralState[deckID];
 
   const renderBackgroundImage = () => (
     <View style={cardStyle}>
