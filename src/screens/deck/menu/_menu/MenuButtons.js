@@ -107,11 +107,11 @@ const MenuButtons = (props) => {
     const buttonsMultiDim = [
       [
         {
-          title: bookmarked ? 'bookmarked!!' : 'bookmark',
+          title: 'Bookmark',
           icon: () => (
             <Icon.FontAwesome
               name={bookmarked ? 'bookmark' : 'bookmark-o'}
-              style={style.icon}
+              style={[style.icon, { color: bookmarked ? Color.cud.red : 'black' }]}
               size={iconsize}
             />
           ),
@@ -127,7 +127,7 @@ const MenuButtons = (props) => {
         {
           title: 'Export',
           icon: () => <Icon.Feather name="upload" size={iconsize} style={style.icon} />,
-          onPress: () => alert('export'),
+          onPress: () => navigation.navigate('export'),
           textStyle: {},
         },
         {

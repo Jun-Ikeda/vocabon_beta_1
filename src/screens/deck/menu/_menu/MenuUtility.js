@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
+import ProfileIcon from '../../../../components/user/profileicon/ProfileIcon';
 
 const titleFontSize = 30;
 const normalFontSize = 15;
@@ -46,7 +47,9 @@ const styles = StyleSheet.create({
  * ```
  */
 const MenuUtility = (props) => {
-  const { title, language, thumbnail } = props;
+  const {
+    user, title, language, thumbnail,
+  } = props;
 
   const renderTitle = () => (
     <View>
@@ -74,10 +77,11 @@ const MenuUtility = (props) => {
   );
 
   const renderIcon = () => (
-    <Image
-      source={{ uri: 'https://kyoiku.yomiuri.co.jp/MOT_9160.jpg' }}
-      style={styles.icon}
-    />
+    <ProfileIcon userID={user} size={45} />
+    // <Image
+    //   source={{ uri: 'https://kyoiku.yomiuri.co.jp/MOT_9160.jpg' }}
+    //   style={styles.icon}
+    // />
   );
 
   const renderAttribution = () => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Image, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
@@ -7,8 +7,9 @@ import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
 import { unshortenURI } from '../../../config/Unsplash';
-import { decksState } from '../../../nav/main/MainNav';
 import { decksGeneral } from '../../../config/deck/Deck';
+import ProfileIcon from '../../user/profileicon/ProfileIcon';
+import { usersGeneral } from '../../../config/user/User';
 
 const style = StyleSheet.create({
   cardContainer: {
@@ -44,10 +45,10 @@ const Card = (props) => {
   // props
   const { deckID, cardStyle, onPress } = props;
   // recoil
-  const generals = useRecoilValue(decksGeneral);
+  const deckGenerals = useRecoilValue(decksGeneral);
   // state
   // const [deckID, setDeckID] = useState(deckIDprop);
-  const general = generals[deckID];
+  const deckGeneral = deckGenerals[deckID];
   // const [general, setGeneral] = useState(generals[deckID]);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const Card = (props) => {
   const renderBackgroundImage = () => (
     <View style={cardStyle}>
       <Image
-        source={{ uri: unshortenURI(general?.thumbnail.uri) }}
+        source={{ uri: unshortenURI(deckGeneral?.thumbnail.uri) }}
         style={cardStyle}
         blurRadius={0.5}
       />
@@ -75,7 +76,7 @@ const Card = (props) => {
         color: Color.white1,
       }}
       >
-        {general?.title}
+        {deckGeneral?.title}
       </Text>
       <Text style={{
         fontSize: cardStyle.height * 0.08,
@@ -86,10 +87,10 @@ const Card = (props) => {
       </Text>
       <View>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
-          {`Term in ${general?.language.term}`}
+          {`Term in ${deckGeneral?.language.term}`}
         </Text>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
-          {`Definition in ${general?.language.definition}`}
+          {`Definition in ${deckGeneral?.language.definition}`}
         </Text>
       </View>
     </View>
@@ -97,17 +98,13 @@ const Card = (props) => {
 
   const renderOverlayBotom = () => (
     <View style={style.overlaybottomContainer}>
-      <Image
-        source={{ uri: 'https://spring-js.com/wp-content/uploads/2017/06/01-1.jpg' }}
-        style={
-          {
-            borderRadius: cardStyle.height * 0.25,
-            height: cardStyle.height * 0.2,
-            width: cardStyle.height * 0.2,
-            marginLeft: cardStyle.height * 0.1,
-            marginBottom: cardStyle.height * 0.05,
-          }
-        }
+      <ProfileIcon
+        userID={deckGeneral?.user}
+        size={cardStyle.height * 0.2}
+        style={{
+          marginLeft: cardStyle.height * 0.1,
+          marginBottom: cardStyle.height * 0.05,
+        }}
       />
     </View>
   );

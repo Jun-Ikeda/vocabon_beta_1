@@ -1,3 +1,6 @@
+import { PastelColors } from '../src/config/Color';
+import UUID from '../src/config/UUID';
+
 export const Deck = {
   '7NCodht%}0': {
     general: {
@@ -266,8 +269,12 @@ export const Deck = {
 
 export const User = {
   KgZLhZvgTiTSYJ7VBFbfutjjtUE2: {
+    name: 'Sumio',
+    icon: { uri: 'https://spring-js.com/wp-content/uploads/2017/06/01-1.jpg' },
   },
   WUgzMNtDDAap5TkAXZbrPwF97Bu2: {
+    name: 'Vocabon',
+    icon: { color: PastelColors[UUID.getRandom({ max: PastelColors.length })] },
   },
 };
 
@@ -275,13 +282,12 @@ export const Account = {
   general: {
     email: 'vocabon.team@gmail.com',
     password: 'bossbaby0121',
-    uuid: 'WUgzMNtDDAap5TkAXZbrPwF97Bu2',
+    id: 'WUgzMNtDDAap5TkAXZbrPwF97Bu2',
   },
   content: {
     '7NCodht%}0': {
       marks: [],
       bookmark: false,
-
     },
   },
 };

@@ -16,6 +16,7 @@ import Options from '../../../screens/deck/play/_options/Options';
 import Play from '../../../screens/deck/play/_play/Play';
 import Results from '../../../screens/deck/play/_results/Results';
 import Edit from '../../../screens/deck/edit/_edit/Edit';
+import Export from '../../../screens/deck/export/_export/Export';
 
 const Stack = createStackNavigator();
 
@@ -85,6 +86,13 @@ const HomeNav = () => (
       component={Edit}
       options={{
         headerTitle: 'Edit',
+      }}
+    />
+    <Stack.Screen
+      name="export"
+      component={Export}
+      options={{
+        headerTitle: 'Export',
       }}
     />
   </Stack.Navigator>

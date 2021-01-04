@@ -41,6 +41,25 @@ export const func = {
     const { height, width } = layout;
     return { height, width };
   },
+  convertObjectToArray: (object) => {
+    const keys = Object.keys(object);
+    const values = Object.values(object);
+    const result = [];
+    for (let i = 0; i < keys.length; i++) {
+      result.push({ key: keys[i], value: values[i] });
+    }
+    return result;
+  },
+  blackOrWhite: (hexcolor) => {
+    if (typeof hexcolor === 'string') {
+      const r = parseInt(hexcolor.substr(1, 2), 16);
+      const g = parseInt(hexcolor.substr(3, 2), 16);
+      const b = parseInt(hexcolor.substr(5, 2), 16);
+
+      return ((((r * 299) + (g * 587) + (b * 114)) / 1000) < 128) ? 'white' : 'black';
+    }
+    return null;
+  },
 };
 
 export const deck = {

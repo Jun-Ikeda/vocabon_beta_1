@@ -47,7 +47,8 @@ const style = StyleSheet.create({
  */
 const EditButtons = (props) => {
   // props
-  const { setVisible, deleteVisible, backVisible } = props;
+  const { setVisible, deleteVisible } = props;
+  const { backVisible } = props;
 
   const renderTrashBin = () => (
     <TouchableOpacity
@@ -82,21 +83,37 @@ const EditButtons = (props) => {
     </TouchableOpacity>
   );
 
-  const backButton = () => (
-    <TouchableOpacity
-      style={style.button}
-    >
-      <Icon.MaterialCommunityIcons
-        name="cancel"
-        size={iconSize}
-      />
-    </TouchableOpacity>
-  );
+  // const backButton = () => (
+  // <TouchableOpacity
+  //   style={style.button}
+  //   onPress={() => {
+  //     setVisible(!deleteVisible);
+  //   }}
+  // >
+  //   <Icon.MaterialCommunityIcons
+  //     name="cancel"
+  //     size={iconSize}
+  //   />
+  // </TouchableOpacity>
+  // );
 
   const renderBackButton = () => {
     if (backVisible === true) {
-      return backButton(); // 天才
-    } // 今日は昼にある程度仕事したからだらだら市川のを直したりしてる
+      // backButton();
+      return (
+        <TouchableOpacity
+          style={style.button}
+          onPress={() => {
+            setVisible(!deleteVisible);
+          }}
+        >
+          <Icon.MaterialCommunityIcons
+            name="cancel"
+            size={iconSize}
+          />
+        </TouchableOpacity>
+      );
+    }
     return null;
   };
 

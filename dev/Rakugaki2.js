@@ -16,8 +16,10 @@ import {
   Animated,
 } from 'react-native';
 import { Entypo, AntDesign } from 'react-native-vector-icons';
+import Storage from 'react-native-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 
-// TouchableOpacity, icons, .map .filter, {renderButtons()}, state
+// TouchableOpacity, icons, .map .filter, {renderButtons()}, state, useEffect, react-native-storage,
 
 if (
   Platform.OS === 'android'
@@ -26,31 +28,50 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+const storage = new Storage({
+  storageBackend: AsyncStorage,
+});
+
 const pi = '3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679';
 
 const e = '2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274';
 
 const App = () => {
   const [isinitialized, setIsinitialized] = useState(false);
-  const loadingAnim = useRef(new Animated.Value(0)).current;
-  const rotate = loadingAnim.interpolate({
+  const loadingAnim1 = useRef(new Animated.Value(0)).current;
+  const loadingAnim2 = useRef(new Animated.Value(0)).current;
+  const loadingAnim3 = useRef(new Animated.Value(0)).current;
+  const rotate1 = loadingAnim1.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
-  const textColor = loadingAnim.interpolate({
+  const ballColor1 = loadingAnim1.interpolate({
+    inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    outputRange: ['#4b83eb', '#eb4be0', '#eb4b4b', '#ebd84b', '#4beb83', '#4b83eb'],
+  });
+  const ballColor2 = loadingAnim2.interpolate({
+    inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    outputRange: ['#4b83eb', '#eb4be0', '#eb4b4b', '#ebd84b', '#4beb83', '#4b83eb'],
+  });
+  const ballColor3 = loadingAnim3.interpolate({
+    inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    outputRange: ['#4b83eb', '#eb4be0', '#eb4b4b', '#ebd84b', '#4beb83', '#4b83eb'],
+  });
+  const rotate2 = loadingAnim2.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+  const rotate3 = loadingAnim3.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+  const textColor = loadingAnim1.interpolate({
     inputRange: [0, 0.25, 0.5, 0.75, 1],
     outputRange: ['black', '#e0e0e0', 'black', '#e0e0e0', 'black'],
   });
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [notes, setNotes] = useState([
-    {
-      title: 'pi', content: pi, visible: true, expanded: false, selected: false,
-    },
-    {
-      title: 'e', content: e, visible: true, expanded: false, selected: false,
-    },
-  ]);
+  const [notes, setNotes] = useState([]);
   const [editVisible, setEditVisible] = useState(false);
   const [hideMode, setHideMode] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
@@ -59,8 +80,8 @@ const App = () => {
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.delay(0.5),
-        Animated.timing(loadingAnim, {
+        Animated.delay(500),
+        Animated.timing(loadingAnim1, {
           toValue: 1,
           duration: 2000,
         }),
@@ -74,9 +95,42 @@ const App = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   setIsinitialized(true);
-  // });
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.delay(575),
+        Animated.timing(loadingAnim2, {
+          toValue: 1,
+          duration: 2000,
+        }),
+      ]),
+      {
+        iterations: 3,
+      },
+    ).start();
+  }, []);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.delay(650),
+        Animated.timing(loadingAnim3, {
+          toValue: 1,
+          duration: 2000,
+        }),
+      ]),
+      {
+        iterations: 3,
+      },
+    ).start();
+  }, []);
+
+  useEffect(() => {
+    storage.load({ key: 'notes' }).then((data) => {
+      setNotes(data);
+    //   setIsinitialized(true);
+    });
+  }, []);
 
   const renderTopButtons = () => {
     const buttons = [
@@ -106,6 +160,7 @@ const App = () => {
           for (let i = 0; i < notes.length; i++) {
             notesCopy[i].selected = false;
           }
+          storage.save({ key: 'notes', data: notesCopy });
           setNotes(notesCopy);
           // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         },
@@ -124,7 +179,7 @@ const App = () => {
     return (
       <View style={[styles.topButtonsContainer, { backgroundColor }]}>
         <View style={styles.topButtonTitleContainer}>
-          <Text>{title}</Text>
+          <Text style={{ color: 'white' }}>{title}</Text>
         </View>
         {buttons.map((button) => (
           <TouchableOpacity
@@ -144,17 +199,20 @@ const App = () => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       const notesCopy = notes.slice();
       notesCopy[index].expanded = !notes[index].expanded;
+      storage.save({ key: 'notes', data: notesCopy });
       setNotes(notesCopy);
     };
     const toggleSelected = () => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       const notesCopy = notes.slice();
       notesCopy[index].selected = !notes[index].selected;
+      storage.save({ key: 'notes', data: notesCopy });
       setNotes(notesCopy);
     };
     const toggleVisible = () => {
       const notesCopy = notes.slice();
       notesCopy[index].visible = !notes[index].visible;
+      storage.save({ key: 'notes', data: notesCopy });
       setNotes(notesCopy);
     };
     const openEdit = () => {
@@ -165,7 +223,7 @@ const App = () => {
       console.log(editedIndex);
       setEditVisible(true);
     };
-    if (note.visible || hideMode) {
+    if (note.visible || hideMode || deleteMode) {
       return (
         <View style={{ flexDirection: 'row' }}>
           {hideMode ? (
@@ -219,14 +277,17 @@ const App = () => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       if (editedIndex === -1) {
         console.log(`if ${editedIndex}`);
-        setNotes([...notes, {
+        const newNotes = [...notes, {
           title, content, visible: true, expanded: false,
-        }]);
+        }];
+        storage.save({ key: 'notes', data: newNotes });
+        setNotes(newNotes);
       } else {
         console.log(`else ${editedIndex}`);
         const notesCopy = notes.slice();
         notesCopy[editedIndex].title = title;
         notesCopy[editedIndex].content = content;
+        storage.save({ key: 'notes', data: notesCopy });
         setNotes(notesCopy);
         setEditedIndex(-1);
       }
@@ -283,6 +344,7 @@ const App = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         const notesCopy = notes.slice();
         const result = notesCopy.filter((note) => !note.selected);
+        storage.save({ key: 'notes', data: result });
         setNotes(result);
       };
       return (
@@ -297,8 +359,14 @@ const App = () => {
     return (
       <View style={[styles.container, { alignItems: 'center', justifyContent: 'center' }]}>
         <Animated.Text style={{ color: textColor }}>Loading</Animated.Text>
-        <Animated.View style={[styles.animatedContainer, { transform: [{ rotate }] }]}>
-          <View style={styles.animatedCricle} />
+        <Animated.View style={[styles.animatedContainer, { transform: [{ rotate: rotate1 }] }]}>
+          <Animated.View style={[styles.animatedCricle, { backgroundColor: ballColor1 }]} />
+        </Animated.View>
+        <Animated.View style={[styles.animatedContainer, { transform: [{ rotate: rotate2 }] }]}>
+          <Animated.View style={[styles.animatedCricle, { backgroundColor: ballColor2 }]} />
+        </Animated.View>
+        <Animated.View style={[styles.animatedContainer, { transform: [{ rotate: rotate3 }] }]}>
+          <Animated.View style={[styles.animatedCricle, { backgroundColor: ballColor3 }]} />
         </Animated.View>
       </View>
     );
@@ -311,7 +379,6 @@ const App = () => {
         <ScrollView>{renderNotes()}</ScrollView>
         {renderFloatingButton()}
         {renderDeleteButton()}
-        <Button onPress={() => console.log(notes)} />
         {renderPopUp()}
       </View>
     );
@@ -322,7 +389,6 @@ const App = () => {
 export default App;
 
 const styles = StyleSheet.create({
-  container: {
     flex: 1,
     backgroundColor: '#f2f2f2',
     paddingTop: StatusBar.currentHeight,

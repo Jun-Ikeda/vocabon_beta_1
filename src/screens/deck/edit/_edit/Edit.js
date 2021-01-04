@@ -8,14 +8,13 @@ import { atom } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 
-import PopUpMenu from '../../../../components/menu/PopUpMenu';
-
 import EditContent from './EditContent';
 import EditPopUp from './EditPopUp';
 import EditButtons from './EditButtons';
 import EditDelete from './EditDelete';
 
 import { decksContent } from '../../../../config/deck/Deck';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
 export const termState = atom({
   key: 'termState',

@@ -1,18 +1,24 @@
 import React from 'react';
-import { Button, TouchableOpacity, View, Text } from 'react-native';
-import GlobalStateTest from './GlobalStateTest';
+import {
+  Button, TouchableOpacity, View, Text,
+} from 'react-native';
+import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
+import { PastelColors } from '../src/config/Color';
+import { User } from './TestData';
 
-const renderDemo = () => (
-  <View>
-    <Text>
-      {GlobalStateTest.test}
-    </Text>
-  </View>
-);
+const renderProfileIcon = () => {
+  const it = 'be';
+  return PastelColors.map((color) => (
+    <ProfileIcon char="V" color={color} onPress={() => console.log({ color })} />
+  ));
+};
 
 const Demo = (props) => (
-  <View>
-    {renderDemo()}
+  <View style={{
+    flex: 1, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap',
+  }}
+  >
+    {renderProfileIcon()}
   </View>
 );
 

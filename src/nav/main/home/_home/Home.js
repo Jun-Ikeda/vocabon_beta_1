@@ -11,9 +11,10 @@ import PropTypes from 'prop-types';
 import { useSetRecoilState } from 'recoil';
 import AddButton from './AddButton';
 
-import { Deck } from '../../../../../dev/TestData';
+import { Deck, User } from '../../../../../dev/TestData';
 import Carousel from '../../../../components/deck/carousel/Carousel';
 import { decksContent, decksGeneral } from '../../../../config/deck/Deck';
+import { usersGeneral } from '../../../../config/user/User';
 // import { decksState } from '../../MainNav';
 
 const style = StyleSheet.create({
@@ -40,23 +41,32 @@ const Home = (props) => {
   // props
   const { navigation } = props;
   // recoil
-  const setGeneral = useSetRecoilState(decksGeneral);
+  const setDeckGeneral = useSetRecoilState(decksGeneral);
+  const setUserGeneral = useSetRecoilState(usersGeneral);
   // deckIDを配列で取得
   const deckIDs = Object.keys(Deck);
+  const userIDs = Object.keys(User);
 
   useEffect(() => {
     // deckIDからgeneralを取得, decksGeneralに代入
-    const newGeneral = {};
+    const newDeckGeneral = {};
     for (let i = 0; i < deckIDs.length; i++) {
-      newGeneral[deckIDs[i]] = Deck[deckIDs[i]].general;
+      newDeckGeneral[deckIDs[i]] = Deck[deckIDs[i]].general;
     }
-    console.log(newGeneral);
-    setGeneral(newGeneral);
+    console.log(newDeckGeneral);
+    setDeckGeneral(newDeckGeneral);
 
     // deckIDからcontentを取得, decksContentに代入
     for (let i = 0; i < deckIDs.length; i++) {
       decksContent[deckIDs[i]] = Deck[deckIDs[i]].content;
     }
+
+    const newUserGeneral = {};
+    for (let i = 0; i < userIDs.length; i++) {
+      newUserGeneral[userIDs[i]] = User[userIDs[i]];
+    }
+    console.log(newUserGeneral);
+    setUserGeneral(newUserGeneral);
   }, []);
 
   const renderRow = ({ title }) => (

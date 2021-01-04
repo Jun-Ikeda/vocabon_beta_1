@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
+import React from 'react';
+import {
+  View, StyleSheet, ScrollView, TouchableOpacity, Text,
+} from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
@@ -49,7 +51,7 @@ const style = StyleSheet.create({
   text: {
     fontSize: 16,
     // fontWeight: 'bold',
-  }
+  },
 });
 
 /**
@@ -59,7 +61,7 @@ const style = StyleSheet.create({
  * ```js
  * <EditPopUp
  *    setState={(state) => this.setState(state)}
- *    deleteVisible={ture}
+ *    deleteVisible={true}
  * />
  * props: { width }
  * recoil: {
@@ -79,7 +81,7 @@ const style = StyleSheet.create({
 
 const EditPopUp = (props) => {
   // props
-  const { width,setVisible } = props;
+  const { width, setVisible } = props;
   // recoil
   const [term, setTerm] = useRecoilState(termState);
   const [definition, setDefinition] = useRecoilState(definitionState);
@@ -156,19 +158,19 @@ const EditPopUp = (props) => {
       <View style={style.menu}>
         {renderMenu()}
         <View style={style.buttons}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[style.button, { marginRight: 10 }]}
             onPress={() => setVisible(false)}
           >
             <Text style={style.text}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[style.button, { marginLeft: 10 }]}
             onPress={() => {
               setVisible(false);
               console.log('saved');
             }}
-            >
+          >
             <Text style={style.text}>Done</Text>
           </TouchableOpacity>
         </View>

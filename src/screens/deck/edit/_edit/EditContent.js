@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
-import { deck } from '../../../../config/Const';
+import { deck, func } from '../../../../config/Const';
 import {
   termState,
   definitionState,
@@ -80,10 +80,12 @@ const EditContent = (props) => {
   const setCf = useSetRecoilState(cfState);
   // state
   const [expandedIndex, setExpandedIndex] = useState([]);
+  //
 
   // const content = contentProps.filter((_, index) => index < 50);
 
   const renderMainContent = ({ item, index }) => {
+    const { key, value } = item;
     const isExpanded = expandedIndex.includes(index);
     const toggleExpand = () => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -98,13 +100,13 @@ const EditContent = (props) => {
     return (
       <View
         style={style.box}
-        // key={item?.term.toLowerCase()}
+        // key={value?.term.toLowerCase()}
       >
         <List.Accordion
           expanded={isExpanded}
           onPress={toggleExpand}
-          title={item?.term}
-          description={deck.formatArrayContent(item?.definition)}
+          title={value?.term}
+          description={deck.formatArrayContent(value?.definition)}
           titleStyle={style.termanddef}
           descriptionStyle={style.termanddef}
           style={[
@@ -114,26 +116,26 @@ const EditContent = (props) => {
               borderBottomRightRadius: isExpanded ? 0 : 10,
             }]}
         >
-          <List.Item style={style.listItem} title={`Synonym: ${deck.formatArrayContent(item?.synonym)}`} />
-          <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(item?.antonym)}`} />
-          <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(item?.prefix)}`} />
-          <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(item?.sufix)}`} />
-          <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(item?.exampleT)}`} />
-          <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(item?.exampleD)}`} />
-          <List.Item style={style.listItemLast} title={`Cf: ${deck.formatArrayContent(item?.cf)}`} />
+          <List.Item style={style.listItem} title={`Synonym: ${deck.formatArrayContent(value?.synonym)}`} />
+          <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(value?.antonym)}`} />
+          <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(value?.prefix)}`} />
+          <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(value?.sufix)}`} />
+          <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(value?.exampleT)}`} />
+          <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(value?.exampleD)}`} />
+          <List.Item style={style.listItemLast} title={`Cf: ${deck.formatArrayContent(value?.cf)}`} />
         </List.Accordion>
         <TouchableOpacity
           onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); // Android, iOSでのみ見える簡易アニメーション setStateで突然変わるところをアニメーションにできる
-            await setTerm(deck.formatArrayContent(item?.term));
-            await setDefinition(deck.formatArrayContent(item?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
-            await setSynonym(deck.formatArrayContent(item?.synonym));
-            await setAntonym(deck.formatArrayContent(item?.antonym));
-            await setPrefix(deck.formatArrayContent(item?.prefix));
-            await setSuffix(deck.formatArrayContent(item?.suffix));
-            await setExampleT(deck.formatArrayContent(item?.exampleT));
-            await setExampleD(deck.formatArrayContent(item?.exampleD));
-            await setCf(deck.formatArrayContent(item?.cf));
+            await setTerm(deck.formatArrayContent(value?.term));
+            await setDefinition(deck.formatArrayContent(value?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
+            await setSynonym(deck.formatArrayContent(value?.synonym));
+            await setAntonym(deck.formatArrayContent(value?.antonym));
+            await setPrefix(deck.formatArrayContent(value?.prefix));
+            await setSuffix(deck.formatArrayContent(value?.suffix));
+            await setExampleT(deck.formatArrayContent(value?.exampleT));
+            await setExampleD(deck.formatArrayContent(value?.exampleD));
+            await setCf(deck.formatArrayContent(value?.cf));
             setVisible(true);
           }}
           style={style.editButton}
@@ -149,7 +151,7 @@ const EditContent = (props) => {
 
   return (
     <FlatList
-      data={content}
+      data={func.convertObjectToArray(content)}
       renderItem={renderMainContent}
       keyExtractor={(item, index) => index}
     />
@@ -157,11 +159,11 @@ const EditContent = (props) => {
 };
 
 EditContent.propTypes = {
-  content: PropTypes.array,
+  content: PropTypes.array.isRequired,
+  setVisible: PropTypes.func.isRequired,
 };
 
 EditContent.defaultProps = {
-  content: [],
 };
 
 export default EditContent;

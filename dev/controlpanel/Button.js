@@ -4,11 +4,8 @@ import UUID from '../../src/config/UUID';
 
 const Button = [
   {
-    title: 'Unsplash',
-    onPress: async () => {
-      const thumb = await getRandomImage();
-      return { thumb };
-    },
+    title: 'Deck',
+    onPress: () => ({ decksContent }),
   },
   {
     title: 'UUID',
@@ -21,8 +18,18 @@ const Button = [
     },
   },
   {
-    title: 'Deck',
-    onPress: () => ({ decksContent }),
+    title: 'Time',
+    onPress: () => {
+      const date = new Date();
+      return { unix: date.getTime() };
+    },
+  },
+  {
+    title: 'Unsplash',
+    onPress: async () => {
+      const thumb = await getRandomImage();
+      return { thumb };
+    },
   },
 ];
 

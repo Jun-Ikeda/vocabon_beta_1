@@ -73,7 +73,7 @@ const Menu = (props) => {
   );
 
   const renderContent = () => (
-    <MenuUtility title={general.title} language={general.language} thumbnail={general.thumbnail} />
+    <MenuUtility title={general.title} language={general.language} thumbnail={general.thumbnail} user={general.user} />
   );
 
   const renderButtons = () => (

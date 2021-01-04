@@ -1,13 +1,12 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, Text, LayoutAnimation,
+  View, StyleSheet, TouchableOpacity, Text,
 } from 'react-native';
-import { List, CheckBox, Checkbox } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
-import { deck } from '../../../../config/Const';
+import { deck, func } from '../../../../config/Const';
 
 const backgroundColor = Color.white1;
 const iconSize = 20;
@@ -49,7 +48,8 @@ const EditDelete = (props) => {
   const { content } = props;
   const [checkedIndex, setCheckedIndex] = useState([]);
 
-  const renderContent = () => content.map((vocab, index) => {
+  const renderContent = () => func.convertObjectToArray(content).map((vocab, index) => {
+    const { key, value } = vocab;
     const toggleChecked = () => {
       let newcheckedIndex = [];
       if (checkedIndex.includes(index)) {
@@ -77,8 +77,8 @@ const EditDelete = (props) => {
         onPress={toggleChecked}
       >
         <View style={style.textbox}>
-          <Text style={style.text}>{vocab.term}</Text>
-          <Text style={style.text}>{deck.formatArrayContent(vocab.definition)}</Text>
+          <Text style={style.text}>{value.term}</Text>
+          <Text style={style.text}>{deck.formatArrayContent(value.definition)}</Text>
         </View>
         <View style={style.checkbox}>
           <Checkbox
