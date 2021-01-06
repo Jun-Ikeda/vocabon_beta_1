@@ -8,6 +8,7 @@ import Color from '../../config/Color';
 const style = StyleSheet.create({
   overlay: {
     flex: 1,
+    backgroundColor: 'teal',
   },
   defaultMenu: {
     height: 200,
@@ -51,12 +52,21 @@ const PopUpMenu = (props) => {
     onLayout,
     onPress,
   } = props;
+
+  const _onPress = () => {
+    try {
+      setVisible(false);
+    } catch (error) {
+      onPress();
+    }
+  };
+
   if (isVisible) {
     return (
       <View style={StyleSheet.absoluteFill}>
         <TouchableOpacity
-          style={[style.overlay, overlayStyle]}
-          onPress={[() => setVisible(false), onPress]}
+          style={[overlayStyle, style.overlay]}
+          onPressIn={_onPress}
           onLayout={onLayout}
         />
         {renderMenu()}

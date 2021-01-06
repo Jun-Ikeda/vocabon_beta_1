@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  View, Text, Image, TouchableOpacity, Linking, StyleSheet,
+  View, Text, TouchableOpacity, Linking, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
@@ -78,7 +78,7 @@ const MenuUtility = (props) => {
   );
 
   const renderIcon = () => (
-    <ProfileIcon userID={user} size={45} />
+    <ProfileIcon userID={user} size={45} onPress={() => alert('aiueo')} />
     // <Image
     //   source={{ uri: 'https://kyoiku.yomiuri.co.jp/MOT_9160.jpg' }}
     //   style={styles.icon}

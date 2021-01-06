@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  View, TouchableOpacity, StyleSheet, LayoutAnimation,
+  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import {
+  atom, RecoilRoot, useRecoilState, useRecoilValue,
+} from 'recoil';
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
+import { func } from '../../../../config/Const';
+import { numChosenCardsState } from './EditDelete';
+import { helpVisibleState } from './Edit';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import EditHelp from './EditHelp';
 
 const iconSize = 20;
 
@@ -28,6 +36,21 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  textintrashbin: {
+    fontSize: 12,
+    // fontWeight: 'bold',
+    position: 'absolute',
+    right: 10,
+    bottom: 15,
+    width: 15,
+    height: 15,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // borderWidth: 1,
+    color: Color.white1,
+    backgroundColor: Color.cud.red,
+  },
 });
 
 /**
@@ -48,18 +71,34 @@ const style = StyleSheet.create({
 const EditButtons = (props) => {
   // props
   const { setVisible, deleteVisible } = props;
-  const { backVisible } = props;
+  // recoil
+  const numChosenCards = useRecoilValue(numChosenCardsState);
+  const [helpVisible, setHelpVisible] = useRecoilState(helpVisibleState);
+  // state
+  const [layout, setLayout] = useState({ height: 300, width: 300 });
+
+  const renderCounter = () => {
+    if (deleteVisible === true) {
+      return (
+        <View>
+          <Text style={style.textintrashbin}>
+            {numChosenCards}
+          </Text>
+        </View>
+      );
+    }
+    return (null);
+  };
 
   const renderTrashBin = () => (
     <TouchableOpacity
       style={style.button}
       onPress={() => {
-        // setVisible(!deleteVisible);
         if (deleteVisible === false) {
           setVisible(!deleteVisible);
-          setVisible(!backVisible);
         } else {
-          alert('Are you sure you delete the cards you chose? (You can not undo)');
+          const stringToAlert = `Are you sure you delete the ${numChosenCards} cards you chose? (You cannot undo)`;
+          alert(stringToAlert);
         }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       }}
@@ -69,37 +108,59 @@ const EditButtons = (props) => {
         size={iconSize}
         style={{ color: deleteVisible ? Color.cud.red : Color.black }}
       />
+      {/* <Text style={style.textintrashbin}>
+        {numChosenCards}
+      </Text> */}
+      {renderCounter()}
     </TouchableOpacity>
   );
 
-  const renderHelp = () => (
-    <TouchableOpacity
-      style={style.button}
-    >
-      <Icon.Feather
-        name="help-circle"
-        size={iconSize}
-      />
-    </TouchableOpacity>
-  );
+  const renderHelp = () => {
+    if (deleteVisible === false) {
+      return (
+        <TouchableOpacity
+          style={style.button}
+          onPress={() => {
+            setHelpVisible(!helpVisible);
+          }}
+        >
+          <Icon.Feather
+            name="help-circle"
+            size={iconSize}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  };
 
-  // const backButton = () => (
-  // <TouchableOpacity
-  //   style={style.button}
-  //   onPress={() => {
-  //     setVisible(!deleteVisible);
-  //   }}
-  // >
-  //   <Icon.MaterialCommunityIcons
-  //     name="cancel"
-  //     size={iconSize}
-  //   />
-  // </TouchableOpacity>
-  // );
+  // const renderHelpPopUp = () => {
+  //   const renderHelpView = () => (
+  //     <View
+  //       style={style.menuview}
+  //       onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+  //     >
+  //       <View style={style.popview}>
+  //         <EditHelp
+  //           width={layout.width}
+  //           setVisible={setHelpVisible}
+  //         />
+  //       </View>
+  //     </View>
+  //   );
+  //   return (
+  //     <PopUpMenu
+  //       isVisible={helpVisible}
+  //       setVisible={setHelpVisible}
+  //       renderMenu={renderHelpView}
+  //       overlayStyle={style.overlayStyle}
+  //       onPress={() => setHelpVisible(false)}
+  //     />
+  //   );
+  // };
 
   const renderBackButton = () => {
-    if (backVisible === true) {
-      // backButton();
+    if (deleteVisible === true) {
       return (
         <TouchableOpacity
           style={style.button}
@@ -107,8 +168,8 @@ const EditButtons = (props) => {
             setVisible(!deleteVisible);
           }}
         >
-          <Icon.MaterialCommunityIcons
-            name="cancel"
+          <Icon.Feather
+            name="x-circle"
             size={iconSize}
           />
         </TouchableOpacity>
@@ -120,8 +181,9 @@ const EditButtons = (props) => {
   return (
     <View style={style.container}>
       {renderBackButton()}
-      {renderTrashBin()}
       {renderHelp()}
+      {renderTrashBin()}
+      {/* {renderHelpPopUp()} */}
     </View>
   );
 };
@@ -129,57 +191,12 @@ const EditButtons = (props) => {
 EditButtons.propTypes = {
   setVisible: PropTypes.func,
   deleteVisible: PropTypes.bool,
-  backVisible: PropTypes.bool,
 };
 
 EditButtons.defaultProps = {
   setVisible: () => {},
   deleteVisible: false,
-  backVisible: false,
+  // backVisible: false,
 };
 
 export default EditButtons;
-
-/* class EditButtons extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
-
-  renderTrashBin = () => {
-    const { navigation, setState, deleteVisible } = this.props;
-    return (
-      <TouchableOpacity
-        style={style.button}
-        onPress={() => setState({ deleteVisible: !deleteVisible })}
-      >
-        <Icon.FontAwesome
-          name="trash"
-          size={iconSize}
-          style={{ color: deleteVisible ? Color.gray2 : Color.black }}
-        />
-      </TouchableOpacity>
-    );
-  }
-
-  renderHelp = () => (
-    <TouchableOpacity
-      style={style.button}
-    >
-      <Icon.Feather
-        name="help-circle"
-        size={iconSize}
-      />
-    </TouchableOpacity>
-  )
-
-  render() {
-    return (
-      <View style={style.container}>
-        {this.renderTrashBin()}
-        {this.renderHelp()}
-      </View>
-    );
-  }
-} */

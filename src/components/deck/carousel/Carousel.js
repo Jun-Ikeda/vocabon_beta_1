@@ -7,7 +7,7 @@ import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
 import Color from '../../../config/Color';
 import { func } from '../../../config/Const';
-import Card from './Card';
+import CarouselCard from './CarouselCard';
 
 const style = StyleSheet.create({
   container: {
@@ -38,7 +38,7 @@ const Carousel = (props) => {
   let carousel = {};
 
   const renderItem = ({ item: deckID/* , index */ }) => (
-    <Card
+    <CarouselCard
       deckID={deckID}
       onPress={() => onPressCard(deckID)}
       cardStyle={{

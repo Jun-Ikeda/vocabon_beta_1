@@ -1,28 +1,30 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
+  Button,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 // import HeaderInMain from '../../../../../components/header/HeaderInMain';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import AddButton from './AddButton';
 
-import { Deck, User } from '../../../../../dev/TestData';
 import Carousel from '../../../../components/deck/carousel/Carousel';
-import { decksContent, decksGeneral } from '../../../../config/deck/Deck';
-import { usersGeneral } from '../../../../config/user/User';
-// import { decksState } from '../../MainNav';
+import { decksGeneral } from '../../../../config/deck/Deck';
+import { account } from '../../../../config/account/Account';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    // paddingTop: 120,
+    // marginTop: 40,
   },
   scrollContainer: {
     flex: 1,
+    // paddingTop: 120,
   },
 });
 
@@ -43,9 +45,11 @@ const Home = (props) => {
   // recoil
   const generals = useRecoilValue(decksGeneral);
 
-  const deckIDs = Object.keys(generals);
+  const allDeckIDs = Object.keys(generals);
+  const myDeckIDs = allDeckIDs.filter((deckID) => generals[deckID].user === account.general.userID);
+  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => account.content[deckID].bookmark);
 
-  const renderRow = ({ title }) => (
+  const renderRow = ({ title, deckIDs }) => (
     <View>
       <Text>{title}</Text>
       <Carousel
@@ -62,9 +66,9 @@ const Home = (props) => {
   return (
     <View style={style.container}>
       <ScrollView style={style.scrollContainer}>
-        {renderRow({ title: 'LOCAL' })}
-        {renderRow({ title: 'BOOKMARK' })}
-        {renderRow({ title: 'BOOKMARK' })}
+        {renderRow({ title: 'LOCAL', deckIDs: myDeckIDs })}
+        {renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })}
+        {renderRow({ title: 'ALL', deckIDs: allDeckIDs })}
       </ScrollView>
       {renderButton()}
     </View>

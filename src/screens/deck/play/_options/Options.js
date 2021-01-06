@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, ScrollView,
 } from 'react-native';
 import { RadioButton, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -19,7 +19,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-
   },
 });
 
@@ -88,14 +87,14 @@ const Options = (props) => {
     ];
     if (mode === 'custom') {
       return (
-        <View>
+        <ScrollView>
           <Text>Sort by ...</Text>
           {items.map((item) => (
             <View key={item.title.toLowerCase()}>
-              <Text style={{ justifyContent: 'center' }}>{item.title}</Text>
+              <Text style={{ justifyContent: 'center', padding: 30 }}>{item.title}</Text>
               <View style={{ flexDirection: 'row' }}>
                 <View style={style.counterBox}>
-                  <Text style={{ padding: 30 }}>Min</Text>
+                  <Text style={{ justifyContent: 'center', padding: 30 }}>Min</Text>
                   <NumericInput
                     type="plus-minus"
                     value={item.valueMin}
@@ -103,8 +102,8 @@ const Options = (props) => {
                     maxValue={item.valueMax}
                     onChange={item.setStateMin}
                     rounded
-                    rightButtonBackgroundColor={Color.green3}
-                    leftButtonBackgroundColor={Color.green3}
+                    rightButtonBackgroundColor={Color.defaultBackground}
+                    leftButtonBackgroundColor={Color.defaultBackground}
                   />
                 </View>
                 <View style={style.counterBox}>
@@ -116,14 +115,14 @@ const Options = (props) => {
                     maxValue={item.range[1]}
                     onChange={item.setStateMax}
                     rounded
-                    rightButtonBackgroundColor={Color.green3}
-                    leftButtonBackgroundColor={Color.green3}
+                    rightButtonBackgroundColor={Color.defaultBackground}
+                    leftButtonBackgroundColor={Color.defaultBackground}
                   />
                 </View>
               </View>
             </View>
           ))}
-        </View>
+        </ScrollView>
       );
     }
     return null;
@@ -149,9 +148,16 @@ const Options = (props) => {
   );
 
   return (
-    <View>
-      {renderRadioButtons()}
-      <Button mode="contained" onPress={() => navigation.navigate('play', { deckID })}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        {renderRadioButtons()}
+      </View>
+      <Button
+        color={Color.green2}
+        style={{ margin: 30 }}
+        mode="contained"
+        onPress={() => navigation.navigate('play', { deckID })}
+      >
         Start
       </Button>
     </View>

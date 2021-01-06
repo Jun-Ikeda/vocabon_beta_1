@@ -73,7 +73,7 @@ const Play = (props) => {
 
   const renderCounterTop = () => (
     <Text style={style.checker}>
-      {leftVocabID.length + rightVocabID.length + 1}
+      {finished ? leftVocabID.length + rightVocabID.length : leftVocabID.length + rightVocabID.length + 1}
       /
       {validVocabIDs.length}
     </Text>

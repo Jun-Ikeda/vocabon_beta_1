@@ -4,9 +4,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { useRecoilValue } from 'recoil';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
+import { decksGeneral } from '../../../../config/deck/Deck';
+import { account } from '../../../../config/account/Account';
+import { func } from '../../../../config/Const';
 
 const iconsize = 30;
 
@@ -44,10 +48,16 @@ const style = StyleSheet.create({
  */
 const MenuButtons = (props) => {
   // props
-  const { navigation, deckID, userID } = props;
+  const { navigation, deckID } = props;
+  // recoil
+  const decksGeneralState = useRecoilValue(decksGeneral);
   // state
   const [visible, setVisible] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(account.content[deckID].bookmark);
+
+  //
+  const deckGeneral = decksGeneralState[deckID];
+  const identifyVisible = (deckGeneral.user === account?.general?.userID);
 
   const renderColumn = (buttons) => (
     <View style={style.container}>
@@ -74,15 +84,40 @@ const MenuButtons = (props) => {
       },
       {
         title: 'Property',
-        icon: () => <Icon.Ionicons name="md-list" size={iconsize} style={style.icon} />,
-        onPress: () => navigation.navigate('property', { deckID }),
-        textStyle: {},
+        icon: () => (
+          <Icon.Ionicons
+            name="md-list"
+            size={iconsize}
+            style={[style.icon, { color: identifyVisible ? Color.black : Color.gray3 }]}
+          />
+        ),
+        onPress: () => {
+          if (identifyVisible) {
+            navigation.navigate('property', { deckID });
+          } else {
+            func.alert('You cannot change the property of this deck.');
+          }
+          console.log(identifyVisible);
+        },
+        textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
       },
       {
         title: 'Edit',
-        icon: () => <Icon.Feather name="edit" size={iconsize} style={style.icon} />,
-        onPress: () => navigation.navigate('edit', { deckID }),
-        textStyle: {},
+        icon: () => (
+          <Icon.Feather
+            name="edit"
+            size={iconsize}
+            style={[style.icon, { color: identifyVisible ? Color.black : Color.gray3 }]}
+          />
+        ),
+        onPress: () => {
+          if (identifyVisible) {
+            navigation.navigate('edit', { deckID });
+          } else {
+            func.alert('You cannot change the edit of this deck.');
+          }
+        },
+        textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
       },
       {
         title: visible ? 'Close' : 'More',
@@ -96,6 +131,8 @@ const MenuButtons = (props) => {
         onPress: () => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setVisible(!visible);
+          // console.log(deckGeneral.user);
+          // console.log('hi');
         },
         textStyle: {},
       },
@@ -109,9 +146,9 @@ const MenuButtons = (props) => {
         {
           title: 'Bookmark',
           icon: () => (
-            <Icon.FontAwesome
-              name={bookmarked ? 'bookmark' : 'bookmark-o'}
-              style={[style.icon, { color: bookmarked ? Color.cud.red : 'black' }]}
+            <Icon.MaterialCommunityIcons
+              name={bookmarked ? 'bookmark-check' : 'bookmark-outline'}
+              style={[style.icon, { color: bookmarked ? Color.red2 : 'black' }]}
               size={iconsize}
             />
           ),
@@ -121,13 +158,13 @@ const MenuButtons = (props) => {
         {
           title: 'Duplicate',
           icon: () => <Icon.Feather name="copy" size={iconsize} style={style.icon} />,
-          onPress: () => alert('duplicate'),
+          onPress: () => func.alert('duplicate'),
           textStyle: {},
         },
         {
           title: 'Import',
           icon: () => <Icon.Feather name="download" size={iconsize} style={style.icon} />,
-          onPress: () => alert('import'),
+          onPress: () => func.alert('import'),
           textStyle: {},
         },
         {
@@ -141,25 +178,25 @@ const MenuButtons = (props) => {
         {
           title: 'Share',
           icon: () => <Icon.Entypo name="share" size={iconsize} style={style.icon} />,
-          onPress: () => alert('share'),
+          onPress: () => func.alert('share'),
           textStyle: {},
         },
         {
           title: 'Test',
           icon: () => <Icon.AntDesign name="checkcircleo" size={iconsize} style={style.icon} />,
-          onPress: () => alert('test'),
+          onPress: () => func.alert('test'),
           textStyle: {},
         },
         {
           title: 'Analyze',
           icon: () => <Icon.Entypo name="line-graph" size={iconsize} style={style.icon} />,
-          onPress: () => alert('analyze'),
+          onPress: () => navigation.navigate('analyze', { deckID }),
           textStyle: {},
         },
         {
           title: 'Delete',
           icon: () => <Icon.FontAwesome name="trash" size={iconsize} style={[style.icon, { color: Color.cud.pink }]} />,
-          onPress: () => Alert.alert('Are you sure to delete this deck?'),
+          onPress: () => func.alert('Are you sure to delete this deck?'),
           textStyle: { color: Color.cud.pink },
         },
       ],

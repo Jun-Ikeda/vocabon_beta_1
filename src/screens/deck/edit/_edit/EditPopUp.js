@@ -41,7 +41,7 @@ const style = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: Color.green2,
     // marginHorizontal: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
   },
   buttons: {
     flexDirection: 'row',
@@ -50,6 +50,7 @@ const style = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    color: Color.white1,
     // fontWeight: 'bold',
   },
 });
@@ -159,13 +160,13 @@ const EditPopUp = (props) => {
         {renderMenu()}
         <View style={style.buttons}>
           <TouchableOpacity
-            style={[style.button, { marginRight: 10 }]}
+            style={[style.button, { marginRight: 20 }]}
             onPress={() => setVisible(false)}
           >
             <Text style={style.text}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[style.button, { marginLeft: 10 }]}
+            style={[style.button, { marginLeft: 20 }]}
             onPress={() => {
               setVisible(false);
               console.log('saved');

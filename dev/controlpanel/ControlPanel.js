@@ -1,12 +1,10 @@
 import React from 'react';
 import {
-  Alert,
-  Platform,
   ScrollView, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
-import Clipboard from 'expo-clipboard';
 
 import Button from './Button';
+import { func } from '../../src/config/Const';
 
 const style = StyleSheet.create({
   button: {
@@ -18,27 +16,12 @@ const style = StyleSheet.create({
   },
 });
 
-const alertConsole = (object) => {
-  const string = JSON.stringify(object);
-  if (Platform.OS === 'web') {
-    console.log(object);
-    alert('copied');
-    Clipboard.setString(string);
-  } else {
-    Alert.alert(
-      'CONSOLE',
-      string,
-      [{ text: 'Copy', onPress: () => Clipboard.setString(string) }, { text: 'OK', onPress: () => {} }],
-    );
-  }
-};
-
 const renderButtons = () => Button.map((button, index) => {
   const onPress = async () => {
     console.log(`${index + 1}: ${button.title} is called`);
     const result = await button.onPress();
     if (!(result === undefined)) {
-      await alertConsole(result);
+      await func.alertConsole(result);
     }
     console.log(`${index + 1}: ${button.title} ended`);
   };

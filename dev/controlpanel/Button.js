@@ -1,4 +1,4 @@
-import { useRecoilValue } from 'recoil';
+import { account } from '../../src/config/account/Account';
 import { decksContent, decksGeneral } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import { users } from '../../src/config/user/User';
@@ -15,7 +15,7 @@ const Button = [
   },
   {
     title: 'Account',
-    onPress: () => {},
+    onPress: () => ({ account }),
   },
   {
     title: 'UUID',

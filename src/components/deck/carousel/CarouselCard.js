@@ -10,6 +10,8 @@ import { unshortenURI } from '../../../config/Unsplash';
 import { decksGeneral } from '../../../config/deck/Deck';
 import ProfileIcon from '../../user/profileicon/ProfileIcon';
 import { usersGeneral } from '../../../config/user/User';
+import { account } from '../../../config/account/Account';
+import Icon from '../../Icon';
 
 const style = StyleSheet.create({
   cardContainer: {
@@ -41,7 +43,7 @@ const style = StyleSheet.create({
  *
  * ```
  */
-const Card = (props) => {
+const CarouselCard = (props) => {
   // props
   const { deckID, cardStyle, onPress } = props;
   // recoil
@@ -59,6 +61,27 @@ const Card = (props) => {
       <View style={[{ position: 'absolute' }, cardStyle, { backgroundColor: Color.gray1, opacity: 0.5 }]} />
     </View>
   );
+
+  const renderBookmarkIcon = () => (account.content[deckID].bookmark ? (
+    <View style={{ position: 'absolute' }}>
+      <View style={{
+        position: 'absolute',
+        backgroundColor: Color.white1,
+        right: cardStyle.height * 0.04,
+        left: cardStyle.height * 0.04,
+        top: cardStyle.height * 0.04,
+        bottom: cardStyle.height * 0.04,
+
+      }}
+      />
+      <Icon.MaterialCommunityIcons
+        name="bookmark-check"
+        style={{
+          fontSize: cardStyle.height * 0.15, color: Color.red2,
+        }}
+      />
+    </View>
+  ) : null);
 
   const renderOverlayAbove = () => (
     <View style={{
@@ -114,6 +137,7 @@ const Card = (props) => {
     >
       {renderBackgroundImage()}
       <View style={style.overlayContainer}>
+        {renderBookmarkIcon()}
         {renderOverlayAbove()}
         {renderOverlayBotom()}
       </View>
@@ -121,15 +145,15 @@ const Card = (props) => {
   );
 };
 
-Card.propTypes = {
+CarouselCard.propTypes = {
   cardStyle: PropTypes.object,
   deckID: PropTypes.string.isRequired,
   onPress: PropTypes.func,
 };
 
-Card.defaultProps = {
+CarouselCard.defaultProps = {
   cardStyle: {},
   onPress: () => {},
 };
 
-export default Card;
+export default CarouselCard;

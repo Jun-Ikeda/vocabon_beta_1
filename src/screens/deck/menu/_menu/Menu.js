@@ -12,6 +12,7 @@ import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
 import { decksGeneral } from '../../../../config/deck/Deck';
+import { account } from '../../../../config/account/Account';
 
 // import DeckMenuButtons from './DeckMenuButtons';
 // import DeckMenuUtilities from './DeckMenuUtilities';
@@ -88,13 +89,6 @@ const Menu = (props) => {
       {renderThumbnail()}
       {renderContent()}
       {renderButtons()}
-      <Text>aaa</Text>
-      <Text>aaa</Text>
-      <Text>aaa</Text>
-      <Text>aaa</Text>
-      <Text>aaa</Text>
-      <Text>aaa</Text>
-      <Text>aaa</Text>
     </View>
   );
 };

@@ -3,9 +3,7 @@ import {
   StyleSheet, View, TouchableOpacity, Image, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { useRecoilValue } from 'recoil';
-import { func } from '../../../config/Const';
-import { users, usersGeneral } from '../../../config/user/User';
+import { users } from '../../../config/user/User';
 
 const style = StyleSheet.create({
   container: {
@@ -65,7 +63,12 @@ const ProfileIcon = (props) => {
     </TouchableOpacity>
   );
 
-  return ((onPress() === null) ? renderUnTouchable() : renderTouchable());
+  // try {
+  //   return renderUnTouchable();
+  // } catch (error) {
+  //   return renderTouchable();
+  // }
+  return renderTouchable();
 };
 
 // (general?.icon.uri === undefined) ? renderColorIcon() : renderImageIcon()
@@ -79,7 +82,7 @@ ProfileIcon.propTypes = {
 
 ProfileIcon.defaultProps = {
   // message: {},
-  onPress: () => null,
+  onPress: () => { throw new Error('the function is null'); },
   size: 54,
   style: {},
 };

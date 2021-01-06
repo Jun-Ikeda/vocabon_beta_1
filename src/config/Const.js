@@ -1,23 +1,20 @@
 // import React from 'react';
+import ExpoClipboard from 'expo-clipboard';
 import {
-  Platform, Dimensions,
+  Platform, Dimensions, StyleSheet, Alert,
 } from 'react-native';
 
 export const header = {
-  paddingTopByOS: () => {
-    switch (Platform.OS) {
-      case 'android':
-        return 24;
-        // return 0
-      case 'ios':
-        return 18;
-      default:
-        return 0;
-    }
-  },
-  heightMax: 120,
-  heightMid: 86,
-  heightMin: 60,
+  mainHeaderStyles: StyleSheet.create({
+    headerStyle: {
+      height: 120,
+      // backgroundColor: 'transparent',
+      // elevation: 0,
+    },
+    headerTitleStyle: {
+      fontSize: 22,
+    },
+  }),
 };
 
 const carousel = {
@@ -59,6 +56,27 @@ export const func = {
       return ((((r * 299) + (g * 587) + (b * 114)) / 1000) < 128) ? 'white' : 'black';
     }
     return null;
+  },
+  alertConsole: (object) => {
+    const string = JSON.stringify(object);
+    console.log(object);
+    if (Platform.OS === 'web') {
+      alert('copied');
+      ExpoClipboard.setString(string);
+    } else {
+      Alert.alert(
+        'CONSOLE',
+        string,
+        [{ text: 'Copy', onPress: () => ExpoClipboard.setString(string) }, { text: 'OK', onPress: () => {} }],
+      );
+    }
+  },
+  alert: (string, description = '', buttons = []) => {
+    if (Platform.OS === 'web') {
+      alert(string);
+    } else {
+      Alert.alert(string, description, buttons);
+    }
   },
 };
 

@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, Text,
+  View, StyleSheet, TouchableOpacity, Text, FlatList,
 } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import {
+  atom, RecoilRoot, useRecoilState, useSetRecoilState,
+} from 'recoil';
 import Color from '../../../../config/Color';
 import { deck, func } from '../../../../config/Const';
 
 const backgroundColor = Color.white1;
 const iconSize = 20;
+
+export const numChosenCardsState = atom({
+  key: 'numChosenCards',
+  default: 0,
+});
 
 const style = StyleSheet.create({
   container: {
@@ -47,18 +55,22 @@ const style = StyleSheet.create({
 const EditDelete = (props) => {
   const { content } = props;
   const [checkedIndex, setCheckedIndex] = useState([]);
+  const setNumChosenCards = useSetRecoilState(numChosenCardsState);
 
-  const renderContent = () => func.convertObjectToArray(content).map((vocab, index) => {
-    const { key, value } = vocab;
+  const renderContent = ({ item, index }) => {
+    const { key, value } = item;
     const toggleChecked = () => {
-      let newcheckedIndex = [];
       if (checkedIndex.includes(index)) {
+        let newcheckedIndex = [];
         newcheckedIndex = checkedIndex.filter((_index) => _index !== index);
+        setCheckedIndex(newcheckedIndex);
+        setNumChosenCards(newcheckedIndex.length);
       } else {
-        checkedIndex.push(index);
-        newcheckedIndex = checkedIndex;
+        // checkedIndex.push(index);
+        // newcheckedIndex = checkedIndex;
+        setNumChosenCards(checkedIndex.length + 1);
+        setCheckedIndex([...checkedIndex, index]);
       }
-      setCheckedIndex(newcheckedIndex);
     };
     // const isDeleted = checkedIndex.includes(index);
     // const toggleChecked = () => {
@@ -89,12 +101,16 @@ const EditDelete = (props) => {
         </View>
       </TouchableOpacity>
     );
-  });
+  };
 
   return (
-    <View style={style.container}>
-      {renderContent()}
-    </View>
+    // <View style={style.container}>
+    //   {renderContent()}
+    // </View>
+    <FlatList
+      data={func.convertObjectToArray(content)}
+      renderItem={renderContent}
+    />
   );
 };
 
@@ -107,6 +123,19 @@ EditDelete.defaultProps = {
 };
 
 export default EditDelete;
+// export const chosenCardsNum = numChosenCards;
+
+/*
+const content = {
+  'dajfid': { 内容1 }
+  'djaofjdia': { 内容2 }
+}
+
+[
+  {key: 'dajfid', value: `{ 内容1 }' }
+]
+
+*/
 
 /* renderCheckBox =() => {
   const { checked } = this.state;

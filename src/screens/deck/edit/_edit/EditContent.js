@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, LayoutAnimation, FlatList,
+  View, StyleSheet, TouchableOpacity, LayoutAnimation, FlatList, SafeAreaView,
 } from 'react-native';
 import { List } from 'react-native-paper';
 import { useSetRecoilState } from 'recoil';
@@ -98,7 +98,7 @@ const EditContent = (props) => {
       }
     };
     return (
-      <View
+      <SafeAreaView
         style={style.box}
         // key={value?.term.toLowerCase()}
       >
@@ -145,7 +145,7 @@ const EditContent = (props) => {
             size={iconSize}
           />
         </TouchableOpacity>
-      </View>
+      </SafeAreaView>
     );
   };
 
