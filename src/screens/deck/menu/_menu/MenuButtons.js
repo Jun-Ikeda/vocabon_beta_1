@@ -53,7 +53,7 @@ const MenuButtons = (props) => {
   const decksGeneralState = useRecoilValue(decksGeneral);
   // state
   const [visible, setVisible] = useState(false);
-  const [bookmarked, setBookmarked] = useState(account.content[deckID].bookmark);
+  const [bookmarked, setBookmarked] = useState(account.content?.[deckID]?.bookmark);
 
   //
   const deckGeneral = decksGeneralState[deckID];
@@ -62,6 +62,7 @@ const MenuButtons = (props) => {
   const renderColumn = (buttons) => (
     <View style={style.container}>
       {buttons.map((button) => (
+        // <View style={{ flex: 1 }}>
         <TouchableOpacity
           style={[style.button]}
           onPress={button.onPress}
@@ -70,6 +71,7 @@ const MenuButtons = (props) => {
           {button.icon()}
           <Text style={[style.title, button.textStyle]}>{button.title}</Text>
         </TouchableOpacity>
+        // </View>
       ))}
     </View>
   );
@@ -81,6 +83,7 @@ const MenuButtons = (props) => {
         icon: () => <Icon.Feather name="play" size={iconsize} style={style.icon} />,
         onPress: () => navigation.push('options', { deckID }),
         textStyle: {},
+        flex: 1,
       },
       {
         title: 'Property',
@@ -100,6 +103,7 @@ const MenuButtons = (props) => {
           console.log(identifyVisible);
         },
         textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
+        flex: 1,
       },
       {
         title: 'Edit',
@@ -114,10 +118,11 @@ const MenuButtons = (props) => {
           if (identifyVisible) {
             navigation.navigate('edit', { deckID });
           } else {
-            func.alert('You cannot change the edit of this deck.');
+            func.alert('You cannot edit this deck.');
           }
         },
         textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
+        flex: 1,
       },
       {
         title: visible ? 'Close' : 'More',
@@ -135,6 +140,7 @@ const MenuButtons = (props) => {
           // console.log('hi');
         },
         textStyle: {},
+        flex: 1,
       },
     ];
     return renderColumn(buttons);
@@ -154,24 +160,28 @@ const MenuButtons = (props) => {
           ),
           onPress: () => setBookmarked(!bookmarked),
           textStyle: {},
+          flex: 1,
         },
         {
           title: 'Duplicate',
           icon: () => <Icon.Feather name="copy" size={iconsize} style={style.icon} />,
           onPress: () => func.alert('duplicate'),
           textStyle: {},
+          flex: 1,
         },
         {
           title: 'Import',
           icon: () => <Icon.Feather name="download" size={iconsize} style={style.icon} />,
           onPress: () => func.alert('import'),
           textStyle: {},
+          flex: 1,
         },
         {
           title: 'Export',
           icon: () => <Icon.Feather name="upload" size={iconsize} style={style.icon} />,
-          onPress: () => navigation.navigate('export'),
+          onPress: () => navigation.navigate('export', { deckID }),
           textStyle: {},
+          flex: 1,
         },
       ],
       [
@@ -180,24 +190,28 @@ const MenuButtons = (props) => {
           icon: () => <Icon.Entypo name="share" size={iconsize} style={style.icon} />,
           onPress: () => func.alert('share'),
           textStyle: {},
+          flex: 1,
         },
-        {
-          title: 'Test',
-          icon: () => <Icon.AntDesign name="checkcircleo" size={iconsize} style={style.icon} />,
-          onPress: () => func.alert('test'),
-          textStyle: {},
-        },
+        // {
+        //   title: 'Test',
+        //   icon: () => <Icon.AntDesign name="checkcircleo" size={iconsize} style={style.icon} />,
+        //   onPress: () => func.alert('test'),
+        //   textStyle: {},
+        // flex: 1
+        // },
         {
           title: 'Analyze',
           icon: () => <Icon.Entypo name="line-graph" size={iconsize} style={style.icon} />,
           onPress: () => navigation.navigate('analyze', { deckID }),
           textStyle: {},
+          flex: 1,
         },
         {
           title: 'Delete',
           icon: () => <Icon.FontAwesome name="trash" size={iconsize} style={[style.icon, { color: Color.cud.pink }]} />,
           onPress: () => func.alert('Are you sure to delete this deck?'),
           textStyle: { color: Color.cud.pink },
+          flex: 2,
         },
       ],
     ];

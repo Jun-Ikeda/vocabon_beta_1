@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { users } from '../../../config/user/User';
+import { func } from '../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -35,6 +36,7 @@ const ProfileIcon = (props) => {
   const circle = {
     height: size, width: size, borderRadius: size / 2,
   };
+  const isButton = !(onPress.toString() === 'function onPress() {}');
 
   const renderColorIcon = () => (
     <View style={[circle, style.color, { backgroundColor: color || general?.icon.color }]}>
@@ -68,7 +70,7 @@ const ProfileIcon = (props) => {
   // } catch (error) {
   //   return renderTouchable();
   // }
-  return renderTouchable();
+  return isButton ? renderTouchable() : renderUnTouchable();
 };
 
 // (general?.icon.uri === undefined) ? renderColorIcon() : renderImageIcon()
@@ -82,7 +84,7 @@ ProfileIcon.propTypes = {
 
 ProfileIcon.defaultProps = {
   // message: {},
-  onPress: () => { throw new Error('the function is null'); },
+  onPress: () => {},
   size: 54,
   style: {},
 };

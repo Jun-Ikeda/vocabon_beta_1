@@ -11,6 +11,7 @@ const style = StyleSheet.create({
   },
   label: {
     flex: 1,
+    alignSelf: 'center',
   },
   labelText: {
     fontSize: 15,
@@ -84,10 +85,12 @@ const EditHelp = (props) => {
         </View>
         <View style={style.desc}>
           <Text style={style.descText}>
-            {`English: ${item.descEn}`}
+            {/* {`English: ${item.descEn}`} */}
+            {item.descEn}
           </Text>
           <Text style={style.descText}>
-            {`Japanese: ${item.descJp}`}
+            {/* {`Japanese: ${item.descJp}`} */}
+            {item.descJp}
           </Text>
         </View>
       </View>

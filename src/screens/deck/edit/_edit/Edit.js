@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, StyleSheet,
 } from 'react-native';
@@ -58,6 +58,11 @@ export const helpVisibleState = atom({
   default: false,
 });
 
+export const contentState = atom({
+  key: 'contentState',
+  default: {},
+});
+
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -72,7 +77,17 @@ const style = StyleSheet.create({
     color: Color.white3,
     flex: 1,
   },
-  menuview: {
+  // menuview: {
+  //   position: 'absolute',
+  //   top: '10%',
+  //   bottom: '10%',
+  //   left: '5%',
+  //   right: '5%',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   backgroundColor: 'powderblue',
+  // },
+  popview: {
     position: 'absolute',
     top: '10%',
     bottom: '10%',
@@ -80,9 +95,7 @@ const style = StyleSheet.create({
     right: '5%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'powderblue',
-  },
-  popview: {
+    // backgroundColor: 'powderblue',
     backgroundColor: Color.white1,
     paddingTop: 6,
     paddingHorizontal: 15,
@@ -108,14 +121,18 @@ const Edit = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
   // recoil
   // const generals = useRecoilValue(decksGeneral);
-  const [helpVisible, setHelpVisible] = useRecoilState(helpVisibleState);
+  const [helpVisible, setHelpVisible] = useState(false);
   // state
-  const [content, setContent] = useState(decksContent[deckID]);
-  // const content = decksContent[deckID];
+  const [content, setContent] = useRecoilState(contentState);
   const [deleteVisible, setDeleteVisible] = useState(false);
+  const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [editVisible, setEditVisible] = useState(false);
   // const [helpVisible, setHelpVisible] = useState(false);
   const [layout, setLayout] = useState({ height: 300, width: 300 });
+
+  useEffect(() => {
+    setContent(decksContent[deckID]);
+  }, []);
 
   const renderDeleteView = () => <EditDelete content={content} />;
 
@@ -130,16 +147,25 @@ const Edit = (props) => {
 
   const renderPopUp = () => {
     const renderMenuView = () => (
+      // <View
+      //   style={style.menuview}
+      //   onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+      // >
+      //   <View style={style.popview}>
+      //     <EditPopUp
+      //       width={layout.width}
+      //       setVisible={setEditVisible}
+      //     />
+      //   </View>
+      // </View>
       <View
-        style={style.menuview}
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+        style={style.popview}
       >
-        <View style={style.popview}>
-          <EditPopUp
-            width={layout.width}
-            setVisible={setEditVisible}
-          />
-        </View>
+        <EditPopUp
+          width={layout.width}
+          setVisible={setEditVisible}
+        />
       </View>
     );
     return (
@@ -155,16 +181,25 @@ const Edit = (props) => {
 
   const renderHelpPopUp = () => {
     const renderHelpView = () => (
+      // <View
+      //   style={style.menuview}
+      //   onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+      // >
+      //   <View style={style.popview}>
+      //     <EditHelp
+      //       width={layout.width}
+      //       setVisible={setHelpVisible}
+      //     />
+      //   </View>
+      // </View>
       <View
-        style={style.menuview}
+        style={style.popview}
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
-        <View style={style.popview}>
-          <EditHelp
-            width={layout.width}
-            setVisible={setHelpVisible}
-          />
-        </View>
+        <EditHelp
+          width={layout.width}
+          setVisible={setHelpVisible}
+        />
       </View>
     );
     return (
@@ -183,7 +218,11 @@ const Edit = (props) => {
       <View style={{ flex: 1 }}>
         <EditButtons
           deleteVisible={deleteVisible}
-          setVisible={setDeleteVisible}
+          setDeleteVisible={setDeleteVisible}
+          searchButtonVisible={searchButtonVisible}
+          setSearchButtonVisible={setSearchButtonVisible}
+          helpVisible={helpVisible}
+          setHelpVisible={setHelpVisible}
         />
         {deleteVisible ? renderDeleteView() : renderBasicView()}
       </View>

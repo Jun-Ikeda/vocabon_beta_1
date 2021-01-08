@@ -1,4 +1,5 @@
 import { account } from '../../src/config/account/Account';
+import { func } from '../../src/config/Const';
 import { decksContent, decksGeneral } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import { users } from '../../src/config/user/User';
@@ -29,10 +30,7 @@ const Button = [
   },
   {
     title: 'Time',
-    onPress: () => {
-      const date = new Date();
-      return { unix: date.getTime() };
-    },
+    onPress: () => ({ UCT: func.getUTCDate() }),
   },
   {
     title: 'Unsplash',

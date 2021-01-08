@@ -1,9 +1,10 @@
 /* eslint-disable react-native/no-unused-styles */
 import React from 'react';
+import { useState } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, TextInput,
 } from 'react-native';
-import { atom, useRecoilState } from 'recoil';
+import { atom, useRecoilState, useSetRecoilState } from 'recoil';
 import Icon from '../../../../components/Icon';
 
 export const searchTextState = atom({
@@ -50,15 +51,20 @@ const style = StyleSheet.create({
  * ```
  */
 const SearchBar = (props) => {
+  // state
+  const [searchText, setSearchText] = useState('');
   // recoil
-  const [searchText, setSearchText] = useRecoilState(searchTextState);
+  const setRecoilSearchText = useSetRecoilState(searchTextState);
 
   const renderTextInput = () => (
     <View style={style.textinputContainer}>
       <TextInput
         style={style.textinput}
         value={searchText}
-        onChangeText={setSearchText}
+        onChangeText={(text) => {
+          setSearchText(text);
+          setRecoilSearchText(text);
+        }}
         maxLength={100}
       />
     </View>

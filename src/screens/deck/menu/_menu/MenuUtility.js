@@ -78,7 +78,7 @@ const MenuUtility = (props) => {
   );
 
   const renderIcon = () => (
-    <ProfileIcon userID={user} size={45} onPress={() => alert('aiueo')} />
+    <ProfileIcon userID={user} size={45} />
     // <Image
     //   source={{ uri: 'https://kyoiku.yomiuri.co.jp/MOT_9160.jpg' }}
     //   style={styles.icon}

@@ -8,8 +8,8 @@ export const header = {
   mainHeaderStyles: StyleSheet.create({
     headerStyle: {
       height: 120,
-      // backgroundColor: 'transparent',
-      // elevation: 0,
+      backgroundColor: 'transparent',
+      elevation: 0,
     },
     headerTitleStyle: {
       fontSize: 22,
@@ -58,7 +58,7 @@ export const func = {
     return null;
   },
   alertConsole: (object) => {
-    const string = JSON.stringify(object);
+    const string = JSON.stringify(object, null, 2);
     console.log(object);
     if (Platform.OS === 'web') {
       alert('copied');
@@ -71,12 +71,17 @@ export const func = {
       );
     }
   },
-  alert: (string, description = '', buttons = []) => {
+  alert: (string, description = null, buttons = null) => {
     if (Platform.OS === 'web') {
       alert(string);
     } else {
       Alert.alert(string, description, buttons);
     }
+  },
+  getUTCDate: () => {
+    const date = new Date();
+    const time = date.getUTCFullYear() + (`00${date.getUTCMonth() + 1}`).slice(-2) + (`00${date.getUTCDate()}`).slice(-2);
+    return time;
   },
 };
 

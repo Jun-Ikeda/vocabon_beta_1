@@ -33,7 +33,8 @@
     "react-native-web": "~0.13.12",
     "recoil": "^0.1.2",
     "unsplash-js": "^6.3.0",
-    "expo-clipboard": "~1.0.1"
+    "expo-clipboard": "~1.0.1",
+    "expo-blur": "~8.2.2"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

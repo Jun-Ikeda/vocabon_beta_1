@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text,
+  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text, TextInput,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {
@@ -10,7 +10,7 @@ import {
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
-import { numChosenCardsState } from './EditDelete';
+import { checkedIndexState } from './EditDelete';
 import { helpVisibleState } from './Edit';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import EditHelp from './EditHelp';
@@ -21,10 +21,16 @@ const style = StyleSheet.create({
   container: {
     // flex: 1,
     justifyContent: 'flex-end',
-    // backgroundColor: 'red',
     flexDirection: 'row',
     height: 60,
     paddingHorizontal: 20,
+  },
+  separateContainer: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    height: 60,
+    paddingHorizontal: 20,
+    borderWidth: 1,
   },
   button: {
     width: 60,
@@ -38,51 +44,56 @@ const style = StyleSheet.create({
   },
   textintrashbin: {
     fontSize: 12,
-    // fontWeight: 'bold',
+    color: Color.white1,
+  },
+  counterview: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: Color.cud.red,
     position: 'absolute',
     right: 10,
-    bottom: 15,
-    width: 15,
-    height: 15,
-    borderRadius: 50,
+    top: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    // borderWidth: 1,
-    color: Color.white1,
-    backgroundColor: Color.cud.red,
+  },
+  textinput: {
+    height: 30,
+    lineHeight: 30,
+    fontSize: 18,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    width: 180,
+    paddingLeft: 10,
+    // marginRight: 20,
+  },
+  textinputview: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'yellow',
+    // ...StyleSheet.absoluteFillObject,
+
   },
 });
 
-/**
- * EditButtons Component in Edit Screen
- * @augments {Component<Props, State>}
- * Usage :
- * ```js
- * <EditButtons
- *    setState={(state) => this.setState(state)}
- *    deleteVisible={true}
- * />
- * props: { setState, deleteVisible }
- * recoil: {}
- * state: {}
- *
- * ```
- */
 const EditButtons = (props) => {
   // props
-  const { setVisible, deleteVisible } = props;
+  const {
+    setDeleteVisible, deleteVisible, helpVisible, setHelpVisible, searchButtonVisible,
+    setSearchButtonVisible,
+  } = props;
   // recoil
-  const numChosenCards = useRecoilValue(numChosenCardsState);
-  const [helpVisible, setHelpVisible] = useRecoilState(helpVisibleState);
+  const [checkedIndex, setCheckedIndex] = useRecoilState(checkedIndexState);
   // state
+  const [searchText, setSearchText] = useState('');
   const [layout, setLayout] = useState({ height: 300, width: 300 });
 
   const renderCounter = () => {
-    if (deleteVisible === true) {
+    if (deleteVisible === true && checkedIndex.length !== 0) {
       return (
-        <View>
+        <View style={style.counterview}>
           <Text style={style.textintrashbin}>
-            {numChosenCards}
+            {checkedIndex.length}
           </Text>
         </View>
       );
@@ -90,15 +101,44 @@ const EditButtons = (props) => {
     return (null);
   };
 
+  const renderSearchButton = () => (
+    <TouchableOpacity
+      style={style.button}
+      onPress={() => setSearchButtonVisible(false)}
+    >
+      <Icon.Feather name="search" size={iconSize} />
+    </TouchableOpacity>
+  );
+
+  const renderSearchTab = () => (
+    <View style={style.textinputview}>
+      <TextInput
+        value={searchText}
+        onChangeText={setSearchText}
+        style={style.textinput}
+        mode="outlined"
+      />
+    </View>
+  );
+
+  const renderSearch = () => {
+    if (searchButtonVisible) {
+      return renderSearchButton();
+    }
+    return renderSearchTab();
+  };
+
   const renderTrashBin = () => (
     <TouchableOpacity
       style={style.button}
       onPress={() => {
         if (deleteVisible === false) {
-          setVisible(!deleteVisible);
-        } else {
-          const stringToAlert = `Are you sure you delete the ${numChosenCards} cards you chose? (You cannot undo)`;
+          setDeleteVisible(!deleteVisible);
+        } else if (checkedIndex.length !== 0) {
+          const stringToAlert = `Are you sure you delete the ${checkedIndex.length} cards you chose? (You cannot undo)`;
           alert(stringToAlert);
+        } else {
+          alert(':V');
         }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       }}
@@ -108,9 +148,6 @@ const EditButtons = (props) => {
         size={iconSize}
         style={{ color: deleteVisible ? Color.cud.red : Color.black }}
       />
-      {/* <Text style={style.textintrashbin}>
-        {numChosenCards}
-      </Text> */}
       {renderCounter()}
     </TouchableOpacity>
   );
@@ -120,44 +157,29 @@ const EditButtons = (props) => {
       return (
         <TouchableOpacity
           style={style.button}
-          onPress={() => {
-            setHelpVisible(!helpVisible);
-          }}
+          onPress={() => setHelpVisible(!helpVisible)}
         >
-          <Icon.Feather
-            name="help-circle"
-            size={iconSize}
-          />
+          <Icon.Feather name="help-circle" size={iconSize} />
         </TouchableOpacity>
       );
     }
     return null;
   };
 
-  // const renderHelpPopUp = () => {
-  //   const renderHelpView = () => (
-  //     <View
-  //       style={style.menuview}
-  //       onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-  //     >
-  //       <View style={style.popview}>
-  //         <EditHelp
-  //           width={layout.width}
-  //           setVisible={setHelpVisible}
-  //         />
-  //       </View>
-  //     </View>
-  //   );
-  //   return (
-  //     <PopUpMenu
-  //       isVisible={helpVisible}
-  //       setVisible={setHelpVisible}
-  //       renderMenu={renderHelpView}
-  //       overlayStyle={style.overlayStyle}
-  //       onPress={() => setHelpVisible(false)}
-  //     />
-  //   );
-  // };
+  const renderCancelButton = () => {
+    if (deleteVisible === true) {
+      return (
+        <TouchableOpacity
+          style={style.button}
+          onPress={() => setCheckedIndex([])}
+        >
+          <Icon.Feather name="x" size={iconSize} />
+        </TouchableOpacity>
+
+      );
+    }
+    return (null);
+  };
 
   const renderBackButton = () => {
     if (deleteVisible === true) {
@@ -165,11 +187,11 @@ const EditButtons = (props) => {
         <TouchableOpacity
           style={style.button}
           onPress={() => {
-            setVisible(!deleteVisible);
+            setDeleteVisible(!deleteVisible);
           }}
         >
-          <Icon.Feather
-            name="x-circle"
+          <Icon.AntDesign
+            name="back"
             size={iconSize}
           />
         </TouchableOpacity>
@@ -179,24 +201,43 @@ const EditButtons = (props) => {
   };
 
   return (
+    // <View style={style.container}>
+    //   <View style={style.separateContainer}>
+    //     {renderSearch()}
+    //   </View>
+    //   <View style={style.separateContainer}>
+    //     {renderCancelButton()}
+    //     {renderBackButton()}
+    //     {renderHelp()}
+    //     {renderTrashBin()}
+    //   </View>
+    // </View>
     <View style={style.container}>
+      {renderSearch()}
+      {renderCancelButton()}
       {renderBackButton()}
       {renderHelp()}
       {renderTrashBin()}
-      {/* {renderHelpPopUp()} */}
     </View>
   );
 };
 
 EditButtons.propTypes = {
-  setVisible: PropTypes.func,
+  setDeleteVisible: PropTypes.func,
   deleteVisible: PropTypes.bool,
+  setHelpVisible: PropTypes.func,
+  helpVisible: PropTypes.bool,
+  setSearchButtonVisible: PropTypes.func,
+  searchButtonVisible: PropTypes.bool,
 };
 
 EditButtons.defaultProps = {
-  setVisible: () => {},
+  setDeleteVisible: () => {},
   deleteVisible: false,
-  // backVisible: false,
+  setHelpVisible: () => {},
+  helpVisible: false,
+  setSearchButtonVisible: () => {},
+  searchButtonVisible: false,
 };
 
 export default EditButtons;

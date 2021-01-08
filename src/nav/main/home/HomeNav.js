@@ -1,5 +1,9 @@
 import React from 'react';
+import {
+  View, StatusBar, Text, Platform,
+} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { BlurView } from 'expo-blur';
 
 import Color from '../../../config/Color';
 
@@ -46,7 +50,27 @@ const HomeNav = () => (
             onPress={() => navigation.navigate('account')}
           />
         ),
-        headerTransparent: true,
+        // headerTransparent: true,
+        // header: () => (
+        //   <View>
+        //     <BlurView
+        //       style={{
+        //         height: 120/*  + (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight) */,
+        //         paddingTop: (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight),
+        //         flexDirection: 'row',
+        //       }}
+        //       intensity={100}
+        //     >
+        //       <Text style={{
+        //         fontSize: 22, alignSelf: 'center', /* borderWidth: 1, */ paddingLeft: 20, fontWeight: 'bold',
+        //       }}
+        //       >
+        //         Home
+        //       </Text>
+        //       <View style={{ flex: 1 }} />
+        //     </BlurView>
+        //   </View>
+        // ),
       })}
     />
     <Stack.Screen

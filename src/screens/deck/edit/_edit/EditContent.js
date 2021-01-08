@@ -98,10 +98,7 @@ const EditContent = (props) => {
       }
     };
     return (
-      <SafeAreaView
-        style={style.box}
-        // key={value?.term.toLowerCase()}
-      >
+      <SafeAreaView style={style.box}>
         <List.Accordion
           expanded={isExpanded}
           onPress={toggleExpand}
@@ -122,11 +119,11 @@ const EditContent = (props) => {
           <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(value?.sufix)}`} />
           <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(value?.exampleT)}`} />
           <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(value?.exampleD)}`} />
-          <List.Item style={style.listItemLast} title={`Cf: ${deck.formatArrayContent(value?.cf)}`} />
+          <List.Item style={style.listItemLast} title={`cf: ${deck.formatArrayContent(value?.cf)}`} />
         </List.Accordion>
         <TouchableOpacity
           onPress={async () => {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); // Android, iOSでのみ見える簡易アニメーション setStateで突然変わるところをアニメーションにできる
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             await setTerm(deck.formatArrayContent(value?.term));
             await setDefinition(deck.formatArrayContent(value?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
             await setSynonym(deck.formatArrayContent(value?.synonym));

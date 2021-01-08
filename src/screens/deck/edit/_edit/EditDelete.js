@@ -14,9 +14,14 @@ import { deck, func } from '../../../../config/Const';
 const backgroundColor = Color.white1;
 const iconSize = 20;
 
-export const numChosenCardsState = atom({
-  key: 'numChosenCards',
-  default: 0,
+// export const numChosenCardsState = atom({
+//   key: 'numChosenCards',
+//   default: 0,
+// });
+
+export const checkedIndexState = atom({
+  key: 'checkedIndexState',
+  default: [],
 });
 
 const style = StyleSheet.create({
@@ -54,8 +59,8 @@ const style = StyleSheet.create({
 
 const EditDelete = (props) => {
   const { content } = props;
-  const [checkedIndex, setCheckedIndex] = useState([]);
-  const setNumChosenCards = useSetRecoilState(numChosenCardsState);
+  const [checkedIndex, setCheckedIndex] = useRecoilState(checkedIndexState);
+  // const setNumChosenCards = useSetRecoilState(numChosenCardsState);
 
   const renderContent = ({ item, index }) => {
     const { key, value } = item;
@@ -64,11 +69,11 @@ const EditDelete = (props) => {
         let newcheckedIndex = [];
         newcheckedIndex = checkedIndex.filter((_index) => _index !== index);
         setCheckedIndex(newcheckedIndex);
-        setNumChosenCards(newcheckedIndex.length);
+        // setNumChosenCards(newcheckedIndex.length);
       } else {
         // checkedIndex.push(index);
         // newcheckedIndex = checkedIndex;
-        setNumChosenCards(checkedIndex.length + 1);
+        // setNumChosenCards(checkedIndex.length + 1);
         setCheckedIndex([...checkedIndex, index]);
       }
     };
@@ -115,11 +120,11 @@ const EditDelete = (props) => {
 };
 
 EditDelete.propTypes = {
-  content: PropTypes.array,
+  content: PropTypes.object,
 };
 
 EditDelete.defaultProps = {
-  content: [],
+  content: {},
 };
 
 export default EditDelete;

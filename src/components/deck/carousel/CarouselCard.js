@@ -50,6 +50,7 @@ const CarouselCard = (props) => {
   const decksGeneralState = useRecoilValue(decksGeneral);
   //
   const deckGeneral = decksGeneralState[deckID];
+  const accountContent = account.content?.[deckID] ?? { marks: {}, play: [], bookmark: false };
 
   const renderBackgroundImage = () => (
     <View style={cardStyle}>
@@ -62,7 +63,7 @@ const CarouselCard = (props) => {
     </View>
   );
 
-  const renderBookmarkIcon = () => (account.content[deckID].bookmark ? (
+  const renderBookmarkIcon = () => (accountContent.bookmark ? (
     <View style={{ position: 'absolute' }}>
       <View style={{
         position: 'absolute',

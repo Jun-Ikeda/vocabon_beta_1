@@ -84,17 +84,38 @@ const Options = (props) => {
         setStateMin: setAntonymsMin,
         setStateMax: setAntonymsMax,
       },
+      {
+        title: 'Antonyms',
+        range: [0, AntonymsMax],
+        valueMin: antonymsMin,
+        valueMax: antonymsMax,
+        setStateMin: setAntonymsMin,
+        setStateMax: setAntonymsMax,
+      },
+      {
+        title: 'Antonyms',
+        range: [0, AntonymsMax],
+        valueMin: antonymsMin,
+        valueMax: antonymsMax,
+        setStateMin: setAntonymsMin,
+        setStateMax: setAntonymsMax,
+      },
     ];
     if (mode === 'custom') {
       return (
-        <ScrollView>
-          <Text>Sort by ...</Text>
+        <ScrollView style={{ flex: 1, marginVertical: 20 }}>
+          <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by ...</Text>
           {items.map((item) => (
             <View key={item.title.toLowerCase()}>
-              <Text style={{ justifyContent: 'center', padding: 30 }}>{item.title}</Text>
+              <Text style={{
+                justifyContent: 'center', padding: 20, paddingBottom: 10, fontSize: 20,
+              }}
+              >
+                {item.title}
+              </Text>
               <View style={{ flexDirection: 'row' }}>
                 <View style={style.counterBox}>
-                  <Text style={{ justifyContent: 'center', padding: 30 }}>Min</Text>
+                  <Text style={{ justifyContent: 'center', padding: 20, fontSize: 20 }}>Min</Text>
                   <NumericInput
                     type="plus-minus"
                     value={item.valueMin}
@@ -104,10 +125,11 @@ const Options = (props) => {
                     rounded
                     rightButtonBackgroundColor={Color.defaultBackground}
                     leftButtonBackgroundColor={Color.defaultBackground}
+                    totalHeight={60}
                   />
                 </View>
                 <View style={style.counterBox}>
-                  <Text style={{ padding: 30 }}>Max</Text>
+                  <Text style={{ padding: 20, fontSize: 20 }}>Max</Text>
                   <NumericInput
                     type="plus-minus"
                     value={item.valueMax}
@@ -117,6 +139,7 @@ const Options = (props) => {
                     rounded
                     rightButtonBackgroundColor={Color.defaultBackground}
                     leftButtonBackgroundColor={Color.defaultBackground}
+                    totalHeight={60}
                   />
                 </View>
               </View>
@@ -137,29 +160,29 @@ const Options = (props) => {
         <RadioButton value="default" style={{ right: 0, left: 0 }} />
         <Text style={{ fontSize: 20, alignSelf: 'center' }}>Default</Text>
       </View>
-      <View>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <RadioButton value="custom" style={{ right: 0, left: 0 }} />
-          <Text style={{ fontSize: 20, alignSelf: 'center' }}>Custom</Text>
-        </View>
-        {renderCustomSettings()}
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <RadioButton value="custom" style={{ right: 0, left: 0 }} />
+        <Text style={{ fontSize: 20, alignSelf: 'center' }}>Custom</Text>
       </View>
     </RadioButton.Group>
   );
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+      <View style={{ /* backgroundColor: 'blue' */ }}>
         {renderRadioButtons()}
       </View>
-      <Button
-        color={Color.green2}
-        style={{ margin: 30 }}
-        mode="contained"
-        onPress={() => navigation.navigate('play', { deckID })}
-      >
-        Start
-      </Button>
+      {renderCustomSettings()}
+      {/* <View style={{  backgroundColor: 'green' }}>
+        <Button
+          color={Color.green2}
+          style={{ margin: 15 }}
+          mode="contained"
+          onPress={() => navigation.navigate('play', { deckID })}
+        >
+          Start
+        </Button>
+      </View> */}
     </View>
   );
 };

@@ -4,7 +4,6 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Button,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -15,6 +14,7 @@ import AddButton from './AddButton';
 import Carousel from '../../../../components/deck/carousel/Carousel';
 import { decksGeneral } from '../../../../config/deck/Deck';
 import { account } from '../../../../config/account/Account';
+// import { header } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -24,7 +24,7 @@ const style = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
-    // paddingTop: 120,
+    // paddingTop: header.mainHeaderStyles.headerStyle.height + (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight),
   },
 });
 
@@ -47,7 +47,7 @@ const Home = (props) => {
 
   const allDeckIDs = Object.keys(generals);
   const myDeckIDs = allDeckIDs.filter((deckID) => generals[deckID].user === account.general.userID);
-  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => account.content[deckID].bookmark);
+  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => account.content?.[deckID]?.bookmark ?? false);
 
   const renderRow = ({ title, deckIDs }) => (
     <View>
