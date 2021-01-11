@@ -67,7 +67,7 @@ const VocabList = (props) => {
     );
     if (isButton) {
       return (
-        <TouchableOpacity style={[style.cardContainer, cardContainer]} onPress={() => onPressCard(item)}>
+        <TouchableOpacity style={[style.cardContainer, cardContainer]} onPress={() => onPressCard(vocab)}>
           {renderContent()}
         </TouchableOpacity>
       );

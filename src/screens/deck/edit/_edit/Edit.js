@@ -8,8 +8,8 @@ import { atom, RecoilRoot, useRecoilState } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 
+import EditList from './EditList';
 import EditContent from './EditContent';
-import EditPopUp from './EditPopUp';
 import EditButtons from './EditButtons';
 import EditDelete from './EditDelete';
 import EditHelp from './EditHelp';
@@ -77,16 +77,6 @@ const style = StyleSheet.create({
     color: Color.white3,
     flex: 1,
   },
-  // menuview: {
-  //   position: 'absolute',
-  //   top: '10%',
-  //   bottom: '10%',
-  //   left: '5%',
-  //   right: '5%',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   backgroundColor: 'powderblue',
-  // },
   popview: {
     position: 'absolute',
     top: '10%',
@@ -95,11 +85,11 @@ const style = StyleSheet.create({
     right: '5%',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'powderblue',
-    backgroundColor: Color.white1,
-    paddingTop: 6,
-    paddingHorizontal: 15,
-    paddingBottom: 10,
+    // backgroundColor: Color.white1,
+    backgroundColor: 'blue',
+    // paddingTop: 6,
+    // paddingHorizontal: 15,
+    // paddingBottom: 10,いらないあとで値が必要もうほかのファイルでmarginでしていした
     borderRadius: 10,
   },
 });
@@ -128,7 +118,7 @@ const Edit = (props) => {
   const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [editVisible, setEditVisible] = useState(false);
   // const [helpVisible, setHelpVisible] = useState(false);
-  const [layout, setLayout] = useState({ height: 300, width: 300 });
+  // const [layout, setLayout] = useState({ height: 300, width: 300 });
 
   useEffect(() => {
     setContent(decksContent[deckID]);
@@ -138,7 +128,7 @@ const Edit = (props) => {
 
   const renderBasicView = () => (
     <View style={style.container}>
-      <EditContent
+      <EditList
         content={content}
         setVisible={setEditVisible}
       />
@@ -147,26 +137,11 @@ const Edit = (props) => {
 
   const renderPopUp = () => {
     const renderMenuView = () => (
-      // <View
-      //   style={style.menuview}
-      //   onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-      // >
-      //   <View style={style.popview}>
-      //     <EditPopUp
-      //       width={layout.width}
-      //       setVisible={setEditVisible}
-      //     />
-      //   </View>
-      // </View>
-      <View
-        onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-        style={style.popview}
-      >
-        <EditPopUp
-          width={layout.width}
-          setVisible={setEditVisible}
-        />
-      </View>
+
+      <EditContent
+        // width={layout.width}
+        setVisible={setEditVisible}
+      />
     );
     return (
       <PopUpMenu
@@ -181,23 +156,12 @@ const Edit = (props) => {
 
   const renderHelpPopUp = () => {
     const renderHelpView = () => (
-      // <View
-      //   style={style.menuview}
-      //   onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-      // >
-      //   <View style={style.popview}>
-      //     <EditHelp
-      //       width={layout.width}
-      //       setVisible={setHelpVisible}
-      //     />
-      //   </View>
-      // </View>
       <View
         style={style.popview}
-        onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+        // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
         <EditHelp
-          width={layout.width}
+          // width={layout.width}
           setVisible={setHelpVisible}
         />
       </View>
@@ -242,158 +206,3 @@ Edit.defaultProps = {
 };
 
 export default Edit;
-
-/* export default class Edit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      deckC: [],
-      editVisible: false,
-      deleteVisible: false,
-      layout: { height: 0, width: 0 }, // layoutの初期値はすぐ
-      term: '',
-      definition: '',
-      antonym: '', // 配列型にする、tagsinpu的な物の導入
-      prefix: '',
-      suffix: '',
-      exampleT: '',
-      exampleD: '',
-      cf: '',
-    };
-  }
-
-  componentDidMount() {
-    this.setState({ deckC: DeckContent[0] });
-  }
-
-  renderPopUp = () => {
-    const { editVisible } = this.state;
-    return (
-      <PopUpMenu
-        isVisible={editVisible}
-        setVisible={(bool) => this.setState({ editVisible: bool })}
-        renderMenu={this.renderMenuView}
-        overlayStyle={style.overlayStyle}
-      />
-    );
-  }
-
-  renderMenuView = () => (
-    <View
-      style={style.menuview}
-      onLayout={(e) => this.setState({ layout: func.onLayoutContainer(e) })}
-    >
-      <View style={style.popview}>
-        {this.renderMenu()}
-      </View>
-    </View>
-  )
-
-  renderMenu = () => {
-    const {
-      layout: { width },
-      term, definition, antonym, prefix, suffix, exampleT, exampleD, cf,
-    } = this.state;
-    return (
-      <EditPopUp
-        term={term}
-        definition={definition}
-        antonym={antonym}
-        prefix={prefix}
-        suffix={suffix}
-        exampleT={exampleT}
-        exampleD={exampleD}
-        cf={cf}
-        setState={(state) => this.setState(state)} // { term: 'apple' }
-        width={width}
-      />
-    );
-  }
-
-  renderMainContents = () => {
-    const {
-      deckC,
-    } = this.state;
-    return (
-      <EditContent
-        deckC={deckC}
-        onPressEditIcon={(content) => this.setState({
-          term: content.term,
-          definition: deck.formatArrayContent(content.definition),
-          antonym: deck.formatArrayContent(content.antonym), // 配列型にする、tagsinpu的な物の導入
-          prefix: deck.formatArrayContent(content.prefix),
-          suffix: deck.formatArrayContent(content.suffix),
-          exampleT: deck.formatArrayContent(content.exampleT),
-          exampleD: deck.formatArrayContent(content.exampleD),
-          cf: deck.formatArrayContent(content.cf),
-        })}
-        setVisible={(bool) => this.setState({ editVisible: bool })}
-      />
-    );
-  }
-
-  renderButtons = () => {
-    const { navigation } = this.props;
-    const { deleteVisible } = this.state;
-    return (
-      <EditButtons
-        navigation={navigation}
-        deleteVisible={deleteVisible}
-        setState={(state) => this.setState(state)}
-      />
-    );
-  }
-
-  renderDeleteView = () => {
-    const { deckC } = this.state;
-    const { navigation } = this.props;
-    return (
-
-      <View style={style.container}>
-        {this.renderButtons()}
-        <EditDelete
-          deckC={deckC}
-        />
-      </View>
-    );
-  }
-
-  renderBasicView = () => {
-    const { navigation } = this.props;
-    return (
-      <View style={style.container}>
-        {this.renderButtons()}
-        <ScrollView style={style.containers}>
-          {this.renderMainContents()}
-        </ScrollView>
-        {this.renderPopUp()}
-      </View>
-    );
-  }
-
-  render() {
-    const { deleteVisible } = this.state;
-    return (
-      deleteVisible ? this.renderDeleteView() : this.renderBasicView()
-    );
-  }
-} */
-
-/*
-<View
-
->onLayout={e=>{
-    const height = e.nativeEvent.layout.height;
-    const width = e.nativeEvent.layout.width
-  }}
-
-              term: content.term,
-              definition: content.definition,
-              antonym: content.antonym, // 配列型にする、tagsinpu的な物の導入
-              prefix: content.prefix,
-              suffix: content.suffix,
-              exampleT: content.exampleT,
-              exampleD: content.exampleD,
-              cf: content.cf,
-</View>
-*/

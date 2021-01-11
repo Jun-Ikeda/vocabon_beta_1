@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React from 'react';
+import { useState } from 'react';
 import {
   Button, TouchableOpacity, View, Text,
 } from 'react-native';
@@ -31,24 +32,26 @@ const Demo = (props) => (
 export default Demo;
 
 const renderVocabList = () => {
+  const [expandIndex, setExpandIndex] = useState([]);
   const id = 'xn>EfhY:2*';
   const accountContent = account.content?.[id] ?? { marks: {}, play: [], bookmark: false };
   return (
     <VocabList
       content={decksContent[id]}
-      // itemVisible={{
-      //   term: true, definition: true, exampleD: true, exampleT: true,
-      // }}
-      // labelVisible
+      itemVisible={{
+        term: true, definition: true, exampleD: true, exampleT: true, synonym: true,
+      }}
+      labelVisible
       // renderCard={({ item }) => <Text>{item.value.term}</Text>}
-      // onPressCard={(vocab) => func.alertConsole(vocab.value.term)}
-      renderCardRight={(vocab) => (
-        <View style={{ padding: 10, backgroundColor: 'skyblue' }}>
-          <Text>{accountContent.marks[vocab.key]}</Text>
-        </View>
-      )}
+      onPressCard={(vocab) => func.alertConsole(vocab.value.term)}
+      // renderCardRight={(vocab) => (
+      //   <View style={{ padding: 10, backgroundColor: 'skyblue' }}>
+      //     <Text>{accountContent.marks[vocab.key].length}</Text>
+      //   </View>
+      // )}
       itemStyle={{
-        term: { fontSize: 22 },
+        term: { color: 'yellow' },
+        synonym: { fontSize: 30 },
       }}
     />
   );

@@ -65,14 +65,10 @@ const style = StyleSheet.create({
     borderRadius: 5,
     width: 180,
     paddingLeft: 10,
-    // marginRight: 20,
   },
   textinputview: {
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'yellow',
-    // ...StyleSheet.absoluteFillObject,
-
   },
 });
 

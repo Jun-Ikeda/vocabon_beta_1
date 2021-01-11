@@ -10,6 +10,7 @@ import { decksState } from '../../../../nav/main/MainNav';
 
 const style = StyleSheet.create({
   itemContainer: {
+    marginHorizontal: 30,
   },
   itemTitleBox: {
     marginVertical: 20,
