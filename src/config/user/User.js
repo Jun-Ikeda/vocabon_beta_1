@@ -12,6 +12,16 @@ export { users };
 
 export default { users /* usersGeneral */ };
 
+export const getUserGeneral = (userID) => {
+  if (Object.keys(users).includes(userID)) {
+    return users[userID];
+  }
+  return {
+    name: '',
+    icon: { uri: '' },
+  };
+};
+
 /*
 users = {
   KgZLhZvgTiTSYJ7VBFbfutjjtUE2: {

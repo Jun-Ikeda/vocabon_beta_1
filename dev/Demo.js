@@ -34,13 +34,15 @@ export default Demo;
 const renderVocabList = () => {
   const [expandIndex, setExpandIndex] = useState([]);
   const id = 'xn>EfhY:2*';
+  const expandVocabIDs = ['qIDjbgc-', 'MdmRNj0Y'];
   const accountContent = account.content?.[id] ?? { marks: {}, play: [], bookmark: false };
   return (
     <VocabList
       content={decksContent[id]}
-      itemVisible={{
-        term: true, definition: true, exampleD: true, exampleT: true, synonym: true,
-      }}
+      // itemVisible={{
+      //   term: true, definition: true, exampleD: true, exampleT: true, synonym: true,
+      // }}
+      itemVisible={(vocab) => ({ term: true, definition: true, synonym: expandVocabIDs.includes(vocab.key) })}
       labelVisible
       // renderCard={({ item }) => <Text>{item.value.term}</Text>}
       onPressCard={(vocab) => func.alertConsole(vocab.value.term)}

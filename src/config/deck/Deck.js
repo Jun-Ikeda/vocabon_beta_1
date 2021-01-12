@@ -12,6 +12,13 @@ export { decksContent }; // globalな普通の変数 静的
 
 export default { decksContent, decksGeneral };
 
+export const getDeckContent = (deckID) => {
+  if (Object.keys(decksContent).includes(deckID)) {
+    return decksContent[deckID];
+  }
+  return {};
+};
+
 /*
 decksContent = {
   '7NCodht%}0': {

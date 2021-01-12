@@ -102,65 +102,30 @@ const EditContent = (props) => {
   const [cf, setCf] = useState('');
 
   useEffect(() => {
+    // visibleになるたびvocabIDからstateを更新
     const vocab = content[vocabID];
-    setTerm(vocab.term);
-    setDefinition(deck.formatArrayContent(vocab.definition));
-    setSynonym(deck.formatArrayContent(vocab.synonym));
-    setAntonym(deck.formatArrayContent(vocab.antonym));
-    setPrefix(deck.formatArrayContent(vocab.prefix));
-    setSuffix(deck.formatArrayContent(vocab.suffix));
-    setExampleT(deck.formatArrayContent(vocab.exampleT));
-    setExampleD(deck.formatArrayContent(vocab.exampleD));
-    setCf(deck.formatArrayContent(vocab.cf));
+    setTerm(vocab?.term);
+    setDefinition(deck.formatArrayContent(vocab?.definition));
+    setSynonym(deck.formatArrayContent(vocab?.synonym));
+    setAntonym(deck.formatArrayContent(vocab?.antonym));
+    setPrefix(deck.formatArrayContent(vocab?.prefix));
+    setSuffix(deck.formatArrayContent(vocab?.suffix));
+    setExampleT(deck.formatArrayContent(vocab?.exampleT));
+    setExampleD(deck.formatArrayContent(vocab?.exampleD));
+    setCf(deck.formatArrayContent(vocab?.cf));
   }, [isVisible]);
 
   const renderTextInputs = () => {
     const items = [
-      {
-        label: 'Term',
-        value: term,
-        setState: setTerm,
-      },
-      {
-        label: 'Definition',
-        value: definition,
-        setState: setDefinition,
-      },
-      {
-        label: 'Synonym',
-        value: synonym,
-        setState: setSynonym,
-      },
-      {
-        label: 'Antonym',
-        value: antonym,
-        setState: setAntonym,
-      },
-      {
-        label: 'Prefix',
-        value: prefix,
-        setState: setPrefix,
-      },
-      {
-        label: 'Suffix',
-        value: suffix,
-        setState: setSuffix,
-      },
-      {
-        label: 'ExampleT',
-        value: exampleT,
-        setState: setExampleT,
-      },
-      {
-        label: 'ExampleD',
-        value: exampleD,
-        setState: setExampleD,
-      },
-      {
-        label: 'cf.',
-        value: cf,
-        setState: setCf,
-      },
+      { label: 'Term', value: term, setState: setTerm },
+      { label: 'Definition', value: definition, setState: setDefinition },
+      { label: 'Synonym', value: synonym, setState: setSynonym },
+      { label: 'Antonym', value: antonym, setState: setAntonym },
+      { label: 'Prefix', value: prefix, setState: setPrefix },
+      { label: 'Suffix', value: suffix, setState: setSuffix },
+      { label: 'ExampleT', value: exampleT, setState: setExampleT },
+      { label: 'ExampleD', value: exampleD, setState: setExampleD },
+      { label: 'cf.', value: cf, setState: setCf },
     ];
     return items.map((item) => (
       <View key={item.label.toLowerCase()}>
@@ -232,14 +197,14 @@ const EditContent = (props) => {
 };
 
 EditContent.propTypes = {
-  vocab: PropTypes.object,
+  vocabID: PropTypes.string,
   isVisible: PropTypes.bool,
   setVisible: PropTypes.func,
 
 };
 
 EditContent.defaultProps = {
-  vocab: {},
+  vocabID: '',
   isVisible: false,
   setVisible: () => {},
 };

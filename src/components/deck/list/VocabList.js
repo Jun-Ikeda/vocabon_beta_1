@@ -43,21 +43,18 @@ const VocabList = (props) => {
   const manuallyRenderCard = !(renderCard.toString() === 'function renderCard() {}');
   const isButton = !(onPressCard.toString() === 'function onPressCard() {}');
 
-  const renderItem = ({ item: vocab, index }) => {
+  const renderItem = ({ item: vocab }) => {
     const { key, value } = vocab;
     const renderContent = () => (
       <View style={style.card}>
         <View style={style.contentContainer}>
           {Object.keys(value).map((item) => {
-            if (itemVisible[item]) {
+            const isVisible = (typeof itemVisible === 'function') ? itemVisible(vocab)[item] : itemVisible[item];
+            if (isVisible) {
               if (labelVisible) {
-                return (
-                  <Text style={[style.text, textStyle, itemStyle[item]]}>{`${item}: ${value[item]}`}</Text>
-                );
+                return <Text style={[style.text, textStyle, itemStyle[item]]}>{`${item}: ${value[item]}`}</Text>;
               }
-              return (
-                <Text style={[style.text, textStyle, itemStyle[item]]}>{value[item]}</Text>
-              );
+              return <Text style={[style.text, textStyle, itemStyle[item]]}>{value[item]}</Text>;
             }
             return null;
           })}
@@ -94,17 +91,20 @@ VocabList.propTypes = {
   renderCard: PropTypes.func,
   onPressCard: PropTypes.func,
   labelVisible: PropTypes.bool,
-  itemVisible: PropTypes.shape({
-    term: PropTypes.bool,
-    definition: PropTypes.bool,
-    synonym: PropTypes.bool,
-    antonym: PropTypes.bool,
-    prefix: PropTypes.bool,
-    suffix: PropTypes.bool,
-    exampleT: PropTypes.bool,
-    exampleD: PropTypes.bool,
-    cf: PropTypes.bool,
-  }),
+  itemVisible: PropTypes.oneOfType([
+    PropTypes.shape({
+      term: PropTypes.bool,
+      definition: PropTypes.bool,
+      synonym: PropTypes.bool,
+      antonym: PropTypes.bool,
+      prefix: PropTypes.bool,
+      suffix: PropTypes.bool,
+      exampleT: PropTypes.bool,
+      exampleD: PropTypes.bool,
+      cf: PropTypes.bool,
+    }),
+    PropTypes.func,
+  ]),
   renderCardRight: PropTypes.func,
   textStyle: PropTypes.object,
   itemStyle: PropTypes.shape({

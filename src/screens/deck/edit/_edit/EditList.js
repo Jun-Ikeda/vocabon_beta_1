@@ -10,17 +10,6 @@ import PropTypes from 'prop-types';
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
 import { deck, func } from '../../../../config/Const';
-import {
-  termState,
-  definitionState,
-  synonymState,
-  antonymState,
-  prefixState,
-  suffixState,
-  exampleTState,
-  exampleDState,
-  cfState,
-} from './Edit';
 
 const backgroundColor = Color.white1;
 const iconSize = 20;
@@ -69,20 +58,8 @@ const EditList = (props) => {
     setVisible,
   } = props;
   // recoil
-  // const setTerm = useSetRecoilState(termState);
-  // const setDefinition = useSetRecoilState(definitionState);
-  // const setSynonym = useSetRecoilState(synonymState);
-  // const setAntonym = useSetRecoilState(antonymState);
-  // const setPrefix = useSetRecoilState(prefixState);
-  // const setSuffix = useSetRecoilState(suffixState);
-  // const setExampleT = useSetRecoilState(exampleTState);
-  // const setExampleD = useSetRecoilState(exampleDState);
-  // const setCf = useSetRecoilState(cfState);
   // state
   const [expandedIndex, setExpandedIndex] = useState([]);
-  //
-
-  // const content = contentProps.filter((_, index) => index < 50);
 
   const renderMainContent = ({ item, index }) => {
     const { key, value } = item;
@@ -124,16 +101,6 @@ const EditList = (props) => {
         <TouchableOpacity
           onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            // await setTerm(deck.formatArrayContent(value?.term));
-            // await setDefinition(deck.formatArrayContent(value?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
-            // await setSynonym(deck.formatArrayContent(value?.synonym));
-            // await setAntonym(deck.formatArrayContent(value?.antonym));
-            // await setPrefix(deck.formatArrayContent(value?.prefix));
-            // await setSuffix(deck.formatArrayContent(value?.suffix));
-            // await setExampleT(deck.formatArrayContent(value?.exampleT));
-            // await setExampleD(deck.formatArrayContent(value?.exampleD));
-            // await setCf(deck.formatArrayContent(value?.cf));
-
             setVisible(true, key);
           }}
           style={style.editButton}
@@ -169,88 +136,3 @@ EditList.defaultProps = {
 };
 
 export default EditList;
-
-/*
-class EditContent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      expandedIndexes: [],
-      checked: false,
-    };
-  }
-
-  renderCheckBox =() => {
-    const { checked } = this.state;
-    return (
-      <View style={style.box}>
-        <CheckBox
-          status={checked ? 'checked' : 'unchecked'}
-          onPress={(bool) =>
-            this.setState({ checked: bool })}
-        />
-      </View>
-    );
-  }
-
-  renderMainContents =() => {
-    const { expandedIndexes } = this.state;
-    const { deckC, onPressEditIcon, setVisible } = this.props;
-    return deckC.map((content, index) => {
-      const toggleExpand = () => {
-        let newExpandedIndexes = [];
-        if (expandedIndexes.includes(index)) {
-          newExpandedIndexes = expandedIndexes.filter((_index) => _index !== index);
-        } else {
-          expandedIndexes.push(index);
-          newExpandedIndexes = expandedIndexes;
-        }
-        this.setState({ expandedIndexes: newExpandedIndexes });
-      };
-      return (
-        <View
-          style={style.box}
-        >
-          <List.Accordion
-            expand={expandedIndexes.includes(index)}
-            onPress={toggleExpand}
-            title={content.term}
-            description={deck.formatArrayContent(content.definition)}
-            titleStyle={style.termanddef}
-            descriptionStyle={style.termanddef}
-            style={[
-              style.list,
-              {
-                borderBottomLeftRadius: expandedIndexes.includes(index) ? 0 : 10,
-                borderBottomRightRadius: expandedIndexes.includes(index) ? 0 : 10,
-              }]}
-          >
-            <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(content.antonym)}`} />
-            <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(content.prefix)}`} />
-            <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(content.sufix)}`} />
-            <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(content.exampleT)}`} />
-            <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(content.exampleD)}`} />
-            <List.Item style={style.listItemLast} title={`Cf: ${deck.formatArrayContent(content.cf)}`} />
-          </List.Accordion>
-          <TouchableOpacity
-            onPress={() => {
-              onPressEditIcon(content);
-              setVisible(true);
-            }}
-            style={style.editButton}
-          >
-            <Icon.Feather
-              name="edit"
-              size={iconSize}
-            />
-          </TouchableOpacity>
-        </View>
-      );
-    });
-  }
-
-  render() {
-    return this.renderMainContents();
-  }
-}
-*/
