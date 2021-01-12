@@ -69,15 +69,15 @@ const EditList = (props) => {
     setVisible,
   } = props;
   // recoil
-  const setTerm = useSetRecoilState(termState);
-  const setDefinition = useSetRecoilState(definitionState);
-  const setSynonym = useSetRecoilState(synonymState);
-  const setAntonym = useSetRecoilState(antonymState);
-  const setPrefix = useSetRecoilState(prefixState);
-  const setSuffix = useSetRecoilState(suffixState);
-  const setExampleT = useSetRecoilState(exampleTState);
-  const setExampleD = useSetRecoilState(exampleDState);
-  const setCf = useSetRecoilState(cfState);
+  // const setTerm = useSetRecoilState(termState);
+  // const setDefinition = useSetRecoilState(definitionState);
+  // const setSynonym = useSetRecoilState(synonymState);
+  // const setAntonym = useSetRecoilState(antonymState);
+  // const setPrefix = useSetRecoilState(prefixState);
+  // const setSuffix = useSetRecoilState(suffixState);
+  // const setExampleT = useSetRecoilState(exampleTState);
+  // const setExampleD = useSetRecoilState(exampleDState);
+  // const setCf = useSetRecoilState(cfState);
   // state
   const [expandedIndex, setExpandedIndex] = useState([]);
   //
@@ -124,16 +124,17 @@ const EditList = (props) => {
         <TouchableOpacity
           onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            await setTerm(deck.formatArrayContent(value?.term));
-            await setDefinition(deck.formatArrayContent(value?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
-            await setSynonym(deck.formatArrayContent(value?.synonym));
-            await setAntonym(deck.formatArrayContent(value?.antonym));
-            await setPrefix(deck.formatArrayContent(value?.prefix));
-            await setSuffix(deck.formatArrayContent(value?.suffix));
-            await setExampleT(deck.formatArrayContent(value?.exampleT));
-            await setExampleD(deck.formatArrayContent(value?.exampleD));
-            await setCf(deck.formatArrayContent(value?.cf));
-            setVisible(true);
+            // await setTerm(deck.formatArrayContent(value?.term));
+            // await setDefinition(deck.formatArrayContent(value?.definition)); // 行数の右にあるコメント機能を使おう１２７に書いてみた
+            // await setSynonym(deck.formatArrayContent(value?.synonym));
+            // await setAntonym(deck.formatArrayContent(value?.antonym));
+            // await setPrefix(deck.formatArrayContent(value?.prefix));
+            // await setSuffix(deck.formatArrayContent(value?.suffix));
+            // await setExampleT(deck.formatArrayContent(value?.exampleT));
+            // await setExampleD(deck.formatArrayContent(value?.exampleD));
+            // await setCf(deck.formatArrayContent(value?.cf));
+
+            setVisible(true, key);
           }}
           style={style.editButton}
         >

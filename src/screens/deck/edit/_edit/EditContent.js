@@ -1,61 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, StyleSheet, ScrollView, TouchableOpacity, Text,
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
 
-import {
-  termState,
-  definitionState,
-  synonymState,
-  antonymState,
-  prefixState,
-  suffixState,
-  exampleTState,
-  exampleDState,
-  cfState,
-} from './Edit';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import Icon from '../../../../components/Icon';
+import { deck } from '../../../../config/Const';
+import { contentState } from './Edit';
 
 const style = StyleSheet.create({
-  menu: {
-    paddingVertical: 3,
-    marginHorizontal: 15,
-    marginTop: 6,
-    width: '100%',
-    // alignItems: 'center',
-    justifyContent: 'center',
+  container: {
+    backgroundColor: Color.white1,
+    marginHorizontal: '5%',
+    marginVertical: '15%',
+    borderRadius: 10,
+  },
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   input: {
-    height: 30,
     lineHeight: 30,
     fontSize: 18,
+    marginVertical: 5,
   },
   button: {
-    // width: 180,
     flex: 1,
-    height: 25,
-    borderRadius: 12,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'center',
     backgroundColor: Color.green2,
-    // marginHorizontal: 10,
-    paddingHorizontal: 15,
   },
-  buttons: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginTop: 20,
-    // marginBottom: 'auto',
-    // backgroundColor: 'red',
+  buttonsContainer: {
+    margin: 10,
   },
-  text: {
+  buttonTitle: {
     fontSize: 16,
     color: Color.white1,
-    // fontWeight: 'bold',
+  },
+  cancelButton: {
+    position: 'absolute',
+    top: -15,
+    right: -15,
+    height: 40,
+    width: 40,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Color.gray3,
+  },
+  cancelButtonIcon: {
+    fontSize: 24,
+    color: Color.gray1,
   },
 });
 
@@ -86,100 +87,79 @@ const style = StyleSheet.create({
 
 const EditContent = (props) => {
   // props
-  const { width, setVisible } = props;
+  const { vocabID, isVisible, setVisible } = props;
   // recoil
-  const [recoilTerm, setRecoilTerm] = useRecoilState(termState);
-  const [term, setTerm] = useState(recoilTerm);
-  const [recoilDefinition, setRecoilDefinition] = useRecoilState(definitionState);
-  const [definition, setDefinition] = useState(recoilDefinition);
-  const [recoilSynonym, setRecoilSynonym] = useRecoilState(synonymState);
-  const [synonym, setSynonym] = useState(recoilSynonym);
-  const [recoilAntonym, setRecoilAntonym] = useRecoilState(antonymState);
-  const [antonym, setAntonym] = useState(recoilAntonym);
-  const [recoilPrefix, setRecoilPrefix] = useRecoilState(prefixState);
-  const [prefix, setPrefix] = useState(recoilPrefix);
-  const [recoilSuffix, setRecoilSuffix] = useRecoilState(suffixState);
-  const [suffix, setSuffix] = useState(recoilSuffix);
-  const [recoilExampleT, setRecoilExampleT] = useRecoilState(exampleTState);
-  const [exampleT, setExampleT] = useState(recoilExampleT);
-  const [recoilExampleD, setRecoilExampleD] = useRecoilState(exampleDState);
-  const [exampleD, setExampleD] = useState(recoilExampleD);
-  const [recoilCf, setRecoilCf] = useRecoilState(cfState);
-  const [cf, setCf] = useState(recoilCf);
+  const [content, setContent] = useRecoilState(contentState);
+  // state
+  const [term, setTerm] = useState('');
+  const [definition, setDefinition] = useState('');
+  const [synonym, setSynonym] = useState('');
+  const [antonym, setAntonym] = useState('');
+  const [prefix, setPrefix] = useState('');
+  const [suffix, setSuffix] = useState('');
+  const [exampleT, setExampleT] = useState('');
+  const [exampleD, setExampleD] = useState('');
+  const [cf, setCf] = useState('');
 
-  const renderMenu = () => {
+  useEffect(() => {
+    const vocab = content[vocabID];
+    setTerm(vocab.term);
+    setDefinition(deck.formatArrayContent(vocab.definition));
+    setSynonym(deck.formatArrayContent(vocab.synonym));
+    setAntonym(deck.formatArrayContent(vocab.antonym));
+    setPrefix(deck.formatArrayContent(vocab.prefix));
+    setSuffix(deck.formatArrayContent(vocab.suffix));
+    setExampleT(deck.formatArrayContent(vocab.exampleT));
+    setExampleD(deck.formatArrayContent(vocab.exampleD));
+    setCf(deck.formatArrayContent(vocab.cf));
+  }, [isVisible]);
+
+  const renderTextInputs = () => {
     const items = [
       {
         label: 'Term',
         value: term,
-        setState: (newTerm) => {
-          setRecoilTerm(newTerm);
-          setTerm(newTerm);
-        },
+        setState: setTerm,
       },
       {
         label: 'Definition',
         value: definition,
-        setState: (newDefinition) => {
-          setRecoilDefinition(newDefinition);
-          setDefinition(newDefinition);
-        },
+        setState: setDefinition,
       },
       {
         label: 'Synonym',
         value: synonym,
-        setState: (newSynonym) => {
-          setRecoilSynonym(newSynonym);
-          setSynonym(newSynonym);
-        },
+        setState: setSynonym,
       },
       {
         label: 'Antonym',
         value: antonym,
-        setState: (newAntonym) => {
-          setRecoilAntonym(newAntonym);
-          setAntonym(newAntonym);
-        },
+        setState: setAntonym,
       },
       {
         label: 'Prefix',
         value: prefix,
-        setState: (newPrefix) => {
-          setRecoilPrefix(newPrefix);
-          setPrefix(newPrefix);
-        },
+        setState: setPrefix,
       },
       {
         label: 'Suffix',
         value: suffix,
-        setState: (newSuffix) => {
-          setRecoilSuffix(newSuffix);
-          setSuffix(newSuffix);
-        },
+        setState: setSuffix,
       },
       {
         label: 'ExampleT',
         value: exampleT,
-        setState: (newExampleT) => {
-          setRecoilExampleT(newExampleT);
-          setExampleT(newExampleT);
-        },
+        setState: setExampleT,
       },
       {
         label: 'ExampleD',
         value: exampleD,
-        setState: (newExampleD) => {
-          setRecoilExampleD(newExampleD);
-          setExampleD(newExampleD);
-        },
+        setState: setExampleD,
       },
       {
         label: 'cf.',
         value: cf,
-        setState: (newCf) => {
-          setRecoilCf(newCf);
-          setCf(newCf);
-        },
+        setState: setCf,
       },
     ];
     return items.map((item) => (
@@ -188,759 +168,80 @@ const EditContent = (props) => {
           label={item.label}
           value={item.value}
           onChangeText={item.setState}
-          style={[style.input, { width: width - 30 }]}
-          // style={style.input}
+          style={style.input}
           mode="outlined"
         />
       </View>
     ));
   };
-  return (
-    <View
-        // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-      style={[style.popview]}
-    >
-      <ScrollView>
-        <View style={style.menu}>
-          {renderMenu()}
-          <View style={style.buttons}>
-            <TouchableOpacity
-              style={[style.button, { marginRight: 40 }]}
-              onPress={() => setVisible(false)}
-            >
-              <Text style={style.text}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[style.button, { marginLeft: 40 }]}
-              onPress={() => {
-                setVisible(false);
-                console.log('saved');
-              }}
-            >
-              <Text style={style.text}>Done</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+
+  const renderSaveButton = () => {
+    const save = () => {
+      setContent((prev) => {
+        const result = JSON.parse(JSON.stringify(prev));
+        result[vocabID] = {
+          term,
+          definition,
+          synonym,
+          antonym,
+          prefix,
+          suffix,
+          exampleT,
+          exampleD,
+          cf,
+        };
+        return result;
+      });
+      setVisible(false);
+    };
+    return (
+      <View style={style.buttonsContainer}>
+        <TouchableOpacity
+          style={style.button}
+          onPress={save}
+        >
+          <Text style={style.buttonTitle}>Save</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderCancelButton = () => (
+    <TouchableOpacity style={style.cancelButton} onPress={() => setVisible(false)}>
+      <Icon.Feather name="x" style={style.cancelButtonIcon} />
+    </TouchableOpacity>
+  );
+
+  const renderMenu = () => (
+    <View style={style.container}>
+      <ScrollView contentContainerStyle={style.contentContainer}>
+        {renderTextInputs()}
+        {renderSaveButton()}
       </ScrollView>
+      {renderCancelButton()}
     </View>
+  );
+
+  return (
+    <PopUpMenu
+      isVisible={isVisible}
+      renderMenu={renderMenu}
+      overlayStyle={style.overlayStyle}
+    />
   );
 };
 
 EditContent.propTypes = {
-  width: PropTypes.number,
+  vocab: PropTypes.object,
+  isVisible: PropTypes.bool,
+  setVisible: PropTypes.func,
 
 };
 
 EditContent.defaultProps = {
-  width: 0,
+  vocab: {},
+  isVisible: false,
+  setVisible: () => {},
 };
 
 export default EditContent;
-
-// class EditContent extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//     };
-//   }
-
-//   renderMenu = () => {
-// const {
-//   term, definition, antonym, prefix, suffix, exampleT, exampleD, cf,
-//   setState, width,
-// } = this.props;
-// const items = [
-//   {
-//     label: 'Term',
-//     value: term,
-//     setState: (newTerm) => setState({ term: newTerm }),
-//   },
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }
-//   {
-//     label: 'Definition',
-//     value: definition,
-//     setState: (newDefinition) => setState({ definition: newDefinition }),
-//   },
-//   {
-//     label: 'Antonym',
-//     value: antonym,
-//     setState: (newAntonym) => setState({ antonym: newAntonym }),
-//   },
-//   {
-//     label: 'Prefix',
-//     value: prefix,
-//     setState: (newPrefix) => setState({ prefix: newPrefix }),
-//   },
-//   {
-//     label: 'Suffix',
-//     value: suffix,
-//     setState: (newSuffix) => setState({ suffix: newSuffix }),
-//   },
-//   {
-//     label: 'ExampleT',
-//     value: exampleT,
-//     setState: (newExampleT) => setState({ exampleT: newExampleT }),
-//   },
-//   {
-//     label: 'ExampleD',
-//     value: exampleD,
-//     setState: (newExampleD) => setState({ exampleD: newExampleD }),
-//   },
-//   {
-//     label: 'cf.',
-//     value: cf,
-//     setState: (newCf) => setState({ cf: newCf }),
-//   },
-// ];
-// return items.map((item) => (
-//   <View style={style.menu}>
-//     <TextInput
-//       label={item.label}
-//       value={item.value}
-//       style={[style.input, { width: width - 30 }]}
-//       mode="outlined"
-//       onChangeText={item.setState}
-//     />
-//   </View>
-// ));
-//   }
-
-//   render() {
-//     return this.renderMenu();
-//   }
-// }

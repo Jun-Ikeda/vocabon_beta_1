@@ -1,21 +1,38 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
+import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
-  content: {
-    flex: 1,
-    position: 'absolute',
-    padding: 10,
+  container: {
     backgroundColor: Color.white1,
-    // alignSelf: 'center',
-    // paddingHorizontal: 10,
-    // backgroundColor: 'blue',
+    marginHorizontal: '5%',
+    marginVertical: '15%',
+    borderRadius: 10,
+  },
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  cancelButton: {
+    position: 'absolute',
+    top: -15,
+    right: -15,
+    height: 40,
+    width: 40,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Color.gray3,
+  },
+  cancelButtonIcon: {
+    fontSize: 24,
+    color: Color.gray1,
   },
   item: {
     flex: 1,
@@ -106,16 +123,27 @@ const EditHelp = (props) => {
     ));
   };
 
+  const renderCancelButton = () => (
+    <TouchableOpacity style={style.cancelButton} onPress={() => setVisible(false)}>
+      <Icon.Feather name="x" style={style.cancelButtonIcon} />
+    </TouchableOpacity>
+  );
+
+  const renderMenu = () => (
+    <View style={style.container}>
+      <ScrollView contentContainerStyle={style.contentContainer}>
+        {renderItems()}
+      </ScrollView>
+      {renderCancelButton()}
+    </View>
+  );
+
   return (
     <PopUpMenu
       isVisible={isVisible}
       setVisible={setVisible}
-      renderMenu={() => (
-        <ScrollView style={[style.content]}>
-          {renderItems()}
-        </ScrollView>
-      )}
-      containerStyle={{ alignItems: 'center', justifyContent: 'center' }}
+      renderMenu={renderMenu}
+      containerStyle={{ /* alignItems: 'center', justifyContent: 'center' */ }}
     />
   );
 };

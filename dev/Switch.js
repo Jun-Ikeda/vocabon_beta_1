@@ -36,7 +36,7 @@ const buttons = [
 
 const Switch = () => {
   // const [visibleIndex, setVisibleIndex] = useState(0);
-  const [visibleIndex, setVisibleIndex] = useState(2);
+  const [visibleIndex, setVisibleIndex] = useState(0);
 
   const renderScreens = () => (
     <View style={style.container}>

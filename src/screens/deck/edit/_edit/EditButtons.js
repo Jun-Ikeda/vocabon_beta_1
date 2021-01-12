@@ -19,7 +19,6 @@ const iconSize = 20;
 
 const style = StyleSheet.create({
   container: {
-    // flex: 1,
     justifyContent: 'flex-end',
     flexDirection: 'row',
     height: 60,
@@ -30,12 +29,18 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     height: 60,
     paddingHorizontal: 20,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   button: {
     width: 60,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  clearbutton: {
+    position: 'absolute',
+    marginLeft: 20,
+    borderWidth: 1,
+    margin: 60,
   },
   trashbutton: {
     width: 60,
@@ -63,12 +68,15 @@ const style = StyleSheet.create({
     fontSize: 18,
     backgroundColor: 'white',
     borderRadius: 5,
-    width: 180,
+    width: '80%',
     paddingLeft: 10,
+    borderWidth: 1,
   },
-  textinputview: {
-    alignItems: 'center',
+  textinputContainer: {
+    borderWidth: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    width: '60%',
   },
 });
 
@@ -84,47 +92,38 @@ const EditButtons = (props) => {
   const [searchText, setSearchText] = useState('');
   const [layout, setLayout] = useState({ height: 300, width: 300 });
 
-  const renderCounter = () => {
-    if (deleteVisible === true && checkedIndex.length !== 0) {
-      return (
-        <View style={style.counterview}>
-          <Text style={style.textintrashbin}>
-            {checkedIndex.length}
-          </Text>
-        </View>
-      );
-    }
-    return (null);
-  };
-
-  const renderSearchButton = () => (
-    <TouchableOpacity
-      style={style.button}
-      onPress={() => setSearchButtonVisible(false)}
-    >
-      <Icon.Feather name="search" size={iconSize} />
-    </TouchableOpacity>
-  );
-
-  const renderSearchTab = () => (
-    <View style={style.textinputview}>
-      <TextInput
-        value={searchText}
-        onChangeText={setSearchText}
-        style={style.textinput}
-        mode="outlined"
-      />
-    </View>
-  );
-
   const renderSearch = () => {
     if (searchButtonVisible) {
-      return renderSearchButton();
+      return (
+        <TouchableOpacity
+          style={style.button}
+          onPress={() => setSearchButtonVisible(false)}
+        >
+          <Icon.Feather name="search" size={iconSize} />
+        </TouchableOpacity>
+      );
     }
-    return renderSearchTab();
+    return (
+      <View>
+        <View style={style.textinputContainer}>
+          <TextInput
+            value={searchText}
+            onChangeText={setSearchText}
+            style={style.textinput}
+            mode="outlined"
+          />
+        </View>
+        <TouchableOpacity
+          style={style.clearbutton}
+          onPress={() => setSearchText('')}
+        >
+          <Icon.Feather name="x" size={iconSize} />
+        </TouchableOpacity>
+      </View>
+    );
   };
 
-  const renderTrashBin = () => (
+  const renderTrashButton = () => (
     <TouchableOpacity
       style={style.button}
       onPress={() => {
@@ -144,11 +143,17 @@ const EditButtons = (props) => {
         size={iconSize}
         style={{ color: deleteVisible ? Color.cud.red : Color.black }}
       />
-      {renderCounter()}
+      {(deleteVisible === true && checkedIndex.length !== 0) ? (
+        <View style={style.counterview}>
+          <Text style={style.textintrashbin}>
+            {checkedIndex.length}
+          </Text>
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 
-  const renderHelp = () => {
+  const renderHelpButton = () => {
     if (deleteVisible === false) {
       return (
         <TouchableOpacity
@@ -197,23 +202,12 @@ const EditButtons = (props) => {
   };
 
   return (
-    // <View style={style.container}>
-    //   <View style={style.separateContainer}>
-    //     {renderSearch()}
-    //   </View>
-    //   <View style={style.separateContainer}>
-    //     {renderCancelButton()}
-    //     {renderBackButton()}
-    //     {renderHelp()}
-    //     {renderTrashBin()}
-    //   </View>
-    // </View>
     <View style={style.container}>
       {renderSearch()}
       {renderCancelButton()}
       {renderBackButton()}
-      {renderHelp()}
-      {renderTrashBin()}
+      {renderHelpButton()}
+      {renderTrashButton()}
     </View>
   );
 };
