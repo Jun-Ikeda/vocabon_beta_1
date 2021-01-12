@@ -3,13 +3,15 @@ import {
   View, StatusBar, Text, Platform,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { BlurView } from 'expo-blur';
+// import { BlurView } from 'expo-blur';
 
 import Color from '../../../config/Color';
 
 // import Menu from '../../../screens/deck/menu/_menu/Menu';
 
 // import Home from './_home/Home';
+import { header } from '../../../config/Const';
+import { account } from '../../../config/account/Account';
 
 import Home from './_home/Home';
 import CreateDeck from './_createdeck/CreateDeck';
@@ -20,9 +22,7 @@ import Play from '../../../screens/deck/play/_play/Play';
 import Results from '../../../screens/deck/play/_results/Results';
 import Edit from '../../../screens/deck/edit/_edit/Edit';
 import Export from '../../../screens/deck/export/_export/Export';
-import { header } from '../../../config/Const';
 import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
-import { account } from '../../../config/account/Account';
 import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
 
 const Stack = createStackNavigator();

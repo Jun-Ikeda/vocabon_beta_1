@@ -67,14 +67,10 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.defaultBackground,
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   containers: {
-    flex: 1,
-  },
-  overlayStyle: {
-    backgroundColor: Color.gray1,
-    opacity: 0.5,
-    color: Color.white3,
     flex: 1,
   },
   popview: {
@@ -108,12 +104,12 @@ const style = StyleSheet.create({
  */
 const Edit = (props) => {
   // props
-  const { navigation, route: { params: { deckID } } } = props;
+  const { /* navigation, */ route: { params: { deckID } } } = props;
   // recoil
-  // const generals = useRecoilValue(decksGeneral);
-  const [helpVisible, setHelpVisible] = useState(false);
-  // state
   const [content, setContent] = useRecoilState(contentState);
+  // const generals = useRecoilValue(decksGeneral);
+  // state
+  const [helpVisible, setHelpVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [editVisible, setEditVisible] = useState(false);
@@ -126,18 +122,15 @@ const Edit = (props) => {
 
   const renderDeleteView = () => <EditDelete content={content} />;
 
-  const renderBasicView = () => (
-    <View style={style.container}>
-      <EditList
-        content={content}
-        setVisible={setEditVisible}
-      />
-    </View>
-  );
+  // const renderBasicView = () => (
+  //   <EditList
+  //     content={content}
+  //     setVisible={setEditVisible}
+  //   />
+  // );
 
-  const renderPopUp = () => {
+  const renderContentPopUp = () => {
     const renderMenuView = () => (
-
       <EditContent
         // width={layout.width}
         setVisible={setEditVisible}
@@ -149,33 +142,17 @@ const Edit = (props) => {
         // setVisible={setEditVisible}
         renderMenu={renderMenuView}
         overlayStyle={style.overlayStyle}
-        onPress={() => {}}
+        // onPress={() => {}}
       />
     );
   };
 
-  const renderHelpPopUp = () => {
-    const renderHelpView = () => (
-      <View
-        style={style.popview}
-        // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-      >
-        <EditHelp
-          // width={layout.width}
-          setVisible={setHelpVisible}
-        />
-      </View>
-    );
-    return (
-      <PopUpMenu
-        isVisible={helpVisible}
-        setVisible={setHelpVisible}
-        renderMenu={renderHelpView}
-        overlayStyle={style.overlayStyle}
-        // onPress={() => setHelpVisible(false)}
-      />
-    );
-  };
+  const renderHelpPopUp = () => (
+    <EditHelp
+      isVisible={helpVisible}
+      setVisible={setHelpVisible}
+    />
+  );
 
   return (
     <View style={style.container}>
@@ -188,16 +165,16 @@ const Edit = (props) => {
           helpVisible={helpVisible}
           setHelpVisible={setHelpVisible}
         />
-        {deleteVisible ? renderDeleteView() : renderBasicView()}
+        {deleteVisible ? renderDeleteView() : null/* renderBasicView() */}
       </View>
-      {renderPopUp()}
+      {/* {renderContentPopUp()} */}
       {renderHelpPopUp()}
     </View>
   );
 };
 
 Edit.propTypes = {
-  navigation: PropTypes.object.isRequired,
+  // navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 

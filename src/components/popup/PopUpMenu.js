@@ -7,8 +7,13 @@ import Color from '../../config/Color';
 
 const style = StyleSheet.create({
   overlay: {
-    flex: 1,
-    backgroundColor: 'teal',
+    backgroundColor: Color.gray1,
+    opacity: 0.5,
+    position: 'absolute',
+    right: 0,
+    left: 0,
+    top: 0,
+    bottom: 0,
   },
   defaultMenu: {
     height: 200,
@@ -20,11 +25,6 @@ const style = StyleSheet.create({
   defaultMenuText: {
     color: Color.white3,
     fontSize: 20,
-  },
-  test: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
-    backgroundColor: 'red',
   },
 });
 
@@ -50,25 +50,25 @@ const PopUpMenu = (props) => {
     overlayStyle,
     setVisible,
     onLayout,
-    onPress,
+    containerStyle,
   } = props;
-
-  const _onPress = () => {
-    try {
-      setVisible(false);
-    } catch (error) {
-      onPress();
-    }
-  };
+  const overlayTouchable = !(setVisible.toString() === 'function setVisible() {}');
 
   if (isVisible) {
     return (
-      <View style={StyleSheet.absoluteFill}>
-        <TouchableOpacity
-          style={[overlayStyle, style.overlay]}
-          onPressIn={_onPress}
-          onLayout={onLayout}
-        />
+      <View style={[StyleSheet.absoluteFill, containerStyle]}>
+        {overlayTouchable ? (
+          <TouchableOpacity
+            style={[overlayStyle, style.overlay]}
+            onLayout={onLayout}
+            onPressIn={() => setVisible(false)}
+          />
+        ) : (
+          <View
+            style={[overlayStyle, style.overlay]}
+            onLayout={onLayout}
+          />
+        )}
         {renderMenu()}
       </View>
     );
@@ -82,6 +82,7 @@ PopUpMenu.propTypes = {
   overlayStyle: PropTypes.object,
   setVisible: PropTypes.func,
   onLayout: PropTypes.func,
+  containerStyle: PropTypes.object,
 };
 
 PopUpMenu.defaultProps = {
@@ -94,37 +95,7 @@ PopUpMenu.defaultProps = {
   overlayStyle: {},
   setVisible: () => {},
   onLayout: () => {},
+  containerStyle: {},
 };
 
 export default PopUpMenu;
-
-/* class PopUpMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
-
-  render() {
-    const {
-      isVisible,
-      renderMenu,
-      overlayStyle,
-      setVisible,
-      onLayout,
-    } = this.props;
-    if (isVisible) {
-      return (
-        <View style={StyleSheet.absoluteFill}>
-          <TouchableOpacity
-            style={[style.overlay, overlayStyle]}
-            onPress={() => setVisible(false)}
-            onLayout={onLayout}
-          />
-          {renderMenu()}
-        </View>
-      );
-    }
-    return <View />;
-  }
-} */

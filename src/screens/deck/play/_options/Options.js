@@ -7,8 +7,8 @@ import PropTypes from 'prop-types';
 // import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import NumericInput from 'react-native-numeric-input';
 import Color from '../../../../config/Color';
+import { account } from '../../../../config/account/Account';
 
-const MarksMax = 10;
 const ExamplesMax = 3;
 const SynonymsMax = 5;
 const AntonymsMax = 5;
@@ -39,8 +39,12 @@ const Options = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // state
-  const [mode, setMode] = useState('default');
-  const [checked, setChecked] = useState(false);
+  const MarksMax = Object.values(account.content?.[deckID]?.marks ?? { key: 0 }).reduce((a, b) => {
+    console.log((a.length > b.length ? a.length : b.length));
+    return (a.length > b.length ? a.length : b.length);
+  });
+  // const [mode, setMode] = useState('default');
+  const [mode, setMode] = useState('custom');
   const [marksMin, setMarksMin] = useState(0);
   const [marksMax, setMarksMax] = useState(MarksMax);
   const [examplesMin, setExamplesMin] = useState(0);
@@ -112,6 +116,8 @@ const Options = (props) => {
               }}
               >
                 {item.title}
+                {' '}
+                {item.range[1]}
               </Text>
               <View style={{ flexDirection: 'row' }}>
                 <View style={style.counterBox}>
@@ -183,6 +189,18 @@ const Options = (props) => {
           Start
         </Button>
       </View> */}
+      <Button
+        color="powderblue"
+        title="STATE"
+        onPress={() => {
+          console.log(account.content?.[deckID]?.marks);
+          console.log(Object.values(account.content?.[deckID]?.marks));
+          console.log(Object.values(account.content?.[deckID]?.marks).reduce((a, b) => {
+            console.log({ a: a.length, b: b.length });
+            return (a.length > b.length ? a.length : b.length);
+          }));
+        }}
+      />
     </View>
   );
 };

@@ -147,11 +147,15 @@ const EditList = (props) => {
   };
 
   return (
-    <FlatList
-      data={func.convertObjectToArray(content)}
-      renderItem={renderMainContent}
-      keyExtractor={(item, index) => index}
-    />
+    <View
+      style={{ flex: 1 }}
+    >
+      <FlatList
+        data={func.convertObjectToArray(content)}
+        renderItem={renderMainContent}
+        keyExtractor={(item, index) => index}
+      />
+    </View>
   );
 };
 

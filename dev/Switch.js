@@ -30,12 +30,13 @@ const buttons = [
   { title: 'Product', element: <Nav /> },
   { title: 'Demo', element: <Demo /> },
   { title: 'Suzuki', element: <Edit navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
-  { title: 'Iwasaki', element: <Options navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
+  { title: 'Iwasaki', element: <Options navigation={{}} route={{ params: { deckID: '7NCodht%}0' } }} /> },
   { title: 'Kochiya', element: <Play navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
 ];
 
 const Switch = () => {
-  const [visibleIndex, setVisibleIndex] = useState(0);
+  // const [visibleIndex, setVisibleIndex] = useState(0);
+  const [visibleIndex, setVisibleIndex] = useState(2);
 
   const renderScreens = () => (
     <View style={style.container}>
