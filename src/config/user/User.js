@@ -1,16 +1,7 @@
 // デッキの情報の変数を定義する所
-
-import { atom } from 'recoil';
 import users from './UserModule';
 
-// export const usersGeneral = atom({
-//   key: 'usersGeneral',
-//   default: {},
-// });
-
 export { users };
-
-export default { users /* usersGeneral */ };
 
 export const getUserGeneral = (userID) => {
   if (Object.keys(users).includes(userID)) {
@@ -21,6 +12,8 @@ export const getUserGeneral = (userID) => {
     icon: { uri: '' },
   };
 };
+
+export default { users, getUserGeneral };
 
 /*
 users = {

@@ -1,22 +1,54 @@
-import { account } from '../../src/config/account/Account';
+import { account, getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
 import { func } from '../../src/config/Const';
-import { decksContent, decksGeneral } from '../../src/config/deck/Deck';
+import {
+  decksContent, decksGeneral, getDeckContent, getDeckGeneral,
+} from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
-import { users } from '../../src/config/user/User';
+import { getUserGeneral, users } from '../../src/config/user/User';
 import UUID from '../../src/config/UUID';
 
 const Button = [
   {
     title: 'Deck',
-    onPress: () => ({ decksGeneral, decksContent }),
+    onPress: () => {
+      /*
+      const general = getDeckGeneral(decksGeneralState, 'daioaid')
+      第一引数: useRecoilState(decksGeneral) の第一返り値
+               decksGeneralはsrc/config/deck/Deckからimport
+      第二引数: deckID(このidで見つからなかったら今のところ空を返す)
+      */
+      const content = getDeckContent('iaodia');
+      /*
+      引数: deckID(このidで見つからなかったら今のところ空を返す)
+      */
+      return { content };
+    },
+    // onPress: () => ({ decksGeneral, decksContent }),
   },
   {
     title: 'User',
-    onPress: () => ({ users }),
+    onPress: () => {
+      const general = getUserGeneral('diaooea');
+      /*
+      引数: userID(このidで見つからなかったら今のところ空を返す)
+      */
+      return { general };
+    },
   },
   {
     title: 'Account',
-    onPress: () => ({ account }),
+    onPress: () => {
+      const general = getAccountGeneral();
+      /*
+      自分の情報が返ってくる
+      */
+      const content = getAccountContent('aiueo');
+      /*
+      引数: deckID(このidのデッキの自分の再生履歴を返す、見つからなかったら空)
+      引数を指定しない、または''だとすべて返す
+      */
+      return { general, content };
+    },
   },
   {
     title: 'UUID',

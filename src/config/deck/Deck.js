@@ -3,7 +3,7 @@
 import { atom } from 'recoil';
 import decksContent from './DeckModule';
 
-export const decksGeneral = atom({ // globalなstate ダイナミック　動的
+export const decksGeneral = atom({ // globalなstate ダイナミック 動的
   key: 'decksGeneral',
   default: {},
 });
@@ -11,6 +11,22 @@ export const decksGeneral = atom({ // globalなstate ダイナミック　動的
 export { decksContent }; // globalな普通の変数 静的
 
 export default { decksContent, decksGeneral };
+
+export const getDeckGeneral = (general, deckID) => {
+  // const generalCopy = JSON.parse(JSON.stringify(general));
+  if (Object.keys(general).includes(deckID)) {
+    return general[deckID];
+  }
+  return {
+    title: '',
+    user: '',
+    language: { term: '', definition: '' },
+    thumbnail: {
+      uri: '',
+      user: { link: '', name: '' },
+    },
+  };
+};
 
 export const getDeckContent = (deckID) => {
   if (Object.keys(decksContent).includes(deckID)) {
