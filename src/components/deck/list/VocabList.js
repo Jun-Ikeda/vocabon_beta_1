@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Button,
-  FlatList, StyleSheet, Text, View, TouchableOpacity,
+  FlatList, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -38,10 +38,33 @@ const style = StyleSheet.create({
 
 const VocabList = (props) => {
   const {
-    content, renderCard, onPressCard, cardContainer, labelVisible, itemVisible, renderCardRight, textStyle, itemStyle,
+    content,
+    renderCard,
+    onPressCard,
+    cardContainer,
+    labelVisible,
+    itemVisible,
+    renderCardRight,
+    textStyle,
+    itemStyle,
+    state,
   } = props;
   const manuallyRenderCard = !(renderCard.toString() === 'function renderCard() {}');
-  const isButton = !(onPressCard.toString() === 'function onPressCard() {}');
+  const onPressCardValid = !(onPressCard.toString() === 'function onPressCard() {}');
+  const stateValid = !(state.length === 0);
+  const isButton = onPressCardValid || stateValid;
+
+  const toggleSelect = (vocabIDsState, vocabID) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const [vocabIDs, setVocabIDs] = vocabIDsState;
+    const selected = vocabIDs.includes(vocabID);
+    if (selected) {
+      const newState = vocabIDs.filter((id) => (id !== vocabID));
+      setVocabIDs(newState);
+    } else {
+      setVocabIDs([...vocabIDs, vocabID]);
+    }
+  };
 
   const renderItem = ({ item: vocab }) => {
     const { key, value } = vocab;
@@ -64,7 +87,10 @@ const VocabList = (props) => {
     );
     if (isButton) {
       return (
-        <TouchableOpacity style={[style.cardContainer, cardContainer]} onPress={() => onPressCard(vocab)}>
+        <TouchableOpacity
+          style={[style.cardContainer, cardContainer]}
+          onPress={onPressCardValid ? () => onPressCard(vocab) : () => toggleSelect(state, key)}
+        >
           {renderContent()}
         </TouchableOpacity>
       );
@@ -118,6 +144,7 @@ VocabList.propTypes = {
     exampleD: PropTypes.object,
     cf: PropTypes.object,
   }),
+  state: PropTypes.array,
 };
 
 VocabList.defaultProps = {
@@ -150,6 +177,7 @@ VocabList.defaultProps = {
     exampleD: {},
     cf: {},
   },
+  state: [],
 };
 
 export default VocabList;

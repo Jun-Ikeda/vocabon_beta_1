@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, LayoutAnimation, FlatList, SafeAreaView,
+  View, StyleSheet, TouchableOpacity, LayoutAnimation, FlatList, SafeAreaView, Text,
 } from 'react-native';
-import { List } from 'react-native-paper';
-import { useSetRecoilState } from 'recoil';
+import { Checkbox, List } from 'react-native-paper';
+import { atom, useRecoilState, useSetRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
 import { deck, func } from '../../../../config/Const';
+import VocabList from '../../../../components/deck/list/VocabList';
 
 const backgroundColor = Color.white1;
 const iconSize = 20;
+
+export const selectedVocabIDsState = atom({
+  key: 'selectedVocabIDsState',
+  default: [],
+});
 
 const style = StyleSheet.create({
   box: {
@@ -21,7 +27,6 @@ const style = StyleSheet.create({
     marginVertical: 10,
   },
   termanddef: {
-    // marginVertical: 1,
     fontSize: 18,
     fontWeight: 'bold',
     color: Color.black,
@@ -43,96 +48,171 @@ const style = StyleSheet.create({
     paddingBottom: 10,
   },
   editButton: {
-    width: 60,
+    // width: 60,
     padding: 20,
-    position: 'absolute',
-    right: 60,
-    top: 10,
+    // position: 'absolute',
+    // right: 0,
+    // right: 60,
+    // top: 10,
+  },
+  checkbox: {
+    padding: 12.5,
   },
 });
-
 const EditList = (props) => {
   // props
   const {
     content,
     setVisible,
+    mode,
   } = props;
   // recoil
   // state
-  const [expandedIndex, setExpandedIndex] = useState([]);
+  const [selectedVocabIDs, setSelectedVocabIDs] = useRecoilState(selectedVocabIDsState);
 
-  const renderMainContent = ({ item, index }) => {
-    const { key, value } = item;
-    const isExpanded = expandedIndex.includes(index);
-    const toggleExpand = () => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      let newExpandedIndex = [];
-      if (isExpanded) {
-        newExpandedIndex = expandedIndex.filter((_index) => _index !== index);
-        setExpandedIndex(newExpandedIndex);
-      } else {
-        setExpandedIndex([...expandedIndex, index]);
-      }
-    };
-    return (
-      <SafeAreaView style={style.box}>
-        <List.Accordion
-          expanded={isExpanded}
-          onPress={toggleExpand}
-          title={value?.term}
-          description={deck.formatArrayContent(value?.definition)}
-          titleStyle={style.termanddef}
-          descriptionStyle={style.termanddef}
-          style={[
-            style.list,
-            {
-              borderBottomLeftRadius: isExpanded ? 0 : 10,
-              borderBottomRightRadius: isExpanded ? 0 : 10,
-            }]}
-        >
-          <List.Item style={style.listItem} title={`Synonym: ${deck.formatArrayContent(value?.synonym)}`} />
-          <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(value?.antonym)}`} />
-          <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(value?.prefix)}`} />
-          <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(value?.sufix)}`} />
-          <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(value?.exampleT)}`} />
-          <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(value?.exampleD)}`} />
-          <List.Item style={style.listItemLast} title={`cf: ${deck.formatArrayContent(value?.cf)}`} />
-        </List.Accordion>
-        <TouchableOpacity
-          onPress={async () => {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            setVisible(true, key);
-          }}
-          style={style.editButton}
-        >
-          <Icon.Feather
-            name="edit"
-            size={iconSize}
-          />
-        </TouchableOpacity>
-      </SafeAreaView>
-    );
-  };
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setSelectedVocabIDs([]);
+  }, [mode]);
+
+  const renderEditButton = (vocab) => (
+    <TouchableOpacity
+      onPress={async () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setVisible(true, vocab.key);
+      }}
+      style={style.editButton}
+    >
+      <Icon.Feather name="edit" size={iconSize} />
+    </TouchableOpacity>
+  );
+
+  const renderCheckBox = (vocab) => (
+    <View style={style.checkbox}>
+      <Checkbox
+        status={selectedVocabIDs.includes(vocab.key) ? 'checked' : 'unchecked'}
+              // onPress={toggleChecked}
+        color={Color.cud.blue}
+        pointerEvents="none"
+      />
+    </View>
+  );
 
   return (
     <View
       style={{ flex: 1 }}
     >
-      <FlatList
-        data={func.convertObjectToArray(content)}
-        renderItem={renderMainContent}
-        keyExtractor={(item, index) => index}
+      <VocabList
+        content={content}
+        itemVisible={mode === 'delete'
+          ? { term: true, definition: true }
+          : (vocab) => ({
+            term: true,
+            definition: true,
+            synonym: selectedVocabIDs.includes(vocab.key),
+            antonym: selectedVocabIDs.includes(vocab.key),
+            prefix: selectedVocabIDs.includes(vocab.key),
+            suffix: selectedVocabIDs.includes(vocab.key),
+            exampleT: selectedVocabIDs.includes(vocab.key),
+            exampleD: selectedVocabIDs.includes(vocab.key),
+            cf: selectedVocabIDs.includes(vocab.key),
+          })}
+        state={[selectedVocabIDs, setSelectedVocabIDs]}
+        renderCardRight={(vocab) => {
+          if (mode === 'edit') {
+            return renderEditButton(vocab);
+          } if (mode === 'delete') {
+            return renderCheckBox(vocab);
+          }
+          return null;
+        }}
       />
     </View>
   );
 };
-
 EditList.propTypes = {
   content: PropTypes.array.isRequired,
   setVisible: PropTypes.func.isRequired,
+  mode: PropTypes.string.isRequired,
 };
 
 EditList.defaultProps = {
 };
 
 export default EditList;
+
+// const EditList = (props) => {
+//   // props
+//   const {
+//     content,
+//     setVisible,
+//   } = props;
+//   // recoil
+//   // state
+//   const [expandedIndex, setExpandedIndex] = useState([]);
+
+//   const renderMainContent = ({ item, index }) => {
+//     const { key, value } = item;
+//     const isExpanded = expandedIndex.includes(index);
+//     const toggleExpand = () => {
+//       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+//       let newExpandedIndex = [];
+//       if (isExpanded) {
+//         newExpandedIndex = expandedIndex.filter((_index) => _index !== index);
+//         setExpandedIndex(newExpandedIndex);
+//       } else {
+//         setExpandedIndex([...expandedIndex, index]);
+//       }
+//     };
+//     return (
+//       <SafeAreaView style={style.box}>
+//         <List.Accordion
+//           expanded={isExpanded}
+//           onPress={toggleExpand}
+//           title={value?.term}
+//           description={deck.formatArrayContent(value?.definition)}
+//           titleStyle={style.termanddef}
+//           descriptionStyle={style.termanddef}
+//           style={[
+//             style.list,
+//             {
+//               borderBottomLeftRadius: isExpanded ? 0 : 10,
+//               borderBottomRightRadius: isExpanded ? 0 : 10,
+//             }]}
+//         >
+//           <List.Item style={style.listItem} title={`Synonym: ${deck.formatArrayContent(value?.synonym)}`} />
+//           <List.Item style={style.listItem} title={`Antonym: ${deck.formatArrayContent(value?.antonym)}`} />
+//           <List.Item style={style.listItem} title={`Prefix: ${deck.formatArrayContent(value?.prefix)}`} />
+//           <List.Item style={style.listItem} title={`Sufix: ${deck.formatArrayContent(value?.sufix)}`} />
+//           <List.Item style={style.listItem} title={`ExampleT: ${deck.formatArrayContent(value?.exampleT)}`} />
+//           <List.Item style={style.listItem} title={`ExampleD: ${deck.formatArrayContent(value?.exampleD)}`} />
+//           <List.Item style={style.listItemLast} title={`cf: ${deck.formatArrayContent(value?.cf)}`} />
+//         </List.Accordion>
+//         <TouchableOpacity
+//           onPress={async () => {
+//             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+//             setVisible(true, key);
+//           }}
+//           style={style.editButton}
+//         >
+//           <Icon.Feather
+//             name="edit"
+//             size={iconSize}
+//           />
+//         </TouchableOpacity>
+//       </SafeAreaView>
+//     );
+//   };
+
+//   return (
+//     <View
+//       style={{ flex: 1 }}
+//     >
+//       <FlatList
+//         data={func.convertObjectToArray(content)}
+//         renderItem={renderMainContent}
+//         keyExtractor={(item, index) => index}
+//       />
+//     </View>
+//   );
+// };

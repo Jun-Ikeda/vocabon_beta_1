@@ -12,10 +12,6 @@ import { func } from '../src/config/Const';
 import { decksContent } from '../src/config/deck/Deck';
 import TestData, { User } from './TestData';
 
-const emptyFunc1 = () => {};
-
-const emptyFunc2 = () => {};
-
 const Demo = (props) => (
   <View style={{
     flex: 1,
@@ -32,9 +28,9 @@ const Demo = (props) => (
 export default Demo;
 
 const renderVocabList = () => {
-  const [expandIndex, setExpandIndex] = useState([]);
+  const [expandVocabIDs, setExpandVocabIDs] = useState([]);
   const id = 'xn>EfhY:2*';
-  const expandVocabIDs = ['qIDjbgc-', 'MdmRNj0Y'];
+  // const expandVocabIDs = ['qIDjbgc-', 'MdmRNj0Y'];
   const accountContent = account.content?.[id] ?? { marks: {}, play: [], bookmark: false };
   return (
     <VocabList
@@ -45,7 +41,8 @@ const renderVocabList = () => {
       itemVisible={(vocab) => ({ term: true, definition: true, synonym: expandVocabIDs.includes(vocab.key) })}
       labelVisible
       // renderCard={({ item }) => <Text>{item.value.term}</Text>}
-      onPressCard={(vocab) => func.alertConsole(vocab.value.term)}
+      // onPressCard={(vocab) => func.alertConsole(vocab.value.term)}
+      state={[expandVocabIDs, setExpandVocabIDs]}
       // renderCardRight={(vocab) => (
       //   <View style={{ padding: 10, backgroundColor: 'skyblue' }}>
       //     <Text>{accountContent.marks[vocab.key].length}</Text>

@@ -8,6 +8,7 @@ import { account } from '../../../../config/account/Account';
 import { decksContent } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
+import VocabList from '../../../../components/deck/list/VocabList';
 
 const iconsize = 30;
 
@@ -36,22 +37,27 @@ const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
   const { marks } = account.content?.[deckID] ?? { marks: {}, play: [], bookmark: false };
-  const vocabIDs = Object.keys(decksContent[deckID]);
+  const content = decksContent[deckID];
   //   makrs = { 'vocabID': number, 'vocabID': number }
   useEffect(() => {
     console.log(decksContent[deckID]);
   }, []);
 
   const renderVocab = () => (
-    <FlatList
-      data={vocabIDs}
-      renderItem={({ item, index }) => (
-        <View style={[style.container, { backgroundColor: Color.white1 }]}>
-          <Text style={[style.text, { flex: 1 }]}>{decksContent[deckID][item].term}</Text>
-          <Text style={[style.text, { paddingRight: 20 }]}>{marks?.[item]?.length ?? 0}</Text>
-        </View>
-      )}
+    <VocabList
+      content={content}
+      itemVisible={{ term: true }}
+      renderCardRight={(vocab) => <Text>{marks?.[vocab.key].length ?? 0}</Text>}
     />
+    // <FlatList
+    //   data={vocabIDs}
+    //   renderItem={({ item, index }) => (
+    //     <View style={[style.container, { backgroundColor: Color.white1 }]}>
+    //       <Text style={[style.text, { flex: 1 }]}>{decksContent[deckID][item].term}</Text>
+    //       <Text style={[style.text, { paddingRight: 20 }]}>{marks?.[item]?.length ?? 0}</Text>
+    //     </View>
+    //   )}
+    // />
   );
 
   const renderFirst = () => (

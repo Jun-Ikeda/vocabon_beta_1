@@ -9,11 +9,7 @@ import {
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
-import { func } from '../../../../config/Const';
-import { checkedIndexState } from './EditDelete';
-import { helpVisibleState } from './Edit';
-import PopUpMenu from '../../../../components/popup/PopUpMenu';
-import EditHelp from './EditHelp';
+import { selectedVocabIDsState } from './EditList';
 
 const iconSize = 20;
 
@@ -83,14 +79,13 @@ const style = StyleSheet.create({
 const EditButtons = (props) => {
   // props
   const {
-    setDeleteVisible, deleteVisible, helpVisible, setHelpVisible, searchButtonVisible,
+    /* setDeleteVisible, deleteVisible, */mode, setMode, helpVisible, setHelpVisible, searchButtonVisible,
     setSearchButtonVisible,
   } = props;
   // recoil
-  const [checkedIndex, setCheckedIndex] = useRecoilState(checkedIndexState);
+  const [selectedVocabIDs, setSelectedVocabIDs] = useRecoilState(/* checkedIndexState */selectedVocabIDsState);
   // state
   const [searchText, setSearchText] = useState('');
-  const [layout, setLayout] = useState({ height: 300, width: 300 });
 
   const renderSearch = () => {
     if (searchButtonVisible) {
@@ -127,10 +122,12 @@ const EditButtons = (props) => {
     <TouchableOpacity
       style={style.button}
       onPress={() => {
-        if (deleteVisible === false) {
-          setDeleteVisible(!deleteVisible);
-        } else if (checkedIndex.length !== 0) {
-          const stringToAlert = `Are you sure you delete the ${checkedIndex.length} cards you chose? (You cannot undo)`;
+        if (/* deleteVisible === false */mode !== 'delete') {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          // setDeleteVisible(!deleteVisible);
+          setMode('delete');
+        } else if (selectedVocabIDs.length !== 0) {
+          const stringToAlert = `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`;
           alert(stringToAlert);
         } else {
           alert(':V');
@@ -141,12 +138,12 @@ const EditButtons = (props) => {
       <Icon.FontAwesome
         name="trash"
         size={iconSize}
-        style={{ color: deleteVisible ? Color.cud.red : Color.black }}
+        style={{ color: /* deleteVisible */mode === 'delete' ? Color.cud.red : Color.black }}
       />
-      {(deleteVisible === true && checkedIndex.length !== 0) ? (
+      {(/* deleteVisible === true */mode === 'delete' && selectedVocabIDs.length !== 0) ? (
         <View style={style.counterview}>
           <Text style={style.textintrashbin}>
-            {checkedIndex.length}
+            {selectedVocabIDs.length}
           </Text>
         </View>
       ) : null}
@@ -154,7 +151,7 @@ const EditButtons = (props) => {
   );
 
   const renderHelpButton = () => {
-    if (deleteVisible === false) {
+    if (/* deleteVisible === false */mode === 'edit') {
       return (
         <TouchableOpacity
           style={style.button}
@@ -168,11 +165,11 @@ const EditButtons = (props) => {
   };
 
   const renderCancelButton = () => {
-    if (deleteVisible === true) {
+    if (/* deleteVisible === true */mode === 'delete') {
       return (
         <TouchableOpacity
           style={style.button}
-          onPress={() => setCheckedIndex([])}
+          onPress={() => setSelectedVocabIDs([])}
         >
           <Icon.Feather name="x" size={iconSize} />
         </TouchableOpacity>
@@ -183,12 +180,14 @@ const EditButtons = (props) => {
   };
 
   const renderBackButton = () => {
-    if (deleteVisible === true) {
+    if (/* deleteVisible === true */mode === 'delete') {
       return (
         <TouchableOpacity
           style={style.button}
           onPress={() => {
-            setDeleteVisible(!deleteVisible);
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            // setDeleteVisible(!deleteVisible);
+            setMode('edit');
           }}
         >
           <Icon.AntDesign
@@ -213,8 +212,10 @@ const EditButtons = (props) => {
 };
 
 EditButtons.propTypes = {
-  setDeleteVisible: PropTypes.func,
-  deleteVisible: PropTypes.bool,
+  setMode: PropTypes.func,
+  mode: 'string',
+  // setDeleteVisible: PropTypes.func,
+  // deleteVisible: PropTypes.bool,
   setHelpVisible: PropTypes.func,
   helpVisible: PropTypes.bool,
   setSearchButtonVisible: PropTypes.func,
@@ -222,8 +223,10 @@ EditButtons.propTypes = {
 };
 
 EditButtons.defaultProps = {
-  setDeleteVisible: () => {},
-  deleteVisible: false,
+  setMode: () => {},
+  mode: 'edit',
+  // setDeleteVisible: () => {},
+  // deleteVisible: false,
   setHelpVisible: () => {},
   helpVisible: false,
   setSearchButtonVisible: () => {},

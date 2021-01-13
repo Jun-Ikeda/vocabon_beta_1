@@ -12,7 +12,6 @@ import Color from '../../../../config/Color';
 import EditList from './EditList';
 import EditContent from './EditContent';
 import EditButtons from './EditButtons';
-import EditDelete from './EditDelete';
 import EditHelp from './EditHelp';
 
 import { decksContent } from '../../../../config/deck/Deck';
@@ -48,8 +47,9 @@ const Edit = (props) => {
   const [content, setContent] = useRecoilState(contentState);
   // state
   const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
+  const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
   const [helpVisible, setHelpVisible] = useState(false);
-  const [deleteVisible, setDeleteVisible] = useState(false);
+  // const [deleteVisible, setDeleteVisible] = useState(false);
   const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [contentVisible, setContentVisible] = useState(false);
 
@@ -57,15 +57,14 @@ const Edit = (props) => {
     setContent(decksContent[deckID]);
   }, []);
 
-  const renderDeleteView = () => <EditDelete content={content} />;
-
-  const renderBasicView = () => (
+  const renderList = () => (
     <EditList
       content={content}
       setVisible={(isVisible, vocabID) => {
         setEditVocabID(vocabID);
         setContentVisible(isVisible);
       }}
+      mode={mode}
     />
   );
 
@@ -88,14 +87,17 @@ const Edit = (props) => {
     <View style={style.container}>
       <View style={{ flex: 1 }}>
         <EditButtons
-          deleteVisible={deleteVisible}
-          setDeleteVisible={setDeleteVisible}
+          mode={mode}
+          setMode={setMode}
+          // deleteVisible={deleteVisible}
+          // setDeleteVisible={setDeleteVisible}
           searchButtonVisible={searchButtonVisible}
           setSearchButtonVisible={setSearchButtonVisible}
           helpVisible={helpVisible}
           setHelpVisible={setHelpVisible}
         />
-        {deleteVisible ? renderDeleteView() : renderBasicView()}
+        {renderList()}
+        {/* {deleteVisible ? renderDeleteView() : renderBasicView()} */}
       </View>
       <Button onPress={() => func.alertConsole(editVocabID)}>aaa</Button>
       {renderContentPopUp()}
