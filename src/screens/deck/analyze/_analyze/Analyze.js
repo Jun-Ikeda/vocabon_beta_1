@@ -4,10 +4,9 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { account } from '../../../../config/account/Account';
-import { decksContent } from '../../../../config/deck/Deck';
-import Color from '../../../../config/Color';
-import { func } from '../../../../config/Const';
+import { getAccountContent } from '../../../../config/account/Account';
+import { getDeckContent } from '../../../../config/deck/Deck';
+// import { deck, func } from '../../../../config/Const';
 import VocabList from '../../../../components/deck/list/VocabList';
 
 const iconsize = 30;
@@ -36,18 +35,19 @@ const style = StyleSheet.create({
 const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
-  const { marks } = account.content?.[deckID] ?? { marks: {}, play: [], bookmark: false };
-  const content = decksContent[deckID];
+  const { marks } = getAccountContent(deckID);
+  // const { marks } = account.content?.[deckID] ?? { marks: {}, play: [], bookmark: false };
+  const content = getDeckContent(deckID);
   //   makrs = { 'vocabID': number, 'vocabID': number }
   useEffect(() => {
-    console.log(decksContent[deckID]);
+    console.log(content);
   }, []);
 
   const renderVocab = () => (
     <VocabList
       content={content}
       itemVisible={{ term: true }}
-      renderCardRight={(vocab) => <Text>{marks?.[vocab.key].length ?? 0}</Text>}
+      renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
     />
     // <FlatList
     //   data={vocabIDs}

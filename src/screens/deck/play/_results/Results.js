@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 import Color from '../../../../config/Color';
 import { unshortenURI } from '../../../../config/Unsplash';
-import { decksGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 
 // import Home from '../../../../nav/main/home/screens/home/Home';
 // import TestData from '../../../../../dev/TestData';
@@ -94,7 +94,7 @@ const Results = (props) => {
   // recoil
   const generals = useRecoilValue(decksGeneral);
   // state
-  const general = generals[deckID];
+  const general = getDeckGeneral(generals, deckID);
   // const [leftIndex, setLeftIndex] = useState(propLeft);
   // const [rightIndex, setRightIndex] = useState(propRight);
   // const [invalidIndex, setInvalidIndex] = useState(propInvalid);

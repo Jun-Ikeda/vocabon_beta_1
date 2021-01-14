@@ -11,7 +11,7 @@ import Color from '../../../config/Color';
 
 // import Home from './_home/Home';
 import { header } from '../../../config/Const';
-import { account } from '../../../config/account/Account';
+import { account, getAccountGeneral } from '../../../config/account/Account';
 
 import Home from './_home/Home';
 import CreateDeck from './_createdeck/CreateDeck';
@@ -22,8 +22,10 @@ import Play from '../../../screens/deck/play/_play/Play';
 import Results from '../../../screens/deck/play/_results/Results';
 import Edit from '../../../screens/deck/edit/_edit/Edit';
 import Export from '../../../screens/deck/export/_export/Export';
-import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
 import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
+import Import from '../../../screens/deck/import/Import';
+
+import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
 
 const Stack = createStackNavigator();
 
@@ -44,7 +46,7 @@ const HomeNav = () => (
         headerTitle: 'Home',
         headerRight: () => (
           <ProfileIcon
-            userID={account?.general?.userID}
+            userID={getAccountGeneral().userID}
             style={{ marginRight: 20 }}
             size={44}
             onPress={() => navigation.navigate('account')}
@@ -134,6 +136,13 @@ const HomeNav = () => (
       component={Analyze}
       options={{
         headerTitle: 'Analyze',
+      }}
+    />
+    <Stack.Screen
+      name="import"
+      component={Import}
+      options={{
+        headerTitle: 'Import',
       }}
     />
   </Stack.Navigator>

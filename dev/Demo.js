@@ -1,6 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button, TouchableOpacity, View, Text,
 } from 'react-native';
@@ -21,7 +20,8 @@ const Demo = (props) => (
     backgroundColor: Color.defaultBackground,
   }}
   >
-    {renderVocabList()}
+    {renderProfileIcon()}
+    {/* {renderVocabList()} */}
   </View>
 );
 
@@ -56,6 +56,6 @@ const renderVocabList = () => {
   );
 };
 
-// const renderProfileIcon = () => PastelColors.map((color) => (
-//   <ProfileIcon char="V" color={color} onPress={() => console.log({ color })} />
-// ));
+const renderProfileIcon = () => PastelColors.map((color) => (
+  <ProfileIcon char="V" color={color} onPress={() => console.log({ color })} />
+));

@@ -14,7 +14,7 @@ import EditContent from './EditContent';
 import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 
-import { decksContent } from '../../../../config/deck/Deck';
+import { getDeckContent } from '../../../../config/deck/Deck';
 
 export const contentState = atom({
   key: 'contentState',
@@ -49,12 +49,11 @@ const Edit = (props) => {
   const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
   const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
   const [helpVisible, setHelpVisible] = useState(false);
-  // const [deleteVisible, setDeleteVisible] = useState(false);
   const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
-    setContent(decksContent[deckID]);
+    setContent(getDeckContent(deckID));
   }, []);
 
   const renderList = () => (

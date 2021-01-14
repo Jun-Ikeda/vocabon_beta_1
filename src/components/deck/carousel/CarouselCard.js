@@ -7,10 +7,9 @@ import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
 import { unshortenURI } from '../../../config/Unsplash';
-import { decksGeneral } from '../../../config/deck/Deck';
+import { decksGeneral, getDeckGeneral } from '../../../config/deck/Deck';
 import ProfileIcon from '../../user/profileicon/ProfileIcon';
-import { usersGeneral } from '../../../config/user/User';
-import { account } from '../../../config/account/Account';
+import { getAccountContent } from '../../../config/account/Account';
 import Icon from '../../Icon';
 
 const style = StyleSheet.create({
@@ -47,15 +46,15 @@ const CarouselCard = (props) => {
   // props
   const { deckID, cardStyle, onPress } = props;
   // recoil
-  const decksGeneralState = useRecoilValue(decksGeneral);
+  const general = useRecoilValue(decksGeneral);
   //
-  const deckGeneral = decksGeneralState[deckID];
-  const accountContent = account.content?.[deckID] ?? { marks: {}, play: [], bookmark: false };
+  const deckGeneral = getDeckGeneral(general, deckID);
+  const accountContent = getAccountContent(deckID);
 
   const renderBackgroundImage = () => (
     <View style={cardStyle}>
       <Image
-        source={{ uri: unshortenURI(deckGeneral?.thumbnail.uri) }}
+        source={{ uri: unshortenURI(deckGeneral.thumbnail.uri) }}
         style={cardStyle}
         blurRadius={0.5}
       />
@@ -95,7 +94,7 @@ const CarouselCard = (props) => {
         color: Color.white1,
       }}
       >
-        {deckGeneral?.title}
+        {deckGeneral.title}
       </Text>
       <Text style={{
         fontSize: cardStyle.height * 0.08,
@@ -106,10 +105,10 @@ const CarouselCard = (props) => {
       </Text>
       <View>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
-          {`Term in ${deckGeneral?.language.term}`}
+          {`Term in ${deckGeneral.language.term}`}
         </Text>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
-          {`Definition in ${deckGeneral?.language.definition}`}
+          {`Definition in ${deckGeneral.language.definition}`}
         </Text>
       </View>
     </View>
@@ -118,7 +117,7 @@ const CarouselCard = (props) => {
   const renderOverlayBotom = () => (
     <View style={style.overlaybottomContainer}>
       <ProfileIcon
-        userID={deckGeneral?.user}
+        userID={deckGeneral.user}
         size={cardStyle.height * 0.2}
         style={{
           marginLeft: cardStyle.height * 0.1,

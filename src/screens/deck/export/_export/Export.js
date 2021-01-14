@@ -3,7 +3,7 @@ import {
   StyleSheet, ScrollView, View, Dimensions, Text, Button,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { decksContent } from '../../../../config/deck/Deck';
+import { getDeckContent } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
 
 const { height, width } = Dimensions.get('window');
@@ -21,7 +21,7 @@ const style = StyleSheet.create({
 
 const Export = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
-  const content = decksContent[deckID];
+  const content = getDeckContent(deckID);
   const [visible, setVisible] = useState(false);
 
   const [layout, setLayout] = useState({ height: 300, width: 300 });

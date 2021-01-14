@@ -7,12 +7,10 @@ import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
-import { decksState } from '../../../../nav/main/MainNav';
 import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
-import { decksGeneral } from '../../../../config/deck/Deck';
-import { account } from '../../../../config/account/Account';
+import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 
 // import DeckMenuButtons from './DeckMenuButtons';
 // import DeckMenuUtilities from './DeckMenuUtilities';
@@ -59,7 +57,7 @@ const Menu = (props) => {
   // recoil
   const decksGeneralState = useRecoilValue(decksGeneral);
   //
-  const deckGeneral = decksGeneralState[deckID];
+  const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
 
   const renderThumbnail = () => (
     <View>

@@ -14,7 +14,7 @@ const Button = [
       /*
       const general = getDeckGeneral(decksGeneralState, 'daioaid')
       第一引数: useRecoilState(decksGeneral) の第一返り値
-               decksGeneralはsrc/config/deck/Deckからimport
+            decksGeneralはsrc/config/deck/Deckからimport
       第二引数: deckID(このidで見つからなかったら今のところ空を返す)
       */
       const content = getDeckContent('iaodia');

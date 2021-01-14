@@ -5,8 +5,7 @@ import { useRecoilValue } from 'recoil';
 
 import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
-import { decksContent, decksGeneral } from '../../../../config/deck/Deck';
-import { decksState } from '../../../../nav/main/MainNav';
+import { getDeckContent, getDeckGeneral, decksGeneral } from '../../../../config/deck/Deck';
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -38,7 +37,7 @@ const Property = (props) => {
   const generals = useRecoilValue(decksGeneral);
   // state
   // const [general, setGeneral] = useState(decks[deckID].general);
-  const general = generals[deckID];
+  const general = getDeckGeneral(generals, deckID);
   const [title, setTitle] = useState(general.title);
   const [language, setLanguage] = useState(general.language);
 

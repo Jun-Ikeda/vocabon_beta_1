@@ -15,7 +15,7 @@ import Color from '../../../../config/Color';
 import PlayCard from './PlayCard';
 import PlayCounter from './PlayCounter';
 import PlayButtons from './PlayButtons';
-import { decksContent } from '../../../../config/deck/Deck';
+import { getDeckContent } from '../../../../config/deck/Deck';
 
 // import { DeckGeneral, DeckContent } from '../../../../../dev/TestData';
 
@@ -60,7 +60,7 @@ const Play = (props) => {
   const { navigation, route: { params: { deckID, validVocabIDs: validVocabIDsProp } } } = props;
   // recoil
   // state
-  const content = decksContent[deckID];
+  const content = getDeckContent(deckID);
   const validVocabIDs = returnValidVocabIDs(content, validVocabIDsProp);
   const validVocab = returnValidVocab(content, validVocabIDs);
   const [layout, setLayout] = useState({ height: 0, width: 0 });

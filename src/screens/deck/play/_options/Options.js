@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 // import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import NumericInput from 'react-native-numeric-input';
 import Color from '../../../../config/Color';
-import { account } from '../../../../config/account/Account';
+import { getAccountContent } from '../../../../config/account/Account';
 
 const ExamplesMax = 3;
 const SynonymsMax = 5;
@@ -39,10 +39,15 @@ const Options = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // state
-  const MarksMax = Object.values(account.content?.[deckID]?.marks ?? { key: 0 }).reduce((a, b) => {
-    console.log((a.length > b.length ? a.length : b.length));
-    return (a.length > b.length ? a.length : b.length);
-  });
+  const { marks } = getAccountContent(deckID);
+  // const MarksMax = (Object.values(marks).length === 0) ? 0 : Object.values(marks).reduce((a, b) => {
+  //   console.log((a.length > b.length ? a.length : b.length));
+  //   return (a.length > b.length ? a.length : b.length);
+  // });
+  const MarksMax = (
+    Object.values(marks).length === 0)
+    ? 0
+    : Object.values(marks).reduce((a, b) => (a.length > b.length ? a : b)).length;
   // const [mode, setMode] = useState('default');
   const [mode, setMode] = useState('custom');
   const [marksMin, setMarksMin] = useState(0);
@@ -179,7 +184,7 @@ const Options = (props) => {
         {renderRadioButtons()}
       </View>
       {renderCustomSettings()}
-      {/* <View style={{  backgroundColor: 'green' }}>
+      <View style={{}}>
         <Button
           color={Color.green2}
           style={{ margin: 15 }}
@@ -188,19 +193,7 @@ const Options = (props) => {
         >
           Start
         </Button>
-      </View> */}
-      <Button
-        color="powderblue"
-        title="STATE"
-        onPress={() => {
-          console.log(account.content?.[deckID]?.marks);
-          console.log(Object.values(account.content?.[deckID]?.marks));
-          console.log(Object.values(account.content?.[deckID]?.marks).reduce((a, b) => {
-            console.log({ a: a.length, b: b.length });
-            return (a.length > b.length ? a.length : b.length);
-          }));
-        }}
-      />
+      </View>
     </View>
   );
 };

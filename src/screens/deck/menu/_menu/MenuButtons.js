@@ -8,8 +8,8 @@ import { useRecoilValue } from 'recoil';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
-import { decksGeneral } from '../../../../config/deck/Deck';
-import { account } from '../../../../config/account/Account';
+import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
+import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
 import { func } from '../../../../config/Const';
 
 const iconsize = 30;
@@ -53,11 +53,10 @@ const MenuButtons = (props) => {
   const decksGeneralState = useRecoilValue(decksGeneral);
   // state
   const [visible, setVisible] = useState(false);
-  const [bookmarked, setBookmarked] = useState(account.content?.[deckID]?.bookmark);
-
+  const [bookmarked, setBookmarked] = useState(getAccountContent(deckID).bookmark);
   //
-  const deckGeneral = decksGeneralState[deckID];
-  const identifyVisible = (deckGeneral.user === account?.general?.userID);
+  const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
+  const identifyVisible = (deckGeneral.user === getAccountGeneral().userID);
 
   const renderColumn = (buttons) => (
     <View style={style.container}>
@@ -171,9 +170,21 @@ const MenuButtons = (props) => {
         },
         {
           title: 'Import',
-          icon: () => <Icon.Feather name="download" size={iconsize} style={style.icon} />,
-          onPress: () => func.alert('import'),
-          textStyle: {},
+          icon: () => (
+            <Icon.Feather
+              name="download"
+              size={iconsize}
+              style={[style.icon, { color: identifyVisible ? Color.black : Color.gray3 }]}
+            />
+          ),
+          onPress: () => () => {
+            if (identifyVisible) {
+              navigation.navigate('import', { deckID });
+            } else {
+              func.alert('You cannot import data to this deck.');
+            }
+          },
+          textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
           flex: 1,
         },
         {

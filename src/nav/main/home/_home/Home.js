@@ -12,8 +12,9 @@ import { useRecoilValue } from 'recoil';
 import AddButton from './AddButton';
 
 import Carousel from '../../../../components/deck/carousel/Carousel';
-import { decksGeneral } from '../../../../config/deck/Deck';
-import { account } from '../../../../config/account/Account';
+import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
+import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
+import { deck } from '../../../../config/Const';
 // import { header } from '../../../../config/Const';
 
 const style = StyleSheet.create({
@@ -43,11 +44,12 @@ const Home = (props) => {
   // props
   const { navigation } = props;
   // recoil
-  const generals = useRecoilValue(decksGeneral);
+  const general = useRecoilValue(decksGeneral);
 
-  const allDeckIDs = Object.keys(generals);
-  const myDeckIDs = allDeckIDs.filter((deckID) => generals[deckID].user === account.general.userID);
-  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => account.content?.[deckID]?.bookmark ?? false);
+  const allDeckIDs = Object.keys(general);
+  const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
+  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
+  // const bookmarkDeckIDs = allDeckIDs.filter((deckID) => account.content?.[deckID]?.bookmark ?? false);
 
   const renderRow = ({ title, deckIDs }) => (
     <View>

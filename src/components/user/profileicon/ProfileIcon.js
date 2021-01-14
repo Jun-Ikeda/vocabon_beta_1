@@ -3,8 +3,7 @@ import {
   StyleSheet, View, TouchableOpacity, Image, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { users } from '../../../config/user/User';
-import { func } from '../../../config/Const';
+import { getUserGeneral } from '../../../config/user/User';
 
 const style = StyleSheet.create({
   container: {
@@ -31,8 +30,7 @@ const ProfileIcon = (props) => {
     userID, onPress, size, style: propStyle, color, char, // color, char暫時
   } = props;
   // recoil
-  // const generals = useRecoilValue(usersGeneral);
-  const general = users[userID];
+  const general = getUserGeneral(userID);
   const circle = {
     height: size, width: size, borderRadius: size / 2,
   };
