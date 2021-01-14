@@ -36,7 +36,7 @@ module.exports = {
     ],
     'no-plusplus': ['off'],
     'import/no-cycle': ['off'],
-    'max-len': [1, 120, 4],
+    'max-len': [1, 200, 4],
 
     'unused-imports/no-unused-imports': 'off',
 

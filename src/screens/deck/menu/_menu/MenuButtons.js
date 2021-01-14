@@ -177,7 +177,7 @@ const MenuButtons = (props) => {
               style={[style.icon, { color: identifyVisible ? Color.black : Color.gray3 }]}
             />
           ),
-          onPress: () => () => {
+          onPress: () => {
             if (identifyVisible) {
               navigation.navigate('import', { deckID });
             } else {
@@ -220,7 +220,7 @@ const MenuButtons = (props) => {
         {
           title: 'Delete',
           icon: () => <Icon.FontAwesome name="trash" size={iconsize} style={[style.icon, { color: Color.cud.pink }]} />,
-          onPress: () => func.alert('Are you sure to delete this deck?'),
+          onPress: () => func.alert('Caution', 'Are you sure to delete this deck?', [{ text: 'OK', onPress: () => {} }, { text: 'Cancel', onPress: () => {} }]),
           textStyle: { color: Color.cud.pink },
           flex: 2,
         },

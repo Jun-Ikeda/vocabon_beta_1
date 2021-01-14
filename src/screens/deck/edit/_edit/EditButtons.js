@@ -25,19 +25,14 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     height: 60,
     paddingHorizontal: 20,
-    // borderWidth: 1,
+    borderWidth: 1,
   },
   button: {
     width: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  clearbutton: {
-    position: 'absolute',
-    marginLeft: 20,
-    borderWidth: 1,
-    margin: 60,
-  },
+
   trashbutton: {
     width: 60,
     alignItems: 'center',
@@ -59,20 +54,29 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   textinput: {
-    height: 30,
-    lineHeight: 30,
+    flex: 1,
+    // height: 30,
+    // lineHeight: 30,
     fontSize: 18,
     backgroundColor: 'white',
     borderRadius: 5,
-    width: '80%',
+    // width: '100%',
     paddingLeft: 10,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   textinputContainer: {
-    borderWidth: 1,
+    padding: 5,
+    // borderWidth: 1,
+    // borderColor: 'teal',
     justifyContent: 'center',
-    alignItems: 'center',
-    width: '60%',
+    // alignItems: 'center',
+    // width: '60%',
+    flex: 1,
+  },
+  clearbutton: {
+    position: 'absolute',
+    // borderWidth: 1,
+    right: 20,
   },
 });
 
@@ -99,20 +103,18 @@ const EditButtons = (props) => {
       );
     }
     return (
-      <View>
-        <View style={style.textinputContainer}>
-          <TextInput
-            value={searchText}
-            onChangeText={setSearchText}
-            style={style.textinput}
-            mode="outlined"
-          />
-        </View>
+      <View style={style.textinputContainer}>
+        <TextInput
+          value={searchText}
+          onChangeText={setSearchText}
+          style={style.textinput}
+          mode="outlined"
+        />
         <TouchableOpacity
           style={style.clearbutton}
           onPress={() => setSearchText('')}
         >
-          <Icon.Feather name="x" size={iconSize} />
+          <Icon.Feather name="delete" size={iconSize} />
         </TouchableOpacity>
       </View>
     );
@@ -127,8 +129,22 @@ const EditButtons = (props) => {
           // setDeleteVisible(!deleteVisible);
           setMode('delete');
         } else if (selectedVocabIDs.length !== 0) {
-          const stringToAlert = `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`;
-          alert(stringToAlert);
+          // const stringToAlert = `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`;
+          alert(
+            `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`,
+            [
+              {
+                text: 'YES',
+                onPress: () => alert('DELETED'),
+              },
+              {
+                text: 'NO',
+                onPress: () => alert('CANCELED'),
+                style: 'cancel',
+              },
+            ],
+            { cancelable: false },
+          );
         } else {
           alert(':V');
         }

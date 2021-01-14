@@ -39,7 +39,7 @@ const renderVocabList = () => {
       //   term: true, definition: true, exampleD: true, exampleT: true, synonym: true,
       // }}
       itemVisible={(vocab) => ({ term: true, definition: true, synonym: expandVocabIDs.includes(vocab.key) })}
-      labelVisible
+      // labelVisible
       // renderCard={({ item }) => <Text>{item.value.term}</Text>}
       // onPressCard={(vocab) => func.alertConsole(vocab.value.term)}
       state={[expandVocabIDs, setExpandVocabIDs]}

@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
-import { deck, func } from '../../../../config/Const';
 import VocabList from '../../../../components/deck/list/VocabList';
 
 const backgroundColor = Color.white1;
@@ -48,12 +47,7 @@ const style = StyleSheet.create({
     paddingBottom: 10,
   },
   editButton: {
-    // width: 60,
     padding: 20,
-    // position: 'absolute',
-    // right: 0,
-    // right: 60,
-    // top: 10,
   },
   checkbox: {
     padding: 12.5,
