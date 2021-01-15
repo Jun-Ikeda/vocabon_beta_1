@@ -111,6 +111,19 @@ const EditList = (props) => {
             exampleD: selectedVocabIDs.includes(vocab.key),
             cf: selectedVocabIDs.includes(vocab.key),
           })}
+        itemStyle={{
+          term: { fontWeight: 'bold' },
+          definition: { fontWeight: 'bold' },
+        }}
+        labelVisible={{
+          synonym: true,
+          antonym: true,
+          prefix: true,
+          suffix: true,
+          exampleT: true,
+          exampleD: true,
+          cf: true,
+        }}
         state={[selectedVocabIDs, setSelectedVocabIDs]}
         renderCardRight={(vocab) => {
           if (mode === 'edit') {

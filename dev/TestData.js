@@ -5,8 +5,10 @@ export const Deck = {
   '7NCodht%}0': {
     general: {
       title: 'Test Deck 1',
+      description: '',
       user: 'WUgzMNtDDAap5TkAXZbrPwF97Bu2',
       language: { term: 'English', definition: 'Japanese' },
+      num: 4,
       thumbnail: {
         uri: 'photo-1515705576963-95cad62945b6?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8bWlsa3klMjB3YXl8ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60',
         user: { link: 'https://unsplash.com/@tobias_markmeyer', name: 'Tobias Markmeyer' },
@@ -62,8 +64,10 @@ export const Deck = {
   '-BiGIisZb*': {
     general: {
       title: 'Test Deck 2',
+      description: '',
       user: 'KgZLhZvgTiTSYJ7VBFbfutjjtUE2',
       language: { term: 'French', definition: 'Japanese' },
+      num: 3,
       thumbnail: {
         uri: 'photo-1574709057920-a44a16a9ab1a?ixlib=rb-1.2.1&q=…ysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEzNzU4MX0',
         user: { link: 'https://unsplash.com/@tobias_markmeyer', name: 'Tobias Markmeyer' },
@@ -108,8 +112,10 @@ export const Deck = {
   rUiKQdnLb9: {
     general: {
       title: 'Test Deck 3',
+      description: '',
       user: 'WUgzMNtDDAap5TkAXZbrPwF97Bu2',
       language: { term: 'Chinese', definition: 'Japanese' },
+      num: 4,
       thumbnail: {
         uri: 'photo-1574709057920-a44a16a9ab1a?ixlib=rb-1.2.1&q=…ysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEzNzU4MX0',
         user: { link: 'https://unsplash.com/@tobias_markmeyer', name: 'Tobias Markmeyer' },
@@ -165,8 +171,10 @@ export const Deck = {
   'xn>EfhY:2*': {
     general: {
       title: 'Test Deck 4',
+      description: '',
       user: 'KgZLhZvgTiTSYJ7VBFbfutjjtUE2',
       language: { term: 'Spanish', definition: 'Japanese' },
+      num: 3,
       thumbnail: {
         uri: 'photo-1574709057920-a44a16a9ab1a?ixlib=rb-1.2.1&q=…ysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEzNzU4MX0',
         user: { link: 'https://unsplash.com/@tobias_markmeyer', name: 'Tobias Markmeyer' },
@@ -211,8 +219,10 @@ export const Deck = {
   'Q38xR=rnKc': {
     general: {
       title: 'Test Deck 5',
+      description: '',
       user: 'WUgzMNtDDAap5TkAXZbrPwF97Bu2',
       language: { term: 'Korean', definition: 'Japanese' },
+      num: 4,
       thumbnail: {
         uri: 'photo-1574709057920-a44a16a9ab1a?ixlib=rb-1.2.1&q=…ysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjEzNzU4MX0',
         user: { link: 'https://unsplash.com/@tobias_markmeyer', name: 'Tobias Markmeyer' },

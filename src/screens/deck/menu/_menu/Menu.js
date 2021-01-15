@@ -5,12 +5,14 @@ import {
 import PropTypes from 'prop-types';
 
 import { useRecoilValue } from 'recoil';
+import { acos } from 'react-native-reanimated';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
-import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
+import { getAccountContent } from '../../../../config/account/Account';
 
 // import DeckMenuButtons from './DeckMenuButtons';
 // import DeckMenuUtilities from './DeckMenuUtilities';
@@ -58,6 +60,8 @@ const Menu = (props) => {
   const decksGeneralState = useRecoilValue(decksGeneral);
   //
   const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
+  const accountContent = getAccountContent(deckID);
+  // const deckContent = getDeckContent(deckID);
 
   const renderThumbnail = () => (
     <View>
@@ -70,7 +74,7 @@ const Menu = (props) => {
   );
 
   const renderContent = () => (
-    <MenuUtility deckGeneral={deckGeneral} />
+    <MenuUtility accountContent={accountContent} deckGeneral={deckGeneral} />
   );
 
   const renderButtons = () => (

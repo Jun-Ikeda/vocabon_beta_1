@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  View, Text, TouchableOpacity, Linking, StyleSheet,
+  View, Text, TouchableOpacity, Linking, StyleSheet, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
@@ -47,9 +47,13 @@ const styles = StyleSheet.create({
  * ```
  */
 const MenuUtility = (props) => {
-  const { deckGeneral } = props;
+  // props
+  const { deckGeneral, accountContent } = props;
+  // state
+  const [expand, setExpand] = useState(false);
+  //
   const {
-    user, title, language, thumbnail,
+    user, title, language, thumbnail, num, description,
   } = deckGeneral;
 
   const renderTitle = () => (
@@ -60,22 +64,38 @@ const MenuUtility = (props) => {
     </View>
   );
 
-  const renderLanguages = () => (
-    <View style={{ flex: 1 }}>
-      <Text>
-        Definition in
-        <Text style={styles.languageBold}>
-          {` ${language.definition}`}
-        </Text>
-      </Text>
-      <Text>
-        Term in
-        <Text style={styles.languageBold}>
-          {` ${language.term}`}
-        </Text>
-      </Text>
-    </View>
-  );
+  const renderLanguages = () => {
+    const langs = [
+      { title: 'Definition in ', value: language.definition },
+      { title: 'Term in ', value: language.term },
+    ];
+    return (
+      <View style={{ flex: 1 }}>
+        {langs.map((lang) => (
+          <Text>
+            {lang.title}
+            <Text style={styles.languageBold}>{lang.value}</Text>
+          </Text>
+        ))}
+        <TouchableOpacity onPress={() => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setExpand(!expand);
+        }}
+        >
+          <Text style={{ color: Color.gray2 }}>{expand ? 'Close' : 'More'}</Text>
+        </TouchableOpacity>
+        {expand
+          ? (
+            <View>
+              <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
+              <Text>{`${num} terms`}</Text>
+              <Text>{`${accountContent.play.length} times play`}</Text>
+            </View>
+          )
+          : null}
+      </View>
+    );
+  };
 
   const renderIcon = () => (
     <ProfileIcon userID={user} size={45} />
@@ -110,6 +130,7 @@ const MenuUtility = (props) => {
 
 MenuUtility.propTypes = {
   deckGeneral: PropTypes.object.isRequired,
+  accountContent: PropTypes.object.isRequired,
 };
 
 MenuUtility.defaultProps = {

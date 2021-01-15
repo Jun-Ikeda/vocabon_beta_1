@@ -13,7 +13,7 @@ const style = StyleSheet.create({
   container: {
     backgroundColor: Color.white1,
     marginHorizontal: '5%',
-    marginVertical: '15%',
+    // marginVertical: '15%',
     borderRadius: 10,
   },
   contentContainer: {
@@ -145,7 +145,7 @@ const EditHelp = (props) => {
         isVisible={isVisible}
         setVisible={setVisible}
         renderMenu={renderMenu}
-        containerStyle={{ /* alignItems: 'center', justifyContent: 'center' */ }}
+        containerStyle={{ /* alignItems: 'center', */ justifyContent: 'center' }}
       />
     </Portal>
   );

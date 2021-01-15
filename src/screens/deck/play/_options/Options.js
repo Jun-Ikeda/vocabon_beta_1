@@ -4,9 +4,10 @@ import {
 } from 'react-native';
 import { RadioButton, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
-// import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import NumericInput from 'react-native-numeric-input';
+import RangeSlider from 'react-native-range-slider-expo';
 
+import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
@@ -25,6 +26,9 @@ const style = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+  },
+  title: {
+    justifyContent: 'center', padding: 20, paddingBottom: 10, fontSize: 20,
   },
 });
 
@@ -53,64 +57,40 @@ const Options = (props) => {
   const AntonymMax = getMax(content, 'antonym');
 
   const [mode, setMode] = useState('custom');
-  const [marksMin, setMarksMin] = useState(0);
-  const [marksMax, setMarksMax] = useState(MarksMax);
-  const [examplesMin, setExamplesMin] = useState(0);
-  const [examplesMax, setExamplesMax] = useState(ExampleMax);
-  const [synonymsMin, setSynonymsMin] = useState(0);
-  const [synonymsMax, setSynonymsMax] = useState(SynonymMax);
-  const [antonymsMin, setAntonymsMin] = useState(0);
-  const [antonymsMax, setAntonymsMax] = useState(AntonymMax);
+  const [markRange, setMarkRange] = useState({ min: 0, max: MarksMax });
+  const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
+  const [synonymRange, setSynonymRange] = useState({ min: 0, max: SynonymMax });
+  const [antonymRange, setAntonymRange] = useState({ min: 0, max: AntonymMax });
+
+  const validVocabIDs = func.convertObjectToArray(content).filter((vocab) => {
+    const inMarksRange = marks[vocab.key].length >= markRange.min && marks[vocab.key].length <= markRange.max;
+    const inExampleRange = vocab.value.exampleT.length >= exampleRange.min && vocab.value.exampleT.length <= exampleRange.max;
+    const inSynonymRange = vocab.value.synonym.length >= synonymRange.min && vocab.value.synonym.length <= synonymRange.max;
+    const inAntonymRange = vocab.value.antonym.length >= synonymRange.min && vocab.value.antonym.length <= synonymRange.max;
+    return inMarksRange && inExampleRange && inSynonymRange && inAntonymRange;
+  }).map((vocab) => vocab.key);
 
   const renderCustomSettings = () => {
     const items = [
       {
         title: 'Marks',
         range: [0, MarksMax],
-        valueMin: marksMin,
-        valueMax: marksMax,
-        setStateMin: setMarksMin,
-        setStateMax: setMarksMax,
+        state: [markRange, setMarkRange],
       },
       {
         title: 'Examples',
         range: [0, ExampleMax],
-        valueMin: examplesMin,
-        valueMax: examplesMax,
-        setStateMin: setExamplesMin,
-        setStateMax: setExamplesMax,
+        state: [exampleRange, setExampleRange],
       },
       {
         title: 'Synonyms',
         range: [0, SynonymMax],
-        valueMin: synonymsMin,
-        valueMax: synonymsMax,
-        setStateMin: setSynonymsMin,
-        setStateMax: setSynonymsMax,
+        state: [synonymRange, setSynonymRange],
       },
       {
         title: 'Antonyms',
         range: [0, AntonymMax],
-        valueMin: antonymsMin,
-        valueMax: antonymsMax,
-        setStateMin: setAntonymsMin,
-        setStateMax: setAntonymsMax,
-      },
-      {
-        title: 'Antonyms',
-        range: [0, AntonymMax],
-        valueMin: antonymsMin,
-        valueMax: antonymsMax,
-        setStateMin: setAntonymsMin,
-        setStateMax: setAntonymsMax,
-      },
-      {
-        title: 'Antonyms',
-        range: [0, AntonymMax],
-        valueMin: antonymsMin,
-        valueMax: antonymsMax,
-        setStateMin: setAntonymsMin,
-        setStateMax: setAntonymsMax,
+        state: [antonymRange, setAntonymRange],
       },
     ];
     if (mode === 'custom') {
@@ -119,43 +99,16 @@ const Options = (props) => {
           <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by ...</Text>
           {items.map((item) => (
             <View key={item.title.toLowerCase()}>
-              <Text style={{
-                justifyContent: 'center', padding: 20, paddingBottom: 10, fontSize: 20,
-              }}
-              >
+              <Text style={style.title}>
                 {item.title}
-                {' '}
-                {item.range[1]}
               </Text>
               <View style={{ flexDirection: 'row' }}>
-                <View style={style.counterBox}>
-                  <Text style={{ justifyContent: 'center', padding: 20, fontSize: 20 }}>Min</Text>
-                  <NumericInput
-                    type="plus-minus"
-                    value={item.valueMin}
-                    minValue={item.range[0]}
-                    maxValue={item.valueMax}
-                    onChange={item.setStateMin}
-                    rounded
-                    rightButtonBackgroundColor={Color.defaultBackground}
-                    leftButtonBackgroundColor={Color.defaultBackground}
-                    totalHeight={60}
-                  />
-                </View>
-                <View style={style.counterBox}>
-                  <Text style={{ padding: 20, fontSize: 20 }}>Max</Text>
-                  <NumericInput
-                    type="plus-minus"
-                    value={item.valueMax}
-                    minValue={item.valueMin}
-                    maxValue={item.range[1]}
-                    onChange={item.setStateMax}
-                    rounded
-                    rightButtonBackgroundColor={Color.defaultBackground}
-                    leftButtonBackgroundColor={Color.defaultBackground}
-                    totalHeight={60}
-                  />
-                </View>
+                <RangeSlider
+                  min={item.range[0]}
+                  max={item.range[1]}
+                  fromValueOnChange={(value) => item.state[1]({ ...item.state[0], min: value })}
+                  toValueOnChange={(value) => item.state[1]({ ...item.state[0], max: value })}
+                />
               </View>
             </View>
           ))}
@@ -172,14 +125,24 @@ const Options = (props) => {
     >
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <RadioButton value="default" style={{ right: 0, left: 0 }} />
-        <Text style={{ fontSize: 20, alignSelf: 'center' }}>Default</Text>
+        <Text style={{ flex: 1, fontSize: 20, alignSelf: 'center' }}>Default</Text>
+        <Text style={{ fontSize: 20, padding: 5 }}>{Object.values(content).length}</Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <RadioButton value="custom" style={{ right: 0, left: 0 }} />
-        <Text style={{ fontSize: 20, alignSelf: 'center' }}>Custom</Text>
+        <Text style={{ flex: 1, fontSize: 20, alignSelf: 'center' }}>Custom</Text>
+        <Text style={{ fontSize: 20, padding: 5 }}>{validVocabIDs.length}</Text>
       </View>
     </RadioButton.Group>
   );
+
+  const start = () => {
+    if (mode === 'custom') {
+      navigation.navigate('play', { deckID, validVocabIDs });
+    } else if (mode === 'default') {
+      navigation.navigate('play', { deckID });
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -192,7 +155,8 @@ const Options = (props) => {
           color={Color.green2}
           style={{ margin: 15 }}
           mode="contained"
-          onPress={() => navigation.navigate('play', { deckID })}
+          onPress={start}
+          disabled={mode === 'custom' && validVocabIDs.length === 0}
         >
           Start
         </Button>

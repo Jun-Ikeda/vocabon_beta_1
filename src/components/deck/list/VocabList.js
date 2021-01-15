@@ -42,7 +42,7 @@ const VocabList = (props) => {
     renderCard,
     onPressCard,
     cardContainer,
-    labelVisible,
+    labelVisible: labelVisibleProps,
     itemVisible,
     renderCardRight,
     textStyle,
@@ -53,6 +53,17 @@ const VocabList = (props) => {
   const onPressCardValid = !(onPressCard.toString() === 'function onPressCard() {}');
   const stateValid = !(state.length === 0);
   const isButton = onPressCardValid || stateValid;
+  const labelVisible = (typeof labelVisibleProps === 'boolean') ? {
+    term: true,
+    definition: true,
+    synonym: true,
+    antonym: true,
+    prefix: true,
+    suffix: true,
+    exampleT: true,
+    exampleD: true,
+    cf: true,
+  } : labelVisibleProps;
 
   const toggleSelect = (vocabIDsState, vocabID) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -74,7 +85,7 @@ const VocabList = (props) => {
           {Object.keys(value).map((item) => {
             const isVisible = (typeof itemVisible === 'function') ? itemVisible(vocab)[item] : itemVisible[item];
             if (isVisible) {
-              if (labelVisible) {
+              if (labelVisible[item]) {
                 return <Text style={[style.text, textStyle, itemStyle[item]]}>{`${item}: ${value[item]}`}</Text>;
               }
               return <Text style={[style.text, textStyle, itemStyle[item]]}>{value[item]}</Text>;
@@ -116,7 +127,20 @@ VocabList.propTypes = {
   cardContainer: PropTypes.object,
   renderCard: PropTypes.func,
   onPressCard: PropTypes.func,
-  labelVisible: PropTypes.bool,
+  labelVisible: PropTypes.oneOfType([
+    PropTypes.shape({
+      term: PropTypes.bool,
+      definition: PropTypes.bool,
+      synonym: PropTypes.bool,
+      antonym: PropTypes.bool,
+      prefix: PropTypes.bool,
+      suffix: PropTypes.bool,
+      exampleT: PropTypes.bool,
+      exampleD: PropTypes.bool,
+      cf: PropTypes.bool,
+    }),
+    PropTypes.bool,
+  ]),
   itemVisible: PropTypes.oneOfType([
     PropTypes.shape({
       term: PropTypes.bool,
