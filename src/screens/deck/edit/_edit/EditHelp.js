@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { Portal } from 'react-native-paper';
 
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
@@ -139,12 +140,14 @@ const EditHelp = (props) => {
   );
 
   return (
-    <PopUpMenu
-      isVisible={isVisible}
-      setVisible={setVisible}
-      renderMenu={renderMenu}
-      containerStyle={{ /* alignItems: 'center', justifyContent: 'center' */ }}
-    />
+    <Portal>
+      <PopUpMenu
+        isVisible={isVisible}
+        setVisible={setVisible}
+        renderMenu={renderMenu}
+        containerStyle={{ /* alignItems: 'center', justifyContent: 'center' */ }}
+      />
+    </Portal>
   );
 };
 

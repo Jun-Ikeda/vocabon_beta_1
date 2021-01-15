@@ -180,8 +180,8 @@ export const Deck = {
         antonym: ['decrease', 'diminish', 'shrink'],
         prefix: ['in'],
         suffix: ['crease'],
-        exampleT: ['the number increased'],
-        exampleD: ['数が増える'],
+        exampleT: ['the number increased', 'increse drastically'],
+        exampleD: ['数が増える', '劇的に増える'],
         cf: [],
       },
       '5::oT=-v': {

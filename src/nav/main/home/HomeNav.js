@@ -23,7 +23,7 @@ import Results from '../../../screens/deck/play/_results/Results';
 import Edit from '../../../screens/deck/edit/_edit/Edit';
 import Export from '../../../screens/deck/export/_export/Export';
 import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
-import Import from '../../../screens/deck/import/Import';
+import Import, { ImportMenu } from '../../../screens/deck/import/Import';
 
 import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
 
@@ -143,6 +143,7 @@ const HomeNav = () => (
       component={Import}
       options={{
         headerTitle: 'Import',
+        headerRight: () => <ImportMenu />,
       }}
     />
   </Stack.Navigator>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View, StyleSheet, ScrollView, TouchableOpacity, Text,
 } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { Portal, TextInput } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
@@ -188,11 +188,13 @@ const EditContent = (props) => {
   );
 
   return (
-    <PopUpMenu
-      isVisible={isVisible}
-      renderMenu={renderMenu}
-      overlayStyle={style.overlayStyle}
-    />
+    <Portal>
+      <PopUpMenu
+        isVisible={isVisible}
+        renderMenu={renderMenu}
+        overlayStyle={style.overlayStyle}
+      />
+    </Portal>
   );
 };
 

@@ -6,12 +6,18 @@ import { RadioButton, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 // import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import NumericInput from 'react-native-numeric-input';
+
 import Color from '../../../../config/Color';
 import { getAccountContent } from '../../../../config/account/Account';
+import { getDeckContent } from '../../../../config/deck/Deck';
 
-const ExamplesMax = 3;
-const SynonymsMax = 5;
-const AntonymsMax = 5;
+const getMax = (object, path = '') => {
+  const array = Object.values(object);
+  if (array.length === 0) return 0;
+  return (path === '')
+    ? array.reduce((a, b) => (a.length > b.length ? a : b)).length
+    : array.reduce((a, b) => (a[path].length > b[path].length ? a : b))[path].length;
+};
 
 const style = StyleSheet.create({
   counterBox: {
@@ -34,30 +40,27 @@ const style = StyleSheet.create({
  *
  * ```
  */
-
 const Options = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // state
   const { marks } = getAccountContent(deckID);
-  // const MarksMax = (Object.values(marks).length === 0) ? 0 : Object.values(marks).reduce((a, b) => {
-  //   console.log((a.length > b.length ? a.length : b.length));
-  //   return (a.length > b.length ? a.length : b.length);
-  // });
-  const MarksMax = (
-    Object.values(marks).length === 0)
-    ? 0
-    : Object.values(marks).reduce((a, b) => (a.length > b.length ? a : b)).length;
-  // const [mode, setMode] = useState('default');
+  const content = getDeckContent(deckID);
+
+  const MarksMax = getMax(marks);
+  const ExampleMax = getMax(content, 'exampleT');
+  const SynonymMax = getMax(content, 'synonym');
+  const AntonymMax = getMax(content, 'antonym');
+
   const [mode, setMode] = useState('custom');
   const [marksMin, setMarksMin] = useState(0);
   const [marksMax, setMarksMax] = useState(MarksMax);
   const [examplesMin, setExamplesMin] = useState(0);
-  const [examplesMax, setExamplesMax] = useState(ExamplesMax);
+  const [examplesMax, setExamplesMax] = useState(ExampleMax);
   const [synonymsMin, setSynonymsMin] = useState(0);
-  const [synonymsMax, setSynonymsMax] = useState(SynonymsMax);
+  const [synonymsMax, setSynonymsMax] = useState(SynonymMax);
   const [antonymsMin, setAntonymsMin] = useState(0);
-  const [antonymsMax, setAntonymsMax] = useState(AntonymsMax);
+  const [antonymsMax, setAntonymsMax] = useState(AntonymMax);
 
   const renderCustomSettings = () => {
     const items = [
@@ -71,7 +74,7 @@ const Options = (props) => {
       },
       {
         title: 'Examples',
-        range: [0, ExamplesMax],
+        range: [0, ExampleMax],
         valueMin: examplesMin,
         valueMax: examplesMax,
         setStateMin: setExamplesMin,
@@ -79,7 +82,7 @@ const Options = (props) => {
       },
       {
         title: 'Synonyms',
-        range: [0, SynonymsMax],
+        range: [0, SynonymMax],
         valueMin: synonymsMin,
         valueMax: synonymsMax,
         setStateMin: setSynonymsMin,
@@ -87,7 +90,7 @@ const Options = (props) => {
       },
       {
         title: 'Antonyms',
-        range: [0, AntonymsMax],
+        range: [0, AntonymMax],
         valueMin: antonymsMin,
         valueMax: antonymsMax,
         setStateMin: setAntonymsMin,
@@ -95,7 +98,7 @@ const Options = (props) => {
       },
       {
         title: 'Antonyms',
-        range: [0, AntonymsMax],
+        range: [0, AntonymMax],
         valueMin: antonymsMin,
         valueMax: antonymsMax,
         setStateMin: setAntonymsMin,
@@ -103,7 +106,7 @@ const Options = (props) => {
       },
       {
         title: 'Antonyms',
-        range: [0, AntonymsMax],
+        range: [0, AntonymMax],
         valueMin: antonymsMin,
         valueMax: antonymsMax,
         setStateMin: setAntonymsMin,

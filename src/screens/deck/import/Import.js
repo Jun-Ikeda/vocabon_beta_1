@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList,
 } from 'react-native';
+import { Button, Divider, Menu } from 'react-native-paper';
 
-import { Button } from 'react-native-paper';
 import Color from '../../../config/Color';
 
 import Icon from '../../../components/Icon';
@@ -35,6 +35,16 @@ const style = StyleSheet.create({
   },
   expandIcon: {
     fontSize: 24,
+  },
+  cardContainer: {
+    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+    padding: 15,
+    backgroundColor: Color.white1,
+  },
+  emptyText: {
+    fontStyle: 'italic',
   },
 });
 
@@ -93,9 +103,17 @@ const Import = (props) => {
     <FlatList
       // style={inputExpand ? { position: 'absolute', elevation: 0 } : null}
       data={input.split(cardDelimiter)}
-      renderItem={({ item: card }) => (
-        <View style={{ padding: 10 }}>
-          {(card.split(itemDelimiter).map((_item, index) => <Text>{`item${index + 1}: ${_item}`}</Text>))}
+      renderItem={({ item: card, index: cardIndex }) => (
+        <View style={style.cardContainer}>
+          <Text>{`Card${cardIndex + 1}: `}</Text>
+          {(card.split(itemDelimiter).map((item, itemIndex) => (
+            <Text>
+              {`item${itemIndex + 1}: `}
+              {(item === '')
+                ? <Text style={style.emptyText}>empty</Text>
+                : <Text>{item}</Text>}
+            </Text>
+          )))}
         </View>
       )}
     />
@@ -111,7 +129,7 @@ const Import = (props) => {
         mode="contained"
         onPress={() => alert('aaa')}
       >
-        Compile
+        Import
       </Button>
     </View>
   );
@@ -127,3 +145,28 @@ const Import = (props) => {
 };
 
 export default Import;
+
+export const ImportMenu = () => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <Menu
+      visible={showMenu}
+      onDismiss={() => setShowMenu(false)}
+      anchor={(
+        <TouchableOpacity onPress={() => setShowMenu(true)}>
+          <Icon.MaterialCommunityIcons
+            name="earth"
+            size={30}
+            style={{ color: 'black' }}
+          />
+        </TouchableOpacity>
+        )}
+    >
+      <Menu.Item onPress={() => {}} title="Item 1" />
+      <Menu.Item onPress={() => {}} title="Item 2" />
+      <Divider />
+      <Menu.Item onPress={() => {}} title="Item 3" />
+    </Menu>
+  );
+};

@@ -1,8 +1,9 @@
 /* eslint-disable no-use-before-define */
 import React, { useState } from 'react';
 import {
-  Button, TouchableOpacity, View, Text,
+  Button, TouchableOpacity, View, Text, StyleSheet,
 } from 'react-native';
+import RangeSlider, { Slider } from 'react-native-range-slider-expo';
 import VocabList from '../src/components/deck/list/VocabList';
 import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
 import { account } from '../src/config/account/Account';
@@ -20,8 +21,9 @@ const Demo = (props) => (
     backgroundColor: Color.defaultBackground,
   }}
   >
-    {renderProfileIcon()}
+    {/* {renderProfileIcon()} */}
     {/* {renderVocabList()} */}
+    {renderRangeBar()}
   </View>
 );
 
@@ -59,3 +61,49 @@ const renderVocabList = () => {
 const renderProfileIcon = () => PastelColors.map((color) => (
   <ProfileIcon char="V" color={color} onPress={() => console.log({ color })} />
 ));
+
+const renderRangeBar = () => {
+  const [fromValue, setFromValue] = useState(0);
+  const [toValue, setToValue] = useState(0);
+  const [value, setValue] = useState(0);
+  return (
+    <View style={styles.container}>
+      <View>
+        <RangeSlider
+          min={5}
+          max={25}
+          fromValueOnChange={(value) => setFromValue(value)}
+          toValueOnChange={(value) => setToValue(value)}
+          initialFromValue={11}
+        />
+        <Text>
+          from value:
+          {fromValue}
+        </Text>
+        <Text>
+          to value:
+          {toValue}
+        </Text>
+      </View>
+      <View>
+        <Slider
+          min={0}
+          max={40}
+          step={4}
+          valueOnChange={(value) => setValue(value)}
+          initialValue={12}
+          knobColor="red"
+          valueLabelsBackgroundColor="black"
+          inRangeBarColor="purple"
+          outOfRangeBarColor="orange"
+        />
+        <Text>
+          value:
+          {value}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({});
