@@ -69,6 +69,8 @@ const MenuUtility = (props) => {
       { title: 'Definition in ', value: language.definition },
       { title: 'Term in ', value: language.term },
     ];
+    const playLength = accountContent.play.length;
+    const recentMarks = Object.values(accountContent.marks).filter((mark) => mark.includes(playLength - 1)).length;
     return (
       <View style={{ flex: 1 }}>
         {langs.map((lang) => (
@@ -89,7 +91,8 @@ const MenuUtility = (props) => {
             <View>
               <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
               <Text>{`${num} terms`}</Text>
-              <Text>{`${accountContent.play.length} times play`}</Text>
+              <Text>{`${playLength} times play`}</Text>
+              <Text>{`${recentMarks}`}</Text>
             </View>
           )
           : null}

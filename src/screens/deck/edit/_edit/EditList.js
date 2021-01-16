@@ -112,8 +112,8 @@ const EditList = (props) => {
             cf: selectedVocabIDs.includes(vocab.key),
           })}
         itemStyle={{
-          term: { fontWeight: 'bold' },
-          definition: { fontWeight: 'bold' },
+          term: { fontSize: 20 },
+          definition: { fontSize: 20 },
         }}
         labelVisible={{
           synonym: true,

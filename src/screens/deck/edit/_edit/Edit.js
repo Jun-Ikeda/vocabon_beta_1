@@ -53,7 +53,9 @@ const Edit = (props) => {
   const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
-    setContent(getDeckContent(deckID));
+    const content2 = getDeckContent(deckID);
+    setContent(content2);
+    alert(JSON.stringify(content2, null, 2));
   }, []);
 
   const renderList = () => (
@@ -98,7 +100,7 @@ const Edit = (props) => {
         {renderList()}
         {/* {deleteVisible ? renderDeleteView() : renderBasicView()} */}
       </View>
-      <Button onPress={() => func.alertConsole(editVocabID)}>aaa</Button>
+      <Button onPress={() => func.alertConsole(content)}>aaa</Button>
       {renderContentPopUp()}
       {renderHelpPopUp()}
     </View>

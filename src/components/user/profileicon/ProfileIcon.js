@@ -34,7 +34,7 @@ const ProfileIcon = (props) => {
   const circle = {
     height: size, width: size, borderRadius: size / 2,
   };
-  const isButton = !(onPress.toString() === 'function onPress() {}');
+  const isButton = !((onPress.toString() === 'function onPress() {}') || (onPress.toString() === 'function (){}'));
 
   const renderColorIcon = () => (
     <View style={[circle, style.color, { backgroundColor: color || general?.icon.color }]}>
@@ -63,15 +63,8 @@ const ProfileIcon = (props) => {
     </TouchableOpacity>
   );
 
-  // try {
-  //   return renderUnTouchable();
-  // } catch (error) {
-  //   return renderTouchable();
-  // }
   return isButton ? renderTouchable() : renderUnTouchable();
 };
-
-// (general?.icon.uri === undefined) ? renderColorIcon() : renderImageIcon()
 
 ProfileIcon.propTypes = {
   userID: PropTypes.string.isRequired,

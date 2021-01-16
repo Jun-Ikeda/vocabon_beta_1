@@ -66,7 +66,7 @@ const Options = (props) => {
     const inMarksRange = marks[vocab.key].length >= markRange.min && marks[vocab.key].length <= markRange.max;
     const inExampleRange = vocab.value.exampleT.length >= exampleRange.min && vocab.value.exampleT.length <= exampleRange.max;
     const inSynonymRange = vocab.value.synonym.length >= synonymRange.min && vocab.value.synonym.length <= synonymRange.max;
-    const inAntonymRange = vocab.value.antonym.length >= synonymRange.min && vocab.value.antonym.length <= synonymRange.max;
+    const inAntonymRange = vocab.value.antonym.length >= antonymRange.min && vocab.value.antonym.length <= antonymRange.max;
     return inMarksRange && inExampleRange && inSynonymRange && inAntonymRange;
   }).map((vocab) => vocab.key);
 
@@ -96,18 +96,24 @@ const Options = (props) => {
     if (mode === 'custom') {
       return (
         <ScrollView style={{ flex: 1, marginVertical: 20 }}>
-          <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by ...</Text>
+          <Text style={{ justifyContent: 'center', fontSize: 20 }}>Filter</Text>
           {items.map((item) => (
             <View key={item.title.toLowerCase()}>
               <Text style={style.title}>
                 {item.title}
               </Text>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ /* flexDirection: 'row' */ paddingHorizontal: 35 }}>
                 <RangeSlider
                   min={item.range[0]}
                   max={item.range[1]}
                   fromValueOnChange={(value) => item.state[1]({ ...item.state[0], min: value })}
                   toValueOnChange={(value) => item.state[1]({ ...item.state[0], max: value })}
+                  styleSize="small"
+                  initialFromValue={item.state[0].min}
+                  initialToValue={item.state[0].max}
+                  fromKnobColor={Color.green2}
+                  toKnobColor={Color.green2}
+                  inRangeBarColor={Color.gray2}
                 />
               </View>
             </View>
@@ -151,6 +157,7 @@ const Options = (props) => {
       </View>
       {renderCustomSettings()}
       <View style={{}}>
+        {mode === 'custom' && validVocabIDs.length === 0 ? <Text>No matched card</Text> : null}
         <Button
           color={Color.green2}
           style={{ margin: 15 }}

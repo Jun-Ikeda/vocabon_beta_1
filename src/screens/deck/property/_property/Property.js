@@ -3,9 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { useRecoilValue } from 'recoil';
 
+import { Button } from 'react-native-paper';
 import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
-import { getDeckContent, getDeckGeneral, decksGeneral } from '../../../../config/deck/Deck';
+import { getDeckGeneral, decksGeneral } from '../../../../config/deck/Deck';
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -32,37 +33,54 @@ const style = StyleSheet.create({
  */
 const Property = (props) => {
   // props
-  const { route: { params: { deckID } } } = props;
+  const { navigation, route: { params: { deckID } } } = props;
   // recoil
   const generals = useRecoilValue(decksGeneral);
   // state
-  // const [general, setGeneral] = useState(decks[deckID].general);
   const general = getDeckGeneral(generals, deckID);
   const [title, setTitle] = useState(general.title);
   const [language, setLanguage] = useState(general.language);
 
+  const renderButton = () => {
+    const isChanged = !((general.title === title) && (general.language === language));
+    const save = () => {
+      navigation.goBack();
+    };
+    return (
+      <View>
+        {isChanged ? null : <Text>Nothing is changed</Text> }
+        <Button mode="contained" onPress={save} disabled={!isChanged}>Save</Button>
+      </View>
+    );
+  };
+
+  const properties = [
+    {
+      title: 'deckname',
+      element: <DeckName setTitle={setTitle} title={title} />,
+    },
+    {
+      title: 'languageselection',
+      element: <LanguageSelection setLanguage={setLanguage} language={language} />,
+    },
+  ];
   return (
     <View>
-      <View style={style.itemContainer}>
-        <View style={style.itemTitleBox}>
-          <Text style={style.itemTitle}>Deck Name</Text>
+      {properties.map((property) => (
+        <View style={style.itemContainer}>
+          <View style={style.itemTitleBox}>
+            <Text style={style.itemTitle}>{property.title}</Text>
+          </View>
+          {property.element}
         </View>
-        <DeckName setTitle={setTitle} title={title} />
-      </View>
-
-      <View style={style.itemContainer}>
-        <View style={style.itemTitleBox}>
-          <Text style={style.itemTitle}>Language</Text>
-        </View>
-        <LanguageSelection setLanguage={setLanguage} language={language} />
-      </View>
-
+      ))}
+      {renderButton()}
     </View>
-
   );
 };
 
 Property.propTypes = {
+  navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 

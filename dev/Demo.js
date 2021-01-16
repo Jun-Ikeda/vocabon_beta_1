@@ -25,9 +25,9 @@ const Demo = (props) => (
   }}
   >
     {/* {renderProfileIcon()} */}
-    {/* {renderVocabList()} */}
+    {renderVocabList()}
     {/* {renderRangeBar()} */}
-    {renderSearchFlatList()}
+    {/* {renderSearchFlatList()} */}
   </View>
 );
 

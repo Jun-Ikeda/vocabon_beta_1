@@ -49,20 +49,20 @@ const VocabList = (props) => {
     itemStyle,
     state,
   } = props;
-  const manuallyRenderCard = !(renderCard.toString() === 'function renderCard() {}');
-  const onPressCardValid = !(onPressCard.toString() === 'function onPressCard() {}');
+  const manuallyRenderCard = !((renderCard.toString() === 'function renderCard() {}') || (renderCard.toString() === 'function (){}'));
+  const onPressCardValid = !((onPressCard.toString() === 'function onPressCard() {}') || (onPressCard.toString() === 'function (){}'));
   const stateValid = !(state.length === 0);
   const isButton = onPressCardValid || stateValid;
   const labelVisible = (typeof labelVisibleProps === 'boolean') ? {
-    term: true,
-    definition: true,
-    synonym: true,
-    antonym: true,
-    prefix: true,
-    suffix: true,
-    exampleT: true,
-    exampleD: true,
-    cf: true,
+    term: labelVisibleProps,
+    definition: labelVisibleProps,
+    synonym: labelVisibleProps,
+    antonym: labelVisibleProps,
+    prefix: labelVisibleProps,
+    suffix: labelVisibleProps,
+    exampleT: labelVisibleProps,
+    exampleD: labelVisibleProps,
+    cf: labelVisibleProps,
   } : labelVisibleProps;
 
   const toggleSelect = (vocabIDsState, vocabID) => {

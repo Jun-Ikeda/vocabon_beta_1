@@ -52,7 +52,7 @@ const PopUpMenu = (props) => {
     onLayout,
     containerStyle,
   } = props;
-  const overlayTouchable = !(setVisible.toString() === 'function setVisible() {}');
+  const overlayTouchable = !((setVisible.toString() === 'function setVisible() {}') || (setVisible.toString() === 'function (){}'));
 
   if (isVisible) {
     return (

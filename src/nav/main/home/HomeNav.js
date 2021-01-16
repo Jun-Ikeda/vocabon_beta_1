@@ -143,7 +143,7 @@ const HomeNav = () => (
       component={Import}
       options={{
         headerTitle: 'Import',
-        headerRight: () => <ImportMenu />,
+        // headerRight: () => <ImportMenu />,
       }}
     />
   </Stack.Navigator>
