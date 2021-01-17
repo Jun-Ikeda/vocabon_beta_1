@@ -52,7 +52,6 @@ export const func = {
       const r = parseInt(hexcolor.substr(1, 2), 16);
       const g = parseInt(hexcolor.substr(3, 2), 16);
       const b = parseInt(hexcolor.substr(5, 2), 16);
-
       return ((((r * 299) + (g * 587) + (b * 114)) / 1000) < 128) ? 'white' : 'black';
     }
     return null;
@@ -82,6 +81,23 @@ export const func = {
     const date = new Date();
     const time = date.getUTCFullYear() + (`00${date.getUTCMonth() + 1}`).slice(-2) + (`00${date.getUTCDate()}`).slice(-2);
     return time;
+  },
+  objectSort: ({ obj }) => {
+    const keys = Object.keys(obj).sort();
+    const map = {};
+    keys.forEach((key) => {
+      let val = obj[key];
+      if (typeof val === 'object') {
+        val = func.objectSort(val);
+      }
+      map[key] = val;
+    });
+    return map;
+  },
+  objectEqual: (obj1, obj2) => {
+    const aJSON = JSON.stringify(func.objectSort({ obj: obj1 }));
+    const bJSON = JSON.stringify(func.objectSort({ obj: obj2 }));
+    return aJSON === bJSON;
   },
 };
 

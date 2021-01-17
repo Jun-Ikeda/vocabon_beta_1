@@ -188,13 +188,13 @@ const EditContent = (props) => {
   );
 
   return (
-    <Portal>
-      <PopUpMenu
-        isVisible={isVisible}
-        renderMenu={renderMenu}
-        overlayStyle={style.overlayStyle}
-      />
-    </Portal>
+  // <Portal>
+    <PopUpMenu
+      isVisible={isVisible}
+      renderMenu={renderMenu}
+      overlayStyle={style.overlayStyle}
+    />
+  // </Portal>
   );
 };
 

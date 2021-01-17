@@ -14,7 +14,7 @@ import EditContent from './EditContent';
 import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 
-import { getDeckContent } from '../../../../config/deck/Deck';
+import { decksContent, getDeckContent } from '../../../../config/deck/Deck';
 
 export const contentState = atom({
   key: 'contentState',
@@ -53,9 +53,7 @@ const Edit = (props) => {
   const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
-    const content2 = getDeckContent(deckID);
-    setContent(content2);
-    alert(JSON.stringify(content2, null, 2));
+    setContent(getDeckContent(deckID));
   }, []);
 
   const renderList = () => (
@@ -90,8 +88,6 @@ const Edit = (props) => {
         <EditButtons
           mode={mode}
           setMode={setMode}
-          // deleteVisible={deleteVisible}
-          // setDeleteVisible={setDeleteVisible}
           searchButtonVisible={searchButtonVisible}
           setSearchButtonVisible={setSearchButtonVisible}
           helpVisible={helpVisible}
@@ -100,7 +96,7 @@ const Edit = (props) => {
         {renderList()}
         {/* {deleteVisible ? renderDeleteView() : renderBasicView()} */}
       </View>
-      <Button onPress={() => func.alertConsole(content)}>aaa</Button>
+      <Button onPress={() => func.alertConsole(editVocabID)}>aaa</Button>
       {renderContentPopUp()}
       {renderHelpPopUp()}
     </View>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList,
+  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList, Alert,
 } from 'react-native';
+import PropTypes from 'prop-types';
+
 import { Button, Divider, Menu } from 'react-native-paper';
 
 import Color from '../../../config/Color';
@@ -28,10 +30,7 @@ const style = StyleSheet.create({
     borderRadius: 10,
   },
   expandButton: {
-    position: 'absolute',
-    bottom: 15,
-    right: 20,
-    // alignSelf: 'flex-end',
+    paddingHorizontal: 5,
   },
   expandIcon: {
     fontSize: 24,
@@ -50,11 +49,11 @@ const style = StyleSheet.create({
 
 const Import = (props) => {
   // props
-  const {} = props;
+  const { navigation } = props;
   // state
-  const [input, setInput] = useState('');
-  const [itemDelimiter, setItemDelimiter] = useState('');
-  const [cardDelimiter, setCardDelimiter] = useState('');
+  const [input, setInput] = useState(/* 'manzana,apple/plátano,banana/uva,grape' */'');
+  const [itemDelimiter, setItemDelimiter] = useState(',');
+  const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
 
   const renderDelimiterInput = () => {
@@ -87,21 +86,37 @@ const Import = (props) => {
         value={input}
         onChangeText={setInput}
       />
-      <TouchableOpacity
-        style={style.expandButton}
-        onPress={() => {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setInputExpand(!inputExpand);
-        }}
+      <View style={{
+        position: 'absolute', bottom: 15, right: 20, flexDirection: 'row',
+      }}
       >
-        <Icon.Ionicons style={style.expandIcon} name={inputExpand ? 'contract' : 'expand'} />
-      </TouchableOpacity>
+        {/* <TouchableOpacity
+          style={style.expandButton}
+          onPress={input === '' ? () => {} : () => Alert.alert(
+            'Caution',
+            'Do you really want to delete all? You cannot undo this action.',
+            [{ text: 'OK', onPress: () => setInput('') }, { text: 'Cancel', onPress: () => {} }],
+            { cancelable: true },
+          )}
+        >
+          <Icon.Feather style={style.expandIcon} name="x" />
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          style={style.expandButton}
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setInputExpand(!inputExpand);
+          }}
+        >
+          <Icon.Ionicons style={style.expandIcon} name={inputExpand ? 'contract' : 'expand'} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   const renderList = () => (
+    // <View style={{ flex: 1 }}>
     <FlatList
-      // style={inputExpand ? { position: 'absolute', elevation: 0 } : null}
       data={input.split(cardDelimiter)}
       renderItem={({ item: card, index: cardIndex }) => (
         <View style={style.cardContainer}>
@@ -116,7 +131,11 @@ const Import = (props) => {
           )))}
         </View>
       )}
+      contentContainerStyle={{
+        paddingBottom: 60,
+      }}
     />
+    // </View>
   );
 
   const renderCompileButton = () => (
@@ -127,7 +146,7 @@ const Import = (props) => {
       <Button
         color={Color.green3}
         mode="contained"
-        onPress={() => alert('aaa')}
+        onPress={() => navigation.goBack()}
       >
         Import
       </Button>
@@ -136,12 +155,18 @@ const Import = (props) => {
 
   return (
     <View style={style.container}>
-      {inputExpand ? null : renderDelimiterInput()}
-      {renderInput()}
-      {inputExpand ? null : renderList()}
+      <View style={{ flex: 1 }}>
+        {inputExpand ? null : renderDelimiterInput()}
+        {renderInput()}
+        {inputExpand ? null : renderList()}
+      </View>
       {inputExpand ? null : renderCompileButton()}
     </View>
   );
+};
+
+Import.propTypes = {
+  navigation: PropTypes.object.isRequired,
 };
 
 export default Import;

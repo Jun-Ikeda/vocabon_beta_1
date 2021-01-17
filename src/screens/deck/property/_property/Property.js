@@ -7,6 +7,8 @@ import { Button } from 'react-native-paper';
 import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
 import { getDeckGeneral, decksGeneral } from '../../../../config/deck/Deck';
+import Color from '../../../../config/Color';
+import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -42,14 +44,14 @@ const Property = (props) => {
   const [language, setLanguage] = useState(general.language);
 
   const renderButton = () => {
-    const isChanged = !((general.title === title) && (general.language === language));
+    const isChanged = !((general.title === title) && func.objectEqual(language, general.language));
     const save = () => {
       navigation.goBack();
     };
     return (
-      <View>
-        {isChanged ? null : <Text>Nothing is changed</Text> }
-        <Button mode="contained" onPress={save} disabled={!isChanged}>Save</Button>
+      <View style={{ padding: 20 }}>
+        {isChanged ? null : <Text style={{ textAlign: 'center' }}>No change</Text> }
+        <Button color={Color.green2} mode="contained" onPress={save} disabled={!isChanged}>Save</Button>
       </View>
     );
   };
