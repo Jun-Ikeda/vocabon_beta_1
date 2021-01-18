@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Dimensions, Text, Button,
+  StyleSheet, ScrollView, View, Dimensions, Text,
 } from 'react-native';
+import { Button } from 'react-native-paper';
+import ExpoClipboard from 'expo-clipboard';
+
 import PropTypes from 'prop-types';
+import Color from '../../../../config/Color';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
 
@@ -14,14 +18,17 @@ const style = StyleSheet.create({
   },
   scrollBox: {
     flex: 5,
-    padding: 20,
+    // margin: 20,
+    // borderWidth: 2,
     borderRadius: 10,
+    backgroundColor: Color.white1,
+    justifyContent: 'center',
   },
 });
 
 const Export = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
-  const content = getDeckContent(deckID);
+  const string = JSON.stringify(getDeckContent(deckID), null, 4);
   const [visible, setVisible] = useState(false);
 
   const [layout, setLayout] = useState({ height: 300, width: 300 });
@@ -63,18 +70,19 @@ const Export = (props) => {
 
       <View style={{ flex: 1 }}>
         <View style={StyleSheet.absoluteFill} onLayout={(e) => setLayout(func.onLayoutContainer(e))} />
-        <ScrollView horizontal pagingEnabled in>
+        <ScrollView horizontal pagingEnabled in persistentScrollbar>
           <View style={{ flex: 2 }}>
             <View>
               <Text style={{ fontSize: 30 }}> Options </Text>
             </View>
             <View style={style.scrollBox}>
-              <Text style={{ fontSize: 30 }}> Data </Text>
+              <Text style={{ fontSize: 25, marginBottom: 10, borderBottomWidth: 1 }}> Data </Text>
               <ScrollView style={layout}>
-                <Text>{JSON.stringify(content, null, 4)}</Text>
-                <Button title="Export" onPress={() => setVisible(!visible)} />
-                {renderExportTypes()}
+                <Text>{string}</Text>
               </ScrollView>
+              <Button onPress={() => ExpoClipboard.setString(string)}>Copy</Button>
+              {/* <Button title="Export" onPress={() => setVisible(!visible)} />
+              {renderExportTypes()} */}
             </View>
           </View>
           {/* <View style={layout}>

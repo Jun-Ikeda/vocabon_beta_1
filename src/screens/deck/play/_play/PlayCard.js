@@ -50,8 +50,30 @@ class PlayCard extends Component {
 
   render() {
     const {
-      vocab,
+      vocab, itemVisible,
     } = this.props;
+    const frontItems = [
+      { item: 'term', text: vocab.term, visible: itemVisible.front.includes('term') },
+      { item: 'definition', text: deck.formatArrayContent(vocab.definition), visible: itemVisible.front.includes('definition') },
+      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab.synonym)}`, visible: itemVisible.front.includes('synonym') },
+      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab.antonym)}`, visible: itemVisible.front.includes('antonym') },
+      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab.prefix)}`, visible: itemVisible.front.includes('prefix') },
+      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab.suffix)}`, visible: itemVisible.front.includes('suffix') },
+      { item: 'exampleT', text: deck.formatArrayContent(vocab.exampleT), visible: itemVisible.front.includes('exampleT') },
+      { item: 'exampleD', text: deck.formatArrayContent(vocab.exampleD), visible: itemVisible.front.includes('exampleD') },
+      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab.cf)}`, visible: itemVisible.front.includes('cf') },
+    ];
+    const backItems = [
+      { item: 'term', text: vocab.term, visible: itemVisible.back.includes('term') },
+      { item: 'definition', text: deck.formatArrayContent(vocab.definition), visible: itemVisible.back.includes('definition') },
+      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab.synonym)}`, visible: itemVisible.back.includes('synonym') },
+      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab.antonym)}`, visible: itemVisible.back.includes('antonym') },
+      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab.prefix)}`, visible: itemVisible.back.includes('prefix') },
+      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab.suffix)}`, visible: itemVisible.back.includes('suffix') },
+      { item: 'exampleT', text: deck.formatArrayContent(vocab.exampleT), visible: itemVisible.back.includes('exampleT') },
+      { item: 'exampleD', text: deck.formatArrayContent(vocab.exampleD), visible: itemVisible.back.includes('exampleD') },
+      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab.cf)}`, visible: itemVisible.back.includes('cf') },
+    ];
     return (
       <CardFlip
         style={style.cardflip}
@@ -59,13 +81,10 @@ class PlayCard extends Component {
         ref={(card) => { this.card = card; }}
       >
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          <Text style={style.label}>{vocab.term}</Text>
+          {frontItems.map((item) => (item.visible ? <Text style={style.label}>{item.text}</Text> : null))}
         </TouchableOpacity>
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          <Text style={style.label}>{`${deck.formatArrayContent(vocab.definition)}\n`}</Text>
-          <Text style={style.label}>{`Synonym: ${deck.formatArrayContent(vocab.synonym)}`}</Text>
-          <Text style={style.label}>{`Antonym: ${deck.formatArrayContent(vocab.antonym)}`}</Text>
-          {/* <Text style={style.label}>{`Ex: ${play.formatArrayContent(content.example)}`}</Text> */}
+          {backItems.map((item) => (item.visible ? <Text style={style.label}>{item.text}</Text> : null))}
         </TouchableOpacity>
       </CardFlip>
     );
@@ -74,6 +93,7 @@ class PlayCard extends Component {
 
 PlayCard.propTypes = {
   vocab: PropTypes.object,
+  itemVisible: PropTypes.object.isRequired,
 };
 
 PlayCard.defaultProps = {

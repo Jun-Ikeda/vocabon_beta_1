@@ -25,9 +25,9 @@ const Demo = (props) => (
   }}
   >
     {/* {renderProfileIcon()} */}
-    {renderVocabList()}
+    {/* {renderVocabList()} */}
     {/* {renderRangeBar()} */}
-    {/* {renderSearchFlatList()} */}
+    {renderSearchFlatList()}
   </View>
 );
 
@@ -162,13 +162,6 @@ const renderSearchFlatList = () => {
   const array2 = array.filter((vocab) => vocab.term.length < 7);
   const [query, setQuery] = useState('');
   const [data, setData] = useState(array);
-
-  // const contains = (query) => {
-  //   if (array.includes(query)) {
-  //     return true;
-  //   }
-  //   return false;
-  // };
 
   const handleSearch = (text) => {
     const formattedQuery = text.toLowerCase();

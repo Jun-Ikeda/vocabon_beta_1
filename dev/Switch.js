@@ -9,6 +9,7 @@ import Nav from '../src/nav/Nav';
 import Edit from '../src/screens/deck/edit/_edit/Edit';
 import Options from '../src/screens/deck/play/_options/Options';
 import Play from '../src/screens/deck/play/_play/Play';
+// import EditSearch from '../src/screens/deck/edit/_edit/EditSearch';
 
 const style = StyleSheet.create({
   container: {
@@ -29,7 +30,7 @@ const style = StyleSheet.create({
 const buttons = [
   { title: 'Product', element: <Nav /> },
   { title: 'Demo', element: <Demo /> },
-  { title: 'Suzuki', element: <Edit navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
+  { title: 'Suzuki', element: <Edit navigation={{}} route={{ params: { deckID: '7NCodht%}0' } }} /> },
   { title: 'Iwasaki', element: <Options navigation={{}} route={{ params: { deckID: '7NCodht%}0' } }} /> },
   { title: 'Kochiya', element: <Play navigation={{}} route={{ params: { id: 'Q38xR=rnKc' } }} /> },
 ];

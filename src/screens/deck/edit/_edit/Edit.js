@@ -3,10 +3,8 @@ import {
   View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { atom, RecoilRoot, useRecoilState } from 'recoil';
+import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
-import { Button } from 'react-native-paper';
-import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 
 import EditList from './EditList';
@@ -15,10 +13,14 @@ import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 import EditAddButton from './EditAddButton';
 
-import { decksContent, getDeckContent } from '../../../../config/deck/Deck';
+import { getDeckContent } from '../../../../config/deck/Deck';
 
 export const contentState = atom({
   key: 'contentState',
+  default: {},
+});
+export const contentSearchedState = atom({
+  key: 'contentSearchedState',
   default: {},
 });
 
@@ -46,6 +48,7 @@ const Edit = (props) => {
   const { /* navigation, */ route: { params: { deckID } } } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
+  const [contentSearched, setContentSearched] = useRecoilState(contentSearchedState);
   // state
   const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
   const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
@@ -55,11 +58,12 @@ const Edit = (props) => {
 
   useEffect(() => {
     setContent(getDeckContent(deckID));
+    setContentSearched(getDeckContent(deckID));
   }, []);
 
   const renderList = () => (
     <EditList
-      content={content}
+      content={contentSearched}
       setVisible={(isVisible, vocabID) => {
         setEditVocabID(vocabID);
         setContentVisible(isVisible);

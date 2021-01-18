@@ -87,7 +87,7 @@ const Results = (props) => {
   const {
     navigation, route: {
       params: {
-        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs,
+        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs, itemVisible,
       },
     },
   } = props;
@@ -118,19 +118,19 @@ const Results = (props) => {
       {
         title: 'Replay',
         num: `(${validVocabIDs.length})`,
-        onPress: () => { navigation.push('play', { deckID, validVocabIDs }); },
+        onPress: () => { navigation.push('play', { deckID, validVocabIDs, itemVisible }); },
         isVisible: true,
       },
       {
         title: 'Play the whole deck',
         num: `(${vocabIDs.length})`,
-        onPress: () => { navigation.push('play', { deckID, validVocabIDs: vocabIDs }); },
+        onPress: () => { navigation.push('play', { deckID, validVocabIDs: vocabIDs, itemVisible }); },
         isVisible: validVocabIDs.length !== vocabIDs.length,
       },
       {
         title: 'Play marked cards',
         num: `(${leftVocabID.length})`,
-        onPress: () => navigation.push('play', { deckID, validVocabIDs: leftVocabID }),
+        onPress: () => navigation.push('play', { deckID, validVocabIDs: leftVocabID, itemVisible }),
         isVisible: ((leftVocabID.length !== 0) && (rightVocabID.length !== 0)),
       },
       {

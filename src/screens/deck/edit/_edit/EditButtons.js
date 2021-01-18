@@ -10,6 +10,7 @@ import {
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
 import { selectedVocabIDsState } from './EditList';
+import EditSearch from './EditSearch';
 
 const iconSize = 20;
 
@@ -102,22 +103,23 @@ const EditButtons = (props) => {
         </TouchableOpacity>
       );
     }
-    return (
-      <View style={style.textinputContainer}>
-        <TextInput
-          value={searchText}
-          onChangeText={setSearchText}
-          style={style.textinput}
-          mode="outlined"
-        />
-        <TouchableOpacity
-          style={style.clearbutton}
-          onPress={() => setSearchText('')}
-        >
-          <Icon.Feather name="delete" size={iconSize} />
-        </TouchableOpacity>
-      </View>
-    );
+    return <EditSearch />;
+    // return (
+    //   <View style={style.textinputContainer}>
+    //     <TextInput
+    //       value={searchText}
+    //       onChangeText={setSearchText}
+    //       style={style.textinput}
+    //       mode="outlined"
+    //     />
+    //     <TouchableOpacity
+    //       style={style.clearbutton}
+    //       onPress={() => setSearchText('')}
+    //     >
+    //       <Icon.Feather name="delete" size={iconSize} />
+    //     </TouchableOpacity>
+    //   </View>
+    // );
   };
 
   const renderTrashButton = () => (

@@ -47,6 +47,13 @@ export const func = {
     }
     return result;
   },
+  convertArrayToObject: (array) => {
+    const result = {};
+    array.forEach(item => {
+      result[item.key] = item.value
+    })
+    return result;
+  },
   blackOrWhite: (hexcolor) => {
     if (typeof hexcolor === 'string') {
       const r = parseInt(hexcolor.substr(1, 2), 16);

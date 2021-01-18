@@ -17,11 +17,13 @@ const Button = [
             decksGeneralはsrc/config/deck/Deckからimport
       第二引数: deckID(このidで見つからなかったら今のところ空を返す)
       */
-      const content = getDeckContent('iaodia');
+      const content = getDeckContent('7NCodht%}0');
       /*
       引数: deckID(このidで見つからなかったら今のところ空を返す)
       */
-      return { content };
+      const contentArray = func.convertObjectToArray(content);
+      const contentObject = func.convertArrayToObject(contentArray);
+      return { content, contentArray, contentObject };
     },
     // onPress: () => ({ decksGeneral, decksContent }),
   },

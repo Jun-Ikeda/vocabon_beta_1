@@ -9,27 +9,24 @@ import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
+    position: 'absolute', bottom: 0, right: 0, left: 0,
   },
 });
 
 const OptionStartButton = (props) => {
   const {
-    navigation, deckID, validVocabIDs, mode,
+    navigation, deckID, validVocabIDs, mode, itemVisible,
   } = props;
 
   const start = () => {
     if (mode === 'custom') {
-      navigation.navigate('play', { deckID, validVocabIDs });
+      navigation.navigate('play', { deckID, itemVisible, validVocabIDs });
     } else if (mode === 'default') {
-      navigation.navigate('play', { deckID });
+      navigation.navigate('play', { deckID, itemVisible });
     }
   };
   return (
-    <View style={{
-      position: 'absolute', bottom: 0, right: 0, left: 0,
-    }}
-    >
+    <View style={style.container}>
       {mode === 'custom' && validVocabIDs.length === 0 ? <Text style={{ textAlign: 'center' }}>No matched card</Text> : null}
       <Button
         color={Color.green2}
@@ -49,6 +46,7 @@ OptionStartButton.propTypes = {
   deckID: PropTypes.object.isRequired,
   validVocabIDs: PropTypes.object.isRequired,
   mode: PropTypes.string.isRequired,
+  itemVisible: PropTypes.object.isRequired,
 };
 
 OptionStartButton.defaultProps = {

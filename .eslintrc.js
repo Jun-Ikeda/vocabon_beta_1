@@ -27,7 +27,7 @@ module.exports = {
     'react/forbid-prop-types': ['off'],
     'no-nested-ternary': ['off'],
     'import/order': ['error'],
-    'no-unused-vars': 'off',
+    'no-unused-vars': 'warn',
     'unused-imports/no-unused-vars': [
       'warn',
       {

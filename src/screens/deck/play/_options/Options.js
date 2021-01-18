@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, LayoutAnimation,
+  View, ScrollView,
 } from 'react-native';
-import { RadioButton, Button, Divider } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import RangeSlider from 'react-native-range-slider-expo';
 
 import { func } from '../../../../config/Const';
-import Color from '../../../../config/Color';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
+
 import SortMode from './SortMode';
 import OptionStartButton from './OptionStartButton';
+import OptionRadioButton from './OptionRadioButton';
+import OptionFilter from './OptionFilter';
+import FrontBack from './FrontBack';
 
 const getMax = (object, path = '') => {
   const array = Object.values(object);
@@ -20,26 +21,6 @@ const getMax = (object, path = '') => {
     ? array.reduce((a, b) => (a.length > b.length ? a : b)).length
     : array.reduce((a, b) => (a[path].length > b[path].length ? a : b))[path].length;
 };
-
-const style = StyleSheet.create({
-  counterBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  title: {
-    flex: 1,
-    justifyContent: 'center',
-    fontSize: 18,
-  },
-  filterExpandButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-  },
-  divider: { backgroundColor: Color.gray3, height: 1.5, opacity: 0.5 },
-});
 
 /**
  * Options Screen
@@ -66,8 +47,9 @@ const Options = (props) => {
   const AntonymMax = getMax(content, 'antonym');
 
   const [mode, setMode] = useState('custom');
+  const [itemVisible, setItemVisible] = useState({ front: ['term'], back: ['definition'] });
   const [sortMode, setSortMode] = useState('shuffle');
-  const [expand, setExpand] = useState('Marks');
+  const [expandFilter, setExpandFilter] = useState('Marks');
   const [markRange, setMarkRange] = useState({ min: 0, max: MarksMax });
   const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
   const [synonymRange, setSynonymRange] = useState({ min: 0, max: SynonymMax });
@@ -84,103 +66,37 @@ const Options = (props) => {
   const renderCustomSettings = () => {
     const renderFilters = () => {
       const items = [
-        {
-          title: 'Marks',
-          range: [0, MarksMax],
-          state: [markRange, setMarkRange],
-        },
-        {
-          title: 'Examples',
-          range: [0, ExampleMax],
-          state: [exampleRange, setExampleRange],
-        },
-        {
-          title: 'Synonyms',
-          range: [0, SynonymMax],
-          state: [synonymRange, setSynonymRange],
-        },
-        {
-          title: 'Antonyms',
-          range: [0, AntonymMax],
-          state: [antonymRange, setAntonymRange],
-        },
+        { title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange] },
+        { title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange] },
+        { title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange] },
+        { title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange] },
       ];
       return (
-        <View>
-          <Text style={{ justifyContent: 'center', fontSize: 20 }}>Filter</Text>
-          {items.map((item, index) => (
-            <View key={item.title.toLowerCase()}>
-              {(index === 0) ? null : <Divider style={style.divider} />}
-              <TouchableOpacity
-                style={style.filterExpandButton}
-                onPress={() => {
-                  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                  setExpand((expand === item.title) ? null : item.title);
-                }}
-              >
-                <Text style={style.title}>{item.title}</Text>
-                <Text>{(item.state[0].min === item.range[0] && item.state[0].max === item.range[1]) ? 'ALL' : `${item.state[0].min} ~ ${item.state[0].max}`}</Text>
-              </TouchableOpacity>
-              {expand === item.title ? (
-                <View style={{ paddingHorizontal: 35 }}>
-                  <RangeSlider
-                    min={item.range[0]}
-                    max={item.range[1]}
-                    fromValueOnChange={(value) => item.state[1]({ ...item.state[0], min: value })}
-                    toValueOnChange={(value) => item.state[1]({ ...item.state[0], max: value })}
-                    styleSize={20}
-                    initialFromValue={item.state[0].min}
-                    initialToValue={item.state[0].max}
-                    fromKnobColor={Color.green2}
-                    toKnobColor={Color.green2}
-                    inRangeBarColor={Color.gray2}
-                  />
-                </View>
-              ) : null}
-            </View>
-          ))}
-        </View>
+        <OptionFilter items={items} setExpand={setExpandFilter} expand={expandFilter} />
       );
     };
     if (mode === 'custom') {
       return (
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10, paddingBottom: 80 }}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ padding: 10, paddingBottom: 80 }}
+        >
           <SortMode sortMode={sortMode} setSortMode={setSortMode} />
           {renderFilters()}
+          <FrontBack itemVisible={itemVisible} setItemVisible={setItemVisible} />
         </ScrollView>
       );
     }
     return null;
   };
 
-  const renderRadioButtons = () => {
-    const radiobuttons = [
-      { value: 'default', title: 'Default', length: Object.values(content).length },
-      { value: 'custom', title: 'Custom', length: validVocabIDs.length },
-    ];
-    return (
-      <RadioButton.Group
-        onValueChange={setMode}
-        value={mode}
-      >
-        {radiobuttons.map((radiobutton) => (
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <RadioButton value={radiobutton.value} style={{ right: 0, left: 0 }} />
-            <Text style={{ flex: 1, fontSize: 20, alignSelf: 'center' }}>{radiobutton.title}</Text>
-            <Text style={{ fontSize: 20, padding: 5 }}>{radiobutton.length}</Text>
-          </View>
-        ))}
-      </RadioButton.Group>
-    );
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ /* backgroundColor: 'blue' */ }}>
-        {renderRadioButtons()}
+        <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} />
       </View>
       {renderCustomSettings()}
-      <OptionStartButton navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} />
+      <OptionStartButton itemVisible={itemVisible} navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} />
     </View>
   );
 };
