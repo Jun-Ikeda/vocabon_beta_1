@@ -39,7 +39,7 @@ const returnValidVocabIDs = (content, validVocabIDs) => {
   }
   return validVocabIDsModified;
 };
-const returnValidVocab = (content, validVocabIDs) => {
+const returnValidVocab = (content, validVocabIDs, sortMode) => {
   const result = [];
   for (let i = 0; i < validVocabIDs.length; i++) {
     result.push(content[validVocabIDs[i]]);
@@ -57,12 +57,13 @@ const returnValidVocab = (content, validVocabIDs) => {
  */
 const Play = (props) => {
   // props
-  const { navigation, route: { params: { deckID, validVocabIDs: validVocabIDsProp } } } = props;
+  const { navigation, route: { params: { deckID, validVocabIDs: validVocabIDsProp, sortMode: sortModeProp } } } = props;
   // recoil
   // state
   const content = getDeckContent(deckID);
   const validVocabIDs = returnValidVocabIDs(content, validVocabIDsProp);
-  const validVocab = returnValidVocab(content, validVocabIDs);
+  const sortMode = (sortModeProp === undefined) ? 'shuffle' : sortModeProp;
+  const validVocab = returnValidVocab(content, validVocabIDs, sortMode);
   const [layout, setLayout] = useState({ height: 0, width: 0 });
   const [rightVocabID, setRightVocabID] = useState([]);
   const [leftVocabID, setLeftVocabID] = useState([]);

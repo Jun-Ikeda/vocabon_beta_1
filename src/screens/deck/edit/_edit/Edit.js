@@ -13,6 +13,7 @@ import EditList from './EditList';
 import EditContent from './EditContent';
 import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
+import EditAddButton from './EditAddButton';
 
 import { decksContent, getDeckContent } from '../../../../config/deck/Deck';
 
@@ -94,11 +95,10 @@ const Edit = (props) => {
           setHelpVisible={setHelpVisible}
         />
         {renderList()}
-        {/* {deleteVisible ? renderDeleteView() : renderBasicView()} */}
       </View>
-      <Button onPress={() => func.alertConsole(editVocabID)}>aaa</Button>
       {renderContentPopUp()}
       {renderHelpPopUp()}
+      <EditAddButton />
     </View>
   );
 };

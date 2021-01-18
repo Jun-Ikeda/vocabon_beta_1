@@ -4,14 +4,14 @@ import {
 } from 'react-native';
 import { RadioButton, Button, Divider } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import NumericInput from 'react-native-numeric-input';
 import RangeSlider from 'react-native-range-slider-expo';
-import RNPickerSelect from 'react-native-picker-select';
 
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
+import SortMode from './SortMode';
+import OptionStartButton from './OptionStartButton';
 
 const getMax = (object, path = '') => {
   const array = Object.values(object);
@@ -82,26 +82,6 @@ const Options = (props) => {
   }).map((vocab) => vocab.key);
 
   const renderCustomSettings = () => {
-    const renderSort = () => {
-      const sortModes = [
-        { label: 'Shuffle', value: 'shuffle' },
-        { label: 'Marks', value: 'marks' },
-      ];
-      return (
-        <View>
-          <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by</Text>
-          <RNPickerSelect
-            onValueChange={setSortMode}
-            value={sortMode}
-            placeholder={{ label: 'Select the language...', value: '' }}
-            // style={pickerSelectStyles}
-            items={sortModes}
-            // Icon={() => renderIcon()}
-            useNativeAndroidPickerStyle={false}
-          />
-        </View>
-      );
-    };
     const renderFilters = () => {
       const items = [
         {
@@ -165,7 +145,7 @@ const Options = (props) => {
     if (mode === 'custom') {
       return (
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10, paddingBottom: 80 }}>
-          {renderSort()}
+          <SortMode sortMode={sortMode} setSortMode={setSortMode} />
           {renderFilters()}
         </ScrollView>
       );
@@ -194,40 +174,13 @@ const Options = (props) => {
     );
   };
 
-  const renderButton = () => {
-    const start = () => {
-      if (mode === 'custom') {
-        navigation.navigate('play', { deckID, validVocabIDs });
-      } else if (mode === 'default') {
-        navigation.navigate('play', { deckID });
-      }
-    };
-    return (
-      <View style={{
-        position: 'absolute', bottom: 0, right: 0, left: 0,
-      }}
-      >
-        {mode === 'custom' && validVocabIDs.length === 0 ? <Text style={{ textAlign: 'center' }}>No matched card</Text> : null}
-        <Button
-          color={Color.green2}
-          style={{ margin: 15 }}
-          mode="contained"
-          onPress={start}
-          disabled={mode === 'custom' && validVocabIDs.length === 0}
-        >
-          Start
-        </Button>
-      </View>
-    );
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ /* backgroundColor: 'blue' */ }}>
         {renderRadioButtons()}
       </View>
       {renderCustomSettings()}
-      {renderButton()}
+      <OptionStartButton navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} />
     </View>
   );
 };
