@@ -86,7 +86,7 @@ const FrontBack = (props) => {
   };
 
   return (
-    <View style={{ flex: 1, height: 500 }}>
+    <View style={{ flex: 1, height: 400 }}>
       <Text style={{ fontSize: 20 }}>Visible Items</Text>
       <CardFlip
         style={style.cardflip}
