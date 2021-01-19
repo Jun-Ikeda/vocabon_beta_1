@@ -15,12 +15,14 @@ const SortMode = (props) => {
   const { sortMode, setSortMode } = props;
 
   const sortModes = [
+    { label: 'Index - smaller to larger', value: 'index' },
+    { label: 'Index - larger to smaller', value: 'index-reverse' },
     { label: 'Shuffle', value: 'shuffle' },
-    { label: 'Marks', value: 'marks' },
-    { label: 'Definitions', value: 'definitions' },
-    { label: 'Example', value: 'example' },
-    { label: 'Synonym', value: 'synonym' },
-    { label: 'Antonym', value: 'antonym' },
+    // { label: 'Marks', value: 'marks' },
+    // { label: 'Definitions', value: 'definitions' },
+    // { label: 'Example', value: 'example' },
+    // { label: 'Synonym', value: 'synonym' },
+    // { label: 'Antonym', value: 'antonym' },
   ];
   return (
     <View>

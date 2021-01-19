@@ -15,14 +15,17 @@ const style = StyleSheet.create({
 
 const OptionStartButton = (props) => {
   const {
-    navigation, deckID, validVocabIDs, mode, itemVisible,
+    navigation, deckID, validVocabIDs, mode, itemVisible, sortMode,
   } = props;
 
   const start = () => {
+    console.log(sortMode);
     if (mode === 'custom') {
-      navigation.navigate('play', { deckID, itemVisible, validVocabIDs });
+      navigation.navigate('play', {
+        deckID, itemVisible, validVocabIDs, sortMode,
+      });
     } else if (mode === 'default') {
-      navigation.navigate('play', { deckID, itemVisible });
+      navigation.navigate('play', { deckID, itemVisible, sortMode });
     }
   };
   return (
@@ -47,6 +50,7 @@ OptionStartButton.propTypes = {
   validVocabIDs: PropTypes.object.isRequired,
   mode: PropTypes.string.isRequired,
   itemVisible: PropTypes.object.isRequired,
+  sortMode: PropTypes.string.isRequired,
 };
 
 OptionStartButton.defaultProps = {

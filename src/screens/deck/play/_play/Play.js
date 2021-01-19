@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -41,22 +41,43 @@ const style = StyleSheet.create({
   },
 });
 
-const returnValidVocabIDs = (content, validVocabIDs) => {
-  let validVocabIDsModified = [];
-  if (validVocabIDs === undefined) {
-    validVocabIDsModified = Object.keys(content);
-  } else {
-    validVocabIDsModified = validVocabIDs;
-  }
-  return validVocabIDsModified;
+const returnValidVocabIDs = (content, validVocabIDsParam, sortMode) => {
+  const validVocabIDs = (validVocabIDsParam === undefined) ? Object.keys(content) : validVocabIDsParam;
+  console.log({ validVocabIDs });
+  return validVocabIDs;
 };
-const returnValidVocab = (content, validVocabIDs, sortMode) => {
+const returnValidVocab = (content, validVocabIDs) => {
   const result = [];
+  console.log({ content, validVocabIDs });
   for (let i = 0; i < validVocabIDs.length; i++) {
     result.push(content[validVocabIDs[i]]);
   }
   return result;
 };
+// const returnValidVocab = (content, validVocabIDsProp, sortMode) => {
+//   const validVocabIDs = (validVocabIDsProp === undefined) ? Object.keys(content) : validVocabIDsProp;
+//   let validVocabIDs_sorted = [];
+//   switch (sortMode) {
+//     case 'index':
+//       validVocabIDs_sorted = validVocabIDs;
+//       break;
+//     case 'index-reverse':
+//       validVocabIDs_sorted = validVocabIDs.reverse();
+//       break;
+//     case 'shuffle':
+//       validVocabIDs_sorted = func.shuffle(validVocabIDs);
+//       break;
+//     default:
+//       validVocabIDs_sorted = validVocabIDs;
+//       break;
+//   }
+//   const validVocab = [];
+//   for (let i = 0; i < validVocabIDs_sorted.length; i++) {
+//     validVocab.push(content[validVocabIDs_sorted[i]]);
+//   }
+//   console.log({ sortMode, validVocabIDs, validVocab });
+//   return [validVocabIDs_sorted, validVocab];
+// };
 /**
  * Play Screen
  * @augments {Component<Props, State>}
@@ -71,16 +92,20 @@ const Play = (props) => {
   const {
     navigation, route: {
       params: {
-        deckID, validVocabIDs: validVocabIDsProp, sortMode: sortModeProp, itemVisible,
+        deckID, validVocabIDs: validVocabIDsProp, sortMode, itemVisible,
       },
     },
   } = props;
   // recoil
   // state
   const content = getDeckContent(deckID);
-  const validVocabIDs = returnValidVocabIDs(content, validVocabIDsProp);
-  const sortMode = (sortModeProp === undefined) ? 'shuffle' : sortModeProp;
-  const validVocab = returnValidVocab(content, validVocabIDs, sortMode);
+  // const [validVocabIDs, validVocab] = returnValidVocab(content, validVocabIDsProp, sortMode);
+  // const sortMode = (sortModeProp === undefined) ? 'index' : sortModeProp;
+  // const validVocabIDs = returnValidVocabIDs(content, validVocabIDsProp);
+  // const validVocab = returnValidVocab(content, validVocabIDs, sortMode);
+  const [validVocabIDs, setValidVocabIDs] = useState([]);
+  const [validVocab, setValidVocab] = useState([]);
+  const [vocabReady, setVocabReady] = useState(false);
   const [layout, setLayout] = useState({ height: 0, width: 0 });
   const [rightVocabID, setRightVocabID] = useState([]);
   const [leftVocabID, setLeftVocabID] = useState([]);
@@ -88,6 +113,13 @@ const Play = (props) => {
   // ref
   const [card, setCard] = useState({}); // 例外的にstateに
   let swiper = {};
+
+  useEffect(() => {
+    const newValidVocabIDs = returnValidVocabIDs(content, validVocabIDsProp, sortMode);
+    setValidVocabIDs(newValidVocabIDs);
+    setValidVocab(returnValidVocab(content, newValidVocabIDs));
+    setVocabReady(true);
+  }, []);
 
   const renderCounterTop = () => (
     <Text style={style.checker}>
@@ -98,7 +130,7 @@ const Play = (props) => {
   );
 
   const renderSwiper = () => {
-    if (!(layout.height === 0)) {
+    if (!(layout.height === 0) && vocabReady) {
       return (
         <DeckSwiper
           cards={validVocab}

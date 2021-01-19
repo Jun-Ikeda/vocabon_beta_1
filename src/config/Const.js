@@ -49,9 +49,9 @@ export const func = {
   },
   convertArrayToObject: (array) => {
     const result = {};
-    array.forEach(item => {
-      result[item.key] = item.value
-    })
+    array.forEach((item) => {
+      result[item.key] = item.value;
+    });
     return result;
   },
   blackOrWhite: (hexcolor) => {
@@ -105,6 +105,14 @@ export const func = {
     const aJSON = JSON.stringify(func.objectSort({ obj: obj1 }));
     const bJSON = JSON.stringify(func.objectSort({ obj: obj2 }));
     return aJSON === bJSON;
+  },
+  shuffle: ([...array]) => {
+    const arrayCopy = JSON.parse(JSON.stringify(array));
+    for (let i = arrayCopy.length - 1; i >= 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+    }
+    return arrayCopy;
   },
 };
 

@@ -48,7 +48,7 @@ const Options = (props) => {
 
   const [mode, setMode] = useState('custom');
   const [itemVisible, setItemVisible] = useState({ front: ['term'], back: ['definition'] });
-  const [sortMode, setSortMode] = useState('shuffle');
+  const [sortMode, setSortMode] = useState('index');
   const [expandFilter, setExpandFilter] = useState('Marks');
   const [markRange, setMarkRange] = useState({ min: 0, max: MarksMax });
   const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
@@ -96,7 +96,7 @@ const Options = (props) => {
         <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} />
       </View>
       {renderCustomSettings()}
-      <OptionStartButton itemVisible={itemVisible} navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} />
+      <OptionStartButton itemVisible={itemVisible} navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} sortMode={sortMode} />
     </View>
   );
 };
