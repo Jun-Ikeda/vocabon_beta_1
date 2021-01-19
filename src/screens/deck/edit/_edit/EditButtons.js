@@ -7,8 +7,10 @@ import {
   atom, RecoilRoot, useRecoilState, useRecoilValue,
 } from 'recoil';
 
-import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
+
+import Icon from '../../../../components/Icon';
+
 import { selectedVocabIDsState } from './EditList';
 import EditSearch from './EditSearch';
 
@@ -18,6 +20,8 @@ const style = StyleSheet.create({
   container: {
     justifyContent: 'flex-end',
     flexDirection: 'row',
+    alignItems: 'center',
+    // borderWidth: 1,
     height: 60,
     paddingHorizontal: 20,
   },
@@ -26,14 +30,16 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     height: 60,
     paddingHorizontal: 20,
-    borderWidth: 1,
+    // borderWidth: 1,
   },
   button: {
     width: 60,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'flex-end',
+    // borderWidth: 1,
   },
-
   trashbutton: {
     width: 60,
     alignItems: 'center',
@@ -84,54 +90,35 @@ const style = StyleSheet.create({
 const EditButtons = (props) => {
   // props
   const {
-    /* setDeleteVisible, deleteVisible, */mode, setMode, helpVisible, setHelpVisible, searchButtonVisible,
-    setSearchButtonVisible,
+    mode, setMode, helpVisible, setHelpVisible, searchButtonVisible, setSearchButtonVisible,
   } = props;
   // recoil
   const [selectedVocabIDs, setSelectedVocabIDs] = useRecoilState(/* checkedIndexState */selectedVocabIDsState);
-  // state
-  const [searchText, setSearchText] = useState('');
 
-  const renderSearch = () => {
-    if (searchButtonVisible) {
-      return (
+  const renderSearch = () => (
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <EditSearch searchButtonVisible={searchButtonVisible} setSearchButtonVisible={setSearchButtonVisible} />
+      {searchButtonVisible ? (
         <TouchableOpacity
           style={style.button}
-          onPress={() => setSearchButtonVisible(false)}
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setSearchButtonVisible(false);
+          }}
         >
           <Icon.Feather name="search" size={iconSize} />
         </TouchableOpacity>
-      );
-    }
-    return <EditSearch />;
-    // return (
-    //   <View style={style.textinputContainer}>
-    //     <TextInput
-    //       value={searchText}
-    //       onChangeText={setSearchText}
-    //       style={style.textinput}
-    //       mode="outlined"
-    //     />
-    //     <TouchableOpacity
-    //       style={style.clearbutton}
-    //       onPress={() => setSearchText('')}
-    //     >
-    //       <Icon.Feather name="delete" size={iconSize} />
-    //     </TouchableOpacity>
-    //   </View>
-    // );
-  };
-
+      ) : null}
+    </View>
+  );
   const renderTrashButton = () => (
     <TouchableOpacity
       style={style.button}
       onPress={() => {
         if (/* deleteVisible === false */mode !== 'delete') {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          // setDeleteVisible(!deleteVisible);
           setMode('delete');
         } else if (selectedVocabIDs.length !== 0) {
-          // const stringToAlert = `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`;
           alert(
             `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`,
             [

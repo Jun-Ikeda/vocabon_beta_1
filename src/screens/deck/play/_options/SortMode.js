@@ -5,6 +5,40 @@ import {
 import PropTypes from 'prop-types';
 import RNPickerSelect from 'react-native-picker-select';
 
+const pickerSelectStyles = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputIOSContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputAndroidContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  iconContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+});
+
 const style = StyleSheet.create({
   container: {
     flex: 1,
@@ -31,7 +65,7 @@ const SortMode = (props) => {
         onValueChange={setSortMode}
         value={sortMode}
         placeholder={{ label: 'Select the language...', value: '' }}
-        // style={pickerSelectStyles}
+        style={pickerSelectStyles}
         items={sortModes}
         // Icon={() => renderIcon()}
         useNativeAndroidPickerStyle={false}

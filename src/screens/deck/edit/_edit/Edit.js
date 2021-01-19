@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View, StyleSheet,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { atom, useRecoilState, useRecoilValue } from 'recoil';
 
@@ -57,9 +55,14 @@ const Edit = (props) => {
   const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
-    setContent(getDeckContent(deckID));
-    setContentSearched(getDeckContent(deckID));
+    const contentInitial = getDeckContent(deckID);
+    setContent(contentInitial);
+    setContentSearched(contentInitial);
   }, []);
+
+  // useEffect(() => {
+  //   setContentSearched(content);
+  // }, [content]);
 
   const renderList = () => (
     <EditList
@@ -100,9 +103,13 @@ const Edit = (props) => {
         />
         {renderList()}
       </View>
+      <EditAddButton
+        setContentVisible={setContentVisible}
+        setEditVocabID={setEditVocabID}
+      />
       {renderContentPopUp()}
       {renderHelpPopUp()}
-      <EditAddButton />
+      {/* ここ */}
     </View>
   );
 };

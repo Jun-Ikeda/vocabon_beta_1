@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Text, View, StyleSheet, FlatList, LayoutAnimation, TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { TextInput } from 'react-native-paper';
 
@@ -17,71 +18,73 @@ const iconSize = 20;
 const style = StyleSheet.create({
   inputView: {
     padding: 5,
-    // borderWidth: 1,
-    // borderColor: 'teal',
     justifyContent: 'center',
-    // alignItems: 'center',
-    // width: '60%',
     flex: 1,
   },
   input: {
-    // flex: 1,
-    // height: 30,
-    // lineHeight: 30,
     fontSize: 18,
     backgroundColor: Color.white1,
     color: Color.black,
-    // borderRadius: 5,
-    // width: '100%',
-    paddingLeft: 10,
-    // borderWidth: 1,
+    paddingLeft: 20,
   },
   clearbutton: {
     position: 'absolute',
-    // borderWidth: 1,
     right: 20,
+  },
+  searchbarfolder: {
+    position: 'absolute',
+    left: 10,
   },
 });
 
 const EditSearch = (props) => {
+  const { setSearchButtonVisible, containerStyle, searchButtonVisible } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
   const [contentSearched, setContentSearched] = useRecoilState(contentSearchedState);
   // const
-  const array = Object.values(content);
-  const [query, setQuery] = useState('');
+  // const array = Object.values(content);
+  const [text, setText] = useState('');
 
   useEffect(() => {
-    setContentSearched(array);
-  }, []);
-
-  const handleSearched = (text) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const formattedQuery = text.toLowerCase();
-    const newData = lodash.filter(array, (vocab) => vocab.term.includes(formattedQuery));
+    const newData = lodash.filter(content, (vocab) => vocab.term.includes(formattedQuery));
     setContentSearched(newData);
-    setQuery(text);
-    console.log(content);
-  };
+    // setContentSearched(array);
+  }, [text, content]);
 
-  return (
+  return searchButtonVisible ? null : (
     <View
-      style={style.inputView}
+      style={[style.inputView, containerStyle]}
     >
       <TextInput
-        value={query}
-        onChangeText={handleSearched}
+        value={text}
+        onChangeText={setText}
         placeholder="Search"
         style={style.input}
       />
       <TouchableOpacity
+        style={style.searchbarfolder}
+        onPress={() => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setSearchButtonVisible(true);
+        }}
+      >
+        <Icon.Feather name="chevrons-right" size={iconSize} />
+      </TouchableOpacity>
+      <TouchableOpacity
         style={style.clearbutton}
-        onPress={() => setQuery('')}
+        onPress={() => setText('')}
       >
         <Icon.Feather name="delete" size={iconSize} />
       </TouchableOpacity>
     </View>
   );
+};
+
+EditSearch.propTypes = {
+  setSearchButtonVisible: PropTypes.func.isRequired,
 };
 
 export default EditSearch;

@@ -87,7 +87,7 @@ const Results = (props) => {
   const {
     navigation, route: {
       params: {
-        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs, itemVisible,
+        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs, itemVisible, sortMode,
       },
     },
   } = props;
@@ -118,25 +118,35 @@ const Results = (props) => {
       {
         title: 'Replay',
         num: `(${validVocabIDs.length})`,
-        onPress: () => { navigation.push('play', { deckID, validVocabIDs, itemVisible }); },
+        onPress: () => {
+          navigation.push('play', {
+            deckID, validVocabIDs, itemVisible, sortMode,
+          });
+        },
         isVisible: true,
       },
       {
         title: 'Play the whole deck',
         num: `(${vocabIDs.length})`,
-        onPress: () => { navigation.push('play', { deckID, validVocabIDs: vocabIDs, itemVisible }); },
+        onPress: () => {
+          navigation.push('play', {
+            deckID, validVocabIDs: vocabIDs, itemVisible, sortMode,
+          });
+        },
         isVisible: validVocabIDs.length !== vocabIDs.length,
       },
       {
         title: 'Play marked cards',
         num: `(${leftVocabID.length})`,
-        onPress: () => navigation.push('play', { deckID, validVocabIDs: leftVocabID, itemVisible }),
+        onPress: () => navigation.push('play', {
+          deckID, validVocabIDs: leftVocabID, itemVisible, sortMode,
+        }),
         isVisible: ((leftVocabID.length !== 0) && (rightVocabID.length !== 0)),
       },
       {
         title: 'Options', // go back to options
         num: '',
-        onPress: () => navigation.navigate('options', { deckID }),
+        onPress: () => navigation.navigate('options', { deckID, sortMode }),
         isVisible: true,
       },
       {

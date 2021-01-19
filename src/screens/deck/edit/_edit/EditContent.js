@@ -104,15 +104,15 @@ const EditContent = (props) => {
   useEffect(() => {
     // visibleになるたびvocabIDからstateを更新
     const vocab = content[vocabID];
-    setTerm(vocab?.term);
-    setDefinition(deck.formatArrayContent(vocab?.definition));
-    setSynonym(deck.formatArrayContent(vocab?.synonym));
-    setAntonym(deck.formatArrayContent(vocab?.antonym));
-    setPrefix(deck.formatArrayContent(vocab?.prefix));
-    setSuffix(deck.formatArrayContent(vocab?.suffix));
-    setExampleT(deck.formatArrayContent(vocab?.exampleT));
-    setExampleD(deck.formatArrayContent(vocab?.exampleD));
-    setCf(deck.formatArrayContent(vocab?.cf));
+    setTerm(vocab?.term ?? '');
+    setDefinition(deck.formatArrayContent(vocab?.definition ?? []));
+    setSynonym(deck.formatArrayContent(vocab?.synonym ?? []));
+    setAntonym(deck.formatArrayContent(vocab?.antonym ?? []));
+    setPrefix(deck.formatArrayContent(vocab?.prefix ?? []));
+    setSuffix(deck.formatArrayContent(vocab?.suffix ?? []));
+    setExampleT(deck.formatArrayContent(vocab?.exampleT ?? []));
+    setExampleD(deck.formatArrayContent(vocab?.exampleD ?? []));
+    setCf(deck.formatArrayContent(vocab?.cf ?? []));
   }, [isVisible]);
 
   const renderTextInputs = () => {
@@ -130,6 +130,7 @@ const EditContent = (props) => {
     return items.map((item) => (
       <View key={item.label.toLowerCase()}>
         <TextInput
+          multiline
           label={item.label}
           value={item.value}
           onChangeText={item.setState}

@@ -79,6 +79,7 @@ const MenuUtility = (props) => {
             <Text style={styles.languageBold}>{lang.value}</Text>
           </Text>
         ))}
+        <Text>{`${num} terms`}</Text>
         <TouchableOpacity onPress={() => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setExpand(!expand);
@@ -90,7 +91,6 @@ const MenuUtility = (props) => {
           ? (
             <View>
               <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
-              <Text>{`${num} terms`}</Text>
               <Text>{`${playLength} times play`}</Text>
               <Text>{`${recentMarks}`}</Text>
             </View>

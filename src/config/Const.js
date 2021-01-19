@@ -114,6 +114,12 @@ export const func = {
     }
     return arrayCopy;
   },
+  reverseNonDestructive: (arr) => {
+    if (toString.call(arr) !== '[object Array]') return null;
+    if (arr.length === 0) return arr;
+    const copy = arr.slice();
+    return copy.reverse();
+  },
 };
 
 export const deck = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { LayoutAnimation, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { RadioButton } from 'react-native-paper';
 
@@ -14,7 +14,10 @@ const OptionRadioButton = (props) => {
   ];
   return (
     <RadioButton.Group
-      onValueChange={setMode}
+      onValueChange={(value) => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setMode(value);
+      }}
       value={mode}
     >
       {radiobuttons.map((radiobutton) => (
