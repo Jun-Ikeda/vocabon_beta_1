@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Dimensions,
+  LayoutAnimation,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -36,12 +37,8 @@ const FrontBack = (props) => {
   // props
   const { itemVisible, setItemVisible } = props;
   // state
-  const [isPortrait, setIsPortrait] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
   const card = {};
-  Dimensions.addEventListener('change', (e) => {
-    const { width, height } = e.window;
-    setIsPortrait(height > width);
-  });
 
   const toggle = (item, frontOrback, bool = null) => {
     if (bool) {
@@ -113,8 +110,14 @@ const FrontBack = (props) => {
 
   return (
     <View style={{ }}>
-      <Text style={{ fontSize: 20 }}>Visible Items</Text>
-      {renderCard()}
+      <TouchableOpacity onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsVisible(!isVisible);
+      }}
+      >
+        <Text style={{ fontSize: 20 }}>Visible Items</Text>
+      </TouchableOpacity>
+      {isVisible ? renderCard() : null}
     </View>
   );
 };

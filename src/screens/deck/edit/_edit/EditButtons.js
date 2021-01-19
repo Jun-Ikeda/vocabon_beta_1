@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text, TextInput,
+  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {
-  atom, RecoilRoot, useRecoilState, useRecoilValue,
-} from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import Color from '../../../../config/Color';
 
@@ -13,6 +11,7 @@ import Icon from '../../../../components/Icon';
 
 import { selectedVocabIDsState } from './EditList';
 import EditSearch from './EditSearch';
+import { contentState } from './Edit';
 
 const iconSize = 20;
 
@@ -93,6 +92,7 @@ const EditButtons = (props) => {
     mode, setMode, helpVisible, setHelpVisible, searchButtonVisible, setSearchButtonVisible,
   } = props;
   // recoil
+  const [content, setContent] = useRecoilState(contentState);
   const [selectedVocabIDs, setSelectedVocabIDs] = useRecoilState(/* checkedIndexState */selectedVocabIDsState);
 
   const renderSearch = () => (
@@ -119,12 +119,22 @@ const EditButtons = (props) => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setMode('delete');
         } else if (selectedVocabIDs.length !== 0) {
-          alert(
-            `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`,
+          Alert.alert(
+            `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`, '',
             [
               {
                 text: 'YES',
-                onPress: () => alert('DELETED'),
+                onPress: () => {
+                  const newContent = JSON.parse(JSON.stringify(content));
+                  alert(JSON.stringify(selectedVocabIDs, null, 2));
+                  selectedVocabIDs.forEach((vocabID) => {
+                    delete newContent[vocabID];
+                  });
+                  setContent(newContent);
+                  // alert(JSON.stringify(selectedVocabIDs, null, 2));
+                  setSelectedVocabIDs([]);
+                  setMode('edit');
+                },
               },
               {
                 text: 'NO',

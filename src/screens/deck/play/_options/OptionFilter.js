@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LayoutAnimation, Text, TouchableOpacity, View, StyleSheet,
 } from 'react-native';
@@ -30,10 +30,18 @@ const style = StyleSheet.create({
 
 const OptionFilter = (props) => {
   const { items, setExpand, expand } = props;
+  const [isVisible, setIsVisible] = useState(true);
+
   return (
     <View>
-      <Text style={{ justifyContent: 'center', fontSize: 20 }}>Filter</Text>
-      {items.map((item, index) => (
+      <TouchableOpacity onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsVisible(!isVisible);
+      }}
+      >
+        <Text style={{ justifyContent: 'center', fontSize: 20 }}>Filter</Text>
+      </TouchableOpacity>
+      {isVisible ? (items.map((item, index) => (
         <View key={item.title.toLowerCase()}>
           {(index === 0) ? null : <Divider style={style.divider} />}
           <TouchableOpacity
@@ -63,7 +71,7 @@ const OptionFilter = (props) => {
             </View>
           ) : null}
         </View>
-      ))}
+      ))) : null}
     </View>
   );
 };

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import RNPickerSelect from 'react-native-picker-select';
@@ -47,6 +47,7 @@ const style = StyleSheet.create({
 
 const SortMode = (props) => {
   const { sortMode, setSortMode } = props;
+  const [isVisible, setIsVisible] = useState(true);
 
   const sortModes = [
     { label: 'Index - smaller to larger', value: 'index' },
@@ -60,16 +61,24 @@ const SortMode = (props) => {
   ];
   return (
     <View>
-      <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by</Text>
-      <RNPickerSelect
-        onValueChange={setSortMode}
-        value={sortMode}
-        placeholder={{ label: 'Select the language...', value: '' }}
-        style={pickerSelectStyles}
-        items={sortModes}
+      <TouchableOpacity onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsVisible(!isVisible);
+      }}
+      >
+        <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by</Text>
+      </TouchableOpacity>
+      {isVisible ? (
+        <RNPickerSelect
+          onValueChange={setSortMode}
+          value={sortMode}
+          placeholder={{ label: 'Select the language...', value: '' }}
+          style={pickerSelectStyles}
+          items={sortModes}
         // Icon={() => renderIcon()}
-        useNativeAndroidPickerStyle={false}
-      />
+          useNativeAndroidPickerStyle={false}
+        />
+      ) : null}
     </View>
   );
 };

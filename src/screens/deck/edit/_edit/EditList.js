@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import {
-  View, StyleSheet, TouchableOpacity, LayoutAnimation, FlatList, SafeAreaView, Text,
+  View, StyleSheet, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
-import { Checkbox, List } from 'react-native-paper';
-import { atom, useRecoilState, useSetRecoilState } from 'recoil';
+import { Button, Checkbox } from 'react-native-paper';
+import { atom, useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 
 import Icon from '../../../../components/Icon';
@@ -134,6 +134,7 @@ const EditList = (props) => {
           return null;
         }}
       />
+      <Button onPress={() => alert(JSON.stringify({ selectedVocabIDs }, null, 4))}>a</Button>
     </View>
   );
 };

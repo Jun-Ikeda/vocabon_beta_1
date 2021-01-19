@@ -24,7 +24,7 @@ const style = StyleSheet.create({
     paddingVertical: 10,
   },
   input: {
-    lineHeight: 30,
+    lineHeight: 60,
     fontSize: 18,
     marginVertical: 5,
   },
