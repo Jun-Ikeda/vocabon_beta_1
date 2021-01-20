@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
-import { Button, Checkbox } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 
@@ -56,9 +56,11 @@ const EditList = (props) => {
     content,
     setVisible,
     mode,
+    setAddButtonVisible,
   } = props;
   // recoil
   // state
+  const [offset, setOffset] = useState(0);
   const [selectedVocabIDs, setSelectedVocabIDs] = useRecoilState(selectedVocabIDsState);
 
   useEffect(() => {
@@ -130,8 +132,19 @@ const EditList = (props) => {
           }
           return null;
         }}
+        contentContainerStyle={{ paddingBottom: 60 }}
+        onScroll={(event) => {
+          const currentOffset = event.nativeEvent.contentOffset.y;
+          const direction = currentOffset > offset ? 'down' : 'up';
+          setOffset(currentOffset);
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setAddButtonVisible(direction === 'up');
+        }}
+        onScrollToTop={() => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setAddButtonVisible(true);
+        }}
       />
-      <Button onPress={() => console.log({ content })}>a</Button>
     </View>
   );
 };

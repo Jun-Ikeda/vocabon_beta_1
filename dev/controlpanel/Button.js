@@ -1,10 +1,8 @@
-import { account, getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
+import { getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
 import { func } from '../../src/config/Const';
-import {
-  decksContent, decksGeneral, getDeckContent, getDeckGeneral,
-} from '../../src/config/deck/Deck';
+import { getDeckContent } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
-import { getUserGeneral, users } from '../../src/config/user/User';
+import { getUserGeneral } from '../../src/config/user/User';
 import UUID from '../../src/config/UUID';
 
 const Button = [
@@ -56,7 +54,7 @@ const Button = [
     title: 'UUID',
     onPress: () => {
       const uuids = [];
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 63; i++) {
         uuids.push(UUID.generate(8));
       }
       return { uuids };

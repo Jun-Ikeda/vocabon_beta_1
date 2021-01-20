@@ -39,6 +39,7 @@ const Options = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
   // state
   const { marks } = getAccountContent(deckID);
+  console.log({ marks });
   const content = getDeckContent(deckID);
 
   const MarksMax = getMax(marks);
@@ -56,7 +57,7 @@ const Options = (props) => {
   const [antonymRange, setAntonymRange] = useState({ min: 0, max: AntonymMax });
 
   const validVocabIDs = func.convertObjectToArray(content).filter((vocab) => {
-    const inMarksRange = marks[vocab.key].length >= markRange.min && marks[vocab.key].length <= markRange.max;
+    const inMarksRange = (marks[vocab.key]?.length ?? 0) >= markRange.min && (marks[vocab.key]?.length ?? 0) <= markRange.max;
     const inExampleRange = vocab.value.exampleT.length >= exampleRange.min && vocab.value.exampleT.length <= exampleRange.max;
     const inSynonymRange = vocab.value.synonym.length >= synonymRange.min && vocab.value.synonym.length <= synonymRange.max;
     const inAntonymRange = vocab.value.antonym.length >= antonymRange.min && vocab.value.antonym.length <= antonymRange.max;
@@ -66,10 +67,18 @@ const Options = (props) => {
   const renderCustomSettings = () => {
     const renderFilters = () => {
       const items = [
-        { title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange] },
-        { title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange] },
-        { title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange] },
-        { title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange] },
+        {
+          title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
+        },
+        {
+          title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange], visible: !(ExampleMax === 0),
+        },
+        {
+          title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange], visible: !(SynonymMax === 0),
+        },
+        {
+          title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange], visible: !(AntonymMax === 0),
+        },
       ];
       return (
         <OptionFilter items={items} setExpand={setExpandFilter} expand={expandFilter} />

@@ -47,6 +47,10 @@ const VocabList = (props) => {
     textStyle,
     itemStyle,
     state,
+    contentContainerStyle,
+    onEndReached,
+    onScroll,
+    onScrollToTop,
   } = props;
   const manuallyRenderCard = !((renderCard.toString() === 'function renderCard() {}') || (renderCard.toString() === 'function (){}'));
   const onPressCardValid = !((onPressCard.toString() === 'function onPressCard() {}') || (onPressCard.toString() === 'function (){}'));
@@ -117,6 +121,10 @@ const VocabList = (props) => {
       style={style.container}
       data={func.convertObjectToArray(content)}
       renderItem={manuallyRenderCard ? renderCard : renderItem}
+      contentContainerStyle={contentContainerStyle}
+      onEndReached={onEndReached}
+      onScroll={onScroll}
+      onScrollToTop={onScrollToTop}
     />
   );
 };
@@ -168,6 +176,10 @@ VocabList.propTypes = {
     cf: PropTypes.object,
   }),
   state: PropTypes.array,
+  contentContainerStyle: PropTypes.object,
+  onEndReached: PropTypes.func,
+  onScroll: PropTypes.func,
+  onScrollToTop: PropTypes.func,
 };
 
 VocabList.defaultProps = {
@@ -201,6 +213,10 @@ VocabList.defaultProps = {
     cf: {},
   },
   state: [],
+  contentContainerStyle: {},
+  onEndReached: () => {},
+  onScroll: () => {},
+  onScrollToTop: () => {},
 };
 
 export default VocabList;

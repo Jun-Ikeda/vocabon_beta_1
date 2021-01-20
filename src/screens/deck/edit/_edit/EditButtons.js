@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text, Platform,
+  View, TouchableOpacity, StyleSheet, LayoutAnimation, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { useRecoilState } from 'recoil';
 
 import Color from '../../../../config/Color';
-import { func } from '../../../../config/Const';
 
 import Icon from '../../../../components/Icon';
 
@@ -105,6 +104,8 @@ const EditButtons = (props) => {
             setSelectedVocabIDs([]);
             setMode('edit');
           };
+          deleteVocab();
+          /*
           func.alert(
             `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`, '',
             [
@@ -116,7 +117,7 @@ const EditButtons = (props) => {
           if (Platform.OS === 'web') {
             deleteVocab();
           }
-        } else {
+         */ } else {
           alert(':V');
         }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

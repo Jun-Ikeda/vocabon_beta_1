@@ -12,18 +12,19 @@ import UUID from '../../../../config/UUID';
  * ```
  */
 const EditAddButton = (props) => {
-  const { setContentVisible, setEditVocabID } = props;
+  const { setContentVisible, setEditVocabID, isVisible } = props;
   const newVocabID = UUID.generate(8);
 
-  return (
+  return isVisible ? (
     <FloatingButton
       icon={{ collection: 'AntDesign', name: 'plus' }}
+      buttonStyle={{ bottom: 75 }}
       onPress={() => {
         setContentVisible(true);
         setEditVocabID(newVocabID);
       }}
     />
-  );
+  ) : null;
 };
 
 EditAddButton.propTypes = {

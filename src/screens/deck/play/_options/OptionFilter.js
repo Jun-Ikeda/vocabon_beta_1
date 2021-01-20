@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  LayoutAnimation, Text, TouchableOpacity, View, StyleSheet,
+  LayoutAnimation, Text, TouchableOpacity, View, StyleSheet, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Divider } from 'react-native-paper';
@@ -47,14 +47,18 @@ const OptionFilter = (props) => {
           <TouchableOpacity
             style={style.filterExpandButton}
             onPress={() => {
-              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-              setExpand((expand === item.title) ? null : item.title);
+              if (item.visible) {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                setExpand((expand === item.title) ? null : item.title);
+              } else {
+                Alert.alert(`All cards has ${item.state[0].max} ${item.title.toLowerCase()}`);
+              }
             }}
           >
             <Text style={style.title}>{item.title}</Text>
-            <Text>{(item.state[0].min === item.range[0] && item.state[0].max === item.range[1]) ? 'ALL' : `${item.state[0].min} ~ ${item.state[0].max}`}</Text>
+            <Text>{(item.state[0].min === item.range[0] && item.state[0].max === item.range[1]) ? `ALL (${item.state[0].min} ~ ${item.state[0].max})` : `${item.state[0].min} ~ ${item.state[0].max}`}</Text>
           </TouchableOpacity>
-          {expand === item.title ? (
+          {(expand === item.title) && item.visible ? (
             <View style={{ paddingHorizontal: 35 }}>
               <RangeSlider
                 min={item.range[0]}

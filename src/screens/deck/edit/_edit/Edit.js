@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { atom, useRecoilState } from 'recoil';
 
+import { Button } from 'react-native-paper';
 import Color from '../../../../config/Color';
 
 import EditList from './EditList';
@@ -57,12 +58,22 @@ const Edit = (props) => {
   const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
   const [contentVisible, setContentVisible] = useState(false);
+  const [addButtonVisible, setAddButtonVisible] = useState(true);
 
   useEffect(() => {
     const contentInitial = getDeckContent(deckID);
     setContent(contentInitial);
     setContentSearched(contentInitial);
   }, []);
+
+  const renderSaveButton = () => (
+    <View style={{
+      position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
+    }}
+    >
+      <Button color={Color.green2} mode="contained">Save</Button>
+    </View>
+  );
 
   return (
     <View style={style.container}>
@@ -82,12 +93,15 @@ const Edit = (props) => {
             setContentVisible(isVisible);
           }}
           mode={mode}
+          setAddButtonVisible={setAddButtonVisible}
         />
       </View>
       <EditAddButton
+        isVisible={addButtonVisible}
         setContentVisible={setContentVisible}
         setEditVocabID={setEditVocabID}
       />
+      {renderSaveButton()}
       <EditContent
         vocabID={editVocabID}
         isVisible={contentVisible}

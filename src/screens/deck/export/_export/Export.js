@@ -99,6 +99,7 @@ const Export = (props) => {
         <View style={StyleSheet.absoluteFill} onLayout={(e) => setLayout(func.onLayoutContainer(e))} />
         {/* <ScrollView horizontal pagingEnabled in > */}
         <View style={{ flex: 2 }}>
+          {renderOptionBox()}
           {renderDataBox()}
           {/* {unstable_renderSubtreeIntoContainer} */}
         </View>

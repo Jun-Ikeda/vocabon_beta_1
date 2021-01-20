@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Button, StyleSheet, Text, View, ScrollView, FlatList,
+  LayoutAnimation,
+  StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { Portal } from 'react-native-paper';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
 // import { deck, func } from '../../../../config/Const';
 import VocabList from '../../../../components/deck/list/VocabList';
+import { func } from '../../../../config/Const';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import Color from '../../../../config/Color';
 
 const iconsize = 30;
 
@@ -36,44 +41,94 @@ const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
   const { marks } = getAccountContent(deckID);
-  // const { marks } = account.content?.[deckID] ?? { marks: {}, play: [], bookmark: false };
   const content = getDeckContent(deckID);
-  //   makrs = { 'vocabID': number, 'vocabID': number }
-  useEffect(() => {
-    console.log(content);
-  }, []);
+  const [contentSearched, setContentSearched] = useState(content);
+  const [vocabDetailVisible, setVocabDetailVisible] = useState(false);
 
   const renderVocab = () => (
     <VocabList
-      content={content}
+      content={contentSearched}
       itemVisible={{ term: true }}
       renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
+      onPressCard={(vocab) => setVocabDetailVisible(vocab.key)}
     />
-    // <FlatList
-    //   data={vocabIDs}
-    //   renderItem={({ item, index }) => (
-    //     <View style={[style.container, { backgroundColor: Color.white1 }]}>
-    //       <Text style={[style.text, { flex: 1 }]}>{decksContent[deckID][item].term}</Text>
-    //       <Text style={[style.text, { paddingRight: 20 }]}>{marks?.[item]?.length ?? 0}</Text>
-    //     </View>
-    //   )}
-    // />
   );
 
-  const renderFirst = () => (
-    <View style={style.labelContainer}>
-      <Text style={style.label}>Term</Text>
-      <Text style={[style.label, { /* textAlign: 'right' */ }]}>Marks</Text>
-    </View>
+  const renderLabels = () => {
+    const labels = [
+      {
+        label: 'Term',
+        onPress: () => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          const newContentSearched_Array = func.convertObjectToArray(JSON.parse(JSON.stringify(contentSearched)));
+          newContentSearched_Array.sort((a, b) => {
+            const nameA = a.value.term.toLowerCase(); // 大文字と小文字を無視する
+            const nameB = b.value.term.toLowerCase(); // 大文字と小文字を無視する
+            if (nameA < nameB) {
+              return -1;
+            }
+            if (nameA > nameB) {
+              return 1;
+            }
+            return 0;
+          });
+          setContentSearched(func.convertArrayToObject(newContentSearched_Array));
+        },
+      },
+      {
+        label: 'Marks',
+        onPress: () => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          const newContentSearched_Array = func.convertObjectToArray(JSON.parse(JSON.stringify(contentSearched)));
+          newContentSearched_Array.sort((a, b) => {
+            const markA = marks?.[a.key]?.length ?? 0; // 大文字と小文字を無視する
+            const markB = marks?.[b.key]?.length ?? 0; // 大文字と小文字を無視する
+            if (markA < markB) {
+              return 1;
+            }
+            if (markA > markB) {
+              return -1;
+            }
+            return 0;
+          });
+          setContentSearched(func.convertArrayToObject(newContentSearched_Array));
+        },
+      },
+    ];
+    return (
+      <View style={style.labelContainer}>
+        {labels.map((label) => (
+          <TouchableOpacity onPress={label.onPress}>
+            <Text style={style.label}>{label.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  const renderVocabDetail = () => (
+    <Portal>
+      <PopUpMenu
+        isVisible={vocabDetailVisible}
+        setVisible={setVocabDetailVisible}
+        renderMenu={() => (
+          <View style={{
+            backgroundColor: Color.white1, marginHorizontal: '10%', marginVertical: '25%', flex: 1,
+          }}
+          >
+            <Text>{content[vocabDetailVisible]?.term}</Text>
+            <Text>{content[vocabDetailVisible]?.definition}</Text>
+          </View>
+        )}
+      />
+    </Portal>
   );
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <Button onPress={() => console.log(vocabIDs)} /> */}
-      {renderFirst()}
+      {renderLabels()}
       {renderVocab()}
-      {/* {renderVocab2()} */}
-      {/* <Text>{JSON.stringify(marks)}</Text> */}
+      {renderVocabDetail()}
     </View>
   );
 };
