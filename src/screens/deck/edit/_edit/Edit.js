@@ -21,6 +21,10 @@ export const contentSearchedState = atom({
   key: 'contentSearchedState',
   default: {},
 });
+export const selectedVocabIDsState = atom({
+  key: 'selectedVocabIDsState',
+  default: [],
+});
 
 const style = StyleSheet.create({
   container: {
@@ -48,10 +52,10 @@ const Edit = (props) => {
   const [content, setContent] = useRecoilState(contentState);
   const [contentSearched, setContentSearched] = useRecoilState(contentSearchedState);
   // state
-  const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
   const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
   const [helpVisible, setHelpVisible] = useState(false);
   const [searchButtonVisible, setSearchButtonVisible] = useState(true);
+  const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
   const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
@@ -59,36 +63,6 @@ const Edit = (props) => {
     setContent(contentInitial);
     setContentSearched(contentInitial);
   }, []);
-
-  // useEffect(() => {
-  //   setContentSearched(content);
-  // }, [content]);
-
-  const renderList = () => (
-    <EditList
-      content={contentSearched}
-      setVisible={(isVisible, vocabID) => {
-        setEditVocabID(vocabID);
-        setContentVisible(isVisible);
-      }}
-      mode={mode}
-    />
-  );
-
-  const renderContentPopUp = () => (
-    <EditContent
-      vocabID={editVocabID}
-      isVisible={contentVisible}
-      setVisible={setContentVisible}
-    />
-  );
-
-  const renderHelpPopUp = () => (
-    <EditHelp
-      isVisible={helpVisible}
-      setVisible={setHelpVisible}
-    />
-  );
 
   return (
     <View style={style.container}>
@@ -101,15 +75,28 @@ const Edit = (props) => {
           helpVisible={helpVisible}
           setHelpVisible={setHelpVisible}
         />
-        {renderList()}
+        <EditList
+          content={contentSearched}
+          setVisible={(isVisible, vocabID) => {
+            setEditVocabID(vocabID);
+            setContentVisible(isVisible);
+          }}
+          mode={mode}
+        />
       </View>
       <EditAddButton
         setContentVisible={setContentVisible}
         setEditVocabID={setEditVocabID}
       />
-      {renderContentPopUp()}
-      {renderHelpPopUp()}
-      {/* ここ */}
+      <EditContent
+        vocabID={editVocabID}
+        isVisible={contentVisible}
+        setVisible={setContentVisible}
+      />
+      <EditHelp
+        isVisible={helpVisible}
+        setVisible={setHelpVisible}
+      />
     </View>
   );
 };

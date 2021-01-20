@@ -1,23 +1,20 @@
 import React, { useEffect } from 'react';
-
 import {
   View, StyleSheet, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import { Button, Checkbox } from 'react-native-paper';
-import { atom, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 
-import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
+
+import Icon from '../../../../components/Icon';
 import VocabList from '../../../../components/deck/list/VocabList';
+
+import { selectedVocabIDsState } from './Edit';
 
 const backgroundColor = Color.white1;
 const iconSize = 20;
-
-export const selectedVocabIDsState = atom({
-  key: 'selectedVocabIDsState',
-  default: [],
-});
 
 const style = StyleSheet.create({
   box: {
@@ -134,7 +131,7 @@ const EditList = (props) => {
           return null;
         }}
       />
-      <Button onPress={() => alert(JSON.stringify({ selectedVocabIDs }, null, 4))}>a</Button>
+      <Button onPress={() => console.log({ content })}>a</Button>
     </View>
   );
 };

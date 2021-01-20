@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, StyleSheet, FlatList, LayoutAnimation, TouchableOpacity,
+  View, StyleSheet, LayoutAnimation, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import { TextInput } from 'react-native-paper';
 
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
@@ -49,9 +49,8 @@ const EditSearch = (props) => {
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const formattedQuery = text.toLowerCase();
-    const newData = lodash.filter(content, (vocab) => vocab.term.includes(formattedQuery));
-    setContentSearched(newData);
-    // setContentSearched(array);
+    const newData = lodash.filter(func.convertObjectToArray(content), (vocab) => vocab.value.term.includes(formattedQuery));
+    setContentSearched(func.convertArrayToObject(newData));
   }, [text, content]);
 
   return searchButtonVisible ? null : (

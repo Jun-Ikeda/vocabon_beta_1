@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Button,
   FlatList, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';

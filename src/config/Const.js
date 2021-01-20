@@ -41,6 +41,7 @@ export const func = {
   convertObjectToArray: (object) => {
     const keys = Object.keys(object);
     const values = Object.values(object);
+    // console.log(object);
     const result = [];
     for (let i = 0; i < keys.length; i++) {
       result.push({ key: keys[i], value: values[i] });

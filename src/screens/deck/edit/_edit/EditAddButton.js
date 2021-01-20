@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import PropTypes from 'prop-types';
 import FloatingButton from '../../../../components/FloatingButton';
 import UUID from '../../../../config/UUID';
@@ -15,6 +14,7 @@ import UUID from '../../../../config/UUID';
 const EditAddButton = (props) => {
   const { setContentVisible, setEditVocabID } = props;
   const newVocabID = UUID.generate(8);
+
   return (
     <FloatingButton
       icon={{ collection: 'AntDesign', name: 'plus' }}
