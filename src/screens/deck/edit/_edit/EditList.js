@@ -92,11 +92,10 @@ const EditList = (props) => {
   );
 
   return (
-    <View
-      style={{ flex: 1 }}
-    >
+    <View style={{ flex: 1 }}>
       <VocabList
         content={content}
+        searchBar
         itemVisible={mode === 'delete'
           ? { term: true, definition: true }
           : (vocab) => ({

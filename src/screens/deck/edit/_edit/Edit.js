@@ -12,16 +12,16 @@ import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 import EditAddButton from './EditAddButton';
 
-import { getDeckContent } from '../../../../config/deck/Deck';
+import { getDeckContent, saveDeckContent } from '../../../../config/deck/Deck';
 
 export const contentState = atom({
   key: 'contentState',
   default: {},
 });
-export const contentSearchedState = atom({
-  key: 'contentSearchedState',
-  default: {},
-});
+// export const contentSearchedState = atom({
+//   key: 'contentSearchedState',
+//   default: {},
+// });
 export const selectedVocabIDsState = atom({
   key: 'selectedVocabIDsState',
   default: [],
@@ -48,10 +48,10 @@ const style = StyleSheet.create({
  */
 const Edit = (props) => {
   // props
-  const { /* navigation, */ route: { params: { deckID } } } = props;
+  const { navigation, route: { params: { deckID } } } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
-  const [contentSearched, setContentSearched] = useRecoilState(contentSearchedState);
+  // const [contentSearched, setContentSearched] = useRecoilState(contentSearchedState);
   // state
   const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
   const [helpVisible, setHelpVisible] = useState(false);
@@ -63,7 +63,7 @@ const Edit = (props) => {
   useEffect(() => {
     const contentInitial = getDeckContent(deckID);
     setContent(contentInitial);
-    setContentSearched(contentInitial);
+    // setContentSearched(contentInitial);
   }, []);
 
   const renderSaveButton = () => (
@@ -71,7 +71,16 @@ const Edit = (props) => {
       position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
     }}
     >
-      <Button color={Color.green2} mode="contained">Save</Button>
+      <Button
+        onPress={() => {
+          saveDeckContent(deckID, content, false);
+          navigation.goBack();
+        }}
+        color={Color.green2}
+        mode="contained"
+      >
+        Save
+      </Button>
     </View>
   );
 
@@ -81,13 +90,14 @@ const Edit = (props) => {
         <EditButtons
           mode={mode}
           setMode={setMode}
-          searchButtonVisible={searchButtonVisible}
-          setSearchButtonVisible={setSearchButtonVisible}
-          helpVisible={helpVisible}
+          // searchButtonVisible={searchButtonVisible}
+          // setSearchButtonVisible={setSearchButtonVisible}
+          // helpVisible={helpVisible}
           setHelpVisible={setHelpVisible}
         />
         <EditList
-          content={contentSearched}
+          // content={contentSearched}
+          content={content}
           setVisible={(isVisible, vocabID) => {
             setEditVocabID(vocabID);
             setContentVisible(isVisible);
@@ -116,7 +126,7 @@ const Edit = (props) => {
 };
 
 Edit.propTypes = {
-  // navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 

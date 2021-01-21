@@ -28,11 +28,30 @@ export const getDeckGeneral = (general, deckID) => {
   };
 };
 
+// export const saveDeckGeneral = (setState) => {
+//   setState();
+// };
+export const saveDeckGeneral = (setDeckGeneral, deckID, newData) => {
+  setDeckGeneral((prev) => {
+    const newState = JSON.parse(JSON.stringify(prev));
+    newState[deckID] = { ...prev[deckID], ...newData };
+    return newState;
+  });
+};
+
 export const getDeckContent = (deckID) => {
   if (Object.keys(decksContent).includes(deckID)) {
     return decksContent[deckID];
   }
   return {};
+};
+
+export const saveDeckContent = (deckID, newData, merge = true) => {
+  if (merge) {
+    decksContent[deckID] = { ...decksContent[deckID], ...newData };
+  } else {
+    decksContent[deckID] = newData;
+  }
 };
 
 /*

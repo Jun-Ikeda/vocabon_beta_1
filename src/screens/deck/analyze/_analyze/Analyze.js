@@ -8,19 +8,18 @@ import PropTypes from 'prop-types';
 import { Portal } from 'react-native-paper';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
-// import { deck, func } from '../../../../config/Const';
 import VocabList from '../../../../components/deck/list/VocabList';
 import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
 
-const iconsize = 30;
+const iconSize = 30;
 
 const style = StyleSheet.create({
   container: {
     padding: 10,
     margin: 5,
-    borderRadius: iconsize / 3,
+    borderRadius: iconSize / 3,
     flexDirection: 'row',
   },
   labelContainer: {
@@ -30,17 +29,30 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
   },
   label: {
-    fontSize: iconsize * 0.66,
+    fontSize: iconSize * 0.66,
   },
   text: {
-    fontSize: iconsize,
+    fontSize: iconSize,
+  },
+  detailcontainer: {
+    flex: 1,
+    // borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: Color.white1,
+    marginHorizontal: '10%',
+    marginVertical: '25%',
+    padding: '8%',
+  },
+  detailtext: {
+    // borderWidth: 1,
+    fontSize: iconSize * 0.66,
   },
 });
 
 const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
-  const { marks } = getAccountContent(deckID);
+  const { marks, play } = getAccountContent(deckID);
   const content = getDeckContent(deckID);
   const [contentSearched, setContentSearched] = useState(content);
   const [vocabDetailVisible, setVocabDetailVisible] = useState(false);
@@ -51,6 +63,7 @@ const Analyze = (props) => {
       itemVisible={{ term: true }}
       renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
       onPressCard={(vocab) => setVocabDetailVisible(vocab.key)}
+      searchBar
     />
   );
 
@@ -112,17 +125,41 @@ const Analyze = (props) => {
         isVisible={vocabDetailVisible}
         setVisible={setVocabDetailVisible}
         renderMenu={() => (
-          <View style={{
-            backgroundColor: Color.white1, marginHorizontal: '10%', marginVertical: '25%', flex: 1,
-          }}
-          >
-            <Text>{content[vocabDetailVisible]?.term}</Text>
-            <Text>{content[vocabDetailVisible]?.definition}</Text>
+          <View style={style.detailcontainer}>
+            <Text style={style.detailtext}>{content[vocabDetailVisible]?.term}</Text>
+            <Text style={style.detailtext}>{content[vocabDetailVisible]?.definition}</Text>
+            <Text style={style.detailtext}>{'\nHistory:'}</Text>
           </View>
         )}
       />
     </Portal>
   );
+
+  const getDate = (shortenedDate) => {
+    const year = (shortenedDate - shortenedDate % 10000) / 10000;
+    const month = (shortenedDate % 10000 - (shortenedDate % 10000) % 100) / 100;
+    const day = (shortenedDate % 10000) % 100;
+    const lastNum = shortenedDate % 10;
+    let hoge = '';
+    
+    if (lastNum === 1){
+      hoge = 'st';
+    }else if (lastNum === 2){
+      hoge = 'nd';
+    }else if (lastNum === 3){
+      hoge = 'rd';
+    }else{
+      hoge = 'th';
+    }
+
+    return (
+      <View style={{flex: 1}}>
+        <Text style={style.detailtext}>
+          {`${day}${hoge}`}
+        </Text>
+      </View>
+    );
+  },
 
   return (
     <View style={{ flex: 1 }}>

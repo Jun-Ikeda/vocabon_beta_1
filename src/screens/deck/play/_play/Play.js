@@ -17,6 +17,7 @@ import PlayCounter from './PlayCounter';
 import PlayButtons from './PlayButtons';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import Icon from '../../../../components/Icon';
+import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
 
 // import { DeckGeneral, DeckContent } from '../../../../../dev/TestData';
 
@@ -90,6 +91,7 @@ const Play = (props) => {
   // recoil
   // state
   const content = getDeckContent(deckID);
+  const { marks, play } = getAccountContent(deckID);
   const [validVocabIDs, setValidVocabIDs] = useState([]);
   const [validVocab, setValidVocab] = useState([]);
   const [vocabReady, setVocabReady] = useState(false);
@@ -146,6 +148,14 @@ const Play = (props) => {
   const renderFinishButton = () => {
     const goToResult = () => {
       console.log({ rightVocabID, leftVocabID });
+      const newMark = JSON.parse(JSON.stringify(marks));
+      leftVocabID.forEach((vocabID) => {
+        const vocabMarks = newMark?.[vocabID] ?? [];
+        vocabMarks[vocabID] = vocabMarks.push(play.length + 1);
+      });
+      const newPlay = JSON.parse(JSON.stringify(play));
+      play.push(20210121);
+      saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
       navigation.push('results', {
         deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs: Object.keys(content), itemVisible, sortMode,
       });

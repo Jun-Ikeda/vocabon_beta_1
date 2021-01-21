@@ -16,6 +16,14 @@ export const getAccountContent = (deckID = '') => {
   };
 };
 
+export const saveAccountContent = (deckID = '', newData, merge = true) => {
+  if (deckID === '') {
+    account.content = merge ? { ...account.content, ...newData } : newData;
+  } else {
+    account.content[deckID] = merge ? { ...account?.content?.[deckID], ...newData } : newData;
+  }
+};
+
 export default { account, getAccountGeneral, getAccountContent };
 
 /* const account = {

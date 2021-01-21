@@ -72,10 +72,9 @@ const SortMode = (props) => {
         <RNPickerSelect
           onValueChange={setSortMode}
           value={sortMode}
-          placeholder={{ label: 'Select the language...', value: '' }}
+          placeholder={{ label: 'Select sort mode...', value: '' }}
           style={pickerSelectStyles}
           items={sortModes}
-        // Icon={() => renderIcon()}
           useNativeAndroidPickerStyle={false}
         />
       ) : null}

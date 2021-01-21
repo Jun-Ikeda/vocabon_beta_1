@@ -1,27 +1,22 @@
 import React, { useState } from 'react';
 import {
-  Dimensions,
   LayoutAnimation,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import CardFlip from 'react-native-card-flip';
 import { Switch } from 'react-native-paper';
 
 import Color from '../../../../config/Color';
-import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   cardflip: {
     flex: 1,
-    // paddingHorizontal: 10,
   },
   card: {
     flex: 1,
     justifyContent: 'center',
     marginHorizontal: 10,
     paddingHorizontal: 10,
-    // alignItems: 'center',
     backgroundColor: Color.white1,
     borderRadius: 20,
   },
@@ -38,9 +33,8 @@ const FrontBack = (props) => {
   const { itemVisible, setItemVisible } = props;
   // state
   const [isVisible, setIsVisible] = useState(true);
-  const card = {};
 
-  const toggle = (item, frontOrback, bool = null) => {
+  const setBool = (item, frontOrback, bool = null) => {
     if (bool) {
       setItemVisible({ ...itemVisible, [frontOrback]: [...itemVisible[frontOrback], item] });
     } else {
@@ -61,49 +55,24 @@ const FrontBack = (props) => {
     { title: 'cf', value: 'cf' },
   ];
 
-  const flip = (side) => {
-    card.flip();
-  };
-
   const renderCard = () => {
-    const renderFront = () => (
-      <View style={style.card}>
-        <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Front</Text>
-        {items.map((item) => (
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5 }}>
-            <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
-            <Switch value={itemVisible.front.includes(item.value)} onValueChange={(bool) => toggle(item.value, 'front', bool)} />
-          </View>
-        ))}
-      </View>
-    );
-    const renderBack = () => (
-      <View style={style.card}>
-        <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Back</Text>
-        {items.map((item) => (
-          <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }}>
-            <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
-            <Switch value={itemVisible.back.includes(item.value)} onValueChange={(bool) => toggle(item.value, 'back', bool)} />
-          </View>
-        ))}
-      </View>
-    );
-    // if (isPortrait) {
-    //   return (
-    //     <CardFlip
-    //       style={style.cardflip}
-    //       duration={300}
-    //       ref={(cardRef) => { card = cardRef; }}
-    //     >
-    //       {renderFront()}
-    //       {renderBack()}
-    //     </CardFlip>
-    //   );
-    // }
+    const frontAndBack = [
+      { title: 'Front', path: 'front' },
+      { title: 'Back', path: 'back' },
+    ];
     return (
       <View style={{ flexDirection: 'row' }}>
-        {renderFront()}
-        {renderBack()}
+        {frontAndBack.map((side) => (
+          <View style={style.card}>
+            <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>{side.title}</Text>
+            {items.map((item) => (
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }}>
+                <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
+                <Switch value={itemVisible[side.path].includes(item.value)} onValueChange={(bool) => setBool(item.value, side.path, bool)} />
+              </View>
+            ))}
+          </View>
+        ))}
       </View>
     );
   };

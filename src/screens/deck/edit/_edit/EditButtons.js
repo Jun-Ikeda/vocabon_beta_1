@@ -10,7 +10,6 @@ import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 
 import { selectedVocabIDsState, contentState } from './Edit';
-import EditSearch from './EditSearch';
 
 const iconSize = 20;
 
@@ -64,7 +63,7 @@ const style = StyleSheet.create({
 const EditButtons = (props) => {
   // props
   const {
-    mode, setMode, helpVisible, setHelpVisible, searchButtonVisible, setSearchButtonVisible,
+    mode, setMode, setHelpVisible, /* searchButtonVisible, setSearchButtonVisible, */
   } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
@@ -120,26 +119,26 @@ const EditButtons = (props) => {
     },
   ];
 
-  const renderSearch = () => (
-    <View style={{ flex: 1, justifyContent: 'center' }}>
-      <EditSearch searchButtonVisible={searchButtonVisible} setSearchButtonVisible={setSearchButtonVisible} />
-      {searchButtonVisible ? (
-        <TouchableOpacity
-          style={style.button}
-          onPress={() => {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            setSearchButtonVisible(false);
-          }}
-        >
-          <Icon.Feather name="search" size={iconSize} />
-        </TouchableOpacity>
-      ) : null}
-    </View>
-  );
+  // const renderSearch = () => (
+  //   <View style={{ flex: 1, justifyContent: 'center' }}>
+  //     <EditSearch searchButtonVisible={searchButtonVisible} setSearchButtonVisible={setSearchButtonVisible} />
+  //     {searchButtonVisible ? (
+  //       <TouchableOpacity
+  //         style={style.button}
+  //         onPress={() => {
+  //           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  //           setSearchButtonVisible(false);
+  //         }}
+  //       >
+  //         <Icon.Feather name="search" size={iconSize} />
+  //       </TouchableOpacity>
+  //     ) : null}
+  //   </View>
+  // );
 
   return (
     <View style={style.container}>
-      {renderSearch()}
+      {/* {renderSearch()} */}
       {buttons.map((button) => {
         const IconComponent = Icon[button.icon.collection];
         return (button.visible ? (
@@ -163,9 +162,6 @@ EditButtons.propTypes = {
   setMode: PropTypes.func.isRequired,
   mode: 'string'.isRequired,
   setHelpVisible: PropTypes.func.isRequired,
-  helpVisible: PropTypes.bool.isRequired,
-  setSearchButtonVisible: PropTypes.func.isRequired,
-  searchButtonVisible: PropTypes.bool.isRequired,
 };
 
 EditButtons.defaultProps = {};

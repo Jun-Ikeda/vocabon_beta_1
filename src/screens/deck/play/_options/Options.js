@@ -64,47 +64,34 @@ const Options = (props) => {
     return inMarksRange && inExampleRange && inSynonymRange && inAntonymRange;
   }).map((vocab) => vocab.key);
 
-  const renderCustomSettings = () => {
-    const renderFilters = () => {
-      const items = [
-        {
-          title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
-        },
-        {
-          title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange], visible: !(ExampleMax === 0),
-        },
-        {
-          title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange], visible: !(SynonymMax === 0),
-        },
-        {
-          title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange], visible: !(AntonymMax === 0),
-        },
-      ];
-      return (
-        <OptionFilter items={items} setExpand={setExpandFilter} expand={expandFilter} />
-      );
-    };
-    if (mode === 'custom') {
-      return (
+  const items = [
+    {
+      title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
+    },
+    {
+      title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange], visible: !(ExampleMax === 0),
+    },
+    {
+      title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange], visible: !(SynonymMax === 0),
+    },
+    {
+      title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange], visible: !(AntonymMax === 0),
+    },
+  ];
+
+  return (
+    <View style={{ flex: 1 }}>
+      <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} />
+      {mode === 'custom' ? (
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ padding: 10, paddingBottom: 80 }}
         >
           <SortMode sortMode={sortMode} setSortMode={setSortMode} />
-          {renderFilters()}
+          <OptionFilter items={items} setExpand={setExpandFilter} expand={expandFilter} />
           <FrontBack itemVisible={itemVisible} setItemVisible={setItemVisible} />
         </ScrollView>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={{ /* backgroundColor: 'blue' */ }}>
-        <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} />
-      </View>
-      {renderCustomSettings()}
+      ) : null}
       <OptionStartButton itemVisible={itemVisible} navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} sortMode={sortMode} />
     </View>
   );

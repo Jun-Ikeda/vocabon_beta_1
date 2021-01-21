@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  View, StatusBar, Text, Platform,
-} from 'react-native';
+
 import { createStackNavigator } from '@react-navigation/stack';
 // import { BlurView } from 'expo-blur';
 
@@ -11,19 +9,19 @@ import Color from '../../../config/Color';
 
 // import Home from './_home/Home';
 import { header } from '../../../config/Const';
-import { account, getAccountGeneral } from '../../../config/account/Account';
+import { getAccountGeneral } from '../../../config/account/Account';
 
 import Home from './_home/Home';
 import CreateDeck from './_createdeck/CreateDeck';
 import Menu from '../../../screens/deck/menu/_menu/Menu';
-import Property from '../../../screens/deck/property/_property/Property';
-import Options from '../../../screens/deck/play/_options/Options';
 import Play from '../../../screens/deck/play/_play/Play';
+import Options from '../../../screens/deck/play/_options/Options';
 import Results from '../../../screens/deck/play/_results/Results';
+import Property from '../../../screens/deck/property/_property/Property';
 import Edit from '../../../screens/deck/edit/_edit/Edit';
+import Import from '../../../screens/deck/import/_import/Import';
 import Export from '../../../screens/deck/export/_export/Export';
 import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
-import Import, { ImportMenu } from '../../../screens/deck/import/Import';
 
 import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
 

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FlatList, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import lodash from 'lodash';
 
+import { TextInput } from 'react-native-paper';
 import { func } from '../../../config/Const';
 import Color from '../../../config/Color';
 
@@ -51,6 +53,7 @@ const VocabList = (props) => {
     onEndReached,
     onScroll,
     onScrollToTop,
+    searchBar,
   } = props;
   const manuallyRenderCard = !((renderCard.toString() === 'function renderCard() {}') || (renderCard.toString() === 'function (){}'));
   const onPressCardValid = !((onPressCard.toString() === 'function onPressCard() {}') || (onPressCard.toString() === 'function (){}'));
@@ -67,6 +70,20 @@ const VocabList = (props) => {
     exampleD: labelVisibleProps,
     cf: labelVisibleProps,
   } : labelVisibleProps;
+  const [searchContent, setSearchContent] = useState('');
+  const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const newData = lodash.filter(func.convertObjectToArray(content), (vocab) => {
+      let i = 0;
+      Object.values(vocab.value).forEach((item) => {
+        i += (JSON.stringify(item).includes(searchText.toLowerCase()) ? 1 : 0);
+      });
+      return !(i === 0);
+    });
+    setSearchContent(func.convertArrayToObject(newData));
+  }, [searchText, content]);
 
   const toggleSelect = (vocabIDsState, vocabID) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -119,12 +136,18 @@ const VocabList = (props) => {
   return (
     <FlatList
       style={style.container}
-      data={func.convertObjectToArray(content)}
+      data={func.convertObjectToArray(searchContent)}
       renderItem={manuallyRenderCard ? renderCard : renderItem}
       contentContainerStyle={contentContainerStyle}
       onEndReached={onEndReached}
       onScroll={onScroll}
       onScrollToTop={onScrollToTop}
+      ListHeaderComponentStyle={{ right: 0, left: 0 }}
+      ListHeaderComponent={searchBar ? (
+        <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
+          <TextInput value={searchText} onChangeText={setSearchText} label="Search" />
+        </View>
+      ) : null}
     />
   );
 };
@@ -180,6 +203,7 @@ VocabList.propTypes = {
   onEndReached: PropTypes.func,
   onScroll: PropTypes.func,
   onScrollToTop: PropTypes.func,
+  searchBar: PropTypes.bool,
 };
 
 VocabList.defaultProps = {
@@ -217,6 +241,7 @@ VocabList.defaultProps = {
   onEndReached: () => {},
   onScroll: () => {},
   onScrollToTop: () => {},
+  searchBar: false,
 };
 
 export default VocabList;

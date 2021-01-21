@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList, Alert,
+  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Button, Divider, Menu } from 'react-native-paper';
 
-import Color from '../../../config/Color';
+import Color from '../../../../config/Color';
 
-import Icon from '../../../components/Icon';
+import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
   container: {
@@ -146,7 +146,9 @@ const Import = (props) => {
       <Button
         color={Color.green3}
         mode="contained"
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navigation.goBack();
+        }}
       >
         Import
       </Button>

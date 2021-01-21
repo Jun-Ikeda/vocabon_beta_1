@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { Button } from 'react-native-paper';
 import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
-import { getDeckGeneral, decksGeneral } from '../../../../config/deck/Deck';
+import { getDeckGeneral, decksGeneral, saveDeckGeneral } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
 
@@ -37,15 +37,19 @@ const Property = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // recoil
-  const generals = useRecoilValue(decksGeneral);
+  const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
   // state
-  const general = getDeckGeneral(generals, deckID);
+  const general = getDeckGeneral(deckGeneral, deckID);
   const [title, setTitle] = useState(general.title);
   const [language, setLanguage] = useState(general.language);
 
   const renderButton = () => {
     const isChanged = !((general.title === title) && func.objectEqual(language, general.language));
     const save = () => {
+      // saveDeckGeneral(() => setDeckGeneral((prev) => ({
+      //   ...prev, [deckID]: { ...prev[deckID], title, language },
+      // })));
+      saveDeckGeneral(setDeckGeneral, deckID, { title, language });
       navigation.goBack();
     };
     return (

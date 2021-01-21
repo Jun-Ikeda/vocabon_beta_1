@@ -59,6 +59,7 @@ const style = StyleSheet.create({
 
 const EditHelp = (props) => {
   const { isVisible, setVisible } = props;
+
   const renderItems = () => {
     const items = [
       {
@@ -145,7 +146,7 @@ const EditHelp = (props) => {
         isVisible={isVisible}
         setVisible={setVisible}
         renderMenu={renderMenu}
-        containerStyle={{ /* alignItems: 'center', */ justifyContent: 'center' }}
+        containerStyle={{ justifyContent: 'center' }}
       />
     </Portal>
   );

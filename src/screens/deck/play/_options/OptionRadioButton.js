@@ -1,5 +1,7 @@
 import React from 'react';
-import { LayoutAnimation, Text, View } from 'react-native';
+import {
+  LayoutAnimation, Text, TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { RadioButton } from 'react-native-paper';
 
@@ -21,11 +23,11 @@ const OptionRadioButton = (props) => {
       value={mode}
     >
       {radiobuttons.map((radiobutton) => (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setMode(radiobutton.value)}>
           <RadioButton value={radiobutton.value} style={{ right: 0, left: 0 }} />
           <Text style={{ flex: 1, fontSize: 20, alignSelf: 'center' }}>{radiobutton.title}</Text>
           <Text style={{ fontSize: 20, padding: 5 }}>{radiobutton.length}</Text>
-        </View>
+        </TouchableOpacity>
       ))}
     </RadioButton.Group>
   );

@@ -39,9 +39,14 @@ const style = StyleSheet.create({
 
 const Export = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
-  const string = JSON.stringify(getDeckContent(deckID), null, 4);
+  const deckTerms = [];
+  const deckObject = getDeckContent(deckID);
+  const deckItems = Object.keys(deckObject).forEach((key) =>　{ dectTerms.deckObject[key].term; });
+  // const deckItems = Object.keys(deckObject).forEach((key) => { console.log(deckObject[key].term); });
+  const deckString = JSON.stringify(deckTerms, null, 4);
   // const [visible, setVisible] = useState(false);
 
+  console.log(deckItems);
   const [layout, setLayout] = useState({ height: 300, width: 300 });
 
   // const renderExportTypes = () => {
@@ -84,9 +89,9 @@ const Export = (props) => {
     <View style={style.dataBox}>
       <Text style={{ fontSize: 20, marginBottom: 10, borderBottomWidth: 1 }}> Data </Text>
       <ScrollView persistentScrollbar>
-        <Text>{string}</Text>
+        <Text>{deckString}</Text>
       </ScrollView>
-      <Button onPress={() => ExpoClipboard.setString(string)}>Copy</Button>
+      <Button onPress={() => ExpoClipboard.setString(deckString)}>Copy</Button>
       {/* <Button title="Export" onPress={() => setVisible(!visible)} />
       {renderExportTypes()} */}
     </View>

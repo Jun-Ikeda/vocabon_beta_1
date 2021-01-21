@@ -1,18 +1,15 @@
 /* eslint-disable no-use-before-define */
 import React, { useState } from 'react';
 import {
-  Button, TouchableOpacity, View, Text, StyleSheet, FlatList, TextInput,
+  View, Text, StyleSheet, FlatList, TextInput,
 } from 'react-native';
 import RangeSlider from 'react-native-range-slider-expo';
 // import {  } from 'react-native-paper';
 import lodash from 'lodash';
 import VocabList from '../src/components/deck/list/VocabList';
 import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
-import { account } from '../src/config/account/Account';
 import Color, { PastelColors } from '../src/config/Color';
-import { func } from '../src/config/Const';
 import { decksContent } from '../src/config/deck/Deck';
-import TestData, { User } from './TestData';
 
 const Demo = (props) => (
   <View style={{
@@ -25,9 +22,9 @@ const Demo = (props) => (
   }}
   >
     {/* {renderProfileIcon()} */}
-    {/* {renderVocabList()} */}
+    {renderVocabList()}
     {/* {renderRangeBar()} */}
-    {renderSearchFlatList()}
+    {/* {renderSearchFlatList()} */}
   </View>
 );
 
@@ -37,7 +34,7 @@ const renderVocabList = () => {
   const [expandVocabIDs, setExpandVocabIDs] = useState([]);
   const id = 'xn>EfhY:2*';
   // const expandVocabIDs = ['qIDjbgc-', 'MdmRNj0Y'];
-  const accountContent = account.content?.[id] ?? { marks: {}, play: [], bookmark: false };
+  // const accountContent = account.content?.[id] ?? { marks: {}, play: [], bookmark: false };
   return (
     <VocabList
       content={decksContent[id]}
