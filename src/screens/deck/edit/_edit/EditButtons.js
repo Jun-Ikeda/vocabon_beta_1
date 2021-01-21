@@ -70,6 +70,56 @@ const EditButtons = (props) => {
   const [content, setContent] = useRecoilState(contentState);
   const [selectedVocabIDs, setSelectedVocabIDs] = useRecoilState(selectedVocabIDsState);
 
+  const buttons = [
+    {
+      icon: { collection: 'Feather', name: 'x' },
+      visible: mode === 'delete',
+      onPress: () => setSelectedVocabIDs([]),
+      element: null,
+    },
+    {
+      icon: { collection: 'AntDesign', name: 'back' },
+      visible: mode === 'delete',
+      onPress: () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setMode('edit');
+      },
+      element: null,
+    },
+    {
+      icon: { collection: 'Feather', name: 'help-circle' }, visible: mode === 'edit', onPress: () => setHelpVisible(true), element: null,
+    },
+    {
+      icon: { collection: 'FontAwesome', name: 'trash' },
+      visible: true,
+      onPress: () => {
+        if (mode !== 'delete') {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setMode('delete');
+        } else if (selectedVocabIDs.length !== 0) {
+          const newContent = JSON.parse(JSON.stringify(content));
+          console.log({ selectedVocabIDs });
+          selectedVocabIDs.forEach((vocabID) => {
+            delete newContent[vocabID];
+          });
+          setContent(newContent);
+          setSelectedVocabIDs([]);
+          setMode('edit');
+        } else {
+          alert(':V');
+        }
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      },
+      element: (mode === 'delete' && selectedVocabIDs.length !== 0) ? (
+        <View style={style.counterview}>
+          <Text style={style.textintrashbin}>
+            {selectedVocabIDs.length}
+          </Text>
+        </View>
+      ) : null,
+    },
+  ];
+
   const renderSearch = () => (
     <View style={{ flex: 1, justifyContent: 'center' }}>
       <EditSearch searchButtonVisible={searchButtonVisible} setSearchButtonVisible={setSearchButtonVisible} />
@@ -86,114 +136,25 @@ const EditButtons = (props) => {
       ) : null}
     </View>
   );
-  const renderTrashButton = () => (
-    <TouchableOpacity
-      style={style.button}
-      onPress={() => {
-        if (/* deleteVisible === false */mode !== 'delete') {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setMode('delete');
-        } else if (selectedVocabIDs.length !== 0) {
-          const deleteVocab = () => {
-            const newContent = JSON.parse(JSON.stringify(content));
-            console.log({ selectedVocabIDs });
-            selectedVocabIDs.forEach((vocabID) => {
-              delete newContent[vocabID];
-            });
-            setContent(newContent);
-            setSelectedVocabIDs([]);
-            setMode('edit');
-          };
-          deleteVocab();
-          /*
-          func.alert(
-            `Are you sure you delete the ${selectedVocabIDs.length} cards you chose? (You cannot undo)`, '',
-            [
-              { text: 'YES', onPress: deleteVocab },
-              { text: 'NO', onPress: () => alert('CANCELED'), style: 'cancel' },
-            ],
-            { cancelable: false },
-          );
-          if (Platform.OS === 'web') {
-            deleteVocab();
-          }
-         */ } else {
-          alert(':V');
-        }
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      }}
-    >
-      <Icon.FontAwesome
-        name="trash"
-        size={iconSize}
-        style={{ color: /* deleteVisible */mode === 'delete' ? Color.cud.red : Color.black }}
-      />
-      {(/* deleteVisible === true */mode === 'delete' && selectedVocabIDs.length !== 0) ? (
-        <View style={style.counterview}>
-          <Text style={style.textintrashbin}>
-            {selectedVocabIDs.length}
-          </Text>
-        </View>
-      ) : null}
-    </TouchableOpacity>
-  );
-
-  const renderHelpButton = () => {
-    if (/* deleteVisible === false */mode === 'edit') {
-      return (
-        <TouchableOpacity
-          style={style.button}
-          onPress={() => setHelpVisible(!helpVisible)}
-        >
-          <Icon.Feather name="help-circle" size={iconSize} />
-        </TouchableOpacity>
-      );
-    }
-    return null;
-  };
-
-  const renderCancelButton = () => {
-    if (/* deleteVisible === true */mode === 'delete') {
-      return (
-        <TouchableOpacity
-          style={style.button}
-          onPress={() => setSelectedVocabIDs([])}
-        >
-          <Icon.Feather name="x" size={iconSize} />
-        </TouchableOpacity>
-
-      );
-    }
-    return (null);
-  };
-
-  const renderBackButton = () => {
-    if (/* deleteVisible === true */mode === 'delete') {
-      return (
-        <TouchableOpacity
-          style={style.button}
-          onPress={() => {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            setMode('edit');
-          }}
-        >
-          <Icon.AntDesign
-            name="back"
-            size={iconSize}
-          />
-        </TouchableOpacity>
-      );
-    }
-    return null;
-  };
 
   return (
     <View style={style.container}>
       {renderSearch()}
-      {renderCancelButton()}
-      {renderBackButton()}
-      {renderHelpButton()}
-      {renderTrashButton()}
+      {buttons.map((button) => {
+        const IconComponent = Icon[button.icon.collection];
+        return (button.visible ? (
+          <TouchableOpacity
+            style={style.button}
+            onPress={button.onPress}
+          >
+            <IconComponent
+              name={button.icon.name}
+              size={iconSize}
+            />
+            {button.element}
+          </TouchableOpacity>
+        ) : null);
+      })}
     </View>
   );
 };

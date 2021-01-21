@@ -49,7 +49,13 @@ const EditSearch = (props) => {
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const formattedQuery = text.toLowerCase();
-    const newData = lodash.filter(func.convertObjectToArray(content), (vocab) => vocab.value.term.includes(formattedQuery));
+    const newData = lodash.filter(func.convertObjectToArray(content), (vocab) => {
+      let i = 0;
+      Object.values(vocab.value).forEach((item) => {
+        i += (item.includes(formattedQuery) ? 1 : 0);
+      });
+      return !(i === 0);
+    });
     setContentSearched(func.convertArrayToObject(newData));
   }, [text, content]);
 
