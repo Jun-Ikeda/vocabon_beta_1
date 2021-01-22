@@ -151,10 +151,11 @@ const Play = (props) => {
       const newMark = JSON.parse(JSON.stringify(marks));
       leftVocabID.forEach((vocabID) => {
         const vocabMarks = newMark?.[vocabID] ?? [];
-        vocabMarks[vocabID] = vocabMarks.push(play.length + 1);
+        vocabMarks.push(play.length + 1);
+        newMark[vocabID] = vocabMarks;
       });
       const newPlay = JSON.parse(JSON.stringify(play));
-      play.push(20210121);
+      newPlay.push(20210121);
       saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
       navigation.push('results', {
         deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs: Object.keys(content), itemVisible, sortMode,

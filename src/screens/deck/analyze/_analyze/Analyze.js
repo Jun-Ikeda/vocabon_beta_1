@@ -141,25 +141,25 @@ const Analyze = (props) => {
     const day = (shortenedDate % 10000) % 100;
     const lastNum = shortenedDate % 10;
     let hoge = '';
-    
-    if (lastNum === 1){
+
+    if (lastNum === 1) {
       hoge = 'st';
-    }else if (lastNum === 2){
+    } else if (lastNum === 2) {
       hoge = 'nd';
-    }else if (lastNum === 3){
+    } else if (lastNum === 3) {
       hoge = 'rd';
-    }else{
+    } else {
       hoge = 'th';
     }
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Text style={style.detailtext}>
           {`${day}${hoge}`}
         </Text>
       </View>
     );
-  },
+  };
 
   return (
     <View style={{ flex: 1 }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Text,
+  View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform,
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
@@ -18,6 +18,7 @@ const style = StyleSheet.create({
     marginHorizontal: '5%',
     marginVertical: '15%',
     borderRadius: 10,
+    height: Platform.OS === 'web' ? 500 : null,
   },
   contentContainer: {
     paddingHorizontal: 20,
@@ -144,18 +145,35 @@ const EditContent = (props) => {
   const renderSaveButton = () => {
     const save = () => {
       setContent((prev) => {
-        const result = JSON.parse(JSON.stringify(prev));
-        result[vocabID] = {
-          term,
-          definition,
-          synonym,
-          antonym,
-          prefix,
-          suffix,
-          exampleT,
-          exampleD,
-          cf,
-        };
+        let result = JSON.parse(JSON.stringify(prev));
+        if (Object.keys(result).includes(vocabID)) {
+          result[vocabID] = {
+            term,
+            definition,
+            synonym,
+            antonym,
+            prefix,
+            suffix,
+            exampleT,
+            exampleD,
+            cf,
+          };
+        } else {
+          result = {
+            [vocabID]: {
+              term,
+              definition,
+              synonym,
+              antonym,
+              prefix,
+              suffix,
+              exampleT,
+              exampleD,
+              cf,
+            },
+            ...result,
+          };
+        }
         return result;
       });
       setVisible(false);

@@ -42,7 +42,7 @@ const Button = [
       /*
       自分の情報が返ってくる
       */
-      const content = getAccountContent('aiueo');
+      const content = getAccountContent('rUiKQdnLb9');
       /*
       引数: deckID(このidのデッキの自分の再生履歴を返す、見つからなかったら空)
       引数を指定しない、または''だとすべて返す

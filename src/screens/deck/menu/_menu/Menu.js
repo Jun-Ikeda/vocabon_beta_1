@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  View, StyleSheet, Image, Text,
+  View, StyleSheet, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { useRecoilValue } from 'recoil';
-import { acos } from 'react-native-reanimated';
-import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
-import { decksGeneral, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 import { getAccountContent } from '../../../../config/account/Account';
 
 // import DeckMenuButtons from './DeckMenuButtons';

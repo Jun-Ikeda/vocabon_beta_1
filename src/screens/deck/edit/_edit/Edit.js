@@ -32,6 +32,9 @@ const style = StyleSheet.create({
     flex: 1,
     backgroundColor: Color.defaultBackground,
   },
+  startButtonContainer: {
+    position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
+  },
 });
 
 /**
@@ -55,7 +58,7 @@ const Edit = (props) => {
   // state
   const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
   const [helpVisible, setHelpVisible] = useState(false);
-  const [searchButtonVisible, setSearchButtonVisible] = useState(true);
+  // const [searchButtonVisible, setSearchButtonVisible] = useState(true);
   const [editVocabID, setEditVocabID] = useState(Object.keys(content)[0]);
   const [contentVisible, setContentVisible] = useState(false);
   const [addButtonVisible, setAddButtonVisible] = useState(true);
@@ -67,10 +70,7 @@ const Edit = (props) => {
   }, []);
 
   const renderSaveButton = () => (
-    <View style={{
-      position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
-    }}
-    >
+    <View style={style.startButtonContainer}>
       <Button
         onPress={() => {
           saveDeckContent(deckID, content, false);
