@@ -73,7 +73,7 @@ const Property = (props) => {
   return (
     <View>
       {properties.map((property) => (
-        <View style={style.itemContainer}>
+        <View style={style.itemContainer} key={property.title.toLowerCase()}>
           <View style={style.itemTitleBox}>
             <Text style={style.itemTitle}>{property.title}</Text>
           </View>

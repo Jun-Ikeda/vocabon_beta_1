@@ -64,7 +64,7 @@ const Import = (props) => {
     return (
       <View style={{ flexDirection: 'row', paddingHorizontal: 5 }}>
         {inputs.map((_input) => (
-          <View style={{ flex: 1, padding: 5 }}>
+          <View style={{ flex: 1, padding: 5 }} key={_input.title.toLowerCase()}>
             <Text style={{ /* paddingHorizontal: 10, */ fontSize: 18 }}>{_input.title}</Text>
             <TextInput
               value={_input.state[0]}
@@ -122,7 +122,7 @@ const Import = (props) => {
         <View style={style.cardContainer}>
           <Text>{`Card${cardIndex + 1}: `}</Text>
           {(card.split(itemDelimiter).map((item, itemIndex) => (
-            <Text>
+            <Text key={item}>
               {`item${itemIndex + 1}: `}
               {(item === '')
                 ? <Text style={style.emptyText}>empty</Text>

@@ -77,13 +77,7 @@ const Analyze = (props) => {
           newContentSearched_Array.sort((a, b) => {
             const nameA = a.value.term.toLowerCase(); // 大文字と小文字を無視する
             const nameB = b.value.term.toLowerCase(); // 大文字と小文字を無視する
-            if (nameA < nameB) {
-              return -1;
-            }
-            if (nameA > nameB) {
-              return 1;
-            }
-            return 0;
+            return (nameA === nameB) ? 0 : (nameA < nameB ? 1 : -1);
           });
           setContentSearched(func.convertArrayToObject(newContentSearched_Array));
         },
@@ -96,13 +90,7 @@ const Analyze = (props) => {
           newContentSearched_Array.sort((a, b) => {
             const markA = marks?.[a.key]?.length ?? 0; // 大文字と小文字を無視する
             const markB = marks?.[b.key]?.length ?? 0; // 大文字と小文字を無視する
-            if (markA < markB) {
-              return 1;
-            }
-            if (markA > markB) {
-              return -1;
-            }
-            return 0;
+            return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
           });
           setContentSearched(func.convertArrayToObject(newContentSearched_Array));
         },
@@ -111,7 +99,7 @@ const Analyze = (props) => {
     return (
       <View style={style.labelContainer}>
         {labels.map((label) => (
-          <TouchableOpacity onPress={label.onPress}>
+          <TouchableOpacity onPress={label.onPress} key={label.label.toLowerCase()}>
             <Text style={style.label}>{label.label}</Text>
           </TouchableOpacity>
         ))}

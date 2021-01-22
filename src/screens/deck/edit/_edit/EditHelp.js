@@ -109,7 +109,7 @@ const EditHelp = (props) => {
       },
     ];
     return items.map((item) => (
-      <View style={style.item}>
+      <View style={style.item} key={item.label.toLowerCase()}>
         <View style={style.label}>
           <Text style={style.labelText}>{item.label}</Text>
         </View>

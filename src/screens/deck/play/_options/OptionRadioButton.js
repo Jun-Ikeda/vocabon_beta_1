@@ -23,7 +23,11 @@ const OptionRadioButton = (props) => {
       value={mode}
     >
       {radiobuttons.map((radiobutton) => (
-        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setMode(radiobutton.value)}>
+        <TouchableOpacity
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          onPress={() => setMode(radiobutton.value)}
+          key={radiobutton.title.toLowerCase()}
+        >
           <RadioButton value={radiobutton.value} style={{ right: 0, left: 0 }} />
           <Text style={{ flex: 1, fontSize: 20, alignSelf: 'center' }}>{radiobutton.title}</Text>
           <Text style={{ fontSize: 20, padding: 5 }}>{radiobutton.length}</Text>
@@ -35,7 +39,7 @@ const OptionRadioButton = (props) => {
 
 OptionRadioButton.propTypes = {
   content: PropTypes.object.isRequired,
-  validVocabIDs: PropTypes.object.isRequired,
+  validVocabIDs: PropTypes.array.isRequired,
   setMode: PropTypes.func.isRequired,
   mode: PropTypes.string.isRequired,
 };

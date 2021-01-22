@@ -63,10 +63,10 @@ const FrontBack = (props) => {
     return (
       <View style={{ flexDirection: 'row' }}>
         {frontAndBack.map((side) => (
-          <View style={style.card}>
+          <View style={style.card} key={side.title.toLowerCase()}>
             <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>{side.title}</Text>
             {items.map((item) => (
-              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
                 <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
                 <Switch value={itemVisible[side.path].includes(item.value)} onValueChange={(bool) => setBool(item.value, side.path, bool)} />
               </View>

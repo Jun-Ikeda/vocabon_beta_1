@@ -46,8 +46,8 @@ const OptionStartButton = (props) => {
 
 OptionStartButton.propTypes = {
   navigation: PropTypes.object.isRequired,
-  deckID: PropTypes.object.isRequired,
-  validVocabIDs: PropTypes.object.isRequired,
+  deckID: PropTypes.string.isRequired,
+  validVocabIDs: PropTypes.array.isRequired,
   mode: PropTypes.string.isRequired,
   itemVisible: PropTypes.object.isRequired,
   sortMode: PropTypes.string.isRequired,

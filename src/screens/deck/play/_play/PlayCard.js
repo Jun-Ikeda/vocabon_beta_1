@@ -81,10 +81,10 @@ class PlayCard extends Component {
         ref={(card) => { this.card = card; }}
       >
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          {frontItems.map((item) => (item.visible ? <Text style={style.label}>{item.text}</Text> : null))}
+          {frontItems.map((item) => (item.visible ? <Text style={style.label} key={item.item}>{item.text}</Text> : null))}
         </TouchableOpacity>
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          {backItems.map((item) => (item.visible ? <Text style={style.label}>{item.text}</Text> : null))}
+          {backItems.map((item) => (item.visible ? <Text style={style.label} key={item.item}>{item.text}</Text> : null))}
         </TouchableOpacity>
       </CardFlip>
     );

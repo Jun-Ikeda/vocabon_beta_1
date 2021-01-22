@@ -91,6 +91,7 @@ export const func = {
     return time;
   },
   objectSort: ({ obj }) => {
+    console.log(obj);
     const keys = Object.keys(obj).sort();
     const map = {};
     keys.forEach((key) => {
@@ -103,6 +104,7 @@ export const func = {
     return map;
   },
   objectEqual: (obj1, obj2) => {
+    console.log(obj1, obj2);
     const aJSON = JSON.stringify(func.objectSort({ obj: obj1 }));
     const bJSON = JSON.stringify(func.objectSort({ obj: obj2 }));
     return aJSON === bJSON;

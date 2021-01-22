@@ -96,7 +96,11 @@ const OptionFilter = (props) => {
 OptionFilter.propTypes = {
   items: PropTypes.array.isRequired,
   setExpand: PropTypes.func.isRequired,
-  expand: PropTypes.string.isRequired,
+  expand: PropTypes.string,
+};
+
+OptionFilter.defaultProps = {
+  expand: null,
 };
 
 export default OptionFilter;

@@ -74,7 +74,7 @@ const MenuUtility = (props) => {
     return (
       <View style={{ flex: 1 }}>
         {langs.map((lang) => (
-          <Text>
+          <Text key={lang.title}>
             {lang.title}
             <Text style={styles.languageBold}>{lang.value}</Text>
           </Text>

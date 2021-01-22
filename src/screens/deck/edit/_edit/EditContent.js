@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Text, Platform,
+  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text,
 } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
@@ -88,7 +88,9 @@ const style = StyleSheet.create({
 
 const EditContent = (props) => {
   // props
-  const { vocabID, isVisible, setVisible } = props;
+  const {
+    vocabID, isVisible, setVisible, setIsChanged,
+  } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
   // state
@@ -101,6 +103,7 @@ const EditContent = (props) => {
   const [exampleT, setExampleT] = useState('');
   const [exampleD, setExampleD] = useState('');
   const [cf, setCf] = useState('');
+  const [expand, setExpand] = useState(false);
 
   useEffect(() => {
     // visibleになるたびvocabIDからstateを更新
@@ -118,17 +121,35 @@ const EditContent = (props) => {
 
   const renderTextInputs = () => {
     const items = [
-      { label: 'Term', value: term, setState: setTerm },
-      { label: 'Definition', value: definition, setState: setDefinition },
-      { label: 'Synonym', value: synonym, setState: setSynonym },
-      { label: 'Antonym', value: antonym, setState: setAntonym },
-      { label: 'Prefix', value: prefix, setState: setPrefix },
-      { label: 'Suffix', value: suffix, setState: setSuffix },
-      { label: 'ExampleT', value: exampleT, setState: setExampleT },
-      { label: 'ExampleD', value: exampleD, setState: setExampleD },
-      { label: 'cf.', value: cf, setState: setCf },
+      {
+        label: 'Term', value: term, setState: setTerm, isVisible: true,
+      },
+      {
+        label: 'Definition', value: definition, setState: setDefinition, isVisible: true,
+      },
+      {
+        label: 'ExampleT', value: exampleT, setState: setExampleT, isVisible: true,
+      },
+      {
+        label: 'ExampleD', value: exampleD, setState: setExampleD, isVisible: true,
+      },
+      {
+        label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand,
+      },
+      {
+        label: 'Antonym', value: antonym, setState: setAntonym, isVisible: expand,
+      },
+      {
+        label: 'Prefix', value: prefix, setState: setPrefix, isVisible: expand,
+      },
+      {
+        label: 'Suffix', value: suffix, setState: setSuffix, isVisible: expand,
+      },
+      {
+        label: 'cf.', value: cf, setState: setCf, isVisible: expand,
+      },
     ];
-    return items.map((item) => (
+    return items.map((item) => (item.isVisible ? (
       <View key={item.label.toLowerCase()}>
         <TextInput
           multiline
@@ -139,8 +160,10 @@ const EditContent = (props) => {
           mode="outlined"
         />
       </View>
-    ));
+    ) : null));
   };
+
+  const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
 
   const renderSaveButton = () => {
     const save = () => {
@@ -176,16 +199,19 @@ const EditContent = (props) => {
         }
         return result;
       });
+      setIsChanged(true);
       setVisible(false);
     };
     return (
       <View style={style.buttonsContainer}>
-        <TouchableOpacity
-          style={style.button}
+        <Button
           onPress={save}
+          mode="contained"
+          color={Color.green2}
+          disabled={(term === '') || (definition === '')}
         >
-          <Text style={style.buttonTitle}>Save</Text>
-        </TouchableOpacity>
+          Save
+        </Button>
       </View>
     );
   };
@@ -200,6 +226,7 @@ const EditContent = (props) => {
     <View style={style.container}>
       <ScrollView contentContainerStyle={style.contentContainer}>
         {renderTextInputs()}
+        {renderExpandButton()}
         {renderSaveButton()}
       </ScrollView>
       {renderCancelButton()}
@@ -216,9 +243,14 @@ const EditContent = (props) => {
 };
 
 EditContent.propTypes = {
-  vocabID: PropTypes.string.isRequired,
+  vocabID: PropTypes.string,
   isVisible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
+  setIsChanged: PropTypes.func.isRequired,
+};
+
+EditContent.defaultProps = {
+  vocabID: null,
 };
 
 EditContent.defaultProps = {

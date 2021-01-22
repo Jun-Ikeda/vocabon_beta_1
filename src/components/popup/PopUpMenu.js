@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, Text, Dimensions,
+  View, StyleSheet, TouchableOpacity, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Color from '../../config/Color';
@@ -78,7 +78,7 @@ const PopUpMenu = (props) => {
 
 PopUpMenu.propTypes = {
   isVisible: PropTypes.bool,
-  renderMenu: PropTypes.node,
+  renderMenu: PropTypes.func,
   overlayStyle: PropTypes.object,
   setVisible: PropTypes.func,
   onLayout: PropTypes.func,

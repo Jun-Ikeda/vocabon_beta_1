@@ -137,7 +137,7 @@ const EditList = (props) => {
           const direction = currentOffset > offset ? 'down' : 'up';
           setOffset(currentOffset);
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setAddButtonVisible(direction === 'up');
+          setAddButtonVisible(direction === 'up' || currentOffset < 80);
         }}
         onScrollToTop={() => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -148,7 +148,7 @@ const EditList = (props) => {
   );
 };
 EditList.propTypes = {
-  content: PropTypes.array.isRequired,
+  content: PropTypes.object.isRequired,
   setVisible: PropTypes.func.isRequired,
   mode: PropTypes.string.isRequired,
 };

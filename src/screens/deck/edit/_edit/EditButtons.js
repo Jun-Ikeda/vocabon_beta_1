@@ -63,7 +63,7 @@ const style = StyleSheet.create({
 const EditButtons = (props) => {
   // props
   const {
-    mode, setMode, setHelpVisible, /* searchButtonVisible, setSearchButtonVisible, */
+    mode, setMode, setHelpVisible, setIsChanged,
   } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
@@ -71,12 +71,14 @@ const EditButtons = (props) => {
 
   const buttons = [
     {
+      title: 'unselectAll',
       icon: { collection: 'Feather', name: 'x' },
       visible: mode === 'delete',
       onPress: () => setSelectedVocabIDs([]),
       element: null,
     },
     {
+      title: 'closeDelete',
       icon: { collection: 'AntDesign', name: 'back' },
       visible: mode === 'delete',
       onPress: () => {
@@ -86,9 +88,14 @@ const EditButtons = (props) => {
       element: null,
     },
     {
-      icon: { collection: 'Feather', name: 'help-circle' }, visible: mode === 'edit', onPress: () => setHelpVisible(true), element: null,
+      title: 'help',
+      icon: { collection: 'Feather', name: 'help-circle' },
+      visible: mode === 'edit',
+      onPress: () => setHelpVisible(true),
+      element: null,
     },
     {
+      title: 'trash',
       icon: { collection: 'FontAwesome', name: 'trash' },
       visible: true,
       onPress: () => {
@@ -104,6 +111,7 @@ const EditButtons = (props) => {
           setContent(newContent);
           setSelectedVocabIDs([]);
           setMode('edit');
+          setIsChanged(true);
         } else {
           alert(':V');
         }
@@ -119,23 +127,6 @@ const EditButtons = (props) => {
     },
   ];
 
-  // const renderSearch = () => (
-  //   <View style={{ flex: 1, justifyContent: 'center' }}>
-  //     <EditSearch searchButtonVisible={searchButtonVisible} setSearchButtonVisible={setSearchButtonVisible} />
-  //     {searchButtonVisible ? (
-  //       <TouchableOpacity
-  //         style={style.button}
-  //         onPress={() => {
-  //           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-  //           setSearchButtonVisible(false);
-  //         }}
-  //       >
-  //         <Icon.Feather name="search" size={iconSize} />
-  //       </TouchableOpacity>
-  //     ) : null}
-  //   </View>
-  // );
-
   return (
     <View style={style.container}>
       {/* {renderSearch()} */}
@@ -145,6 +136,7 @@ const EditButtons = (props) => {
           <TouchableOpacity
             style={style.button}
             onPress={button.onPress}
+            key={button.title.toLowerCase()}
           >
             <IconComponent
               name={button.icon.name}
@@ -160,8 +152,9 @@ const EditButtons = (props) => {
 
 EditButtons.propTypes = {
   setMode: PropTypes.func.isRequired,
-  mode: 'string'.isRequired,
+  mode: PropTypes.string.isRequired,
   setHelpVisible: PropTypes.func.isRequired,
+  setIsChanged: PropTypes.func.isRequired,
 };
 
 EditButtons.defaultProps = {};
