@@ -199,6 +199,7 @@ const renderSearchFlatList = () => {
       renderItem={({ item }) => (
         <Text>{item.term}</Text>
       )}
+      keyExtractor={((item) => item.term.toLowerCase())}
       ListHeaderComponent={renderHeader()}
     />
   );

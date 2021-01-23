@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList,
+  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList, Platform, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Button, Divider, Menu } from 'react-native-paper';
 
+import { useNavigationState } from '@react-navigation/native';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
@@ -51,10 +52,43 @@ const Import = (props) => {
   // props
   const { navigation } = props;
   // state
-  const [input, setInput] = useState(/* 'manzana,apple/plátano,banana/uva,grape' */'');
+  const [input, setInput] = useState('manzana,apple/plátano,banana/uva,grape');
   const [itemDelimiter, setItemDelimiter] = useState(',');
   const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
+
+  const routes = useNavigationState((_state) => _state.routes);
+  useEffect(() => console.log(routes), []);
+
+  useEffect(() => navigation.addListener('beforeRemove', (e) => {
+    // if (!isChanged) {
+    //   return;
+    // }
+    if (!(Platform.OS === 'web') && input !== '') {
+      e.preventDefault();
+      Alert.alert(
+        'Discard import?',
+        'You have unsaved data. Are you sure to discard them and leave the screen?',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => {} },
+          {
+            text: 'Save',
+            onPress: () => {
+              navigation.navigate('importoption');
+              // saveDeckContent(deckID, content, false);
+              // navigation.dispatch(e.data.action);
+            },
+          },
+          {
+            text: 'Discard',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+        ],
+      );
+    }
+  }),
+  [navigation]);
 
   const renderDelimiterInput = () => {
     const inputs = [
@@ -90,17 +124,15 @@ const Import = (props) => {
         position: 'absolute', bottom: 15, right: 20, flexDirection: 'row',
       }}
       >
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={style.expandButton}
-          onPress={input === '' ? () => {} : () => Alert.alert(
-            'Caution',
-            'Do you really want to delete all? You cannot undo this action.',
-            [{ text: 'OK', onPress: () => setInput('') }, { text: 'Cancel', onPress: () => {} }],
-            { cancelable: true },
-          )}
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setInputExpand(!inputExpand);
+          }}
         >
-          <Icon.Feather style={style.expandIcon} name="x" />
-        </TouchableOpacity> */}
+          <Icon.Ionicons style={style.expandIcon} name={inputExpand ? 'contract' : 'expand'} />
+        </TouchableOpacity>
         <TouchableOpacity
           style={style.expandButton}
           onPress={() => {
@@ -115,7 +147,6 @@ const Import = (props) => {
   );
 
   const renderList = () => (
-    // <View style={{ flex: 1 }}>
     <FlatList
       data={input.split(cardDelimiter)}
       renderItem={({ item: card, index: cardIndex }) => (
@@ -134,8 +165,8 @@ const Import = (props) => {
       contentContainerStyle={{
         paddingBottom: 60,
       }}
+      keyExtractor={(item) => item.split(itemDelimiter)[0]}
     />
-    // </View>
   );
 
   const renderCompileButton = () => (
@@ -146,9 +177,7 @@ const Import = (props) => {
       <Button
         color={Color.green3}
         mode="contained"
-        onPress={() => {
-          navigation.goBack();
-        }}
+        onPress={() => navigation.navigate('importoption')}
       >
         Import
       </Button>

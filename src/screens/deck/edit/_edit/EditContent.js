@@ -15,6 +15,7 @@ import { contentState } from './Edit';
 const style = StyleSheet.create({
   container: {
     backgroundColor: Color.white1,
+    flex: 1,
     marginHorizontal: '5%',
     marginVertical: '15%',
     borderRadius: 10,
@@ -227,8 +228,8 @@ const EditContent = (props) => {
       <ScrollView contentContainerStyle={style.contentContainer}>
         {renderTextInputs()}
         {renderExpandButton()}
-        {renderSaveButton()}
       </ScrollView>
+      {renderSaveButton()}
       {renderCancelButton()}
     </View>
   );

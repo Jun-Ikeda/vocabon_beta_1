@@ -20,6 +20,7 @@ import Results from '../../../screens/deck/play/_results/Results';
 import Property from '../../../screens/deck/property/_property/Property';
 import Edit from '../../../screens/deck/edit/_edit/Edit';
 import Import from '../../../screens/deck/import/_import/Import';
+import ImportOption from '../../../screens/deck/import/_importoption/ImportOption';
 import Export from '../../../screens/deck/export/_export/Export';
 import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
 
@@ -141,6 +142,14 @@ const HomeNav = () => (
       component={Import}
       options={{
         headerTitle: 'Import',
+        // headerRight: () => <ImportMenu />,
+      }}
+    />
+    <Stack.Screen
+      name="importoption"
+      component={ImportOption}
+      options={{
+        headerTitle: 'Option',
         // headerRight: () => <ImportMenu />,
       }}
     />

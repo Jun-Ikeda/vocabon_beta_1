@@ -137,6 +137,7 @@ const VocabList = (props) => {
     <FlatList
       style={style.container}
       data={func.convertObjectToArray(searchContent)}
+      keyExtractor={(item) => item.key}
       renderItem={manuallyRenderCard ? renderCard : renderItem}
       contentContainerStyle={contentContainerStyle}
       onEndReached={onEndReached}

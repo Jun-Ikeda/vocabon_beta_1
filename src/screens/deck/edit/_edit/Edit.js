@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import {
+  View, StyleSheet, Alert, Platform,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { atom, useRecoilState } from 'recoil';
 
@@ -72,26 +74,29 @@ const Edit = (props) => {
     // if (!isChanged) {
     //   return;
     // }
-    e.preventDefault();
-    Alert.alert(
-      'Discard changes?',
-      'You have unsaved changes. Are you sure to discard them and leave the screen?',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => {} },
-        {
-          text: 'Save',
-          onPress: () => {
-            saveDeckContent(deckID, content, false);
-            navigation.dispatch(e.data.action);
+    alert(mode);
+    if (!(Platform.OS === 'web') && isChanged) {
+      e.preventDefault();
+      Alert.alert(
+        'Discard changes?',
+        'You have unsaved changes. Are you sure to discard them and leave the screen?',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => {} },
+          {
+            text: 'Save',
+            onPress: () => {
+              saveDeckContent(deckID, content, false);
+              navigation.dispatch(e.data.action);
+            },
           },
-        },
-        {
-          text: 'Discard',
-          style: 'destructive',
-          onPress: () => navigation.dispatch(e.data.action),
-        },
-      ],
-    );
+          {
+            text: 'Discard',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+        ],
+      );
+    }
   }),
   [navigation]);
 
@@ -99,8 +104,9 @@ const Edit = (props) => {
     <View style={style.startButtonContainer}>
       <Button
         onPress={() => {
-          saveDeckContent(deckID, content, false);
-          navigation.goBack();
+          alert(isChanged);
+          // saveDeckContent(deckID, content, false);
+          // navigation.goBack();
         }}
         color={Color.green2}
         mode="contained"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,12 @@ import PropTypes from 'prop-types';
 
 // import HeaderInMain from '../../../../../components/header/HeaderInMain';
 import { useRecoilValue } from 'recoil';
+import { useNavigationState } from '@react-navigation/native';
 import AddButton from './AddButton';
 
 import Carousel from '../../../../components/deck/carousel/Carousel';
 import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
-import { deck } from '../../../../config/Const';
-// import { header } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -49,7 +48,9 @@ const Home = (props) => {
   const allDeckIDs = Object.keys(general);
   const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
   const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
-  // const bookmarkDeckIDs = allDeckIDs.filter((deckID) => account.content?.[deckID]?.bookmark ?? false);
+
+  const routes = useNavigationState((_state) => _state.routes);
+  useEffect(() => console.log(routes), []);
 
   const renderRow = ({ title, deckIDs }) => (
     <View>

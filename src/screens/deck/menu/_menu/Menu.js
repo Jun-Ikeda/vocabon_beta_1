@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View, StyleSheet, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { useRecoilValue } from 'recoil';
+import { useNavigationState } from '@react-navigation/native';
 import Color from '../../../../config/Color';
 import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
@@ -59,7 +60,9 @@ const Menu = (props) => {
   //
   const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
   const accountContent = getAccountContent(deckID);
-  // const deckContent = getDeckContent(deckID);
+
+  const routes = useNavigationState((_state) => _state.routes);
+  useEffect(() => console.log(routes), []);
 
   const renderThumbnail = () => (
     <View>

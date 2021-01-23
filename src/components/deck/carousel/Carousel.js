@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import {
-  View, StyleSheet, Button,
+  View, StyleSheet,
 } from 'react-native';
 import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
