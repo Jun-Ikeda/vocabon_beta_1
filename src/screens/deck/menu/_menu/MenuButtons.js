@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, LayoutAnimation, Alert,
+  View, StyleSheet, Text, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
-import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
-import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
+import { decksGeneral, deleteDeck, getDeckGeneral } from '../../../../config/deck/Deck';
+import {
+  deleteAccountContent, getAccountContent, getAccountGeneral, saveAccountContent,
+} from '../../../../config/account/Account';
 import { func } from '../../../../config/Const';
 
 const iconsize = 30;
@@ -46,17 +48,46 @@ const style = StyleSheet.create({
  *
  * ```
  */
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!注意 グローバル変数への保存がある!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+bookmark
+  ローカルstate ユーザーが切り替える度
+    const [bookmark, setBookmark] = useState(accountContent.bookmark);
+  グローバルstate 画面遷移時、変更があった場合更新
+    useEffect(() => {...}, [navigation])
+delete
+  ローカルstate 削除されるとisDeleteがtrueに
+  グローバルstate 削除されるとdeckGeneral, deckContent, accountContentから削除, 即座にhomeに戻る
+*/
 const MenuButtons = (props) => {
   // props
   const { navigation, deckID } = props;
   // recoil
-  const decksGeneralState = useRecoilValue(decksGeneral);
-  // state
-  const [visible, setVisible] = useState(false);
-  const [bookmarked, setBookmarked] = useState(getAccountContent(deckID).bookmark);
+  const [decksGeneralState, setDecksGeneralState] = useRecoilState(decksGeneral);
   //
   const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
+  const accountContent = getAccountContent(deckID);
   const identifyVisible = (deckGeneral.user === getAccountGeneral().userID);
+  // state
+  const [visible, setVisible] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [bookmark, setBookmark] = useState(accountContent.bookmark);
+
+  useEffect(() => navigation.addListener('state', (e) => {
+    if ((bookmark !== accountContent.bookmark) && (!isDeleted)) {
+      saveAccountContent(deckID, { bookmark }, true);
+    }
+  }),
+  [navigation, bookmark, isDeleted]);
+
+  const deleteDeckAndAccountContent = () => {
+    setIsDeleted(true);
+    deleteDeck(setDecksGeneralState, deckID);
+    deleteAccountContent(deckID);
+    navigation.goBack();
+  };
 
   const renderColumn = (buttons) => (
     <View style={style.container}>
@@ -152,20 +183,20 @@ const MenuButtons = (props) => {
           title: 'Bookmark',
           icon: () => (
             <Icon.MaterialCommunityIcons
-              name={bookmarked ? 'bookmark-check' : 'bookmark-outline'}
-              style={[style.icon, { color: bookmarked ? Color.red2 : 'black' }]}
+              name={bookmark ? 'bookmark-check' : 'bookmark-outline'}
+              style={[style.icon, { color: bookmark ? Color.red2 : 'black' }]}
               size={iconsize}
             />
           ),
-          onPress: () => setBookmarked(!bookmarked),
+          onPress: () => setBookmark(!bookmark),
           textStyle: {},
           flex: 1,
         },
         {
           title: 'Duplicate',
-          icon: () => <Icon.Feather name="copy" size={iconsize} style={style.icon} />,
+          icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { color: Color.gray3 }]} />,
           onPress: () => func.alert('duplicate'),
-          textStyle: {},
+          textStyle: { color: Color.gray3 },
           flex: 1,
         },
         {
@@ -198,9 +229,9 @@ const MenuButtons = (props) => {
       [
         {
           title: 'Share',
-          icon: () => <Icon.Entypo name="share" size={iconsize} style={style.icon} />,
+          icon: () => <Icon.Entypo name="share" size={iconsize} style={[style.icon, { color: Color.gray3 }]} />,
           onPress: () => func.alert('share'),
-          textStyle: {},
+          textStyle: { color: Color.gray3 },
           flex: 1,
         },
         // {
@@ -220,7 +251,7 @@ const MenuButtons = (props) => {
         {
           title: 'Delete',
           icon: () => <Icon.FontAwesome name="trash" size={iconsize} style={[style.icon, { color: Color.cud.pink }]} />,
-          onPress: () => func.alert('Caution', 'Are you sure to delete this deck?', [{ text: 'OK', onPress: () => {} }, { text: 'Cancel', onPress: () => {} }]),
+          onPress: () => func.alert('Caution', 'Are you sure to delete this deck?', [{ text: 'OK', onPress: deleteDeckAndAccountContent }, { text: 'Cancel', onPress: () => {} }]),
           textStyle: { color: Color.cud.pink },
           flex: 2,
         },

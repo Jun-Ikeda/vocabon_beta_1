@@ -32,7 +32,7 @@ const Carousel = (props) => {
   // props
   const { deckIDs, onPressCard, countainerStyle } = props;
   // state
-  const [layout, setLayout] = useState({ height: 300, width: 300 });
+  const [layout, setLayout] = useState({ height: 0, width: 0 });
   const [activeIndex, setActiveIndex] = useState(0);
   // ref
   let carousel = {};
@@ -42,7 +42,7 @@ const Carousel = (props) => {
       deckID={deckID}
       onPress={() => onPressCard(deckID)}
       cardStyle={{
-        width: layout.width * 0.6,
+        width: layout.width * 0.8,
         height: layout.width * 0.5,
         borderRadius: layout.width * 0.03,
       }}
@@ -54,14 +54,17 @@ const Carousel = (props) => {
       style={[style.container, countainerStyle]}
       onLayout={(e) => setLayout(func.onLayoutContainer(e))}
     >
-      <DeckCarousel
-        data={deckIDs}
-        renderItem={renderItem}
-        itemWidth={layout.width * 0.6}
-        sliderWidth={layout.width * 1.0}
-        onSnapToItem={(index) => setActiveIndex(index)}
-        ref={(ref) => { carousel = ref; }}
-      />
+      {(layout.height !== 0) ? (
+        <DeckCarousel
+          data={deckIDs}
+          renderItem={renderItem}
+          itemWidth={layout.width * 0.8}
+          sliderWidth={layout.width * 1.0}
+          onSnapToItem={(index) => setActiveIndex(index)}
+          ref={(ref) => { carousel = ref; }}
+        />
+      )
+        : null}
       <Pagination
         dotsLength={deckIDs.length}
         activeDotIndex={activeIndex}

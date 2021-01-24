@@ -22,6 +22,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-card-flip": "^1.0.7",
+    "react-native-chart-kit": "^6.10.0",
     "react-native-deck-swiper": "^2.0.5",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-numeric-input": "^1.8.3",
@@ -35,7 +36,8 @@
     "react-native-vector-icons": "^7.1.0",
     "react-native-web": "~0.13.12",
     "recoil": "^0.1.2",
-    "unsplash-js": "^6.3.0"
+    "unsplash-js": "^6.3.0",
+    "victory-native": "^35.3.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

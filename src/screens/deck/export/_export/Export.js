@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Dimensions, Text,
+  StyleSheet, ScrollView, View, Dimensions, Text, FlatList, TextInput,
 } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, Divider, RadioButton } from 'react-native-paper';
 import ExpoClipboard from 'expo-clipboard';
 
 import PropTypes from 'prop-types';
@@ -17,7 +17,7 @@ const style = StyleSheet.create({
     flex: 1,
   },
   optionBox: {
-    flex: 1,
+    flex: 2,
     marginHorizontal: 30,
     marginTop: 30,
     marginBottom: 5,
@@ -34,20 +34,28 @@ const style = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: Color.white1,
     justifyContent: 'center',
+
+  },
+  delimiterInput: {
+    // marginHorizontal: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderRadius: 10,
+    marginVertical: 5,
   },
 });
 
 const Export = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
-  const deckTerms = [];
-  const deckObject = getDeckContent(deckID);
-  const deckItems = Object.keys(deckObject).forEach((key) =>　{ dectTerms.deckObject[key].term; });
-  // const deckItems = Object.keys(deckObject).forEach((key) => { console.log(deckObject[key].term); });
-  const deckString = JSON.stringify(deckTerms, null, 4);
   // const [visible, setVisible] = useState(false);
 
-  console.log(deckItems);
   const [layout, setLayout] = useState({ height: 300, width: 300 });
+  const [itemValue, setItemValue] = useState('first');
+  const [cardValue, setCardValue] = useState('first');
+  const [itemDelimiter, setItemDelimiter] = useState(',');
+  const [cardDelimiter, setCardDelimiter] = useState('/');
+
+  const content = getDeckContent(deckID);
 
   // const renderExportTypes = () => {
   //   const exportButtons = [
@@ -79,23 +87,95 @@ const Export = (props) => {
   //   }
   //   return null;
   // };
-  const renderOptionBox = () => (
-    <View style={style.optionBox}>
-      <Text style={{ fontSize: 20, borderBottomWidth: 1 }}> Options </Text>
-    </View>
+  const renderRadioButtons = (data) => (
+    <RadioButton.Group onValueChange={(newValue) => data.state1[1](newValue)} value={data.state1[0]}>
+      <View>
+        <Text>{data.value1}</Text>
+        <RadioButton value="first" />
+      </View>
+      <View>
+        <Text>{data.value2}</Text>
+        <RadioButton value="second" />
+      </View>
+    </RadioButton.Group>
   );
 
-  const renderDataBox = () => (
-    <View style={style.dataBox}>
-      <Text style={{ fontSize: 20, marginBottom: 10, borderBottomWidth: 1 }}> Data </Text>
-      <ScrollView persistentScrollbar>
-        <Text>{deckString}</Text>
-      </ScrollView>
-      <Button onPress={() => ExpoClipboard.setString(deckString)}>Copy</Button>
-      {/* <Button title="Export" onPress={() => setVisible(!visible)} />
-      {renderExportTypes()} */}
-    </View>
+  const renderCustomText = (data) => (
+    <TextInput
+      value={data.state2[0]}
+      onChangeText={data.state2[1]}
+      style={style.delimiterInput}
+    />
   );
+
+  const renderOptionBox = () => {
+    const optionSet = [
+      {
+        title: 'Between Term and Definition',
+        value1: 'Tab',
+        value2: 'Comma',
+        state1: [itemValue, setItemValue],
+        state2: [itemDelimiter, setItemDelimiter],
+      },
+      {
+        title: 'Between Terms',
+        value1: 'Semicolon',
+        value2: 'Change Line',
+        state1: [cardValue, setCardValue],
+        state2: [cardDelimiter, setCardDelimiter],
+      },
+    ];
+    return (
+      <View style={style.optionBox}>
+        <Text style={{ fontSize: 20 }}> Options </Text>
+        <Divider />
+        {/* <FlatList
+          style={{ marginVertical: 5 }}
+          data={optionSet}
+          renderItem={({ item }) => (
+            <View>
+              <Text style={{ fontSize: 15 }}>{item.title}</Text>
+              <TextInput
+                value={item.state[0]}
+                onChangeText={item.state[1]}
+                style={style.delimiterInput}
+              />
+            </View>
+          )}
+        /> */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          {optionSet.map((item) => (
+            <View style={{ justifyContent: 'space-evenly' }}>
+              <Text style={{ fontSize: 15 }}>{item.title}</Text>
+              <Divider />
+              {renderRadioButtons(item)}
+              {renderCustomText(item)}
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
+  const renderDataBox = () => {
+    const contentArray = func.convertObjectToArray(content);
+    const output = contentArray.map((element) => [element.value.term, element.value.definition].join(itemDelimiter)).join(cardDelimiter);
+    // const deckString = deckItems.map((element) => element.map)
+    // const deckString = JSON.stringify(deckItems, null, 4);
+
+    return (
+      <View style={style.dataBox}>
+        <Text style={{ fontSize: 20, marginBottom: 10 }}> Data </Text>
+        <Divider />
+        <ScrollView persistentScrollbar>
+          <Text>{output}</Text>
+        </ScrollView>
+        <Button onPress={() => ExpoClipboard.setString(output)} mode="contained" color={Color.green2}>Copy</Button>
+        {/* <Button title="Export" onPress={() => setVisible(!visible)} />
+        {renderExportTypes()} */}
+      </View>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>

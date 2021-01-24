@@ -24,6 +24,10 @@ export const saveAccountContent = (deckID = '', newData, merge = true) => {
   }
 };
 
+export const deleteAccountContent = (deckID) => {
+  delete account.content[deckID];
+};
+
 export default { account, getAccountGeneral, getAccountContent };
 
 /* const account = {

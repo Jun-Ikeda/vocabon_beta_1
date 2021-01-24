@@ -123,6 +123,28 @@ export const func = {
     const copy = arr.slice();
     return copy.reverse();
   },
+  formatDate: (shortenedDate) => {
+    const year = (shortenedDate - (shortenedDate % 10000)) / 10000;
+    const month = ((shortenedDate % 10000) - ((shortenedDate % 10000) % 100)) / 100;
+    const day = (shortenedDate % 10000) % 100;
+    const lastNum = shortenedDate % 10;
+    const shortenedMonthName = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+    const formalMonthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let hoge = '';
+    const monthName = [shortenedMonthName[month - 1], formalMonthName[month - 1]];
+
+    if (lastNum === 1) {
+      hoge = 'st';
+    } else if (lastNum === 2) {
+      hoge = 'nd';
+    } else if (lastNum === 3) {
+      hoge = 'rd';
+    } else {
+      hoge = 'th';
+    }
+
+    return `${monthName[1]} ${day}${hoge}, ${year}`;
+  },
 };
 
 export const deck = {
@@ -136,6 +158,24 @@ export const deck = {
     } catch (error) {
       return array;
     }
+  },
+  sortVocabs: (validVocabIDs, sortMode) => {
+    let validVocabIDsSorted = [];
+    switch (sortMode) {
+      case 'index':
+        validVocabIDsSorted = validVocabIDs;
+        break;
+      case 'index-reverse':
+        validVocabIDsSorted = func.reverseNonDestructive(validVocabIDs);
+        break;
+      case 'shuffle':
+        validVocabIDsSorted = func.shuffle(validVocabIDs);
+        break;
+      default:
+        validVocabIDsSorted = validVocabIDs;
+        break;
+    }
+    return validVocabIDsSorted;
   },
 };
 

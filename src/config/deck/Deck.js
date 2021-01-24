@@ -54,6 +54,15 @@ export const saveDeckContent = (deckID, newData, merge = true) => {
   }
 };
 
+export const deleteDeck = (setDeckGeneral, deckID) => {
+  setDeckGeneral((prev) => {
+    const newState = JSON.parse(JSON.stringify(prev));
+    delete newState[deckID];
+    return newState;
+  });
+  delete decksContent[deckID];
+};
+
 /*
 decksContent = {
   '7NCodht%}0': {

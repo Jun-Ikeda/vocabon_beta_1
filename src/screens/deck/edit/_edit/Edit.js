@@ -14,7 +14,9 @@ import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 import EditAddButton from './EditAddButton';
 
-import { getDeckContent, saveDeckContent } from '../../../../config/deck/Deck';
+import {
+  decksGeneral, getDeckContent, saveDeckContent, saveDeckGeneral,
+} from '../../../../config/deck/Deck';
 
 export const contentState = atom({
   key: 'contentState',
@@ -51,10 +53,25 @@ const style = StyleSheet.create({
  *
  * ```
  */
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!注意 グローバル変数への保存がある!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+deck content
+  ローカルstate ユーザーが書き換え、削除などをするたび
+    const [content, setContent] = useState(contentState); // recoilだけど、_editファイル内限定のローカルstate
+    const [isChanged, setIsChanged] = useState(false);
+  グローバルstate 戻るとき、変更があった場合(isChangedがtrueだったら)更新
+    useEffect(() => {...}, [navigation])
+deck general
+  ローカルstate なし
+  グローバルstate deckContentの更新時、numを更新
+*/
 const Edit = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // recoil
+  const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
   const [content, setContent] = useRecoilState(contentState);
   // state
   const [mode, setMode] = useState('edit'); // edit, delete, 今後追加?
@@ -65,16 +82,16 @@ const Edit = (props) => {
   const [isChanged, setIsChanged] = useState(false);
 
   const contentInitial = getDeckContent(deckID);
-
-  useEffect(() => {
-    setContent(contentInitial);
-  }, []);
+  const save = async () => {
+    await setIsChanged(false);
+    saveDeckContent(deckID, content, false);
+    if (deckGeneral.num !== Object.keys(content).length) {
+      saveDeckGeneral(setDeckGeneral, deckID, { ...deckGeneral, num: Object.keys(content).length });
+    }
+  };
+  useEffect(() => setContent(contentInitial), []);
 
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
-    // if (!isChanged) {
-    //   return;
-    // }
-    alert(mode);
     if (!(Platform.OS === 'web') && isChanged) {
       e.preventDefault();
       Alert.alert(
@@ -84,29 +101,24 @@ const Edit = (props) => {
           { text: "Don't leave", style: 'cancel', onPress: () => {} },
           {
             text: 'Save',
-            onPress: () => {
-              saveDeckContent(deckID, content, false);
+            onPress: async () => {
+              await save();
               navigation.dispatch(e.data.action);
             },
           },
-          {
-            text: 'Discard',
-            style: 'destructive',
-            onPress: () => navigation.dispatch(e.data.action),
-          },
+          { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
         ],
       );
     }
   }),
-  [navigation]);
+  [navigation, isChanged, content]);
 
   const renderSaveButton = () => (
     <View style={style.startButtonContainer}>
       <Button
-        onPress={() => {
-          alert(isChanged);
-          // saveDeckContent(deckID, content, false);
-          // navigation.goBack();
+        onPress={async () => {
+          await save();
+          navigation.goBack();
         }}
         color={Color.green2}
         mode="contained"

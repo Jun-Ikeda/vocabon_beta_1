@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   LayoutAnimation,
-  StyleSheet, Text, TouchableOpacity, View,
+  StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -12,6 +12,9 @@ import VocabList from '../../../../components/deck/list/VocabList';
 import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
+
+import AnalyzeList from './AnalyzeList';
+import AnalyzeButtons from './AnalyzeButtons';
 
 const iconSize = 30;
 
@@ -35,35 +38,38 @@ const style = StyleSheet.create({
     fontSize: iconSize,
   },
   detailcontainer: {
-    flex: 1,
+    // flex: 1,
     // borderWidth: 1,
     borderRadius: 15,
     backgroundColor: Color.white1,
-    marginHorizontal: '10%',
-    marginVertical: '25%',
-    padding: '8%',
+    marginHorizontal: '5%',
+    marginVertical: 50,
+    // padding: '8%',
   },
   detailtext: {
     // borderWidth: 1,
     fontSize: iconSize * 0.66,
+  },
+  detaildate: {
+    fontSize: iconSize * 0.66,
+
   },
 });
 
 const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
-  const { marks, play } = getAccountContent(deckID);
+  const { marks, play /* ここ 具体的な構造は、TestData若しくは、Accountの下のコメントを参照 */ } = getAccountContent(deckID);
   const content = getDeckContent(deckID);
-  const [contentSearched, setContentSearched] = useState(content);
+  const [contentSorted, setContentSorted] = useState(content);
   const [vocabDetailVisible, setVocabDetailVisible] = useState(false);
 
   const renderVocab = () => (
-    <VocabList
-      content={contentSearched}
-      itemVisible={{ term: true }}
-      renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
-      onPressCard={(vocab) => setVocabDetailVisible(vocab.key)}
-      searchBar
+    <AnalyzeList
+      marks={marks}
+      contentSorted={contentSorted}
+      vocabDetailVisible={vocabDetailVisible}
+      setVocabDetailVisible={setVocabDetailVisible}
     />
   );
 
@@ -73,26 +79,24 @@ const Analyze = (props) => {
         label: 'Term',
         onPress: () => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          const newContentSearched_Array = func.convertObjectToArray(JSON.parse(JSON.stringify(contentSearched)));
-          newContentSearched_Array.sort((a, b) => {
+          const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
             const nameA = a.value.term.toLowerCase(); // 大文字と小文字を無視する
             const nameB = b.value.term.toLowerCase(); // 大文字と小文字を無視する
-            return (nameA === nameB) ? 0 : (nameA < nameB ? 1 : -1);
-          });
-          setContentSearched(func.convertArrayToObject(newContentSearched_Array));
+            return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
+          }));
+          setContentSorted(newContentSorted);
         },
       },
       {
         label: 'Marks',
         onPress: () => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          const newContentSearched_Array = func.convertObjectToArray(JSON.parse(JSON.stringify(contentSearched)));
-          newContentSearched_Array.sort((a, b) => {
+          const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
             const markA = marks?.[a.key]?.length ?? 0; // 大文字と小文字を無視する
             const markB = marks?.[b.key]?.length ?? 0; // 大文字と小文字を無視する
             return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
-          });
-          setContentSearched(func.convertArrayToObject(newContentSearched_Array));
+          }));
+          setContentSorted(newContentSorted);
         },
       },
     ];
@@ -107,6 +111,14 @@ const Analyze = (props) => {
     );
   };
 
+  const renderDate = (shortenedDate) => (
+    <View style={{ flex: 1 }}>
+      <Text style={style.detailtext}>
+        {func.formatDate(shortenedDate)}
+      </Text>
+    </View>
+  );
+
   const renderVocabDetail = () => (
     <Portal>
       <PopUpMenu
@@ -116,41 +128,24 @@ const Analyze = (props) => {
           <View style={style.detailcontainer}>
             <Text style={style.detailtext}>{content[vocabDetailVisible]?.term}</Text>
             <Text style={style.detailtext}>{content[vocabDetailVisible]?.definition}</Text>
-            <Text style={style.detailtext}>{'\nHistory:'}</Text>
+            <Text style={style.detailtext}>{'\nHistory:\n'}</Text>
+            <View>
+              {renderDate(20030507)}
+              {renderDate(19420125)}
+            </View>
           </View>
         )}
       />
     </Portal>
   );
 
-  const getDate = (shortenedDate) => {
-    const year = (shortenedDate - shortenedDate % 10000) / 10000;
-    const month = (shortenedDate % 10000 - (shortenedDate % 10000) % 100) / 100;
-    const day = (shortenedDate % 10000) % 100;
-    const lastNum = shortenedDate % 10;
-    let hoge = '';
-
-    if (lastNum === 1) {
-      hoge = 'st';
-    } else if (lastNum === 2) {
-      hoge = 'nd';
-    } else if (lastNum === 3) {
-      hoge = 'rd';
-    } else {
-      hoge = 'th';
-    }
-
-    return (
-      <View style={{ flex: 1 }}>
-        <Text style={style.detailtext}>
-          {`${day}${hoge}`}
-        </Text>
-      </View>
-    );
+  const renderButtons = () => {
+    <AnalyzeButtons />;
   };
 
   return (
     <View style={{ flex: 1 }}>
+      {renderButtons()}
       {renderLabels()}
       {renderVocab()}
       {renderVocabDetail()}

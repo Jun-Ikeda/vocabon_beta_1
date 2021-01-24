@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
 
 import Color from '../../../../config/Color';
+import { deck, func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -20,12 +21,15 @@ const OptionStartButton = (props) => {
 
   const start = () => {
     console.log(sortMode);
+    const validVocabIDsSorted = deck.sortVocabs(validVocabIDs, sortMode);
     if (mode === 'custom') {
       navigation.navigate('play', {
-        deckID, itemVisible, validVocabIDs, sortMode,
+        deckID, itemVisible, validVocabIDs: validVocabIDsSorted, sortMode,
       });
     } else if (mode === 'default') {
-      navigation.navigate('play', { deckID, itemVisible, sortMode });
+      navigation.navigate('play', {
+        deckID, itemVisible, validVocabIDs: validVocabIDsSorted, sortMode,
+      });
     }
   };
   return (

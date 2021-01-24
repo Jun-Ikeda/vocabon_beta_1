@@ -49,22 +49,27 @@ const Options = (props) => {
 
   const [mode, setMode] = useState('custom');
   const [itemVisible, setItemVisible] = useState({ front: ['term'], back: ['definition'] });
-  const [sortMode, setSortMode] = useState('index');
-  const [expandFilter, setExpandFilter] = useState('Marks');
+  const [sortMode, setSortMode] = useState('shuffle');
+  const [expandFilter, setExpandFilter] = useState('Index');
+  const [indexRange, setIndexRange] = useState({ min: 0, max: Object.values(content).length });
   const [markRange, setMarkRange] = useState({ min: 0, max: MarksMax });
   const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
   const [synonymRange, setSynonymRange] = useState({ min: 0, max: SynonymMax });
   const [antonymRange, setAntonymRange] = useState({ min: 0, max: AntonymMax });
 
-  const validVocabIDs = func.convertObjectToArray(content).filter((vocab) => {
+  const validVocabIDs = func.convertObjectToArray(content).filter((vocab, index) => {
+    const inIndexRange = (index + 1 >= indexRange.min) && (index + 1 <= indexRange.max);
     const inMarksRange = (marks[vocab.key]?.length ?? 0) >= markRange.min && (marks[vocab.key]?.length ?? 0) <= markRange.max;
     const inExampleRange = vocab.value.exampleT.length >= exampleRange.min && vocab.value.exampleT.length <= exampleRange.max;
     const inSynonymRange = vocab.value.synonym.length >= synonymRange.min && vocab.value.synonym.length <= synonymRange.max;
     const inAntonymRange = vocab.value.antonym.length >= antonymRange.min && vocab.value.antonym.length <= antonymRange.max;
-    return inMarksRange && inExampleRange && inSynonymRange && inAntonymRange;
+    return inIndexRange && inMarksRange && inExampleRange && inSynonymRange && inAntonymRange;
   }).map((vocab) => vocab.key);
 
   const items = [
+    {
+      title: 'Index', range: [1, Object.values(content).length], state: [indexRange, setIndexRange], visible: true,
+    },
     {
       title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
     },
@@ -92,7 +97,14 @@ const Options = (props) => {
           <FrontBack itemVisible={itemVisible} setItemVisible={setItemVisible} />
         </ScrollView>
       ) : null}
-      <OptionStartButton itemVisible={itemVisible} navigation={navigation} deckID={deckID} validVocabIDs={validVocabIDs} mode={mode} sortMode={sortMode} />
+      <OptionStartButton
+        itemVisible={itemVisible}
+        navigation={navigation}
+        deckID={deckID}
+        validVocabIDs={(mode === 'default') ? Object.keys(content) : validVocabIDs}
+        mode={mode}
+        sortMode={sortMode}
+      />
     </View>
   );
 };

@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { useNavigationState } from '@react-navigation/native';
-import { Button } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import Color from '../../../../config/Color';
+import ImportList from '../ImportList';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
 const style = StyleSheet.create({
   container: {
@@ -19,20 +21,72 @@ const style = StyleSheet.create({
 });
 
 const ImportOption = (props) => {
-  const { navigation, route } = props;
+  // props
+  const { navigation, route: { params: { input, itemDelimiter, cardDelimiter } } } = props;
+  const inputArray = input.split(cardDelimiter).map((card) => card.split(itemDelimiter));
+  const itemNumber = (inputArray.length === 0) ? 0 : inputArray.reduce((a, b) => (a.length > b.length ? a : b)).length;
+  // state
+  const [isVisible, setIsVisible] = useState(false);
+  const [onEditItemIndex, setOnEditItemIndex] = useState(0);
+  const [text, setText] = useState('');
+  const [label, setLabel] = useState([...Array(itemNumber)].map(() => ''));
+
   const routes = useNavigationState((_state) => _state.routes);
   useEffect(() => console.log(routes), []);
 
+  const renderList = () => (
+    <ImportList
+      labels={label}
+      input={input}
+      cardDelimiter={cardDelimiter}
+      itemDelimiter={itemDelimiter}
+      onPress={(_, itemIndex) => {
+        setOnEditItemIndex(itemIndex);
+        setText(label[itemIndex]);
+        setIsVisible(true);
+      }}
+    />
+  );
+
   const renderImportButton = () => (
     <View style={style.butonContainer}>
-      <Button color={Color.green2} mode="contained" onPress={() => navigation.navigate('menu')}>Import</Button>
+      <Button color={Color.green2} mode="contained" onPress={/* () => navigation.navigate('menu') */ () => console.log(inputArray)}>Import</Button>
     </View>
+  );
+
+  const renderEditLabel = () => (
+    <PopUpMenu
+      renderMenu={() => (
+        <View style={{ flex: 1, margin: 50, backgroundColor: Color.white1 }}>
+          <TextInput value={text} onChangeText={setText} />
+          <Button
+            mode="contained"
+            color={Color.green2}
+            onPress={() => {
+              setLabel((prev) => {
+                const prevCopy = JSON.parse(JSON.stringify(prev));
+                prevCopy[onEditItemIndex] = text;
+                return prevCopy;
+              });
+              setText('');
+              setIsVisible(false);
+            }}
+          >
+            Save
+          </Button>
+        </View>
+      )}
+      isVisible={isVisible}
+      setVisible={setIsVisible}
+    />
   );
 
   return (
     <View style={style.container}>
-      <Text>ImportOption</Text>
+      <Text>{itemNumber}</Text>
+      {renderList()}
       {renderImportButton()}
+      {renderEditLabel()}
     </View>
   );
 };

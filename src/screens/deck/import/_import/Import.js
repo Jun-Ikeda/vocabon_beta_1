@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, FlatList, Platform, Alert,
+  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, Platform, Alert, KeyboardAvoidingView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,7 @@ import { useNavigationState } from '@react-navigation/native';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
+import ImportList from '../ImportList';
 
 const style = StyleSheet.create({
   container: {
@@ -36,13 +37,6 @@ const style = StyleSheet.create({
   expandIcon: {
     fontSize: 24,
   },
-  cardContainer: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-    borderRadius: 10,
-    padding: 15,
-    backgroundColor: Color.white1,
-  },
   emptyText: {
     fontStyle: 'italic',
   },
@@ -52,7 +46,7 @@ const Import = (props) => {
   // props
   const { navigation } = props;
   // state
-  const [input, setInput] = useState('manzana,apple/plátano,banana/uva,grape');
+  const [input, setInput] = useState('manzana,apple/plátano,banana');
   const [itemDelimiter, setItemDelimiter] = useState(',');
   const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
@@ -61,34 +55,20 @@ const Import = (props) => {
   useEffect(() => console.log(routes), []);
 
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
-    // if (!isChanged) {
-    //   return;
-    // }
-    if (!(Platform.OS === 'web') && input !== '') {
+    if (!(Platform.OS === 'web') && !((input === 'manzana,apple/plátano,banana') || (input === ''))) {
       e.preventDefault();
       Alert.alert(
-        'Discard import?',
-        'You have unsaved data. Are you sure to discard them and leave the screen?',
+        'Discard changes?',
+        'You have unsaved changes. Are you sure to discard them and leave the screen?',
         [
           { text: "Don't leave", style: 'cancel', onPress: () => {} },
-          {
-            text: 'Save',
-            onPress: () => {
-              navigation.navigate('importoption');
-              // saveDeckContent(deckID, content, false);
-              // navigation.dispatch(e.data.action);
-            },
-          },
-          {
-            text: 'Discard',
-            style: 'destructive',
-            onPress: () => navigation.dispatch(e.data.action),
-          },
+          { text: 'Save', onPress: () => navigation.navigate('importoption', { input, itemDelimiter, cardDelimiter }) },
+          { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
         ],
       );
     }
   }),
-  [navigation]);
+  [navigation, input]);
 
   const renderDelimiterInput = () => {
     const inputs = [
@@ -112,7 +92,7 @@ const Import = (props) => {
   };
 
   const renderInput = () => (
-    <View style={inputExpand ? { flex: 1, padding: 10 } : { height: 240, padding: 10 }}>
+    <View style={{ padding: 10, flex: inputExpand ? 1 : null, height: 240 }}>
       <Text style={{ fontSize: 18 }}>INPUT</Text>
       <TextInput
         multiline
@@ -133,41 +113,11 @@ const Import = (props) => {
         >
           <Icon.Ionicons style={style.expandIcon} name={inputExpand ? 'contract' : 'expand'} />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={style.expandButton}
-          onPress={() => {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            setInputExpand(!inputExpand);
-          }}
-        >
-          <Icon.Ionicons style={style.expandIcon} name={inputExpand ? 'contract' : 'expand'} />
-        </TouchableOpacity>
       </View>
     </View>
   );
 
-  const renderList = () => (
-    <FlatList
-      data={input.split(cardDelimiter)}
-      renderItem={({ item: card, index: cardIndex }) => (
-        <View style={style.cardContainer}>
-          <Text>{`Card${cardIndex + 1}: `}</Text>
-          {(card.split(itemDelimiter).map((item, itemIndex) => (
-            <Text key={item}>
-              {`item${itemIndex + 1}: `}
-              {(item === '')
-                ? <Text style={style.emptyText}>empty</Text>
-                : <Text>{item}</Text>}
-            </Text>
-          )))}
-        </View>
-      )}
-      contentContainerStyle={{
-        paddingBottom: 60,
-      }}
-      keyExtractor={(item) => item.split(itemDelimiter)[0]}
-    />
-  );
+  const renderList = () => <ImportList input={input} cardDelimiter={cardDelimiter} itemDelimiter={itemDelimiter} />;
 
   const renderCompileButton = () => (
     <View style={{
@@ -177,7 +127,7 @@ const Import = (props) => {
       <Button
         color={Color.green3}
         mode="contained"
-        onPress={() => navigation.navigate('importoption')}
+        onPress={() => navigation.navigate('importoption', { input, itemDelimiter, cardDelimiter })}
       >
         Import
       </Button>
@@ -185,14 +135,14 @@ const Import = (props) => {
   );
 
   return (
-    <View style={style.container}>
+    <KeyboardAvoidingView style={style.container}>
       <View style={{ flex: 1 }}>
         {inputExpand ? null : renderDelimiterInput()}
         {renderInput()}
         {inputExpand ? null : renderList()}
       </View>
       {inputExpand ? null : renderCompileButton()}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

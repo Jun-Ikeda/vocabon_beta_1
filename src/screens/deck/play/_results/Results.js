@@ -9,6 +9,7 @@ import { useRecoilValue } from 'recoil';
 import Color from '../../../../config/Color';
 import { unshortenURI } from '../../../../config/Unsplash';
 import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
+import { deck } from '../../../../config/Const';
 
 // import Home from '../../../../nav/main/home/screens/home/Home';
 // import TestData from '../../../../../dev/TestData';
@@ -87,7 +88,7 @@ const Results = (props) => {
   const {
     navigation, route: {
       params: {
-        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs, itemVisible, sortMode,
+        deckID, validVocabIDs, itemVisible, sortMode, rightVocabID, leftVocabID, vocabIDs,
       },
     },
   } = props;
@@ -120,7 +121,7 @@ const Results = (props) => {
         num: `(${validVocabIDs.length})`,
         onPress: () => {
           navigation.push('play', {
-            deckID, validVocabIDs, itemVisible, sortMode,
+            deckID, validVocabIDs: deck.sortVocabs(validVocabIDs, sortMode), itemVisible, sortMode,
           });
         },
         isVisible: true,
@@ -130,7 +131,7 @@ const Results = (props) => {
         num: `(${vocabIDs.length})`,
         onPress: () => {
           navigation.push('play', {
-            deckID, validVocabIDs: vocabIDs, itemVisible, sortMode,
+            deckID, validVocabIDs: deck.sortVocabs(vocabIDs, sortMode), itemVisible, sortMode,
           });
         },
         isVisible: validVocabIDs.length !== vocabIDs.length,
@@ -139,7 +140,7 @@ const Results = (props) => {
         title: 'Play marked cards',
         num: `(${leftVocabID.length})`,
         onPress: () => navigation.push('play', {
-          deckID, validVocabIDs: leftVocabID, itemVisible, sortMode,
+          deckID, validVocabIDs: deck.sortVocabs(leftVocabID, sortMode), itemVisible, sortMode,
         }),
         isVisible: ((leftVocabID.length !== 0) && (rightVocabID.length !== 0)),
       },

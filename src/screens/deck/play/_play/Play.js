@@ -4,13 +4,15 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import DeckSwiper from 'react-native-deck-swiper';
 
-import { Button } from 'react-native-paper';
+import { Button, Portal } from 'react-native-paper';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
 import PlayCard from './PlayCard';
 import PlayCounter from './PlayCounter';
@@ -18,6 +20,8 @@ import PlayButtons from './PlayButtons';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import Icon from '../../../../components/Icon';
 import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
+import VocabList from '../../../../components/deck/list/VocabList';
+import PlayDetail from './PlayDetail';
 
 // import { DeckGeneral, DeckContent } from '../../../../../dev/TestData';
 
@@ -29,6 +33,11 @@ const style = StyleSheet.create({
     textAlign: 'center',
     fontSize: 30,
     // backgroundColor: 'red',
+  },
+  checker2: {
+    textAlign: 'center',
+    fontSize: 30,
+    backgroundColor: 'red',
   },
   watchCards: {
     textAlign: 'right',
@@ -42,26 +51,6 @@ const style = StyleSheet.create({
   },
 });
 
-const returnValidVocabIDs = (content, validVocabIDsParam, sortMode) => {
-  const validVocabIDs = (validVocabIDsParam === undefined) ? Object.keys(content) : validVocabIDsParam;
-  let validVocabIDs_sorted = [];
-  switch (sortMode) {
-    case 'index':
-      validVocabIDs_sorted = validVocabIDs;
-      break;
-    case 'index-reverse':
-      validVocabIDs_sorted = func.reverseNonDestructive(validVocabIDs);
-      break;
-    case 'shuffle':
-      validVocabIDs_sorted = func.shuffle(validVocabIDs);
-      break;
-    default:
-      validVocabIDs_sorted = validVocabIDs;
-      break;
-  }
-  console.log({ validVocabIDs, validVocabIDs_sorted });
-  return validVocabIDs_sorted;
-};
 const returnValidVocab = (content, validVocabIDs) => {
   const result = [];
   console.log({ content, validVocabIDs });
@@ -84,7 +73,10 @@ const Play = (props) => {
   const {
     navigation, route: {
       params: {
-        deckID, validVocabIDs: validVocabIDsProp, sortMode, itemVisible,
+        deckID,
+        validVocabIDs: validVocabIDsProp,
+        sortMode,
+        itemVisible,
       },
     },
   } = props;
@@ -92,36 +84,28 @@ const Play = (props) => {
   // state
   const content = getDeckContent(deckID);
   const { marks, play } = getAccountContent(deckID);
-  const [validVocabIDs, setValidVocabIDs] = useState([]);
-  const [validVocab, setValidVocab] = useState([]);
-  const [vocabReady, setVocabReady] = useState(false);
+  const validVocabIDs = validVocabIDsProp;
+  const validVocab = returnValidVocab(content, validVocabIDsProp);
 
   const [layout, setLayout] = useState({ height: 0, width: 0 });
   const [rightVocabID, setRightVocabID] = useState([]);
   const [leftVocabID, setLeftVocabID] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const finished = (validVocabIDs.length === rightVocabID.length + leftVocabID.length);
   // ref
   const [card, setCard] = useState({}); // 例外的にstateに
   let swiper = {};
 
-  useEffect(() => {
-    const newValidVocabIDs = returnValidVocabIDs(content, validVocabIDsProp, sortMode);
-    setValidVocabIDs(newValidVocabIDs);
-    setValidVocab(returnValidVocab(content, newValidVocabIDs));
-    setVocabReady(true);
-  }, []);
-
   const renderCounterTop = () => (
     <Text style={style.checker}>
-      {finished ? leftVocabID.length + rightVocabID.length : leftVocabID.length + rightVocabID.length + 1}
-      /
-      {validVocabIDs.length}
+      {`${finished ? leftVocabID.length + rightVocabID.length : leftVocabID.length + rightVocabID.length + 1}/${validVocabIDs.length}`}
     </Text>
   );
 
   const renderSwiper = () => {
-    if (!(layout.height === 0) && vocabReady) {
+    if (!(layout.height === 0)) {
       return (
         <DeckSwiper
           cards={validVocab}
@@ -146,8 +130,7 @@ const Play = (props) => {
   };
 
   const renderFinishButton = () => {
-    const goToResult = () => {
-      console.log({ rightVocabID, leftVocabID });
+    const saveMarkPlay = () => {
       const newMark = JSON.parse(JSON.stringify(marks));
       leftVocabID.forEach((vocabID) => {
         const vocabMarks = newMark?.[vocabID] ?? [];
@@ -157,14 +140,20 @@ const Play = (props) => {
       const newPlay = JSON.parse(JSON.stringify(play));
       newPlay.push(20210121);
       saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
-      navigation.push('results', {
-        deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs: Object.keys(content), itemVisible, sortMode,
-      });
     };
     if (finished) {
       return (
         <View style={[StyleSheet.absoluteFill, { right: 20, left: 20, justifyContent: 'center' }]}>
-          <Button color={Color.green3} mode="contained" onPress={goToResult}>
+          <Button
+            color={Color.green3}
+            mode="contained"
+            onPress={() => {
+              saveMarkPlay();
+              navigation.push('results', {
+                deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs: Object.keys(content), itemVisible, sortMode,
+              });
+            }}
+          >
             Show Results
           </Button>
         </View>
@@ -191,12 +180,23 @@ const Play = (props) => {
     );
   };
 
+  const renderViewCard = () => (
+    <PlayDetail
+      modalVisible={modalVisible}
+      setModalVisible={setModalVisible}
+      validVocabIDs={validVocabIDs}
+      content={content}
+    />
+  );
+
   const renderViewCardButton = () => (
     <TouchableOpacity>
       <Icon.MaterialCommunityIcons
         name="cards-outline"
         style={style.watchCards}
-        onPress={() => console.log('HI')}
+        onPress={() => {
+          setModalVisible(true);
+        }}
       />
     </TouchableOpacity>
   );
@@ -211,12 +211,12 @@ const Play = (props) => {
         style={{ flex: 1 }}
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
-        {/* {renderChecker()} */}
         {renderSwiper()}
         {renderFinishButton()}
       </View>
       <PlayCounter leftVocabID={leftVocabID} rightVocabID={rightVocabID} />
       {renderButtons()}
+      {renderViewCard()}
     </View>
   );
 };

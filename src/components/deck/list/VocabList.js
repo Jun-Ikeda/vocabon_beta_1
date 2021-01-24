@@ -54,9 +54,11 @@ const VocabList = (props) => {
     onScroll,
     onScrollToTop,
     searchBar,
+    renderViewContent,
   } = props;
   const manuallyRenderCard = !((renderCard.toString() === 'function renderCard() {}') || (renderCard.toString() === 'function (){}'));
   const onPressCardValid = !((onPressCard.toString() === 'function onPressCard() {}') || (onPressCard.toString() === 'function (){}'));
+  const renderViewContentValid = !((renderViewContent.toString() === 'function renderViewContent() {}') || (renderViewContent.toString() === 'function (){}'));
   const stateValid = !(state.length === 0);
   const isButton = onPressCardValid || stateValid;
   const labelVisible = (typeof labelVisibleProps === 'boolean') ? {
@@ -112,6 +114,7 @@ const VocabList = (props) => {
             }
             return null;
           })}
+          {renderViewContentValid ? renderViewContent(vocab) : null}
         </View>
         {renderCardRight(vocab)}
       </View>
@@ -158,6 +161,7 @@ VocabList.propTypes = {
   cardContainer: PropTypes.object,
   renderCard: PropTypes.func,
   onPressCard: PropTypes.func,
+  renderViewContent: PropTypes.func,
   labelVisible: PropTypes.oneOfType([
     PropTypes.shape({
       term: PropTypes.bool,
@@ -243,6 +247,7 @@ VocabList.defaultProps = {
   onScroll: () => {},
   onScrollToTop: () => {},
   searchBar: false,
+  renderViewContent: () => {},
 };
 
 export default VocabList;
