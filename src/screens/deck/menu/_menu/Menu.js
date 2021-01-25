@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  View, StyleSheet, Image,
+  View, StyleSheet, Image, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -16,7 +16,7 @@ import { getAccountContent } from '../../../../config/account/Account';
 // import DeckMenuButtons from './DeckMenuButtons';
 // import DeckMenuUtilities from './DeckMenuUtilities';
 
-const imgHeight = 200;
+const imgHeight = 300;
 // const normalFontSize = 15;
 // const wideIndent = 20;
 
@@ -85,14 +85,15 @@ const Menu = (props) => {
   );
 
   return (
-    <View
+    <ScrollView
       style={style.container}
+      contentContainerStyle={{ paddingBottom: 10 }}
       // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
     >
       {renderThumbnail()}
       {renderContent()}
       {renderButtons()}
-    </View>
+    </ScrollView>
   );
 };
 

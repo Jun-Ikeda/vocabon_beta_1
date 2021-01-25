@@ -15,6 +15,7 @@ import Color from '../../../../config/Color';
 
 import AnalyzeList from './AnalyzeList';
 import AnalyzeButtons from './AnalyzeButtons';
+import AnalyzeGraph from './AnalyzeGraph';
 
 const iconSize = 30;
 
@@ -38,13 +39,17 @@ const style = StyleSheet.create({
     fontSize: iconSize,
   },
   detailcontainer: {
-    // flex: 1,
-    // borderWidth: 1,
-    borderRadius: 15,
+    // // flex: 1,
+    // // borderWidth: 1,
+    // borderRadius: 15,
+    // backgroundColor: Color.white1,
+    // marginHorizontal: '5%',
+    // // marginVertical: 50,
+    // padding: '8%',
     backgroundColor: Color.white1,
     marginHorizontal: '5%',
-    marginVertical: 50,
-    // padding: '8%',
+    // marginVertical: '15%',
+    borderRadius: 10,
   },
   detailtext: {
     // borderWidth: 1,
@@ -61,8 +66,10 @@ const Analyze = (props) => {
 
   const { marks, play /* ここ 具体的な構造は、TestData若しくは、Accountの下のコメントを参照 */ } = getAccountContent(deckID);
   const content = getDeckContent(deckID);
+  // state
   const [contentSorted, setContentSorted] = useState(content);
   const [vocabDetailVisible, setVocabDetailVisible] = useState(false);
+  const [graphVisible, setGraphVisible] = useState(false);
 
   const renderVocab = () => (
     <AnalyzeList
@@ -139,14 +146,26 @@ const Analyze = (props) => {
     </Portal>
   );
 
-  const renderButtons = () => {
-    <AnalyzeButtons />;
-  };
+  const renderButtons = () => (
+    <AnalyzeButtons
+      isVisible={graphVisible}
+      setVisible={setGraphVisible}
+    />
+  );
+
+  const renderGraphPopup = () => (
+    <AnalyzeGraph
+      play={play}
+      isVisible={graphVisible}
+      setVisible={setGraphVisible}
+    />
+  );
 
   return (
     <View style={{ flex: 1 }}>
       {renderButtons()}
       {renderLabels()}
+      {renderGraphPopup()}
       {renderVocab()}
       {renderVocabDetail()}
     </View>

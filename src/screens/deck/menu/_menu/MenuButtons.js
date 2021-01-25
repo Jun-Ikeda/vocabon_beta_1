@@ -8,11 +8,14 @@ import { useRecoilState } from 'recoil';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
-import { decksGeneral, deleteDeck, getDeckGeneral } from '../../../../config/deck/Deck';
+import {
+  decksGeneral, deleteDeck, getDeckContent, getDeckGeneral, saveDeckContent, saveDeckGeneral,
+} from '../../../../config/deck/Deck';
 import {
   deleteAccountContent, getAccountContent, getAccountGeneral, saveAccountContent,
 } from '../../../../config/account/Account';
 import { func } from '../../../../config/Const';
+import UUID from '../../../../config/UUID';
 
 const iconsize = 30;
 
@@ -68,10 +71,11 @@ const MenuButtons = (props) => {
   const [decksGeneralState, setDecksGeneralState] = useRecoilState(decksGeneral);
   //
   const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
+  const deckContent = getDeckContent(deckID);
   const accountContent = getAccountContent(deckID);
   const identifyVisible = (deckGeneral.user === getAccountGeneral().userID);
   // state
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [isDeleted, setIsDeleted] = useState(false);
   const [bookmark, setBookmark] = useState(accountContent.bookmark);
 
@@ -116,23 +120,10 @@ const MenuButtons = (props) => {
         flex: 1,
       },
       {
-        title: 'Property',
-        icon: () => (
-          <Icon.Ionicons
-            name="md-list"
-            size={iconsize}
-            style={[style.icon, { color: identifyVisible ? Color.black : Color.gray3 }]}
-          />
-        ),
-        onPress: () => {
-          if (identifyVisible) {
-            navigation.navigate('property', { deckID });
-          } else {
-            func.alert('You cannot change the property of this deck.');
-          }
-          console.log(identifyVisible);
-        },
-        textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
+        title: 'Analyze',
+        icon: () => <Icon.Entypo name="line-graph" size={iconsize} style={style.icon} />,
+        onPress: () => navigation.navigate('analyze', { deckID }),
+        textStyle: {},
         flex: 1,
       },
       {
@@ -154,24 +145,24 @@ const MenuButtons = (props) => {
         textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
         flex: 1,
       },
-      {
-        title: visible ? 'Close' : 'More',
-        icon: () => (
-          <Icon.Feather
-            name={visible ? 'chevron-up' : 'chevron-down'}
-            style={style.icon}
-            size={iconsize}
-          />
-        ),
-        onPress: () => {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setVisible(!visible);
-          // console.log(deckGeneral.user);
-          // console.log('hi');
-        },
-        textStyle: {},
-        flex: 1,
-      },
+      // {
+      //   title: visible ? 'Close' : 'More',
+      //   icon: () => (
+      //     <Icon.Feather
+      //       name={visible ? 'chevron-up' : 'chevron-down'}
+      //       style={style.icon}
+      //       size={iconsize}
+      //     />
+      //   ),
+      //   onPress: () => {
+      //     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      //     setVisible(!visible);
+      //     // console.log(deckGeneral.user);
+      //     // console.log('hi');
+      //   },
+      //   textStyle: {},
+      //   flex: 1,
+      // },
     ];
     return renderColumn(buttons);
   };
@@ -179,6 +170,25 @@ const MenuButtons = (props) => {
   const renderMoreButtons = () => {
     const buttonsMultiDim = [
       [
+        {
+          title: 'Property',
+          icon: () => (
+            <Icon.Ionicons
+              name="md-list"
+              size={iconsize}
+              style={[style.icon, { color: identifyVisible ? Color.black : Color.gray3 }]}
+            />
+          ),
+          onPress: () => {
+            if (identifyVisible) {
+              navigation.navigate('property', { deckID });
+            } else {
+              func.alert('You cannot change the property of this deck.');
+            }
+          },
+          textStyle: { color: identifyVisible ? Color.black : Color.gray3 },
+          flex: 1,
+        },
         {
           title: 'Bookmark',
           icon: () => (
@@ -194,11 +204,35 @@ const MenuButtons = (props) => {
         },
         {
           title: 'Duplicate',
-          icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { color: Color.gray3 }]} />,
-          onPress: () => func.alert('duplicate'),
-          textStyle: { color: Color.gray3 },
+          icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { /* color: Color.gray3 */ }]} />,
+          onPress: () => {
+            const newDeckID = UUID.generate();
+            saveDeckGeneral(setDecksGeneralState, newDeckID, {
+              ...deckGeneral,
+              title: `${deckGeneral.title} Copy`,
+            });
+            saveDeckContent(newDeckID, deckContent);
+            navigation.goBack();
+          },
+          textStyle: { /* color: Color.gray3 */ },
           flex: 1,
         },
+      ],
+      [
+        // {
+        //   title: 'Share',
+        //   icon: () => <Icon.Entypo name="share" size={iconsize} style={[style.icon, { color: Color.gray3 }]} />,
+        //   onPress: () => func.alert('share'),
+        //   textStyle: { color: Color.gray3 },
+        //   flex: 1,
+        // },
+        // {
+        //   title: 'Test',
+        //   icon: () => <Icon.AntDesign name="checkcircleo" size={iconsize} style={style.icon} />,
+        //   onPress: () => func.alert('test'),
+        //   textStyle: {},
+        // flex: 1
+        // },
         {
           title: 'Import',
           icon: () => (
@@ -225,33 +259,19 @@ const MenuButtons = (props) => {
           textStyle: {},
           flex: 1,
         },
-      ],
-      [
-        {
-          title: 'Share',
-          icon: () => <Icon.Entypo name="share" size={iconsize} style={[style.icon, { color: Color.gray3 }]} />,
-          onPress: () => func.alert('share'),
-          textStyle: { color: Color.gray3 },
-          flex: 1,
-        },
-        // {
-        //   title: 'Test',
-        //   icon: () => <Icon.AntDesign name="checkcircleo" size={iconsize} style={style.icon} />,
-        //   onPress: () => func.alert('test'),
-        //   textStyle: {},
-        // flex: 1
-        // },
-        {
-          title: 'Analyze',
-          icon: () => <Icon.Entypo name="line-graph" size={iconsize} style={style.icon} />,
-          onPress: () => navigation.navigate('analyze', { deckID }),
-          textStyle: {},
-          flex: 1,
-        },
         {
           title: 'Delete',
           icon: () => <Icon.FontAwesome name="trash" size={iconsize} style={[style.icon, { color: Color.cud.pink }]} />,
-          onPress: () => func.alert('Caution', 'Are you sure to delete this deck?', [{ text: 'OK', onPress: deleteDeckAndAccountContent }, { text: 'Cancel', onPress: () => {} }]),
+          onPress: () => func.alert('Caution', 'Are you sure to delete this deck?', [{
+            text: 'Delete',
+            onPress: deleteDeckAndAccountContent,
+            style: 'destructive',
+          },
+          {
+            text: 'Cancel',
+            onPress: () => {},
+            style: 'cancel',
+          }]),
           textStyle: { color: Color.cud.pink },
           flex: 2,
         },
@@ -278,7 +298,6 @@ const MenuButtons = (props) => {
 MenuButtons.propTypes = {
   navigation: PropTypes.object.isRequired,
   deckID: PropTypes.string.isRequired,
-  userID: PropTypes.string.isRequired,
 };
 
 MenuButtons.defaultProps = {

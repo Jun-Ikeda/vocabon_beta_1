@@ -4,12 +4,16 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { useSetRecoilState } from 'recoil';
 import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
 import DeckName from '../../../../components/deck/inputs/DeckName';
 
 import UUID from '../../../../config/UUID';
+import { getRandomImage } from '../../../../config/Unsplash';
+import { decksGeneral, saveDeckGeneral } from '../../../../config/deck/Deck';
+import { getAccountGeneral } from '../../../../config/account/Account';
 
 // import { getRandomImage } from '../../../../config/Unsplash';
 
@@ -67,20 +71,36 @@ const style = StyleSheet.create({
  */
 
 const CreateDeck = (props) => {
+  // props
   const { navigation } = props;
+  // recoil
+  const setDeckGeneral = useSetRecoilState(decksGeneral);
+  // state
   const [deckID, setDeckID] = useState(UUID.generate());
   const [title, setTitle] = useState('');
   const [language, setLanguage] = useState({ term: '', definition: '' });
   const [thumbnail, setThumbnail] = useState({});
+  //
+  const { userID } = getAccountGeneral();
 
   useEffect(() => {
-    // const newThumbnail = await getRandomImage();
-    // setThumbnail(newThumbnail);
+    (async () => {
+      const newThumbnail = await getRandomImage();
+      setThumbnail(newThumbnail);
+    })();
   }, []);
 
   const goToHome = () => {
-    const deck = { [deckID]: { general: { title, language, thumbnail }, content: [] } };
-    console.log(deck);
+    const deck = { [deckID]: { general: { title, language, thumbnail } } };
+    // console.log(deck);
+    saveDeckGeneral(setDeckGeneral, deckID, {
+      title,
+      description: '',
+      user: userID,
+      language,
+      num: 0,
+      thumbnail,
+    });
     navigation.goBack();
   };
 

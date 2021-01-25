@@ -25,6 +25,14 @@ const style = StyleSheet.create({
     fontSize: 24,
     color: Color.gray1,
   },
+  icon1: {
+    color: Color.cud.red,
+    fontSize: 24,
+  },
+  icon2: {
+    color: Color.green2,
+    fontSize: 24,
+  },
 });
 
 const returnValidVocabObject = (content, validVocabIDs) => {
@@ -37,7 +45,7 @@ const returnValidVocabObject = (content, validVocabIDs) => {
 const PlayDetail = (props) => {
   // props
   const {
-    modalVisible, setModalVisible, validVocabIDs, content,
+    modalVisible, setModalVisible, validVocabIDs, content, leftVocabID, rightVocabID,
   } = props;
   // state
   const [expandVocab, setExpandVocab] = useState(null);
@@ -57,7 +65,7 @@ const PlayDetail = (props) => {
         setVisible={setModalVisible}
         renderMenu={() => (
           <View style={{
-            backgroundColor: Color.defaultBackground, marginHorizontal: '10%', marginVertical: '10%', flex: 1,
+            backgroundColor: Color.defaultBackground, marginHorizontal: '10%', marginVertical: '10%', flex: 1, borderRadius: 20,
           }}
           >
             <VocabList
@@ -82,11 +90,20 @@ const PlayDetail = (props) => {
                 exampleD: true,
                 cf: true,
               }}
-              // renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
+              renderCardRight={
+                (vocab) => {
+                  if (leftVocabID.includes(vocab.key)) {
+                    return (<Icon.AntDesign name="close" style={style.icon1} />);
+                  } if (rightVocabID.includes(vocab.key)) {
+                    return (<Icon.AntDesign name="check" style={style.icon2} />);
+                  } return null;
+                }
+              }
               onPressCard={(vocab) => {
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                 setExpandVocab(vocab.key);
               }}
+              searchBar
             />
             {renderCancelButton()}
           </View>

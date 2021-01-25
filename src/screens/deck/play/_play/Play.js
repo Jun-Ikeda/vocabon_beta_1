@@ -53,7 +53,7 @@ const style = StyleSheet.create({
 
 const returnValidVocab = (content, validVocabIDs) => {
   const result = [];
-  console.log({ content, validVocabIDs });
+  // console.log({ content, validVocabIDs });
   for (let i = 0; i < validVocabIDs.length; i++) {
     result.push(content[validVocabIDs[i]]);
   }
@@ -186,6 +186,8 @@ const Play = (props) => {
       setModalVisible={setModalVisible}
       validVocabIDs={validVocabIDs}
       content={content}
+      leftVocabID={leftVocabID}
+      rightVocabID={rightVocabID}
     />
   );
 

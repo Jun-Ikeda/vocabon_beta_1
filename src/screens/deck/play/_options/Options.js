@@ -39,7 +39,7 @@ const Options = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
   // state
   const { marks } = getAccountContent(deckID);
-  console.log({ marks });
+  // console.log({ marks });
   const content = getDeckContent(deckID);
 
   const MarksMax = getMax(marks);
@@ -68,7 +68,7 @@ const Options = (props) => {
 
   const items = [
     {
-      title: 'Index', range: [1, Object.values(content).length], state: [indexRange, setIndexRange], visible: true,
+      title: 'Index', range: [1, Object.values(content).length], state: [indexRange, setIndexRange], visible: validVocabIDs.length > 1,
     },
     {
       title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),

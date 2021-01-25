@@ -71,19 +71,6 @@ const Button = [
       return { thumb };
     },
   },
-  {
-    title: 'function',
-    onPress: () => {
-      // const parameter = { num: 1, message: 'aaa' };
-      const parameter = (prev) => ({ ...prev, message: 'henkogo' });
-      const _func = (param) => {
-        const prev = { num: 0, message: 'henkomae' };
-        const result = (typeof param === 'function') ? param(prev) : param;
-        console.log(result);
-      };
-      _func(parameter);
-    },
-  },
 ];
 
 export default Button;

@@ -10,6 +10,7 @@ import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
 import { getDeckGeneral, decksGeneral, saveDeckGeneral } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
+import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -121,8 +122,10 @@ const Property = (props) => {
       title: 'Language',
       element: <LanguageSelection
         setLanguage={(newLanguage) => {
-          setLanguage(newLanguage);
-          setIsChanged(true);
+          if (!func.objectEqual(language, newLanguage)) {
+            setLanguage(newLanguage);
+            setIsChanged(true);
+          }
         }}
         language={language}
       />,

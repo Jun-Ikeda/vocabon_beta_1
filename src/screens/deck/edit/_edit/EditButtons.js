@@ -104,7 +104,7 @@ const EditButtons = (props) => {
           setMode('delete');
         } else if (selectedVocabIDs.length !== 0) {
           const newContent = JSON.parse(JSON.stringify(content));
-          console.log({ selectedVocabIDs });
+          // console.log({ selectedVocabIDs });
           selectedVocabIDs.forEach((vocabID) => {
             delete newContent[vocabID];
           });

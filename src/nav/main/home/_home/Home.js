@@ -50,7 +50,7 @@ const Home = (props) => {
   const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
 
   const routes = useNavigationState((_state) => _state.routes);
-  useEffect(() => console.log(routes), []);
+  // useEffect(() => console.log(routes), []);
 
   const renderRow = ({ title, deckIDs }) => (
     <View>

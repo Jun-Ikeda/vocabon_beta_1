@@ -20,7 +20,7 @@ const OptionStartButton = (props) => {
   } = props;
 
   const start = () => {
-    console.log(sortMode);
+    // console.log(sortMode);
     const validVocabIDsSorted = deck.sortVocabs(validVocabIDs, sortMode);
     if (mode === 'custom') {
       navigation.navigate('play', {
