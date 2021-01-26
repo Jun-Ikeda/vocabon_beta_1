@@ -26,9 +26,11 @@ const style = StyleSheet.create({
 const ImportOption = (props) => {
   // props
   const { navigation, route: { params: { input, itemDelimiter, cardDelimiter } } } = props;
-  const inputArray = input.split(cardDelimiter).map((card) => card.split(itemDelimiter)); // [ ['manzana', 'apple'], ['platano', 'banana'] ]
+  const inputArray = input.split(cardDelimiter).map((card) => card.split(itemDelimiter)); // [ ['manzana', 'apple'], ['platano', 'banana'], ['soy', 'be', 'yo soy estudiante'] ]
+  const itemNumber = (inputArray.length === 0) ? 0 : inputArray.reduce((a, b) => (a.length > b.length ? a : b)).length; // itemは最大何個あるか 上の例だと'soy'のカードがitem3まであるので3
   // state
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [labels, setLabels] = useState([...Array(itemNumber).map(() => undefined)]);
 
   const isMin = currentCardIndex === 0;
   const isMax = currentCardIndex === inputArray.length - 1;
@@ -64,10 +66,9 @@ const ImportOption = (props) => {
       backgroundColor: 'white', borderWidth: 1, flex: 1, margin: 40, borderRadius: 20,
     }}
     >
-      {inputArray[currentCardIndex].map((item) => (
-        <Text>{` ${item}`}</Text>
+      {inputArray[currentCardIndex].map((item, index) => (
+        <Text>{`${labels?.[index] ?? `item${index}`} ${item}`}</Text>
       ))}
-      {/* <Text>{inputArray[0][0]}</Text> */}
     </View>
   );
 

@@ -145,6 +145,18 @@ const Results = (props) => {
         isVisible: ((leftVocabID.length !== 0) && (rightVocabID.length !== 0)),
       },
       {
+        title: 'Menu',
+        num: '',
+        onPress: () => navigation.navigate('menu'),
+        isVisible: true,
+      },
+      {
+        title: 'Analyze',
+        num: '',
+        onPress: () => navigation.navigate('analyze', { deckID }),
+        isVisible: true,
+      },
+      {
         title: 'Options', // go back to options
         num: '',
         onPress: () => navigation.navigate('options', { deckID, sortMode }),
