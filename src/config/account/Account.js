@@ -19,8 +19,17 @@ export const getAccountContent = (deckID = '') => {
 export const saveAccountContent = (deckID = '', newData, merge = true) => {
   if (deckID === '') {
     account.content = merge ? { ...account.content, ...newData } : newData;
-  } else {
+  } else if (Object.keys(account.content).includes(deckID)) {
     account.content[deckID] = merge ? { ...account?.content?.[deckID], ...newData } : newData;
+  } else {
+    account.content[deckID] = merge ? {
+      ...{
+        marks: {},
+        play: [],
+        bookmark: false,
+      },
+      ...newData,
+    } : newData;
   }
 };
 

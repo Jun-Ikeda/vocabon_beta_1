@@ -15,6 +15,7 @@ import AddButton from './AddButton';
 import Carousel from '../../../../components/deck/carousel/Carousel';
 import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
+import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
   container: {
@@ -25,6 +26,15 @@ const style = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     // paddingTop: header.mainHeaderStyles.headerStyle.height + (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight),
+  },
+  carouselContainer: {
+    // borderWidth: 1,
+  },
+  rowTitle: {
+    fontSize: 20,
+    color: Color.gray,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
 });
 
@@ -53,8 +63,8 @@ const Home = (props) => {
   // useEffect(() => console.log(routes), []);
 
   const renderRow = ({ title, deckIDs }) => (
-    <View>
-      <Text>{title}</Text>
+    <View style={style.carouselContainer}>
+      <Text style={style.rowTitle}>{title}</Text>
       <Carousel
         deckIDs={deckIDs} // 情報のやり取りは基本deckIDで
         onPressCard={(deckID) => navigation.navigate('menu', { deckID })}
@@ -68,10 +78,10 @@ const Home = (props) => {
 
   return (
     <View style={style.container}>
-      <ScrollView style={style.scrollContainer}>
+      <ScrollView style={style.scrollContainer} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderRow({ title: 'LOCAL', deckIDs: myDeckIDs })}
         {renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })}
-        {renderRow({ title: 'ALL', deckIDs: allDeckIDs })}
+        {/* {renderRow({ title: 'ALL', deckIDs: allDeckIDs })} */}
       </ScrollView>
       {renderButton()}
     </View>

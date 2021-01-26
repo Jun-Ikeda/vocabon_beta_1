@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Dimensions, Text, FlatList, TextInput,
+  StyleSheet, ScrollView, View, Dimensions, Text, TouchableOpacity, TextInput,
 } from 'react-native';
 import { Button, Divider, RadioButton } from 'react-native-paper';
 import ExpoClipboard from 'expo-clipboard';
@@ -50,10 +50,12 @@ const Export = (props) => {
   // const [visible, setVisible] = useState(false);
 
   const [layout, setLayout] = useState({ height: 300, width: 300 });
-  const [itemValue, setItemValue] = useState('first');
-  const [cardValue, setCardValue] = useState('first');
-  const [itemDelimiter, setItemDelimiter] = useState(',');
-  const [cardDelimiter, setCardDelimiter] = useState('/');
+  const [itemValue, setItemValue] = useState('\t');
+  const [cardValue, setCardValue] = useState(';');
+  const [itemDelimiter, setItemDelimiter] = useState('');
+  const [itemDelimiterCustom, setItemDelimiterCustom] = useState(',');
+  const [cardDelimiter, setCardDelimiter] = useState('');
+  const [cardDelimiterCustom, setCardDelimiterCustom] = useState('/');
 
   const content = getDeckContent(deckID);
 
@@ -87,42 +89,74 @@ const Export = (props) => {
   //   }
   //   return null;
   // };
-  const renderRadioButtons = (data) => (
-    <RadioButton.Group onValueChange={(newValue) => data.state1[1](newValue)} value={data.state1[0]}>
-      <View>
-        <Text>{data.value1}</Text>
-        <RadioButton value="first" />
-      </View>
-      <View>
-        <Text>{data.value2}</Text>
-        <RadioButton value="second" />
-      </View>
-    </RadioButton.Group>
-  );
-
-  const renderCustomText = (data) => (
+  const renderCustomText = (options) => (
     <TextInput
-      value={data.state2[0]}
-      onChangeText={data.state2[1]}
+      value={options.delimeterstatecustom[0]}
+      onChangeText={options.delimeterstatecustom[1]}
       style={style.delimiterInput}
     />
+  );
+
+  const renderRadioButtons = (options) => (
+    <RadioButton.Group onValueChange={(newValue) => options.radiostate[1](newValue)} value={options.radiostate[0]}>
+      <TouchableOpacity
+        style={{ flexDirection: 'row' }}
+        onPress={() => {
+          options.radiostate[1](options.buttonValue1);
+          options.delimiterstate[1](options.buttonValue1);
+          console.log(options.delimiterstate[0]);
+        }}
+      >
+        <RadioButton
+          value={options.buttonValue1}
+        />
+        <Text>{options.buttonTitle1}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ flexDirection: 'row' }}
+        onPress={() => {
+          options.radiostate[1](options.buttonValue2);
+          options.delimiterstate[1](options.buttonValue2);
+        }}
+      >
+        <RadioButton
+          value={options.buttonValue2}
+        />
+        <Text>{options.buttonTitle2}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{ flexDirection: 'row' }}
+        onPress={() => options.radiostate[1](options.buttonValue3)}
+      >
+        <RadioButton value={options.buttonValue3} />
+        {renderCustomText(options)}
+      </TouchableOpacity>
+    </RadioButton.Group>
   );
 
   const renderOptionBox = () => {
     const optionSet = [
       {
         title: 'Between Term and Definition',
-        value1: 'Tab',
-        value2: 'Comma',
-        state1: [itemValue, setItemValue],
-        state2: [itemDelimiter, setItemDelimiter],
+        buttonTitle1: 'Tab',
+        buttonTitle2: 'Comma',
+        buttonValue1: '\t\t',
+        buttonValue2: ', ',
+        buttonValue3: 'custom',
+        radiostate: [itemValue, setItemValue],
+        delimiterstate: [itemDelimiter, setItemDelimiter],
+        delimeterstatecustom: [itemDelimiterCustom, setItemDelimiterCustom],
       },
       {
         title: 'Between Terms',
-        value1: 'Semicolon',
-        value2: 'Change Line',
-        state1: [cardValue, setCardValue],
-        state2: [cardDelimiter, setCardDelimiter],
+        buttonTitle1: 'Semicolon',
+        buttonTitle2: 'Change Line',
+        buttonValue1: '; ',
+        buttonValue2: '\n',
+        buttonValue3: 'custom',
+        radiostate: [cardValue, setCardValue],
+        delimiterstate: [cardDelimiter, setCardDelimiter],
+        delimeterstatecustom: [cardDelimiterCustom, setCardDelimiterCustom],
       },
     ];
     return (
@@ -131,7 +165,7 @@ const Export = (props) => {
         <Divider />
         {/* <FlatList
           style={{ marginVertical: 5 }}
-          data={optionSet}
+          options={optionSet}
           renderItem={({ item }) => (
             <View>
               <Text style={{ fontSize: 15 }}>{item.title}</Text>
@@ -144,12 +178,11 @@ const Export = (props) => {
           )}
         /> */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          {optionSet.map((item) => (
-            <View style={{ justifyContent: 'space-evenly' }}>
-              <Text style={{ fontSize: 15 }}>{item.title}</Text>
+          {optionSet.map((optionset) => (
+            <View style={{ justifyContent: 'space-evenly', alignItems: 'center' }}>
+              <Text style={{ fontSize: 15 }}>{optionset.title}</Text>
               <Divider />
-              {renderRadioButtons(item)}
-              {renderCustomText(item)}
+              {renderRadioButtons(optionset)}
             </View>
           ))}
         </View>
@@ -179,7 +212,7 @@ const Export = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Text>tab bar</Text>
+      <Text>\t bar</Text>
       <View style={{ flex: 1 }}>
         <View style={StyleSheet.absoluteFill} onLayout={(e) => setLayout(func.onLayoutContainer(e))} />
         {/* <ScrollView horizontal pagingEnabled in > */}

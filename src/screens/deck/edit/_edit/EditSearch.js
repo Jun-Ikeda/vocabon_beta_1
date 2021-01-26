@@ -69,15 +69,15 @@
 //         placeholder="Search"
 //         style={style.input}
 //       />
-//       <TouchableOpacity
-//         style={style.searchbarfolder}
-//         onPress={() => {
-//           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-//           setSearchButtonVisible(true);
-//         }}
-//       >
-//         <Icon.Feather name="chevrons-right" size={iconSize} />
-//       </TouchableOpacity>
+//   <TouchableOpacity
+//     style={style.searchbarfolder}
+//     onPress={() => {
+//       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+//       setSearchButtonVisible(true);
+//     }}
+//   >
+//     <Icon.Feather name="chevrons-right" size={iconSize} />
+//   </TouchableOpacity>
 //       <TouchableOpacity
 //         style={style.clearbutton}
 //         onPress={() => setText('')}

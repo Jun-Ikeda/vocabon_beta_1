@@ -39,16 +39,12 @@ const style = StyleSheet.create({
     fontSize: iconSize,
   },
   detailcontainer: {
-    // // flex: 1,
-    // // borderWidth: 1,
-    // borderRadius: 15,
-    // backgroundColor: Color.white1,
-    // marginHorizontal: '5%',
-    // // marginVertical: 50,
-    // padding: '8%',
-    backgroundColor: Color.white1,
+    borderWidth: 1,
+    paddingLeft: '8%',
+    paddingVertical: 20,
     marginHorizontal: '5%',
-    // marginVertical: '15%',
+    marginVertical: '15%',
+    backgroundColor: Color.white1,
     borderRadius: 10,
   },
   detailtext: {
@@ -70,6 +66,10 @@ const Analyze = (props) => {
   const [contentSorted, setContentSorted] = useState(content);
   const [vocabDetailVisible, setVocabDetailVisible] = useState(false);
   const [graphVisible, setGraphVisible] = useState(false);
+  const [dateVisible, setDateVisible] = useState(false);
+  const [mode, setMode] = useState('noDate');
+  const [termLabel, setTermLabel] = useState('Term ↓');
+  const [marksLabel, setMarksLabel] = useState('Marks');
 
   const renderVocab = () => (
     <AnalyzeList
@@ -83,7 +83,7 @@ const Analyze = (props) => {
   const renderLabels = () => {
     const labels = [
       {
-        label: 'Term',
+        label: termLabel,
         onPress: () => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -92,10 +92,13 @@ const Analyze = (props) => {
             return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
+          setTermLabel('Term ↓');
+          setMarksLabel('Marks');
+          console.log(typeof (termLabel));
         },
       },
       {
-        label: 'Marks',
+        label: marksLabel,
         onPress: () => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -104,13 +107,15 @@ const Analyze = (props) => {
             return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
+          setTermLabel('Term');
+          setMarksLabel('↓ Marks');
         },
       },
     ];
     return (
       <View style={style.labelContainer}>
         {labels.map((label) => (
-          <TouchableOpacity onPress={label.onPress} key={label.label.toLowerCase()}>
+          <TouchableOpacity onPress={label.onPress}>
             <Text style={style.label}>{label.label}</Text>
           </TouchableOpacity>
         ))}
@@ -121,7 +126,7 @@ const Analyze = (props) => {
   const renderDate = (shortenedDate) => (
     <View style={{ flex: 1 }}>
       <Text style={style.detailtext}>
-        {func.formatDate(shortenedDate)}
+        {func.formatDate(shortenedDate, true)}
       </Text>
     </View>
   );
@@ -138,7 +143,7 @@ const Analyze = (props) => {
             <Text style={style.detailtext}>{'\nHistory:\n'}</Text>
             <View>
               {renderDate(20030507)}
-              {renderDate(19420125)}
+              {renderDate(18911101)}
             </View>
           </View>
         )}
@@ -148,8 +153,13 @@ const Analyze = (props) => {
 
   const renderButtons = () => (
     <AnalyzeButtons
-      isVisible={graphVisible}
-      setVisible={setGraphVisible}
+      play={play}
+      isGraphVisible={graphVisible}
+      setGraphVisible={setGraphVisible}
+      isDateVisible={dateVisible}
+      setDateVisible={setDateVisible}
+      mode={mode}
+      setMode={setMode}
     />
   );
 

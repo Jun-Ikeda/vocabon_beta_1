@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Alert, Platform,
+  View, StyleSheet, Alert, Platform, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { atom, useRecoilState } from 'recoil';
@@ -13,10 +13,12 @@ import EditContent from './EditContent';
 import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 import EditAddButton from './EditAddButton';
+import UUID from '../../../../config/UUID';
 
 import {
   decksGeneral, getDeckContent, saveDeckContent, saveDeckGeneral,
 } from '../../../../config/deck/Deck';
+import { func } from '../../../../config/Const';
 
 export const contentState = atom({
   key: 'contentState',
@@ -38,6 +40,9 @@ const style = StyleSheet.create({
   },
   startButtonContainer: {
     position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
+  },
+  makeanotherbutton: {
+
   },
 });
 
@@ -80,6 +85,9 @@ const Edit = (props) => {
   const [contentVisible, setContentVisible] = useState(false);
   const [addButtonVisible, setAddButtonVisible] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
+  const [makeAnotherButtonVisible, setMakeAnotherButtonVisible] = useState(false);
+
+  let list = {};
 
   const contentInitial = getDeckContent(deckID);
   const save = async () => {
@@ -117,6 +125,7 @@ const Edit = (props) => {
     <View style={style.startButtonContainer}>
       <Button
         onPress={async () => {
+          // func.alert(JSON.stringify(list, null, 2));
           await save();
           navigation.goBack();
         }}
@@ -146,6 +155,7 @@ const Edit = (props) => {
           }}
           mode={mode}
           setAddButtonVisible={setAddButtonVisible}
+          ref={(ref) => { list = ref; }}
         />
       </View>
       <EditAddButton
@@ -159,6 +169,8 @@ const Edit = (props) => {
         isVisible={contentVisible}
         setVisible={setContentVisible}
         setIsChanged={setIsChanged}
+        setEditVocabID={setEditVocabID}
+        onSave={() => list.scrollToEnd({ animated: true })}
       />
       <EditHelp
         isVisible={helpVisible}

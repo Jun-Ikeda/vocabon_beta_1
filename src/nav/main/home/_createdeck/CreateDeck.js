@@ -76,7 +76,7 @@ const CreateDeck = (props) => {
   // recoil
   const setDeckGeneral = useSetRecoilState(decksGeneral);
   // state
-  const [deckID, setDeckID] = useState(UUID.generate());
+  const [deckID, setDeckID] = useState(UUID.generate(10));
   const [title, setTitle] = useState('');
   const [language, setLanguage] = useState({ term: '', definition: '' });
   const [thumbnail, setThumbnail] = useState({});

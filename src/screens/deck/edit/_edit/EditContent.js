@@ -11,6 +11,7 @@ import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
 import { deck } from '../../../../config/Const';
 import { contentState } from './Edit';
+import UUID from '../../../../config/UUID';
 
 const style = StyleSheet.create({
   container: {
@@ -90,7 +91,7 @@ const style = StyleSheet.create({
 const EditContent = (props) => {
   // props
   const {
-    vocabID, isVisible, setVisible, setIsChanged,
+    vocabID, isVisible, setVisible, setIsChanged, setEditVocabID, onSave,
   } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
@@ -105,6 +106,8 @@ const EditContent = (props) => {
   const [exampleD, setExampleD] = useState('');
   const [cf, setCf] = useState('');
   const [expand, setExpand] = useState(false);
+
+  const isNewVocab = !Object.keys(content).includes(vocabID);
 
   useEffect(() => {
     // visibleになるたびvocabIDからstateを更新
@@ -170,20 +173,9 @@ const EditContent = (props) => {
     const save = () => {
       setContent((prev) => {
         let result = JSON.parse(JSON.stringify(prev));
-        if (Object.keys(result).includes(vocabID)) {
-          result[vocabID] = {
-            term,
-            definition,
-            synonym,
-            antonym,
-            prefix,
-            suffix,
-            exampleT,
-            exampleD,
-            cf,
-          };
-        } else {
+        if (isNewVocab) {
           result = {
+            ...result,
             [vocabID]: {
               term,
               definition,
@@ -195,18 +187,56 @@ const EditContent = (props) => {
               exampleD,
               cf,
             },
-            ...result,
+          };
+        } else {
+          result[vocabID] = {
+            term,
+            definition,
+            synonym,
+            antonym,
+            prefix,
+            suffix,
+            exampleT,
+            exampleD,
+            cf,
           };
         }
         return result;
       });
+      // onSave();
       setIsChanged(true);
-      setVisible(false);
+    };
+    const next = () => {
+      setTerm('');
+      setDefinition('');
+      setSynonym('');
+      setAntonym('');
+      setPrefix('');
+      setSuffix('');
+      setExampleT('');
+      setExampleD('');
+      setCf('');
+      save();
+      setExpand(false);
+      setEditVocabID(UUID.generate(8));
     };
     return (
       <View style={style.buttonsContainer}>
+        {isNewVocab ? (
+          <Button
+            onPress={next}
+            mode="contained"
+            color={Color.green2}
+            disabled={(term === '') || (definition === '')}
+          >
+            Next
+          </Button>
+        ) : null}
         <Button
-          onPress={save}
+          onPress={() => {
+            save();
+            setVisible(false);
+          }}
           mode="contained"
           color={Color.green2}
           disabled={(term === '') || (definition === '')}
@@ -248,10 +278,12 @@ EditContent.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
   setIsChanged: PropTypes.func.isRequired,
+  onSave: PropTypes.func,
 };
 
 EditContent.defaultProps = {
   vocabID: null,
+  onSave: () => {},
 };
 
 EditContent.defaultProps = {

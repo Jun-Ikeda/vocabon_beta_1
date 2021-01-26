@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
-  View, StyleSheet,
+  View, StyleSheet, Dimensions,
 } from 'react-native';
 import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
@@ -29,21 +29,38 @@ const style = StyleSheet.create({
  * ```
  */
 const Carousel = (props) => {
+  //
+  const { height: heightInitial, width: widthInitial } = Dimensions.get('screen');
   // props
   const { deckIDs, onPressCard, countainerStyle } = props;
   // state
   const [layout, setLayout] = useState({ height: 0, width: 0 });
+  const [screen, setScreen] = useState({ height: heightInitial, width: widthInitial });
   const [activeIndex, setActiveIndex] = useState(0);
   // ref
   let carousel = {};
+
+  useEffect(() => {
+    Dimensions.addEventListener('change', (e) => {
+      const { width, height } = e.window;
+      setScreen({ width, height });
+    });
+  }, []);
+
+  const cardStyle = (screen.height > screen.width) ? {
+    width: layout.width * 0.8,
+    height: layout.width * 0.5,
+  } : {
+    width: layout.width * 0.6,
+    height: layout.width * 0.4,
+  };
 
   const renderItem = ({ item: deckID/* , index */ }) => (
     <CarouselCard
       deckID={deckID}
       onPress={() => onPressCard(deckID)}
       cardStyle={{
-        width: layout.width * 0.8,
-        height: layout.width * 0.5,
+        ...cardStyle,
         borderRadius: layout.width * 0.03,
       }}
     />
@@ -58,7 +75,7 @@ const Carousel = (props) => {
         <DeckCarousel
           data={deckIDs}
           renderItem={renderItem}
-          itemWidth={layout.width * 0.8}
+          itemWidth={cardStyle.width}
           sliderWidth={layout.width * 1.0}
           onSnapToItem={(index) => setActiveIndex(index)}
           ref={(ref) => { carousel = ref; }}
@@ -67,9 +84,11 @@ const Carousel = (props) => {
         : null}
       <Pagination
         dotsLength={deckIDs.length}
+        inactiveDotStyle={{ backgroundColor: Color.gray2 }}
         activeDotIndex={activeIndex}
-        countainerStyle={{ paddingVertical: 15 }}
-        dotStyle={{ backgroundColor: Color.white3 }}
+        containerStyle={{ paddingTop: 25, paddingBottom: 10 }}
+        // countainerStyle={{ paddingVertical: 10 }}
+        dotStyle={{ backgroundColor: Color.gray4 }}
       />
     </View>
   );

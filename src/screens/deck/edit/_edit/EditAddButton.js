@@ -12,8 +12,9 @@ import UUID from '../../../../config/UUID';
  * ```
  */
 const EditAddButton = (props) => {
-  const { setContentVisible, setEditVocabID, isVisible } = props;
-  const newVocabID = UUID.generate(8);
+  const {
+    setContentVisible, setEditVocabID, isVisible,
+  } = props;
 
   return isVisible ? (
     <FloatingButton
@@ -21,7 +22,7 @@ const EditAddButton = (props) => {
       buttonStyle={{ bottom: 75 }}
       onPress={() => {
         setContentVisible(true);
-        setEditVocabID(newVocabID);
+        setEditVocabID(UUID.generate(8));
       }}
     />
   ) : null;

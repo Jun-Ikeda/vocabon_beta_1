@@ -206,7 +206,7 @@ const MenuButtons = (props) => {
           title: 'Duplicate',
           icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { /* color: Color.gray3 */ }]} />,
           onPress: () => {
-            const newDeckID = UUID.generate();
+            const newDeckID = UUID.generate(10);
             saveDeckGeneral(setDecksGeneralState, newDeckID, {
               ...deckGeneral,
               title: `${deckGeneral.title} Copy`,

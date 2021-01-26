@@ -123,7 +123,7 @@ export const func = {
     const copy = arr.slice();
     return copy.reverse();
   },
-  formatDate: (shortenedDate) => {
+  formatDate: (shortenedDate, formalOrNot) => {
     const year = (shortenedDate - (shortenedDate % 10000)) / 10000;
     const month = ((shortenedDate % 10000) - ((shortenedDate % 10000) % 100)) / 100;
     const day = (shortenedDate % 10000) % 100;
@@ -131,6 +131,7 @@ export const func = {
     const shortenedMonthName = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
     const formalMonthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     let hoge = '';
+    let stringToReturn;
     const monthName = [shortenedMonthName[month - 1], formalMonthName[month - 1]];
 
     if (lastNum === 1) {
@@ -143,7 +144,13 @@ export const func = {
       hoge = 'th';
     }
 
-    return `${monthName[1]} ${day}${hoge}, ${year}`;
+    if (formalOrNot === true) {
+      stringToReturn = `${monthName[1]} ${day}${hoge}, ${year}`;
+    } else {
+      stringToReturn = `${monthName[0]} ${day}${hoge}, ${year}`;
+    }
+
+    return stringToReturn;
   },
 };
 

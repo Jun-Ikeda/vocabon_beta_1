@@ -57,6 +57,7 @@ const EditList = (props) => {
     setVisible,
     mode,
     setAddButtonVisible,
+    ref,
   } = props;
   // recoil
   // state
@@ -143,6 +144,7 @@ const EditList = (props) => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setAddButtonVisible(true);
         }}
+        ref={ref}
       />
     </View>
   );

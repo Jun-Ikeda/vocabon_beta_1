@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 import {
-  Text, View, StyleSheet, TouchableOpacity, onPress,
+  Text, View, StyleSheet, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import { BarChart } from 'react-native-chart-kit';
+import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
@@ -17,7 +18,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 60,
-    paddingHorizontal: 40,
+    paddingHorizontal: 20,
   },
   button: {
     width: 60,
@@ -26,8 +27,15 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'flex-end',
   },
+  textConteiner: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  textsConteiner: {
+    flexDirection: 'row',
+  },
   text: {
-    fontSize: 20,
+    fontSize: 15,
   },
   graph: {
 
@@ -35,22 +43,61 @@ const style = StyleSheet.create({
 });
 
 const AnalyzeButtons = (props) => {
-  const { isVisible, setVisible, play } = props;
+  const {
+    isGraphVisible, setGraphVisible, isDateVisible, setDateVisible, play, mode, setMode,
+  } = props;
 
   const buttons = [
     {
+      title: 'date',
+      icon: { collection: 'MaterialCommunityIcons', name: 'calendar-clock' },
+      onPress: () => {
+        setDateVisible(true);
+        setMode('date');
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      },
+      visible: mode === 'noDate',
+    },
+    {
+      title: 'chevrons-right',
+      icon: { collection: 'Feather', name: 'chevrons-right' },
+      onPress: () => {
+        setDateVisible(false);
+        setMode('noDate');
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      },
+      visible: mode === 'date',
+    },
+    {
       title: 'graph',
       icon: { collection: 'Ionicons', name: 'bar-chart' },
-      onPress: () => setVisible(true),
+      onPress: () => setGraphVisible(true),
+      visible: true,
     },
   ];
+
+  const renderDate = () => {
+    if (isDateVisible) {
+      return (
+        <View style={style.textsConteiner}>
+          <View style={style.textConteiner}>
+            <Text style={style.text}>{`Created on\n${func.formatDate(17760704, true)}`}</Text>
+          </View>
+          <View style={style.text}>
+            <Text style={style.text}>{`Last use on\n${func.formatDate(19221230, true)}`}</Text>
+          </View>
+        </View>
+      );
+    }
+    return null;
+  };
+
   return (
     <View style={style.bar}>
-      <Text style={style.text}>Create: May 7th,2020</Text>
-      <Text style={style.text}>Last use: May 10th,2020</Text>
+      {renderDate()}
       {buttons.map((button) => {
         const IconComponent = Icon[button.icon.collection];
-        return (
+        return (button.visible ? (
           <TouchableOpacity
             style={style.button}
             onPress={button.onPress}
@@ -61,7 +108,7 @@ const AnalyzeButtons = (props) => {
               size={iconSize}
             />
           </TouchableOpacity>
-        );
+        ) : null);
       })}
     </View>
   );

@@ -16,6 +16,8 @@ const style = StyleSheet.create({
     marginHorizontal: '5%',
     // marginVertical: '15%',
     borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   graph: {
 
@@ -24,7 +26,7 @@ const style = StyleSheet.create({
 
 const AnalyzeGraph = (props) => {
   const { isVisible, setVisible, play } = props;
-
+  // const { height, width } = func.onLayoutContainer(e);
   const renderGraph = () => {
     const data = {
       labels: ['January', 'February', 'March', 'April', 'May', 'June'],
