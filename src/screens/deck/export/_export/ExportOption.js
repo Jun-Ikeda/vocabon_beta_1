@@ -3,19 +3,13 @@ import {
   StyleSheet, ScrollView, View, Dimensions, Text, TouchableOpacity, TextInput,
 } from 'react-native';
 import { Button, Divider, RadioButton } from 'react-native-paper';
-import ExpoClipboard from 'expo-clipboard';
-
 import PropTypes from 'prop-types';
-import Color from '../../../../config/Color';
-import { getDeckContent } from '../../../../config/deck/Deck';
-import { func } from '../../../../config/Const';
-import ExportOption from './ExportOption';
 
-const { height, width } = Dimensions.get('window');
+import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   optionBox: {
     flex: 2,
@@ -34,32 +28,13 @@ const style = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 5,
   },
-  dataBox: {
-    flex: 5,
-    marginHorizontal: 30,
-    padding: 10,
-    // borderWidth: 2,
-    borderRadius: 5,
-    backgroundColor: Color.white1,
-    justifyContent: 'center',
-
-  },
-
 });
 
-const Export = (props) => {
-  const { navigation, route: { params: { deckID } } } = props;
-  // const [visible, setVisible] = useState(false);
-
-  const [layout, setLayout] = useState({ height: 300, width: 300 });
+const ExportOption = (props) => {
   const [itemValue, setItemValue] = useState(', ');
   const [cardValue, setCardValue] = useState('; ');
   const [itemDelimiter, setItemDelimiter] = useState(', ');
   const [cardDelimiter, setCardDelimiter] = useState('; ');
-
-  const content = getDeckContent(deckID);
-
-  // const renderExportTypes = () => {//   const exportButtons = [//     {//       title: 'JSON',//       onPress: () => func.alert('Export as JSON'),//       textStyle: {}, //       flex: 1,//     },//     {//       title: 'Excel',//       onPress: () => func.alert('Export as Excel'),//       textStyle: {},//       flex: 1,//     },//     {//       title: 'Copy',//       onPress: () => func.alert('Export as a Copy'),//       textStyle: {},//       flex: 1,//     },//   ];//   if (visible) {//     return exportButtons.map((button) => (//       <View style={[{ borderWidth: 1 }]}>//         <Button title={button.title} onPress={button.onPress} />//       </View>//     ));//   }//   return null;// };
 
   const renderCustomText = (options) => (
     <TextInput
@@ -152,48 +127,11 @@ const Export = (props) => {
     );
   };
 
-  const renderDataBox = () => {
-    const contentArray = func.convertObjectToArray(content);
-    const output = contentArray.map((element) => [element.value.term, element.value.definition].join(itemDelimiter)).join(cardDelimiter);
-    // const deckString = deckItems.map((element) => element.map)// const deckString = JSON.stringify(deckItems, null, 4);
-
-    return (
-      <View style={style.dataBox}>
-        <Text style={{ fontSize: 20, marginBottom: 10 }}> Data </Text>
-        <Divider />
-        <ScrollView persistentScrollbar>
-          <Text>{output}</Text>
-        </ScrollView>
-        <Button onPress={() => ExpoClipboard.setString(output)} mode="contained" color={Color.green2}>Copy</Button>
-        {/* <Button title="Export" onPress={() => setVisible(!visible)} />{renderExportTypes()} */}
-      </View>
-    );
-  };
-
   return (
-    <View style={{ flex: 1 }}>
-      <Text>\t bar</Text>
-      <View style={{ flex: 1 }}>
-        <View style={StyleSheet.absoluteFill} onLayout={(e) => setLayout(func.onLayoutContainer(e))} />
-        {/* <ScrollView horizontal pagingEnabled in > */}
-        <View style={{ flex: 2 }}>
-          {/* <ExportOption /> */}
-          {renderOptionBox()}
-          {renderDataBox()}
-          {/* {unstable_renderSubtreeIntoContainer} */}
-        </View>
-        {/* <View style={layout}><Text>{JSON.stringify(content)}</Text><Button title="JSON" /><Button title="Excel" /><Button title="Copy" /></View> *//* </ScrollView> */}
-      </View>
+    <View>
+      {renderOptionBox()}
     </View>
   );
 };
 
-Export.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
-};
-Export.defaultProps = {
-
-};
-
-export default Export;
+export default ExportOption;

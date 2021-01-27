@@ -1,4 +1,4 @@
-// デッキの情報の変数を定義する所
+// デッキの情報のグローバル変数を定義する所
 
 import { atom } from 'recoil';
 import decksContent from './DeckModule';

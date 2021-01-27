@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import { Button, Divider, Menu } from 'react-native-paper';
 
-import { useNavigationState } from '@react-navigation/native';
+import { useIsFocused, useNavigationState } from '@react-navigation/native';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
@@ -44,31 +44,36 @@ const style = StyleSheet.create({
 
 const Import = (props) => {
   // props
-  const { navigation } = props;
+  const { navigation, route: { params: { deckID } } } = props;
   // state
   const [input, setInput] = useState('manzana,apple/plátano,banana');
   const [itemDelimiter, setItemDelimiter] = useState(',');
   const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
 
-  const routes = useNavigationState((_state) => _state.routes);
-  useEffect(() => console.log(routes), []);
+  const isChanged = !((input === 'manzana,apple/plátano,banana') || (input === ''));
+  const isFocused = useIsFocused();
 
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
-    if (!(Platform.OS === 'web') && !((input === 'manzana,apple/plátano,banana') || (input === ''))) {
+    if (!(Platform.OS === 'web') && isChanged && isFocused) {
       e.preventDefault();
       Alert.alert(
         'Discard changes?',
         'You have unsaved changes. Are you sure to discard them and leave the screen?',
         [
           { text: "Don't leave", style: 'cancel', onPress: () => {} },
-          { text: 'Save', onPress: () => navigation.navigate('importoption', { input, itemDelimiter, cardDelimiter }) },
+          {
+            text: 'Save',
+            onPress: () => navigation.navigate('importoption', {
+              input, itemDelimiter, cardDelimiter, deckID,
+            }),
+          },
           { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
         ],
       );
     }
   }),
-  [navigation, input]);
+  [navigation, isChanged, isFocused]);
 
   const renderDelimiterInput = () => {
     const inputs = [
@@ -127,7 +132,9 @@ const Import = (props) => {
       <Button
         color={Color.green3}
         mode="contained"
-        onPress={() => navigation.navigate('importoption', { input, itemDelimiter, cardDelimiter })}
+        onPress={() => navigation.navigate('importoption', {
+          input, itemDelimiter, cardDelimiter, deckID,
+        })}
       >
         Import
       </Button>

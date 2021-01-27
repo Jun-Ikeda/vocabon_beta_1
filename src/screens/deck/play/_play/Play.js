@@ -34,7 +34,7 @@ const style = StyleSheet.create({
     fontSize: 30,
     // backgroundColor: 'red',
   },
-  checker2: {
+  alert: {
     textAlign: 'center',
     fontSize: 30,
     backgroundColor: 'red',

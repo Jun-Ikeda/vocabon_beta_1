@@ -28,10 +28,19 @@ const style = StyleSheet.create({
   icon1: {
     color: Color.cud.red,
     fontSize: 24,
+    marginRight: 24,
   },
   icon2: {
     color: Color.green2,
     fontSize: 24,
+    marginRight: 24,
+  },
+  icon3: {
+    color: Color.gray4,
+    fontSize: 24,
+  },
+  edit: {
+    fontSize: 50,
   },
 });
 
@@ -49,11 +58,18 @@ const PlayDetail = (props) => {
   } = props;
   // state
   const [expandVocab, setExpandVocab] = useState(null);
+  const [editVisible, setEditVisible] = useState(false);
 
   const validVocabObject = returnValidVocabObject(content, validVocabIDs);
 
   const renderCancelButton = () => (
     <TouchableOpacity style={style.cancelButton} onPress={() => setModalVisible(false)}>
+      <Icon.Feather name="x" style={style.cancelButtonIcon} />
+    </TouchableOpacity>
+  );
+
+  const renderEditCancelButton = () => (
+    <TouchableOpacity style={style.cancelButton} onPress={() => setEditVisible(false)}>
       <Icon.Feather name="x" style={style.cancelButtonIcon} />
     </TouchableOpacity>
   );
@@ -90,15 +106,27 @@ const PlayDetail = (props) => {
                 exampleD: true,
                 cf: true,
               }}
-              renderCardRight={
-                (vocab) => {
+              renderCardRight={(vocab) => {
+                const renderIcon = () => {
                   if (leftVocabID.includes(vocab.key)) {
                     return (<Icon.AntDesign name="close" style={style.icon1} />);
                   } if (rightVocabID.includes(vocab.key)) {
                     return (<Icon.AntDesign name="check" style={style.icon2} />);
                   } return null;
-                }
-              }
+                };
+                return (
+                  <View style={{ flexDirection: 'row' }}>
+                    {renderIcon()}
+                    <TouchableOpacity
+                      onPress={() => {
+                        setEditVisible(true);
+                      }}
+                    >
+                      <Icon.Feather name="edit" style={style.icon3} />
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
               onPressCard={(vocab) => {
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                 setExpandVocab(vocab.key);
@@ -106,6 +134,20 @@ const PlayDetail = (props) => {
               searchBar
             />
             {renderCancelButton()}
+          </View>
+        )}
+      />
+      <PopUpMenu
+        isVisible={editVisible}
+        setVisible={setEditVisible}
+        containerStyle={{ justifyContent: 'center' }}
+        renderMenu={() => (
+          <View style={{
+            backgroundColor: Color.defaultBackground, marginHorizontal: '10%', marginVertical: '10%', flex: 1, borderRadius: 20,
+          }}
+          >
+            <Text style={style.edit}>hi</Text>
+            {renderEditCancelButton()}
           </View>
         )}
       />

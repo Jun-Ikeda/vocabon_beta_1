@@ -177,28 +177,12 @@ const EditContent = (props) => {
           result = {
             ...result,
             [vocabID]: {
-              term,
-              definition,
-              synonym,
-              antonym,
-              prefix,
-              suffix,
-              exampleT,
-              exampleD,
-              cf,
+              term, definition, synonym, antonym, prefix, suffix, exampleT, exampleD, cf,
             },
           };
         } else {
           result[vocabID] = {
-            term,
-            definition,
-            synonym,
-            antonym,
-            prefix,
-            suffix,
-            exampleT,
-            exampleD,
-            cf,
+            term, definition, synonym, antonym, prefix, suffix, exampleT, exampleD, cf,
           };
         }
         return result;

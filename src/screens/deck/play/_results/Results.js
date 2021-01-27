@@ -163,7 +163,7 @@ const Results = (props) => {
         isVisible: true,
       },
       {
-        title: 'Finish this Deck',
+        title: 'Home',
         num: '',
         onPress: () => navigation.popToTop(),
         isVisible: true,
