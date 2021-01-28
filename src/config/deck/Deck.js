@@ -1,6 +1,7 @@
 // デッキの情報のグローバル変数を定義する所
 
 import { atom } from 'recoil';
+import LocalStorage from '../LocalStorage';
 import decksContent from './DeckModule';
 
 export const decksGeneral = atom({ // globalなstate ダイナミック 動的
@@ -31,12 +32,15 @@ export const getDeckGeneral = (general, deckID) => {
 // export const saveDeckGeneral = (setState) => {
 //   setState();
 // };
-export const saveDeckGeneral = (setDeckGeneral, deckID, newData) => {
-  setDeckGeneral((prev) => {
-    const newState = JSON.parse(JSON.stringify(prev));
+export const saveDeckGeneral = async (setDeckGeneral, deckID, newData) => {
+  let newState = {};
+  await setDeckGeneral((prev) => {
+    newState = JSON.parse(JSON.stringify(prev));
     newState[deckID] = { ...prev[deckID], ...newData };
     return newState;
   });
+  const prevLocalData = await LocalStorage.load({ key: 'deck', id: deckID });
+  LocalStorage.save({ key: 'deck', id: deckID, data: { general: newState[deckID], content: prevLocalData?.content ?? {} } });
 };
 
 export const getDeckContent = (deckID) => {
@@ -46,12 +50,14 @@ export const getDeckContent = (deckID) => {
   return {};
 };
 
-export const saveDeckContent = (deckID, newData, merge = true) => {
+export const saveDeckContent = async (deckID, newData, merge = true) => {
   if (merge) {
     decksContent[deckID] = { ...decksContent[deckID], ...newData };
   } else {
     decksContent[deckID] = newData;
   }
+  const prevLocalData = await LocalStorage.load({ key: 'deck', id: deckID });
+  LocalStorage.save({ key: 'deck', id: deckID, data: { general: prevLocalData.general, content: decksContent[deckID] } });
 };
 
 export const deleteDeck = (setDeckGeneral, deckID) => {

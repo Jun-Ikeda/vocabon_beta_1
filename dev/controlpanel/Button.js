@@ -1,5 +1,7 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import { getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
 import { func } from '../../src/config/Const';
+import LocalStorage from '../../src/config/LocalStorage';
 import Deck, { getDeckContent } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import { getUserGeneral } from '../../src/config/user/User';
@@ -7,7 +9,7 @@ import UUID from '../../src/config/UUID';
 
 const Button = [
   {
-    title: 'Deck',
+    title: 'Deck (Global Vari)',
     onPress: () => {
       /*
       const general = getDeckGeneral(decksGeneralState, 'daioaid')
@@ -27,7 +29,7 @@ const Button = [
     // onPress: () => ({ decksGeneral, decksContent }),
   },
   {
-    title: 'User',
+    title: 'User (Global Vari)',
     onPress: () => {
       const general = getUserGeneral('diaooea');
       /*
@@ -37,7 +39,7 @@ const Button = [
     },
   },
   {
-    title: 'Account',
+    title: 'Account (Global Vari)',
     onPress: () => {
       const general = getAccountGeneral();
       /*
@@ -49,6 +51,20 @@ const Button = [
       引数を指定しない、または''だとすべて返す
       */
       return { general, content };
+    },
+  },
+  {
+    title: 'Deck (LocalStorage)',
+    onPress: () => {
+      LocalStorage.getAllDataForKey('deck').then((decks) => {
+        console.log(decks);
+      });
+    },
+  },
+  {
+    title: 'Clear Local Storage',
+    onPress: async () => {
+      await AsyncStorage.clear();
     },
   },
   {

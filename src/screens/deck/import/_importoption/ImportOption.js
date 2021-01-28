@@ -89,10 +89,10 @@ const ImportOption = (props) => {
   const isMin = currentCardIndex === 0;
   const isMax = currentCardIndex === inputArray.length - 1;
 
-  const save = () => {
+  const save = async () => {
     const deckContent = convertInputArrayToContent(inputArray, labels);
-    saveDeckContent(deckID, deckContent, true);
-    saveDeckGeneral(setDeckGeneral, deckID, { ...deckGeneral[deckID], num: deckGeneral[deckID].num + inputArray.length });
+    await saveDeckContent(deckID, deckContent, true);
+    await saveDeckGeneral(setDeckGeneral, deckID, { ...deckGeneral[deckID], num: deckGeneral[deckID].num + inputArray.length });
   };
 
   const renderHeader = () => (
@@ -142,8 +142,8 @@ const ImportOption = (props) => {
       <Button
         color={Color.green2}
         mode="contained"
-        onPress={() => {
-          navigation.navigate('menu');
+        onPress={async () => {
+          await navigation.navigate('menu');
           save();
         }}
         disabled={labels.includes(null)}
