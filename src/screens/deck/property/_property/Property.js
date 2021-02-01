@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Platform, Alert,
 } from 'react-native';
+import { Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useRecoilState } from 'recoil';
 
-import { Button } from 'react-native-paper';
 import DeckName from '../../../../components/deck/inputs/DeckName';
 import LanguageSelection from '../../../../components/deck/inputs/LanguageSelection';
+import Redescribe from '../../../../components/deck/inputs/Redescribe';
 import { getDeckGeneral, decksGeneral, saveDeckGeneral } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
@@ -59,15 +60,14 @@ const Property = (props) => {
   const general = getDeckGeneral(deckGeneral, deckID);
   const [title, setTitle] = useState(general.title);
   const [language, setLanguage] = useState(general.language);
+  const [description, setDescription] = useState(general.description);
   const [isChanged, setIsChanged] = useState(false);
-  // const isChanged = !((general.title === title) && func.objectEqual(language, general.language));
 
   const save = async () => {
     await setIsChanged(false);
-    saveDeckGeneral(setDeckGeneral, deckID, { title, language });
+    saveDeckGeneral(setDeckGeneral, deckID, { title, language, description });
   };
 
-  // alert before goBack without saving changes
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
     if (!(Platform.OS === 'web') && isChanged) {
       e.preventDefault();
@@ -109,7 +109,7 @@ const Property = (props) => {
 
   const properties = [
     {
-      title: 'Deck Name',
+      title: 'Title',
       element: <DeckName
         setTitle={(newTitle) => {
           setTitle(newTitle);
@@ -128,6 +128,17 @@ const Property = (props) => {
           }
         }}
         language={language}
+      />,
+    },
+    {
+      title: 'Description',
+      // element: <View />,
+      element: <Redescribe
+        setDescription={(newDescription) => {
+          setDescription(newDescription);
+          setIsChanged(true);
+        }}
+        description={description}
       />,
     },
   ];

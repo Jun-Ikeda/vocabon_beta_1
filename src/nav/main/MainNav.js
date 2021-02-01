@@ -1,8 +1,8 @@
-// import HomeNav from './home/HomeNav';
+import HomeNav from './home/HomeNav';
 
-// export default HomeNav;
+export default HomeNav;
 
-import React from 'react';
+/* import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import PropTypes from 'prop-types';
 
@@ -69,3 +69,4 @@ const MainNav = () => (
 );
 
 export default MainNav;
+ */

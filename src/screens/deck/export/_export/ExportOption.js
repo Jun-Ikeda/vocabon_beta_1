@@ -1,46 +1,63 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Dimensions, Text, TouchableOpacity, TextInput,
+  StyleSheet, View, Text, TouchableOpacity, TextInput,
 } from 'react-native';
-import { Button, Divider, RadioButton } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import { Divider, RadioButton } from 'react-native-paper';
 
 import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
-  container: {
-    // flex: 1,
-  },
   optionBox: {
     flex: 2,
-    marginHorizontal: 30,
-    marginTop: 30,
-    marginBottom: 5,
-    padding: 10,
-    // borderWidth: 2,
-    borderRadius: 5,
+    margin: 20,
+    marginBottom: 10,
+    borderRadius: 10,
     backgroundColor: Color.white1,
   },
   delimiterInput: {
-    // marginHorizontal: 10,
+    flex: 1,
     padding: 5,
-    borderWidth: 1,
-    borderRadius: 10,
     marginVertical: 5,
+    marginRight: 10,
+  },
+  delimiterContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  radioContainer: {
+    padding: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  divider: {
+    backgroundColor: Color.gray3, height: 1.5, opacity: 0.5,
   },
 });
 
 const ExportOption = (props) => {
-  const [itemValue, setItemValue] = useState(', ');
-  const [cardValue, setCardValue] = useState('; ');
-  const [itemDelimiter, setItemDelimiter] = useState(', ');
-  const [cardDelimiter, setCardDelimiter] = useState('; ');
+  const {
+    itemValue, setItemValue, cardValue, setCardValue,
+    itemDelimiter, setItemDelimiter, cardDelimiter, setCardDelimiter,
+  } = props;
 
+  const [itemCustomInput, setItemCustomInput] = useState(''); // 非表示切り替え？ textinputに書いてある内容を他のボタンおしても変わらないようにしようかなって
+  const [cardCustomInput, setCardCustomInput] = useState('');
+
+  // ちょっとスタイリング優先で
+  // なんかスタイリングで俺がやったほうがいいことある？
+  // おれ一人でやっていいってこと？
+  // そうしたほうがかん
+  // そうっすね
+  // 機能面やっててもいい？ soussune
+  // ryoukai
   const renderCustomText = (options) => (
     <TextInput
-      value={options.delimiterState[0]}
-      onChangeText={(newValue) => { (options.delimiterState[1])(newValue); }}
-      multiline
+      value={options.delimiterInputState[0]}
+      placeholder="Custom Delimiter"
+      onChangeText={(newValue) => {
+        (options.delimiterState[1])(newValue);
+        (options.delimiterInputState[1])(newValue);
+      }}
       style={style.delimiterInput}
     />
   );
@@ -50,11 +67,14 @@ const ExportOption = (props) => {
       onValueChange={(newValue) => {
         options.radioState[1](newValue);
         options.delimiterState[1](newValue);
+        if (newValue === options.buttonValue3) {
+          console.log('test; you pressed the 3rd button');
+        }
       }}
       value={options.radioState[0]}
     >
       <TouchableOpacity
-        style={{ flexDirection: 'row' }}
+        style={style.radioContainer}
         onPress={() => {
           options.radioState[1](options.buttonValue1);
           options.delimiterState[1](options.buttonValue1);
@@ -63,8 +83,9 @@ const ExportOption = (props) => {
         <RadioButton value={options.buttonValue1} />
         <Text>{options.buttonTitle1}</Text>
       </TouchableOpacity>
+      <Divider style={style.divider} />
       <TouchableOpacity
-        style={{ flexDirection: 'row' }}
+        style={style.radioContainer}
         onPress={() => {
           options.radioState[1](options.buttonValue2);
           options.delimiterState[1](options.buttonValue2);
@@ -73,11 +94,12 @@ const ExportOption = (props) => {
         <RadioButton value={options.buttonValue2} />
         <Text>{options.buttonTitle2}</Text>
       </TouchableOpacity>
+      <Divider style={style.divider} />
       <TouchableOpacity
-        style={{ flexDirection: 'row' }}
+        style={style.radioContainer1}
         onPress={() => {
           options.radioState[1](options.buttonValue3);
-          options.delimiterState[1](options.buttonValue3);
+          options.delimiterState[1](options.delimiterInputState[0]);
         }}
       >
         <RadioButton value={options.buttonValue3} />
@@ -86,50 +108,41 @@ const ExportOption = (props) => {
     </RadioButton.Group>
   );
 
-  const renderOptionBox = () => {
-    const optionSet = [
-      {
-        title: 'Between Term and Definition',
-        buttonTitle1: 'Comma',
-        buttonTitle2: 'Tab',
-        buttonValue1: ', ',
-        buttonValue2: '\t\t',
-        buttonValue3: '',
-        radioState: [itemValue, setItemValue],
-        delimiterState: [itemDelimiter, setItemDelimiter],
-      },
-      {
-        title: 'Between Terms',
-        buttonTitle1: 'Semicolon',
-        buttonTitle2: 'Change Line',
-        buttonValue1: '; ',
-        buttonValue2: '\n',
-        buttonValue3: '',
-        radioState: [cardValue, setCardValue],
-        delimiterState: [cardDelimiter, setCardDelimiter],
-      },
-    ];
-    return (
-      <View style={style.optionBox}>
-        <Text style={{ fontSize: 20 }}> Options </Text>
-        <Divider />
-        {/* <FlatListstyle={{ marginVertical: 5 }}options={optionSet}renderItem={({ item }) => (<View><Text style={{ fontSize: 15 }}>{item.title}</Text><TextInputvalue={item.state[0]}onChangeText={item.state[1]}style={style.delimiterInput}/></View>)}/> */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          {optionSet.map((optionset) => (
-            <View style={{ justifyContent: 'space-evenly', alignItems: 'center' }}>
-              <Text style={{ fontSize: 15 }}>{optionset.title}</Text>
-              <Divider />
-              {renderRadioButtons(optionset)}
-            </View>
-          ))}
-        </View>
-      </View>
-    );
-  };
-
+  const options = [
+    {
+      title: 'Between Term and Definition',
+      buttonTitle1: 'Comma',
+      buttonTitle2: 'Tab',
+      buttonValue1: ', ',
+      buttonValue2: '\t\t',
+      buttonValue3: '',
+      radioState: [itemValue, setItemValue],
+      delimiterState: [itemDelimiter, setItemDelimiter],
+      delimiterInputState: [itemCustomInput, setItemCustomInput],
+    },
+    {
+      title: 'Between Terms',
+      buttonTitle1: 'Semicolon',
+      buttonTitle2: 'Change Line',
+      buttonValue1: '; ',
+      buttonValue2: '\n',
+      buttonValue3: '',
+      radioState: [cardValue, setCardValue],
+      delimiterState: [cardDelimiter, setCardDelimiter],
+      delimiterInputState: [cardCustomInput, setCardCustomInput],
+    },
+  ];
   return (
-    <View>
-      {renderOptionBox()}
+    <View style={style.optionBox}>
+      <Text style={{ fontSize: 22, padding: 10 }}> Options </Text>
+      <View style={style.delimiterContainer}>
+        {options.map((option) => (
+          <View style={{ flex: 1, paddingHorizontal: 20 }}>
+            <Text style={{ fontSize: 18, padding: 5 }}>{option.title}</Text>
+            {renderRadioButtons(option)}
+          </View>
+        ))}
+      </View>
     </View>
   );
 };

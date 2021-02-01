@@ -75,7 +75,7 @@ const Menu = (props) => {
   );
 
   const renderContent = () => (
-    <MenuUtility accountContent={accountContent} deckGeneral={deckGeneral} />
+    <MenuUtility accountContent={accountContent} deckGeneral={deckGeneral} deckID={deckID} navigation={navigation} />
   );
 
   const renderButtons = () => (

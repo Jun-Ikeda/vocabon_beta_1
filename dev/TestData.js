@@ -761,7 +761,7 @@ export const Deck = {
       },
     },
   },
-  '-BiGIisZb*': {
+  /* '-BiGIisZb*': {
     general: {
       title: 'Test Deck 2',
       description: '',
@@ -808,7 +808,8 @@ export const Deck = {
         cf: [],
       },
     },
-  },
+  }, */
+  /*
   rUiKQdnLb9: {
     general: {
       title: 'Test Deck 3',
@@ -974,7 +975,7 @@ export const Deck = {
         cf: [],
       },
     },
-  },
+  }, */
 };
 
 export const User = {

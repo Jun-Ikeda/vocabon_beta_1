@@ -5,7 +5,8 @@ import {
 import PropTypes from 'prop-types';
 import { Divider } from 'react-native-paper';
 // eslint-disable-next-line import/no-unresolved
-import RangeSlider from 'react-native-range-slider-expo';
+// import RangeSlider from 'react-native-range-slider-expo';
+import { RangeSlider } from '@sharcoux/slider';
 
 import Color from '../../../../config/Color';
 
@@ -26,7 +27,11 @@ const style = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
-  divider: { backgroundColor: Color.gray3, height: 1.5, opacity: 0.5 },
+  divider: {
+    backgroundColor: Color.gray3,
+    height: 1.5,
+    opacity: 0.5,
+  },
 });
 
 const OptionFilter = (props) => {
@@ -72,18 +77,24 @@ const OptionFilter = (props) => {
           {(index === 0) ? null : <Divider style={style.divider} />}
           {renderFilterTitle(item)}
           {(expand === item.title) && item.visible ? (
-            <View style={{ paddingHorizontal: 35 }}>
+            <View style={{ /* paddingHorizontal: 35 */height: 50 }}>
               <RangeSlider
-                min={item.range[0]}
-                max={item.range[1]}
-                fromValueOnChange={(value) => item.state[1]({ ...item.state[0], min: value })}
-                toValueOnChange={(value) => item.state[1]({ ...item.state[0], max: value })}
-                styleSize={20}
-                initialFromValue={item.state[0].min}
-                initialToValue={item.state[0].max}
-                fromKnobColor={Color.green2}
-                toKnobColor={Color.green2}
-                inRangeBarColor={Color.gray2}
+                range={[item.range[0], item.range[1]]}
+                minimumValue={item.range[0]}
+                maximumValue={item.range[1]}
+                step={1}
+                outboundColor={Color.gray3}
+                inboundColor={Color.gray2}
+                thumbTintColor={Color.green2}
+                thumbStyle={undefined}
+                trackStyle={undefined}
+                enabled
+                trackHeight={5}
+                thumbSize={20}
+                slideOnTap
+                onValueChange={(range) => item.state[1]({ min: range[0], max: range[1] })}
+                onSlidingStart={undefined}
+                onSlidingComplete={undefined}
               />
             </View>
           ) : null}

@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 
 import {
-  LayoutAnimation, StyleSheet, Text, TouchableOpacity, View,
+  LayoutAnimation, StyleSheet, TouchableOpacity, View,
 } from 'react-native';
-import { Portal } from 'react-native-paper';
+import { atom, useSetRecoilState } from 'recoil';
+import PropTypes from 'prop-types';
+
+import Color from '../../../../config/Color';
+
 import VocabList from '../../../../components/deck/list/VocabList';
 import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
-import Color from '../../../../config/Color';
+
+export const onEditVocabIDState = atom({
+  key: 'onEditVocabIDState',
+  default: '',
+});
 
 const style = StyleSheet.create({
   cancelButton: {
@@ -25,17 +33,17 @@ const style = StyleSheet.create({
     fontSize: 24,
     color: Color.gray1,
   },
-  icon1: {
+  iconMarked: {
     color: Color.cud.red,
     fontSize: 24,
     marginRight: 24,
   },
-  icon2: {
+  iconClear: {
     color: Color.green2,
     fontSize: 24,
     marginRight: 24,
   },
-  icon3: {
+  iconEditButton: {
     color: Color.gray4,
     fontSize: 24,
   },
@@ -54,11 +62,12 @@ const returnValidVocabObject = (content, validVocabIDs) => {
 const PlayDetail = (props) => {
   // props
   const {
-    modalVisible, setModalVisible, validVocabIDs, content, leftVocabID, rightVocabID,
+    modalVisible, setModalVisible, validVocabIDs, content, leftVocabID, rightVocabID, setEditVisible,
   } = props;
+  // recoil
+  const setOnEditVocabID = useSetRecoilState(onEditVocabIDState);
   // state
   const [expandVocab, setExpandVocab] = useState(null);
-  const [editVisible, setEditVisible] = useState(false);
 
   const validVocabObject = returnValidVocabObject(content, validVocabIDs);
 
@@ -68,91 +77,82 @@ const PlayDetail = (props) => {
     </TouchableOpacity>
   );
 
-  const renderEditCancelButton = () => (
-    <TouchableOpacity style={style.cancelButton} onPress={() => setEditVisible(false)}>
-      <Icon.Feather name="x" style={style.cancelButtonIcon} />
-    </TouchableOpacity>
-  );
+  const renderCardRightButtons = (vocab) => {
+    const renderIcon = () => {
+      if (leftVocabID.includes(vocab.key)) {
+        return (<Icon.AntDesign name="close" style={style.iconMarked} />);
+      } if (rightVocabID.includes(vocab.key)) {
+        return (<Icon.AntDesign name="check" style={style.iconClear} />);
+      } return null;
+    };
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        {renderIcon()}
+        <TouchableOpacity
+          onPress={() => {
+            setOnEditVocabID(vocab.key);
+            setEditVisible(true);
+          }}
+        >
+          <Icon.Feather name="edit" style={style.iconEditButton} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
-    <Portal>
-      <PopUpMenu
-        isVisible={modalVisible}
-        setVisible={setModalVisible}
-        renderMenu={() => (
-          <View style={{
-            backgroundColor: Color.defaultBackground, marginHorizontal: '10%', marginVertical: '10%', flex: 1, borderRadius: 20,
-          }}
-          >
-            <VocabList
-              content={validVocabObject}
-              itemVisible={(vocab) => ({
-                term: true,
-                definition: true,
-                synonym: vocab.key === expandVocab,
-                antonym: vocab.key === expandVocab,
-                prefix: vocab.key === expandVocab,
-                suffix: vocab.key === expandVocab,
-                exampleT: vocab.key === expandVocab,
-                exampleD: vocab.key === expandVocab,
-                cf: vocab.key === expandVocab,
-              })}
-              labelVisible={{
-                synonym: true,
-                antonym: true,
-                prefix: true,
-                suffix: true,
-                exampleT: true,
-                exampleD: true,
-                cf: true,
-              }}
-              renderCardRight={(vocab) => {
-                const renderIcon = () => {
-                  if (leftVocabID.includes(vocab.key)) {
-                    return (<Icon.AntDesign name="close" style={style.icon1} />);
-                  } if (rightVocabID.includes(vocab.key)) {
-                    return (<Icon.AntDesign name="check" style={style.icon2} />);
-                  } return null;
-                };
-                return (
-                  <View style={{ flexDirection: 'row' }}>
-                    {renderIcon()}
-                    <TouchableOpacity
-                      onPress={() => {
-                        setEditVisible(true);
-                      }}
-                    >
-                      <Icon.Feather name="edit" style={style.icon3} />
-                    </TouchableOpacity>
-                  </View>
-                );
-              }}
-              onPressCard={(vocab) => {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                setExpandVocab(vocab.key);
-              }}
-              searchBar
-            />
-            {renderCancelButton()}
-          </View>
-        )}
-      />
-      <PopUpMenu
-        isVisible={editVisible}
-        setVisible={setEditVisible}
-        containerStyle={{ justifyContent: 'center' }}
-        renderMenu={() => (
-          <View style={{
-            backgroundColor: Color.defaultBackground, marginHorizontal: '10%', marginVertical: '10%', flex: 1, borderRadius: 20,
-          }}
-          >
-            <Text style={style.edit}>hi</Text>
-            {renderEditCancelButton()}
-          </View>
-        )}
-      />
-    </Portal>
+    <PopUpMenu
+      isVisible={modalVisible}
+      setVisible={setModalVisible}
+      renderMenu={() => (
+        <View style={{
+          backgroundColor: Color.defaultBackground, marginHorizontal: '10%', marginVertical: '10%', flex: 1, borderRadius: 20,
+        }}
+        >
+          <VocabList
+            content={validVocabObject}
+            itemVisible={(vocab) => ({
+              term: true,
+              definition: true,
+              synonym: vocab.key === expandVocab,
+              antonym: vocab.key === expandVocab,
+              prefix: vocab.key === expandVocab,
+              suffix: vocab.key === expandVocab,
+              exampleT: vocab.key === expandVocab,
+              exampleD: vocab.key === expandVocab,
+              cf: vocab.key === expandVocab,
+            })}
+            labelVisible={{
+              synonym: true,
+              antonym: true,
+              prefix: true,
+              suffix: true,
+              exampleT: true,
+              exampleD: true,
+              cf: true,
+            }}
+            renderCardRight={renderCardRightButtons}
+            onPressCard={(vocab) => {
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              setExpandVocab(vocab.key);
+            }}
+            searchBar
+          />
+          {renderCancelButton()}
+        </View>
+      )}
+    />
   );
+};
+
+PlayDetail.propTypes = {
+  modalVisible: PropTypes.bool.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
+  validVocabIDs: PropTypes.array.isRequired,
+  content: PropTypes.object.isRequired,
+  leftVocabID: PropTypes.array.isRequired,
+  rightVocabID: PropTypes.array.isRequired,
+  setEditVisible: PropTypes.func.isRequired,
 };
 
 export default PlayDetail;

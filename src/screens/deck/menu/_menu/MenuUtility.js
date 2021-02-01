@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
 import ProfileIcon from '../../../../components/user/profileicon/ProfileIcon';
+import langs from '../../../../config/Langs';
 
 const titleFontSize = 30;
 const normalFontSize = 15;
@@ -48,7 +49,9 @@ const styles = StyleSheet.create({
  */
 const MenuUtility = (props) => {
   // props
-  const { deckGeneral, accountContent } = props;
+  const {
+    deckGeneral, accountContent, navigation, deckID,
+  } = props;
   // state
   const [expand, setExpand] = useState(false);
   //
@@ -57,27 +60,29 @@ const MenuUtility = (props) => {
   } = deckGeneral;
 
   const renderTitle = () => (
-    <View>
+    <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}>
       <Text style={styles.title}>
         {title}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderLanguages = () => {
-    const langs = [
-      { title: 'Definition in ', value: language.definition },
-      { title: 'Term in ', value: language.term },
+    const languages = [
+      { title: 'Definition in ', value: langs.filter((lang) => (language.definition === lang.tag))[0]?.name ?? 'Not Found' },
+      { title: 'Term in ', value: langs.filter((lang) => (language.term === lang.tag))[0]?.name ?? 'Not Found' },
     ];
     const playLength = accountContent.play.length;
     const recentMarks = Object.values(accountContent.marks).filter((mark) => mark.includes(playLength - 1)).length;
     return (
       <View style={{ flex: 1 }}>
-        {langs.map((lang) => (
-          <Text key={lang.title}>
-            {lang.title}
-            <Text style={styles.languageBold}>{lang.value}</Text>
-          </Text>
+        {languages.map((lang) => (
+          <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })} key={lang.title.toLowerCase()}>
+            <Text key={lang.title}>
+              {lang.title}
+              <Text style={styles.languageBold}>{lang.value}</Text>
+            </Text>
+          </TouchableOpacity>
         ))}
         <Text>{`${num} terms`}</Text>
         <TouchableOpacity onPress={() => {
@@ -90,8 +95,12 @@ const MenuUtility = (props) => {
         {expand
           ? (
             <View>
-              <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
-              <Text>{`${playLength} times play`}</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}>
+                <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('analyze', { deckID })}>
+                <Text>{`${playLength} times play`}</Text>
+              </TouchableOpacity>
               <Text>{`${recentMarks}`}</Text>
             </View>
           )
@@ -140,83 +149,3 @@ MenuUtility.defaultProps = {
 };
 
 export default MenuUtility;
-
-/* class DeckMenuUtilities extends Component {
-  render() {
-    const { language, title, user } = this.props;
-    return (
-      <View style={{ backgroundColor: Color.white1, paddingVertical: 10 }}>
-        <View>
-          <Text style={{
-            fontSize: titleFontSize,
-            paddingLeft: narrowIndent,
-          }}
-          >
-            {title}
-          </Text>
-        </View>
-        <View style={{
-          fontSize: normalFontSize,
-          paddingHorizontal: wideIndent,
-          paddingVertical: 5,
-          flexDirection: 'row',
-        }}
-        >
-          <View style={{ flex: 1 }}>
-            <Text>
-              Definition in
-              <Text style={{
-                fontSize: normalFontSize * 1.2,
-                fontWeight: 'bold',
-              }}
-              >
-                {` ${language.definition}`}
-              </Text>
-            </Text>
-            <Text>
-              Term in
-              <Text style={{
-                fontSize: normalFontSize * 1.2,
-                fontWeight: 'bold',
-              }}
-              >
-                {` ${language.term}`}
-              </Text>
-            </Text>
-          </View>
-          <Image
-            source={{ uri: 'https://kyoiku.yomiuri.co.jp/MOT_9160.jpg' }}
-            style={
-            {
-              // borderRadius: cardStyle.height * 0.25,
-              // height: cardStyle.height * 0.2,
-              // width: cardStyle.height * 0.2,
-              // position: 'absolute',
-              // marginTop: 50,
-              // marginLeft: 230,
-              // right: 30,
-              borderRadius: 45,
-              height: 45,
-              width: 45,
-            }
-          }
-          />
-        </View>
-        <TouchableOpacity // renderAttribution()
-          onPress={() => Linking.openURL(user.link)}
-          style={{
-            fontSize: normalFontSize,
-            paddingLeft: wideIndent,
-          }}
-        >
-          <Text style={{
-            color: Color.gray2,
-          }}
-          >
-            {`Photo by ${user.name} in Unsplash`}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-} */

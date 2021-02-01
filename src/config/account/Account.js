@@ -1,4 +1,5 @@
 // デッキの情報の変数を定義する所
+import LocalStorage from '../LocalStorage';
 import account from './AccountModule';
 
 export { account };
@@ -17,9 +18,10 @@ export const getAccountContent = (deckID = '') => {
 };
 
 export const saveAccountContent = (deckID = '', newData, merge = true) => {
-  if (deckID === '') {
-    account.content = merge ? { ...account.content, ...newData } : newData;
-  } else if (Object.keys(account.content).includes(deckID)) {
+  // if (deckID === '') {
+  //   account.content = merge ? { ...account.content, ...newData } : newData;
+  // } else {
+  if (Object.keys(account.content).includes(deckID)) {
     account.content[deckID] = merge ? { ...account?.content?.[deckID], ...newData } : newData;
   } else {
     account.content[deckID] = merge ? {
@@ -31,10 +33,13 @@ export const saveAccountContent = (deckID = '', newData, merge = true) => {
       ...newData,
     } : newData;
   }
+  LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
+  // }
 };
 
 export const deleteAccountContent = (deckID) => {
   delete account.content[deckID];
+  LocalStorage.remove({ key: 'accountContent', id: deckID });
 };
 
 export default { account, getAccountGeneral, getAccountContent };

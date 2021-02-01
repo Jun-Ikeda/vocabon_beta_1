@@ -38,7 +38,7 @@ module.exports = {
     'import/no-cycle': ['off'],
     'max-len': [1, 200, 4],
 
-    'unused-imports/no-unused-imports': 'off',
+    'unused-imports/no-unused-imports': 'warn',
 
     'no-console': ['off'],
     'no-alert': ['off'],

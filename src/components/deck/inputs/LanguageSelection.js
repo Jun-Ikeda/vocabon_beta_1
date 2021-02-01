@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import RNPickerSelect from 'react-native-picker-select';
 
 import Icon from '../../Icon';
+import { majorLangs } from '../../../config/Langs';
 
 const pickerSelectStyles = StyleSheet.create({
   // eslint-disable-next-line react-native/no-unused-styles
@@ -61,14 +62,16 @@ const style = StyleSheet.create({
  * />
  * ```
  */
-const languageList = [
-  { label: 'English', value: 'English' },
-  { label: 'Japanese', value: 'Japanese' },
-  { label: 'Spanish', value: 'Spanish' },
-  { label: 'Chinese', value: 'Chinese' },
-  { label: 'French', value: 'French' },
-  { label: 'Korean', value: 'Korean' },
-];
+// const languageList = [
+//   { label: 'English', value: 'English' },
+//   { label: 'Japanese', value: 'Japanese' },
+//   { label: 'Spanish', value: 'Spanish' },
+//   { label: 'Chinese', value: 'Chinese' },
+//   { label: 'French', value: 'French' },
+//   { label: 'Korean', value: 'Korean' },
+// ];
+
+const languageList = majorLangs.map((lang) => ({ label: lang.name, value: lang.tag }));
 
 const LanguageSelection = (props) => {
   const { setLanguage, language } = props;

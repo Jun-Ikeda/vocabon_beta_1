@@ -12,7 +12,6 @@ import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
 import UUID from '../../../../config/UUID';
 import { decksGeneral, saveDeckContent, saveDeckGeneral } from '../../../../config/deck/Deck';
-import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -46,17 +45,18 @@ const convertInputArrayToContent = (inputArray, labels) => {
   const result = {};
   inputArray.forEach((vocab) => {
     const vocabID = UUID.generate(8);
-    const vocabContent = {
-      term: '',
-      definition: '',
-      exampleT: '',
-      exampleD: '',
-      synonym: '',
-      antonym: '',
-      prefix: '',
-      suffix: '',
-      cf: '',
-    };
+    // const vocabContent = {
+    //   term: '',
+    //   definition: '',
+    //   exampleT: '',
+    //   exampleD: '',
+    //   synonym: '',
+    //   antonym: '',
+    //   prefix: '',
+    //   suffix: '',
+    //   cf: '',
+    // };
+    const vocabContent = {};
     vocab.forEach((item, index) => {
       vocabContent[labels[index]] = item;
     });
@@ -77,11 +77,19 @@ const ImportOption = (props) => {
   //
   const inputArray = input.split(cardDelimiter).map((card) => card.split(itemDelimiter)); // [ ['manzana', 'apple'], ['platano', 'banana'], ['soy', 'be', 'yo soy estudiante'] ]
   const itemNumber = (inputArray.length === 0) ? 0 : inputArray.reduce((a, b) => (a.length > b.length ? a : b)).length; // itemは最大何個あるか 上の例だと'soy'のカードがitem3まであるので3
+  let cardIndexWithItemMax = 0;
+  inputArray.reduce((a, b, index) => {
+    if (a.length > b.length) {
+      return a;
+    }
+    cardIndexWithItemMax = index;
+    return b;
+  });
   // recoil
   const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
 
   // state
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [currentCardIndex, setCurrentCardIndex] = useState(cardIndexWithItemMax);
   const [labels, setLabels] = useState([...Array(itemNumber)].map(() => null));
   const [itemSelectorVisible, setItemSelectorVisible] = useState(false);
   const [onEditItemIndex, setOnEditItemIndex] = useState(0);
@@ -146,7 +154,7 @@ const ImportOption = (props) => {
           await navigation.navigate('menu');
           save();
         }}
-        disabled={labels.includes(null)}
+        disabled={labels.includes(null) || !(labels.includes('term') && labels.includes('definition'))}
       >
         Import
       </Button>

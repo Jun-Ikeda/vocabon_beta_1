@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import * as Speech from 'expo-speech';
 import { getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
 import { func } from '../../src/config/Const';
 import LocalStorage from '../../src/config/LocalStorage';
-import Deck, { getDeckContent } from '../../src/config/deck/Deck';
+import Deck from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
-import { getUserGeneral } from '../../src/config/user/User';
 import UUID from '../../src/config/UUID';
 
 const Button = [
@@ -17,7 +17,7 @@ const Button = [
             decksGeneralはsrc/config/deck/Deckからimport
       第二引数: deckID(このidで見つからなかったら今のところ空を返す)
       */
-      const content = getDeckContent('7NCodht%}0');
+      // const content = getDeckContent('7NCodht%}0');
       const contentAll = Deck.decksContent;
       /*
       引数: deckID(このidで見つからなかったら今のところ空を返す)
@@ -28,16 +28,16 @@ const Button = [
     },
     // onPress: () => ({ decksGeneral, decksContent }),
   },
-  {
-    title: 'User (Global Vari)',
-    onPress: () => {
-      const general = getUserGeneral('diaooea');
-      /*
-      引数: userID(このidで見つからなかったら今のところ空を返す)
-      */
-      return { general };
-    },
-  },
+  // {
+  //   title: 'User (Global Vari)',
+  //   onPress: () => {
+  //     const general = getUserGeneral('diaooea');
+  //     /*
+  //     引数: userID(このidで見つからなかったら今のところ空を返す)
+  //     */
+  //     return { general };
+  //   },
+  // },
   {
     title: 'Account (Global Vari)',
     onPress: () => {
@@ -55,10 +55,16 @@ const Button = [
   },
   {
     title: 'Deck (LocalStorage)',
-    onPress: () => {
-      LocalStorage.getAllDataForKey('deck').then((decks) => {
-        console.log(decks);
-      });
+    onPress: async () => {
+      const decks = await LocalStorage.getAllDataForKey('deck');
+      return decks;
+    },
+  },
+  {
+    title: 'Account (LocalStorage)',
+    onPress: async () => {
+      const account = await LocalStorage.getAllDataForKey('accountContent');
+      return account;
     },
   },
   {
@@ -86,6 +92,12 @@ const Button = [
     onPress: async () => {
       const thumb = await getRandomImage();
       return { thumb };
+    },
+  },
+  {
+    title: 'Speech',
+    onPress: () => {
+      Speech.speak("Hello, I'm Jun Ikeda. I'm the chief developer of this app, Vocabon", { language: 'en' });
     },
   },
 ];

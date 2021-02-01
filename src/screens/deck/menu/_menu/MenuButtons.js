@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, LayoutAnimation,
+  View, StyleSheet, Text, TouchableOpacity, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -73,6 +73,7 @@ const MenuButtons = (props) => {
   const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
   const deckContent = getDeckContent(deckID);
   const accountContent = getAccountContent(deckID);
+  const accountGeneral = getAccountGeneral();
   const identifyVisible = (deckGeneral.user === getAccountGeneral().userID);
   // state
   const [visible, setVisible] = useState(true);
@@ -207,12 +208,14 @@ const MenuButtons = (props) => {
           icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { /* color: Color.gray3 */ }]} />,
           onPress: () => {
             const newDeckID = UUID.generate(10);
-            saveDeckGeneral(setDecksGeneralState, newDeckID, {
-              ...deckGeneral,
-              title: `${deckGeneral.title} Copy`,
-            });
-            saveDeckContent(newDeckID, deckContent);
-            navigation.goBack();
+            const num = func.convertObjectToArray(decksGeneralState).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
+            if (num >= 10) {
+              Alert.alert('Storage full', 'You can save up to 10 decks.');
+            } else {
+              saveDeckGeneral(setDecksGeneralState, newDeckID, deckGeneral);
+              saveDeckContent(newDeckID, deckContent);
+              navigation.goBack();
+            }
           },
           textStyle: { /* color: Color.gray3 */ },
           flex: 1,

@@ -3,16 +3,17 @@ import {
   View, Text, Image, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-// import { DeckGeneral } from '../../../../../dev/TestData';
-
 import { useRecoilValue } from 'recoil';
+
+import { CommonActions } from '@react-navigation/native';
 import Color from '../../../../config/Color';
 import { unshortenURI } from '../../../../config/Unsplash';
-import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
 import { deck } from '../../../../config/Const';
 
-// import Home from '../../../../nav/main/home/screens/home/Home';
-// import TestData from '../../../../../dev/TestData';
+import Icon from '../../../../components/Icon';
+
+import ResultsDetail from './ResultsDetail';
 
 const imgHeight = 250;
 const titleFontSize = 20;
@@ -33,7 +34,6 @@ const switchMessage = (correctRate) => {
 
 const style = StyleSheet.create({
   container: {
-    // ...StyleSheet.absoluteFill,
     flex: 1,
   },
   overlayContainer: {
@@ -52,9 +52,9 @@ const style = StyleSheet.create({
   counter: {
     alignItems: 'center',
   },
-  counterText: {
+  counterIcon: {
     color: Color.white1,
-    fontSize: 26,
+    fontSize: 30,
   },
   counterNum: {
     color: Color.white1,
@@ -67,8 +67,16 @@ const style = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     margin: 3,
-    backgroundColor: 'white',
-    alignItems: 'center',
+    backgroundColor: Color.white1,
+    flexDirection: 'row', // 合わせるやつ
+    justifyContent: 'center',
+  },
+  icons: {
+    fontSize: 30,
+    marginRight: 10,
+  },
+  columnContainer: {
+    justifyContent: 'space-around',
   },
 });
 
@@ -88,7 +96,7 @@ const Results = (props) => {
   const {
     navigation, route: {
       params: {
-        deckID, validVocabIDs, itemVisible, sortMode, rightVocabID, leftVocabID, vocabIDs,
+        deckID, validVocabIDs, itemVisible, sortMode, rightVocabID, leftVocabID,
       },
     },
   } = props;
@@ -96,10 +104,8 @@ const Results = (props) => {
   const generals = useRecoilValue(decksGeneral);
   // state
   const general = getDeckGeneral(generals, deckID);
-  // const [leftIndex, setLeftIndex] = useState(propLeft);
-  // const [rightIndex, setRightIndex] = useState(propRight);
-  // const [invalidIndex, setInvalidIndex] = useState(propInvalid);
-  // const [deckID, setDeckID] = useState(deckIDprop);
+  const content = getDeckContent(deckID);
+  const vocabIDs = Object.values(content);
 
   const renderThumbnail = () => (
     <View style={{ height: imgHeight, width: '100%' }}>
@@ -115,62 +121,86 @@ const Results = (props) => {
   );
 
   const renderButtons = () => {
-    const buttons = [
+    const navigationDeletePush = (deleteRoute, pushRoute, params) => {
+      navigation.dispatch((state) => {
+        const routes = [
+          ...state.routes.filter((route) => !deleteRoute.includes(route.name)),
+          { name: pushRoute, params },
+        ];
+        return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
+      });
+    };
+    const listButtons = [
       {
         title: 'Replay',
         num: `(${validVocabIDs.length})`,
-        onPress: () => {
-          navigation.push('play', {
-            deckID, validVocabIDs: deck.sortVocabs(validVocabIDs, sortMode), itemVisible, sortMode,
-          });
-        },
+        onPress: () => navigationDeletePush(['play'], 'play', {
+          deckID, validVocabIDs: deck.sortVocabs(validVocabIDs, sortMode), itemVisible, sortMode,
+        }),
         isVisible: true,
+        icon: 'replay',
+        color: Color.black,
       },
       {
         title: 'Play the whole deck',
         num: `(${vocabIDs.length})`,
-        onPress: () => {
-          navigation.push('play', {
-            deckID, validVocabIDs: deck.sortVocabs(vocabIDs, sortMode), itemVisible, sortMode,
-          });
-        },
+        onPress: () => navigationDeletePush(['play'], 'play', {
+          deckID, validVocabIDs: deck.sortVocabs(vocabIDs, sortMode), itemVisible, sortMode,
+        }),
         isVisible: validVocabIDs.length !== vocabIDs.length,
+        icon: 'overscan',
+        color: Color.black,
       },
       {
-        title: 'Play marked cards',
+        title: 'Play X cards',
         num: `(${leftVocabID.length})`,
-        onPress: () => navigation.push('play', {
+        onPress: () => navigationDeletePush(['play'], 'play', {
           deckID, validVocabIDs: deck.sortVocabs(leftVocabID, sortMode), itemVisible, sortMode,
         }),
         isVisible: ((leftVocabID.length !== 0) && (rightVocabID.length !== 0)),
-      },
-      {
-        title: 'Menu',
-        num: '',
-        onPress: () => navigation.navigate('menu'),
-        isVisible: true,
-      },
-      {
-        title: 'Analyze',
-        num: '',
-        onPress: () => navigation.navigate('analyze', { deckID }),
-        isVisible: true,
-      },
-      {
-        title: 'Options', // go back to options
-        num: '',
-        onPress: () => navigation.navigate('options', { deckID, sortMode }),
-        isVisible: true,
-      },
-      {
-        title: 'Home',
-        num: '',
-        onPress: () => navigation.popToTop(),
-        isVisible: true,
+        icon: 'window-close',
+        color: Color.cud.red,
       },
     ];
-
-    return buttons.map((button) => {
+    const squareButtons = [
+      [
+        {
+          title: 'Menu',
+          num: '',
+          onPress: () => navigation.navigate('menu'),
+          isVisible: true,
+          icon: 'menu',
+          color: Color.black,
+        },
+        {
+          title: 'Analyze',
+          num: '',
+          onPress: () => navigationDeletePush(['play', 'results'], 'analyze', { deckID }),
+          isVisible: true,
+          icon: 'chart-timeline-variant',
+          color: Color.black,
+        },
+      ],
+      [
+        {
+          title: 'Options', // go back to options
+          num: '',
+          onPress: () => navigationDeletePush(['play', 'results'], 'options', { deckID, sortMode }),
+          isVisible: true,
+          icon: 'tune',
+          color: Color.black,
+        },
+        {
+          title: 'Home',
+          num: '',
+          onPress: () => navigation.popToTop(),
+          isVisible: true,
+          icon: 'home',
+          color: Color.black,
+        },
+      ],
+    ];
+    const renderListButtons = () => listButtons.map((button) => {
       if (button.isVisible) {
         return (
           <TouchableOpacity
@@ -178,24 +208,52 @@ const Results = (props) => {
             onPress={button.onPress}
             key={button.title.replace(' ', '').toLowerCase()}
           >
+            <Icon.MaterialCommunityIcons style={[style.icons, { color: button.color }]} name={button.icon} />
             <Text style={style.buttonTitle}>{`${button.title} ${button.num}`}</Text>
           </TouchableOpacity>
         );
       }
       return null;
     });
+    const renderSquareButtons = () => squareButtons.map((column) => (
+      <View style={{ flexDirection: 'row' }}>
+        {column.map((button) => {
+          if (button.isVisible) {
+            return (
+              <TouchableOpacity
+                style={[style.button, { flex: 1, flexDirection: 'column', alignItems: 'center' }]}
+                onPress={button.onPress}
+                key={button.title.replace(' ', '').toLowerCase()}
+              >
+                <Icon.MaterialCommunityIcons style={[style.icons, { color: button.color }]} name={button.icon} />
+                <Text style={style.buttonTitle}>{`${button.title} ${button.num}`}</Text>
+              </TouchableOpacity>
+            );
+          }
+          return null;
+        })}
+      </View>
+    ));
+    return (
+      <View>
+        {renderListButtons()}
+        <View style={style.columnContainer}>
+          {renderSquareButtons()}
+        </View>
+      </View>
+    );
   };
 
   const renderCounter = () => {
     const counters = [
-      { title: 'Marked', num: leftVocabID.length },
-      { title: 'Clear', num: rightVocabID.length },
+      { title: 'Marked', icon: 'close', num: leftVocabID.length },
+      { title: 'Clear', icon: 'check', num: rightVocabID.length },
     ];
     return (
       <View style={style.countersContainer}>
         {counters.map((counter) => (
           <View style={style.counter} key={counter.title.toLowerCase()}>
-            <Text style={style.counterText}>{counter.title}</Text>
+            <Icon.AntDesign name={counter.icon} style={style.counterIcon} />
             <Text style={style.counterNum}>{counter.num}</Text>
           </View>
         ))}
@@ -225,9 +283,19 @@ const Results = (props) => {
           {renderCounter()}
         </View>
       </View>
-      <View style={{ paddingHorizontal: 40 }}>
-        {renderMessage()}
-        {renderButtons()}
+      <View style={{ paddingHorizontal: 40, flex: 1 }}>
+        <ResultsDetail
+          content={content}
+          validVocabIDs={validVocabIDs}
+          leftVocabID={leftVocabID}
+          rightVocabID={rightVocabID}
+          renderButtons={() => (
+            <View style={{ flex: 1, paddingBottom: 20 }}>
+              {renderMessage()}
+              {renderButtons()}
+            </View>
+          )}
+        />
       </View>
     </View>
   );
@@ -242,159 +310,3 @@ Results.defaultProps = {
 };
 
 export default Results;
-
-/* class PlayResults extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      left: [],
-      right: [],
-      invalid: [],
-      uri: '',
-    };
-  }
-
-  componentDidMount() {
-    const { navigation } = this.props;
-    const left = navigation.getParam('left');
-    const right = navigation.getParam('right');
-    const invalid = navigation.getParam('invalid');
-    const uri = navigation.getParam('uri');
-    this.setState({
-      left, right, invalid, uri,
-    });
-  }
-
-  renderThumbnail = () => {
-    const { uri } = this.state;
-    return (
-      <Image
-        source={{ uri: Unsplash.unshortenURI(uri) }}
-        style={{
-          height: imgHeight,
-          width: '100%',
-          opacity: 0.7,
-        }}
-      />
-    );
-  }
-
-  renderHeader = () => {
-    const { navigation } = this.props;
-    return (
-      <HeaderWithBack
-        navigation={navigation}
-        style={{
-          backgroundColor: 'transparent',
-        }}
-      />
-    );
-  };
-
-  renderButtons = () => {
-    const { right, left, invalid } = this.state;
-    const { navigation } = this.props;
-    const buttons = [
-      {
-        title: 'Replay',
-        num: `(${right.length + left.length + invalid.length})`,
-        onPress: () => { navigation.push('play'); },
-        isVisible: true,
-      },
-      {
-        title: 'Play mistaken cards',
-        num: `(${left.length})`,
-        onPress: () => navigation.push('play', { validIndexes: left }),
-        isVisible: !(left.length === 0),
-      },
-      {
-        title: 'Options', // go back to options
-        num: '',
-        onPress: () => navigation.navigate('playoption'),
-        isVisible: true,
-      },
-      {
-        title: 'Finish this Deck',
-        num: '',
-        onPress: () => navigation.popToTop(),
-        isVisible: true,
-      },
-    ];
-
-    return buttons.map((button) => {
-      if (button.isVisible) {
-        return (
-          <TouchableOpacity
-            style={style.button}
-            onPress={button.onPress}
-          >
-            <Text style={style.buttonTitle}>{`${button.title} ${button.num}`}</Text>
-          </TouchableOpacity>
-        );
-      }
-      return null;
-    });
-  }
-
-  renderCounter = () => {
-    const { left, right } = this.state;
-    const counters = [
-      { title: 'Marked', num: left.length },
-      { title: 'Clear', num: right.length },
-    ];
-    return (
-      <View style={style.countersContainer}>
-        {counters.map((counter) => (
-          <View style={style.counter}>
-            <Text style={style.counterText}>{counter.title}</Text>
-            <Text style={style.counterNum}>{counter.num}</Text>
-          </View>
-        ))}
-      </View>
-    );
-  }
-
-  renderMessage = () => {
-    const { right, left } = this.state;
-    let message = '';
-    if (right.length / (right.length + left.length) < 0.4) {
-      message = 'Break your leg!';
-    } else if (right.length / (right.length + left.length) < 0.6) {
-      message = 'You could do better!';
-    } else if (right.length / (right.length + left.length) < 0.8) {
-      message = 'Almost perfect!';
-    } else {
-      message = 'Well done!';
-    }
-    return (
-      <Text style={{
-        fontSize: titleFontSize,
-        paddingVertical: 10,
-      }}
-      >
-        {message}
-      </Text>
-    );
-  }
-
-  render() {
-    return (
-      <View style={style.container}>
-        <View>
-          {this.renderThumbnail()}
-          <View style={style.overlayContainer}>
-            {this.renderHeader()}
-            {this.renderCounter()}
-          </View>
-        </View>
-        <View style={{
-          paddingHorizontal: 40,
-        }}
-        >
-          {this.renderMessage()}
-          {this.renderButtons()}
-        </View>
-      </View>
-    );
-  }
-} */

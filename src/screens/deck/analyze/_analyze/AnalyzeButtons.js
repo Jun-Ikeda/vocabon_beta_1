@@ -28,17 +28,10 @@ const style = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   textConteiner: {
-    flex: 1,
     marginHorizontal: 10,
-  },
-  textsConteiner: {
-    flexDirection: 'row',
   },
   text: {
     fontSize: 15,
-  },
-  graph: {
-
   },
 });
 
@@ -79,13 +72,8 @@ const AnalyzeButtons = (props) => {
   const renderDate = () => {
     if (isDateVisible) {
       return (
-        <View style={style.textsConteiner}>
-          <View style={style.textConteiner}>
-            <Text style={style.text}>{`Created on\n${func.formatDate(17760704, true)}`}</Text>
-          </View>
-          <View style={style.text}>
-            <Text style={style.text}>{`Last use on\n${func.formatDate(19221230, true)}`}</Text>
-          </View>
+        <View style={style.textConteiner}>
+          <Text style={style.text}>{`Last use on\n${func.formatDate(play[play.length - 1], false)}`}</Text>
         </View>
       );
     }

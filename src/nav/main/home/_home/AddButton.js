@@ -1,12 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { useRecoilValue } from 'recoil';
+import { Alert } from 'react-native';
 import FloatingButton from '../../../../components/FloatingButton';
+import { decksGeneral } from '../../../../config/deck/Deck';
+import { func } from '../../../../config/Const';
+import { getAccountGeneral } from '../../../../config/account/Account';
 
 const AddButton = (props) => {
   const { navigation } = props;
+  const deckGeneral = useRecoilValue(decksGeneral);
+  const accountGeneral = getAccountGeneral();
   return (
-    <FloatingButton onPress={() => navigation.navigate('createdeck')} icon={{ collection: 'AntDesign', name: 'plus' }} />
+    <FloatingButton
+      onPress={() => {
+        const num = func.convertObjectToArray(deckGeneral).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
+        if (num >= 10) {
+          Alert.alert('Storage full', 'You can save up to 10 decks.');
+        } else {
+          navigation.navigate('createdeck');
+        }
+      }}
+      icon={{ collection: 'AntDesign', name: 'plus' }}
+    />
   );
 };
 

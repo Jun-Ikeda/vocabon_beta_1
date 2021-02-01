@@ -65,7 +65,7 @@ export const func = {
     return null;
   },
   alertConsole: (object) => {
-    const string = JSON.stringify(object, null, 2);
+    const string = JSON.stringify(object, null, 4);
     console.log(object);
     if (Platform.OS === 'web') {
       alert('copied');
@@ -152,6 +152,14 @@ export const func = {
 
     return stringToReturn;
   },
+  isNullOrWhitespace: (input) => !input || !input.trim(),
+  getDate: () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (`0${today.getMonth() + 1}`).slice(-2);
+    const date = (`0${today.getDate()}`).slice(-2);
+    return `${year}${month}${date}`;
+  },
 };
 
 export const deck = {
@@ -184,10 +192,20 @@ export const deck = {
     }
     return validVocabIDsSorted;
   },
+  items: [
+    'term',
+    'definition',
+    'exampleT',
+    'exampleD',
+    'synonym',
+    'antonym',
+    'prefix',
+    'suffix',
+    'cf'],
 };
 
 export default {
   header, carousel, func, deck,
 };
 
-export const titleMaxLength = 20;
+export const titleMaxLength = 50;

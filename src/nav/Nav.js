@@ -3,12 +3,16 @@ import { View, Text, Platform } from 'react-native';
 import { useSetRecoilState } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Audio } from 'expo-av';
+
 import LaunchNav from './launch/LaunchNav';
 import MainNav from './main/MainNav';
-import { Account, Deck, User } from '../../dev/TestData';
+
+import { Account, User } from '../../dev/TestData';
 import { decksContent, decksGeneral } from '../config/deck/Deck';
 import { users } from '../config/user/User';
 import { account } from '../config/account/Account';
+import LocalStorage from '../config/LocalStorage';
 
 const Stack = createStackNavigator();
 
@@ -19,33 +23,67 @@ const Nav = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
-  useEffect(() => {
-    const deckIDs = Object.keys(Deck); // ['7NCodht%}0', '-BiGIisZb*', 'rUiKQdnLb9', 'xn>EfhY:2*', 'Q38xR=rnKc']
-    const userIDs = Object.keys(User);
-
-    // Deck を TestDataから取ってきて、config/deck/Deck.jsのdecksGeneral, decksContentに代入
+  const initializeDeck = async () => {
+    const deckIDs = await LocalStorage.getIdsForKey('deck');
+    const decks = await LocalStorage.getAllDataForKey('deck');
     const newDecksGeneral = {};
-    deckIDs.forEach((deckID) => {
-      newDecksGeneral[deckID] = Deck[deckID].general; // newDecksGeneral = { '7NCodht%}0': Deck['7NCodht%}0'].general }
-      decksContent[deckID] = Deck[deckID].content; // decksContent = { '7NCodht%}0': Deck['7NCodht%}0'].content }
+    await deckIDs.forEach((deckID, index) => {
+      decksContent[deckID] = decks[index]?.content ?? {};
+      newDecksGeneral[deckID] = decks[index]?.general;
     });
     setDeckGeneral(newDecksGeneral);
+  };
 
-    // User を TestDataから取ってきて、config/user/User.jsのuserに代入 !contentをgeneralに分けてない!
-    userIDs.forEach((userID) => {
-      users[userID] = User[userID];
-    });
-
-    // Account
-    account.content = Account.content;
+  const initializeAccount = async () => {
     account.general = Account.general;
 
-    setIsInitialized(true);
+    account.content = {};
+    const deckIDs = await LocalStorage.getIdsForKey('accountContent');
+    const accountContent = await LocalStorage.getAllDataForKey('accountContent');
+    await deckIDs.forEach((deckID, index) => {
+      account.content[deckID] = accountContent[index];
+    });
+    // account.content = Account.content;
+  };
+
+  useEffect(() => {
+    (async () => {
+      // Deck を TestDataから取ってきて、config/deck/Deck.jsのdecksGeneral, decksContentに代入
+      // const newDecksGeneral = {};
+      // const deckIDs = Object.keys(Deck); // ['7NCodht%}0', '-BiGIisZb*', 'rUiKQdnLb9', 'xn>EfhY:2*', 'Q38xR=rnKc']
+      // deckIDs.forEach((deckID) => {
+      //   newDecksGeneral[deckID] = Deck[deckID].general; // newDecksGeneral = { '7NCodht%}0': Deck['7NCodht%}0'].general }
+      //   decksContent[deckID] = Deck[deckID].content; // decksContent = { '7NCodht%}0': Deck['7NCodht%}0'].content }
+      // });
+      // setDeckGeneral(newDecksGeneral);
+      await initializeDeck();
+
+      // User を TestDataから取ってきて、config/user/User.jsのuserに代入 !contentをgeneralに分けてない!
+      const userIDs = Object.keys(User);
+      userIDs.forEach((userID) => {
+        users[userID] = User[userID];
+      });
+
+      // Account
+      await initializeAccount();
+
+      setIsInitialized(true);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS === 'ios') {
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+      }
+    })();
   }, []);
 
   if (isInitialized) {
     return (
-      <NavigationContainer>
+      <NavigationContainer
+        onStateChange={(state) => console.log(state)}
+      >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isLoggedIn ? (
             <Stack.Screen name="main" component={MainNav} />

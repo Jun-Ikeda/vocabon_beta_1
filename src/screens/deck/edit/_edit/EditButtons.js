@@ -113,7 +113,8 @@ const EditButtons = (props) => {
           setMode('edit');
           setIsChanged(true);
         } else {
-          alert(':V');
+          // alert(':V');
+          console.log(':V');
         }
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       },
@@ -129,7 +130,6 @@ const EditButtons = (props) => {
 
   return (
     <View style={style.container}>
-      {/* {renderSearch()} */}
       {buttons.map((button) => {
         const IconComponent = Icon[button.icon.collection];
         return (button.visible ? (

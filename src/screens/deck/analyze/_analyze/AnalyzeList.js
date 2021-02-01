@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Text, View, StyleSheet } from 'react-native';
-// import { VictoryBar, VictoryChart, VictoryTheme } from 'victory-native';
 
 import VocabList from '../../../../components/deck/list/VocabList';
 

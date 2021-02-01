@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,15 @@ import {
 import PropTypes from 'prop-types';
 
 // import HeaderInMain from '../../../../../components/header/HeaderInMain';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useNavigationState } from '@react-navigation/native';
 import AddButton from './AddButton';
 
 import Carousel from '../../../../components/deck/carousel/Carousel';
-import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
-import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
+import { decksGeneral } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
+
+import { currentRouteState } from '../../../../../dev/DocInJapanese';
 
 const style = StyleSheet.create({
   container: {
@@ -54,13 +55,18 @@ const Home = (props) => {
   const { navigation } = props;
   // recoil
   const general = useRecoilValue(decksGeneral);
+  const [allDeckIDs, setAllDeckIDs] = useState(Object.keys(general));
 
-  const allDeckIDs = Object.keys(general);
-  const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
-  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
+  const setCurrentRoute = useSetRecoilState(currentRouteState);
+  useNavigationState(({ routes }) => setCurrentRoute(routes[routes.length - 1].name));
 
-  const routes = useNavigationState((_state) => _state.routes);
-  // useEffect(() => console.log(routes), []);
+  // const allDeckIDs = Object.keys(general);
+  // const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
+  // const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
+
+  useEffect(() => {
+    setAllDeckIDs(Object.keys(general));
+  }, [general]);
 
   const renderRow = ({ title, deckIDs }) => (
     <View style={style.carouselContainer}>
@@ -72,18 +78,14 @@ const Home = (props) => {
     </View>
   );
 
-  const renderButton = () => (
-    <AddButton navigation={navigation} />
-  );
-
   return (
     <View style={style.container}>
       <ScrollView style={style.scrollContainer} contentContainerStyle={{ paddingBottom: 20 }}>
-        {renderRow({ title: 'LOCAL', deckIDs: myDeckIDs })}
-        {renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })}
+        {allDeckIDs.length === 0 ? null : renderRow({ title: 'LOCAL', deckIDs: allDeckIDs })}
+        {/* {renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })} */}
         {/* {renderRow({ title: 'ALL', deckIDs: allDeckIDs })} */}
       </ScrollView>
-      {renderButton()}
+      <AddButton navigation={navigation} />
     </View>
   );
 };

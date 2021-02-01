@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Alert, Platform, TouchableOpacity,
+  View, StyleSheet, Alert, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { atom, useRecoilState } from 'recoil';
@@ -13,12 +13,10 @@ import EditContent from './EditContent';
 import EditButtons from './EditButtons';
 import EditHelp from './EditHelp';
 import EditAddButton from './EditAddButton';
-import UUID from '../../../../config/UUID';
 
 import {
   decksGeneral, getDeckContent, saveDeckContent, saveDeckGeneral,
 } from '../../../../config/deck/Deck';
-import { func } from '../../../../config/Const';
 
 export const contentState = atom({
   key: 'contentState',
@@ -85,16 +83,15 @@ const Edit = (props) => {
   const [contentVisible, setContentVisible] = useState(false);
   const [addButtonVisible, setAddButtonVisible] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
-  const [makeAnotherButtonVisible, setMakeAnotherButtonVisible] = useState(false);
 
-  let list = {};
+  const list = {};
 
   const contentInitial = getDeckContent(deckID);
   const save = async () => {
     await setIsChanged(false);
-    saveDeckContent(deckID, content, false);
-    if (deckGeneral.num !== Object.keys(content).length) {
-      saveDeckGeneral(setDeckGeneral, deckID, { ...deckGeneral, num: Object.keys(content).length });
+    await saveDeckContent(deckID, content, false);
+    if (deckGeneral[deckID].num !== Object.keys(content).length) {
+      saveDeckGeneral(setDeckGeneral, deckID, { ...deckGeneral[deckID], num: Object.keys(content).length });
     }
   };
   useEffect(() => setContent(contentInitial), []);
@@ -155,7 +152,7 @@ const Edit = (props) => {
           }}
           mode={mode}
           setAddButtonVisible={setAddButtonVisible}
-          ref={(ref) => { list = ref; }}
+          // ref={(ref) => { list = ref; }}
         />
       </View>
       <EditAddButton

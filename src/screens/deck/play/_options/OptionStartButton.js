@@ -5,8 +5,9 @@ import {
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
 
+import { CommonActions } from '@react-navigation/native';
 import Color from '../../../../config/Color';
-import { deck, func } from '../../../../config/Const';
+import { deck } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -20,17 +21,17 @@ const OptionStartButton = (props) => {
   } = props;
 
   const start = () => {
-    // console.log(sortMode);
     const validVocabIDsSorted = deck.sortVocabs(validVocabIDs, sortMode);
-    if (mode === 'custom') {
-      navigation.navigate('play', {
+    navigation.dispatch((state) => {
+      const params = {
         deckID, itemVisible, validVocabIDs: validVocabIDsSorted, sortMode,
-      });
-    } else if (mode === 'default') {
-      navigation.navigate('play', {
-        deckID, itemVisible, validVocabIDs: validVocabIDsSorted, sortMode,
-      });
-    }
+      };
+      const routes = [
+        ...state.routes.filter((route) => route.name !== 'options'),
+        { name: 'play', params },
+      ];
+      return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
+    });
   };
   return (
     <View style={style.container}>
@@ -40,7 +41,7 @@ const OptionStartButton = (props) => {
         style={{ margin: 15 }}
         mode="contained"
         onPress={start}
-        disabled={mode === 'custom' && validVocabIDs.length === 0}
+        disabled={validVocabIDs.length === 0}
       >
         Start
       </Button>

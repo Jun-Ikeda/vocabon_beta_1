@@ -18,17 +18,17 @@ const style = StyleSheet.create({
 
 const ImportList = (props) => {
   const {
-    input, cardDelimiter, itemDelimiter, labels, onPress,
+    labels, onPress, inputArray,
   } = props;
   const isButton = !((onPress.toString() === 'function onPress() {}') || (onPress.toString() === 'function (){}'));
 
   return (
     <FlatList
-      data={input.split(cardDelimiter)}
+      data={inputArray}
       renderItem={({ item: card, index: cardIndex }) => (
         <View style={style.cardContainer}>
           <Text>{`Card${cardIndex + 1}: `}</Text>
-          {(card.split(itemDelimiter).map((item, itemIndex) => {
+          {(card.map((item, itemIndex) => {
             const renderText = () => (
               <Text key={item}>
                 {`${(labels[itemIndex] !== '' && labels[itemIndex] !== undefined) ? labels[itemIndex] : `item${itemIndex + 1}`}: `}
@@ -44,7 +44,12 @@ const ImportList = (props) => {
       contentContainerStyle={{
         paddingBottom: 60,
       }}
-      keyExtractor={(item) => item.split(itemDelimiter)[0]}
+      ListHeaderComponent={() => (
+        <View style={{ padding: 10 }}>
+          <Text>{`${inputArray.length} cards imported`}</Text>
+        </View>
+      )}
+      keyExtractor={(item) => item[0]}
     />
   );
 };

@@ -1,67 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import {
-  Text, View, StyleSheet, TouchableOpacity, onPress,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import { BarChart } from 'react-native-chart-kit';
 import Color from '../../../../config/Color';
-import Icon from '../../../../components/Icon';
+import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
 const style = StyleSheet.create({
   container: {
     backgroundColor: Color.white1,
     marginHorizontal: '5%',
-    // marginVertical: '15%',
+    marginVertical: '15%',
+    flex: 1,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  graphContainer: {
+    borderRadius: 10,
+    // paddingHorizontal: 5,
+    // marginHorizontal: -200,
+
   },
   graph: {
+    borderRadius: 20,
+    // marginHorizontal: -100,
+  },
+  chartTitle: {
+    fontSize: 18,
 
   },
 });
 
-const AnalyzeGraph = (props) => {
-  const { isVisible, setVisible, play } = props;
-  // const { height, width } = func.onLayoutContainer(e);
+const AnalyzeGraph = (props) => { // props
+  const {
+    isVisible, setVisible, play, marks,
+  } = props;
+  const [layout, setLayout] = useState({ height: 0, width: 0 });
+  const graphDate = play;
+  const [graphMarks, setGraphMarks] = useState([]);
+
+  useEffect(() => {
+    const newGraphMarks = [];
+
+    graphDate.forEach((date, index) => {
+      let sum = 0;
+      Object.values(marks).forEach((mark) => { sum = mark.includes(index) ? sum + 1 : sum; });
+      newGraphMarks.push(sum);
+    });
+    setGraphMarks(newGraphMarks);
+    console.log(newGraphMarks);
+    console.log(graphDate);
+  }, []);
+
   const renderGraph = () => {
     const data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+      labels: JSON.parse(JSON.stringify(play)),
       datasets: [
         {
-          data: [20, 45, 28, 80, 99, 43],
+          data: graphMarks,
         },
       ],
     };
 
+    const chartConfig = {
+      // backgroundColor: Color.green3,
+      backgroundGradientFrom: Color.green6,
+      backgroundGradientTo: Color.green2,
+      decimalPlaces: 0, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      style: style.graph,
+    };
+
     return (
-      <View style={style.container}>
+      <View
+        style={style.container}
+        onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+      >
+        {/* <Text style={style.chartTitle}> Marks </Text> */}
         <BarChart
-          style={style.graph}
+          style={style.graphContainer}
           data={data}
-          width={300}
-          height={220}
-          yAxisLabel="$"
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: '#ffa726',
-            },
-          }}
-          verticalLabelRotation={30}
+          width={layout.width}
+          height={layout.height}
+          chartConfig={chartConfig}
+          verticalLabelRotation={50}
         />
       </View>
     );

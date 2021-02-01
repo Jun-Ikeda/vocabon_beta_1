@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
+import { Button } from 'react-native-paper';
 import Color from '../../../config/Color';
 import { func } from '../../../config/Const';
 import CarouselCard from './CarouselCard';
@@ -90,6 +91,8 @@ const Carousel = (props) => {
         // countainerStyle={{ paddingVertical: 10 }}
         dotStyle={{ backgroundColor: Color.gray4 }}
       />
+      <Button onPress={() => console.log(deckIDs)} disabled />
+      {/* <View /> */}
     </View>
   );
 };

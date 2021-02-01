@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FlatList, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation,
+  FlatList, StyleSheet, Text, View, TouchableOpacity, LayoutAnimation, Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
 
 import { TextInput } from 'react-native-paper';
-import { func } from '../../../config/Const';
+import { deck, func } from '../../../config/Const';
 import Color from '../../../config/Color';
 
 const style = StyleSheet.create({
@@ -35,6 +35,9 @@ const style = StyleSheet.create({
     fontSize: 16,
     marginVertical: 2,
   },
+  google: {
+
+  },
 });
 
 const VocabList = (props) => {
@@ -54,6 +57,8 @@ const VocabList = (props) => {
     onScroll,
     onScrollToTop,
     searchBar,
+    ListHeaderComponent,
+    showsVerticalScrollIndicator,
     renderViewContent,
   } = props;
   const manuallyRenderCard = !((renderCard.toString() === 'function renderCard() {}') || (renderCard.toString() === 'function (){}'));
@@ -104,13 +109,13 @@ const VocabList = (props) => {
     const renderContent = () => (
       <View style={style.card}>
         <View style={style.contentContainer}>
-          {Object.keys(value).map((item) => {
+          {deck.items.map((item) => {
             const isVisible = (typeof itemVisible === 'function') ? itemVisible(vocab)[item] : itemVisible[item];
             if (isVisible) {
               if (labelVisible[item]) {
-                return <Text style={[style.text, textStyle, itemStyle[item]]} key={item}>{`${item}: ${value[item]}`}</Text>;
+                return <Text style={[style.text, textStyle, itemStyle[item]]} key={item}>{`${item}: ${value?.[item] ?? ''}`}</Text>;
               }
-              return <Text style={[style.text, textStyle, itemStyle[item]]} key={item}>{value[item]}</Text>;
+              return <Text style={[style.text, textStyle, itemStyle[item]]} key={item}>{value?.[item] ?? ''}</Text>;
             }
             return null;
           })}
@@ -119,11 +124,13 @@ const VocabList = (props) => {
         {renderCardRight(vocab)}
       </View>
     );
+    const uri = `https://www.google.com/search?q=${value.term}`;
     if (isButton) {
       return (
         <TouchableOpacity
           style={[style.cardContainer, cardContainer]}
           onPress={onPressCardValid ? () => onPressCard(vocab) : () => toggleSelect(state, key)}
+          onLongPress={() => Linking.openURL(uri)}
         >
           {renderContent()}
         </TouchableOpacity>
@@ -137,22 +144,26 @@ const VocabList = (props) => {
   };
 
   return (
-    <FlatList
-      style={style.container}
-      data={func.convertObjectToArray(searchContent)}
-      keyExtractor={(item) => item.key}
-      renderItem={manuallyRenderCard ? renderCard : renderItem}
-      contentContainerStyle={contentContainerStyle}
-      onEndReached={onEndReached}
-      onScroll={onScroll}
-      onScrollToTop={onScrollToTop}
-      ListHeaderComponentStyle={{ right: 0, left: 0 }}
-      ListHeaderComponent={searchBar ? (
-        <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
+    <View style={{ flex: 1 }}>
+      {searchBar ? (
+        <View style={{ justifyContent: 'center', padding: 10 }}>
           <TextInput value={searchText} onChangeText={setSearchText} label="Search" />
         </View>
       ) : null}
-    />
+      <FlatList
+        style={style.container}
+        data={func.convertObjectToArray(searchContent)}
+        keyExtractor={(item) => item.key}
+        renderItem={manuallyRenderCard ? renderCard : renderItem}
+        contentContainerStyle={contentContainerStyle}
+        onEndReached={onEndReached}
+        onScroll={onScroll}
+        onScrollToTop={onScrollToTop}
+        ListHeaderComponentStyle={{ right: 0, left: 0 }}
+        ListHeaderComponent={((ListHeaderComponent.toString() === 'function ListHeaderComponent() {}') || (ListHeaderComponent.toString() === 'function (){}')) ? null : ListHeaderComponent}
+        showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+      />
+    </View>
   );
 };
 
@@ -209,6 +220,8 @@ VocabList.propTypes = {
   onScroll: PropTypes.func,
   onScrollToTop: PropTypes.func,
   searchBar: PropTypes.bool,
+  ListHeaderComponent: PropTypes.func,
+  showsVerticalScrollIndicator: PropTypes.bool,
 };
 
 VocabList.defaultProps = {
@@ -248,6 +261,8 @@ VocabList.defaultProps = {
   onScrollToTop: () => {},
   searchBar: false,
   renderViewContent: () => {},
+  ListHeaderComponent: () => {},
+  showsVerticalScrollIndicator: false,
 };
 
 export default VocabList;

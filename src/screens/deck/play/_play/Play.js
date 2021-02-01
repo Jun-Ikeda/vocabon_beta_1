@@ -3,27 +3,29 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { Button } from 'react-native-paper';
 import DeckSwiper from 'react-native-deck-swiper';
+import * as Speech from 'expo-speech';
 
-import { Button, Portal } from 'react-native-paper';
+import { CommonActions } from '@react-navigation/native';
+import { useSetRecoilState } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
-import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import { getDeckContent } from '../../../../config/deck/Deck';
+import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
+
+import Icon from '../../../../components/Icon';
 
 import PlayCard from './PlayCard';
 import PlayCounter from './PlayCounter';
 import PlayButtons from './PlayButtons';
-import { getDeckContent } from '../../../../config/deck/Deck';
-import Icon from '../../../../components/Icon';
-import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
-import VocabList from '../../../../components/deck/list/VocabList';
-import PlayDetail from './PlayDetail';
-
-// import { DeckGeneral, DeckContent } from '../../../../../dev/TestData';
+import PlayDetail, { onEditVocabIDState } from './PlayDetail';
+import PlayEdit from './PlayEdit';
 
 const style = StyleSheet.create({
   container: {
@@ -32,16 +34,18 @@ const style = StyleSheet.create({
   checker: {
     textAlign: 'center',
     fontSize: 30,
-    // backgroundColor: 'red',
   },
   alert: {
     textAlign: 'center',
     fontSize: 30,
     backgroundColor: 'red',
   },
-  watchCards: {
+  headerIcon: {
     textAlign: 'right',
     fontSize: 30,
+    paddingHorizontal: 10,
+    alignSelf: 'center',
+    color: Color.gray1,
   },
   labelContainer: {
     paddingVertical: 10,
@@ -53,7 +57,6 @@ const style = StyleSheet.create({
 
 const returnValidVocab = (content, validVocabIDs) => {
   const result = [];
-  // console.log({ content, validVocabIDs });
   for (let i = 0; i < validVocabIDs.length; i++) {
     result.push(content[validVocabIDs[i]]);
   }
@@ -77,45 +80,96 @@ const Play = (props) => {
         validVocabIDs: validVocabIDsProp,
         sortMode,
         itemVisible,
+        leftVocabID: leftVocabIDProps,
+        rightVocabID: rightVocabIDProps,
       },
     },
   } = props;
-  // recoil
-  // state
-  const content = getDeckContent(deckID);
+  const [content, setContent] = useState(getDeckContent(deckID));
   const { marks, play } = getAccountContent(deckID);
+
   const validVocabIDs = validVocabIDsProp;
   const validVocab = returnValidVocab(content, validVocabIDsProp);
 
-  const [layout, setLayout] = useState({ height: 0, width: 0 });
-  const [rightVocabID, setRightVocabID] = useState([]);
-  const [leftVocabID, setLeftVocabID] = useState([]);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const [rightVocabID, setRightVocabID] = useState(rightVocabIDProps ?? []);
+  const [leftVocabID, setLeftVocabID] = useState(leftVocabIDProps ?? []);
   const finished = (validVocabIDs.length === rightVocabID.length + leftVocabID.length);
-  // ref
+
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const setOnEditVocabID = useSetRecoilState(onEditVocabIDState);
+  const [layout, setLayout] = useState({ height: 0, width: 0 });
+
   const [card, setCard] = useState({}); // 例外的にstateに
   let swiper = {};
 
-  const renderCounterTop = () => (
-    <Text style={style.checker}>
-      {`${finished ? leftVocabID.length + rightVocabID.length : leftVocabID.length + rightVocabID.length + 1}/${validVocabIDs.length}`}
-    </Text>
-  );
+  const [isChanged, setIsChanged] = useState(false);
+
+  useEffect(() => navigation.addListener('beforeRemove', (e) => {
+    if (!(Platform.OS === 'web') && isChanged) {
+      e.preventDefault();
+      Alert.alert(
+        'Discard play history?',
+        'You have unsaved history. Are you sure to discard them and leave the screen?',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => {} },
+          { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
+        ],
+      );
+    }
+  }),
+  [navigation, isChanged]);
+
+  const goToResults = () => {
+    const newMark = JSON.parse(JSON.stringify(marks));
+    leftVocabID.forEach((vocabID) => {
+      const vocabMarks = newMark?.[vocabID] ?? [];
+      vocabMarks.push(play.length);
+      newMark[vocabID] = vocabMarks;
+    });
+    const newPlay = play ? play.slice() : [];
+    newPlay.push(func.getDate());
+    saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
+    navigation.dispatch((state) => {
+      const params = {
+        deckID, rightVocabID, leftVocabID, validVocabIDs, itemVisible, sortMode,
+      };
+      const routes = [
+        ...state.routes.filter((route) => route.name !== 'results'),
+        { name: 'results', params },
+      ];
+      return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
+    });
+    setIsChanged(false);
+  };
+
+  const renderCounterTop = () => {
+    const currentLength = leftVocabID.length + rightVocabID.length;
+    return (
+      <Text style={style.checker}>
+        {`${finished ? currentLength : currentLength + 1}/${validVocabIDs.length}`}
+      </Text>
+    );
+  };
 
   const renderSwiper = () => {
     if (!(layout.height === 0)) {
       return (
         <DeckSwiper
           cards={validVocab}
+          cardIndex={rightVocabID.length + leftVocabID.length}
           renderCard={(vocab) => (<PlayCard vocab={vocab} ref={(ref) => { setCard(ref); }} itemVisible={itemVisible} />)}
-          onSwipedRight={(index) => setRightVocabID([...rightVocabID, validVocabIDs[index]])}
-          onSwipedLeft={(index) => setLeftVocabID([...leftVocabID, validVocabIDs[index]])}
+          onSwipedRight={(index) => {
+            setIsChanged(true);
+            setRightVocabID([...rightVocabID, validVocabIDs[index]]);
+          }}
+          onSwipedLeft={(index) => {
+            setIsChanged(true);
+            setLeftVocabID([...leftVocabID, validVocabIDs[index]]);
+          }}
           disableTopSwipe
           disableBottomSwipe
-          horizontalThreshold={layout.width / 8}
-          cardIndex={0}
+          horizontalThreshold={layout.width / 16}
           backgroundColor="transparent"
           ref={(ref) => { swiper = ref; }}
           stackSize={1}
@@ -129,45 +183,25 @@ const Play = (props) => {
     return null;
   };
 
-  const renderFinishButton = () => {
-    const saveMarkPlay = () => {
-      const newMark = JSON.parse(JSON.stringify(marks));
-      leftVocabID.forEach((vocabID) => {
-        const vocabMarks = newMark?.[vocabID] ?? [];
-        vocabMarks.push(play.length + 1);
-        newMark[vocabID] = vocabMarks;
-      });
-      const newPlay = JSON.parse(JSON.stringify(play));
-      newPlay.push(20210121);
-      saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
-    };
-    if (finished) {
-      return (
-        <View style={[StyleSheet.absoluteFill, { right: 20, left: 20, justifyContent: 'center' }]}>
-          <Button
-            color={Color.green3}
-            mode="contained"
-            onPress={() => {
-              saveMarkPlay();
-              navigation.push('results', {
-                deckID, rightVocabID, leftVocabID, validVocabIDs, vocabIDs: Object.keys(content), itemVisible, sortMode,
-              });
-            }}
-          >
-            Show Results
-          </Button>
-        </View>
-      );
-    }
-    return null;
-  };
+  const renderFinishButton = () => (finished ? (
+    <View style={[StyleSheet.absoluteFill, { right: 20, left: 20, justifyContent: 'center' }]}>
+      <Button
+        color={Color.green3}
+        mode="contained"
+        onPress={() => goToResults()}
+      >
+        Show Results
+      </Button>
+    </View>
+  ) : null);
 
-  const renderButtons = () => {
+  const renderBottomButtons = () => {
     const swipeBack = async () => {
       const previousCardIndex = rightVocabID.length + leftVocabID.length - 1;
       await swiper.jumpToCardIndex(previousCardIndex);
       setRightVocabID(rightVocabID.filter((vocabID) => vocabID !== validVocabIDs[previousCardIndex]));
       setLeftVocabID(leftVocabID.filter((vocabID) => vocabID !== validVocabIDs[previousCardIndex]));
+      setIsChanged(true);
     };
     return (
       <PlayButtons
@@ -180,34 +214,37 @@ const Play = (props) => {
     );
   };
 
-  const renderViewCard = () => (
-    <PlayDetail
-      modalVisible={modalVisible}
-      setModalVisible={setModalVisible}
-      validVocabIDs={validVocabIDs}
-      content={content}
-      leftVocabID={leftVocabID}
-      rightVocabID={rightVocabID}
-    />
-  );
-
-  const renderViewCardButton = () => (
-    <TouchableOpacity>
-      <Icon.MaterialCommunityIcons
-        name="cards-outline"
-        style={style.watchCards}
-        onPress={() => {
-          setModalVisible(true);
-        }}
-      />
-    </TouchableOpacity>
-  );
+  const renderTopButton = () => {
+    const uri = finished ? '' : `https://www.google.com/search?q=${validVocab[leftVocabID.length + rightVocabID.length].term}`;
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <Icon.MaterialIcons
+          name="record-voice-over"
+          style={style.headerIcon}
+          onPress={() => {
+            const vocab = validVocab[rightVocabID.length + leftVocabID.length];
+            Speech.speak(vocab?.term ?? '', { language: vocab?.language?.term });
+          }}
+        />
+        <Icon.Feather
+          name="edit"
+          style={[style.headerIcon, { fontSize: 24 }]}
+          onPress={() => {
+            setOnEditVocabID(validVocabIDs[rightVocabID.length + leftVocabID.length]);
+            setEditVisible(true);
+          }}
+        />
+        <Icon.AntDesign name="google" style={style.headerIcon} onPress={() => Linking.openURL(uri)} />
+        <Icon.MaterialCommunityIcons name="cards-outline" style={style.headerIcon} onPress={() => setDetailVisible(true)} />
+      </View>
+    );
+  };
 
   return (
     <View style={style.container}>
       <View style={style.labelContainer}>
         {renderCounterTop()}
-        {renderViewCardButton()}
+        {renderTopButton()}
       </View>
       <View
         style={{ flex: 1 }}
@@ -217,8 +254,23 @@ const Play = (props) => {
         {renderFinishButton()}
       </View>
       <PlayCounter leftVocabID={leftVocabID} rightVocabID={rightVocabID} />
-      {renderButtons()}
-      {renderViewCard()}
+      {renderBottomButtons()}
+      <PlayDetail
+        modalVisible={detailVisible}
+        setModalVisible={setDetailVisible}
+        setEditVisible={setEditVisible}
+        validVocabIDs={validVocabIDs}
+        content={content}
+        leftVocabID={leftVocabID}
+        rightVocabID={rightVocabID}
+      />
+      <PlayEdit
+        deckID={deckID}
+        isVisible={editVisible}
+        setIsVisible={setEditVisible}
+        content={content}
+        setContent={setContent}
+      />
     </View>
   );
 };

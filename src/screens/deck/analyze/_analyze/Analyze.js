@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutAnimation,
   StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView,
@@ -16,6 +16,7 @@ import Color from '../../../../config/Color';
 import AnalyzeList from './AnalyzeList';
 import AnalyzeButtons from './AnalyzeButtons';
 import AnalyzeGraph from './AnalyzeGraph';
+import Icon from '../../../../components/Icon';
 
 const iconSize = 30;
 
@@ -64,64 +65,22 @@ const Analyze = (props) => {
   const content = getDeckContent(deckID);
   // state
   const [contentSorted, setContentSorted] = useState(content);
-  const [vocabDetailVisible, setVocabDetailVisible] = useState(false);
+  const [detailVisibleID, setDetailVisibleID] = useState('');
+  const [detailVisible, setDetailVisible] = useState(false);
   const [graphVisible, setGraphVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
   const [mode, setMode] = useState('noDate');
   const [termLabel, setTermLabel] = useState('Term ↓');
-  const [marksLabel, setMarksLabel] = useState('Marks');
+  const [marksLabel, setMarksLabel] = useState('');
 
   const renderVocab = () => (
     <AnalyzeList
       marks={marks}
       contentSorted={contentSorted}
-      vocabDetailVisible={vocabDetailVisible}
-      setVocabDetailVisible={setVocabDetailVisible}
+      vocabDetailVisible={detailVisibleID}
+      setVocabDetailVisible={setDetailVisibleID}
     />
   );
-
-  const renderLabels = () => {
-    const labels = [
-      {
-        label: termLabel,
-        onPress: () => {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
-            const nameA = a.value.term.toLowerCase(); // 大文字と小文字を無視する
-            const nameB = b.value.term.toLowerCase(); // 大文字と小文字を無視する
-            return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
-          }));
-          setContentSorted(newContentSorted);
-          setTermLabel('Term ↓');
-          setMarksLabel('Marks');
-          console.log(typeof (termLabel));
-        },
-      },
-      {
-        label: marksLabel,
-        onPress: () => {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
-            const markA = marks?.[a.key]?.length ?? 0; // 大文字と小文字を無視する
-            const markB = marks?.[b.key]?.length ?? 0; // 大文字と小文字を無視する
-            return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
-          }));
-          setContentSorted(newContentSorted);
-          setTermLabel('Term');
-          setMarksLabel('↓ Marks');
-        },
-      },
-    ];
-    return (
-      <View style={style.labelContainer}>
-        {labels.map((label) => (
-          <TouchableOpacity onPress={label.onPress}>
-            <Text style={style.label}>{label.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  };
 
   const renderDate = (shortenedDate) => (
     <View style={{ flex: 1 }}>
@@ -129,26 +88,6 @@ const Analyze = (props) => {
         {func.formatDate(shortenedDate, true)}
       </Text>
     </View>
-  );
-
-  const renderVocabDetail = () => (
-    <Portal>
-      <PopUpMenu
-        isVisible={vocabDetailVisible}
-        setVisible={setVocabDetailVisible}
-        renderMenu={() => (
-          <View style={style.detailcontainer}>
-            <Text style={style.detailtext}>{content[vocabDetailVisible]?.term}</Text>
-            <Text style={style.detailtext}>{content[vocabDetailVisible]?.definition}</Text>
-            <Text style={style.detailtext}>{'\nHistory:\n'}</Text>
-            <View>
-              {renderDate(20030507)}
-              {renderDate(18911101)}
-            </View>
-          </View>
-        )}
-      />
-    </Portal>
   );
 
   const renderButtons = () => (
@@ -166,9 +105,75 @@ const Analyze = (props) => {
   const renderGraphPopup = () => (
     <AnalyzeGraph
       play={play}
+      marks={marks}
       isVisible={graphVisible}
       setVisible={setGraphVisible}
     />
+  );
+
+  const renderLabels = () => {
+    const labels = [
+      {
+        label: termLabel,
+        onPress: () => {
+          // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
+            const nameA = a.value.term.toLowerCase(); // 大文字と小文字を無視する
+            const nameB = b.value.term.toLowerCase(); // 大文字と小文字を無視する
+            return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
+          }));
+          setContentSorted(newContentSorted);
+          setTermLabel('Term ↓');
+          setMarksLabel('');
+          console.log(typeof (termLabel));
+        },
+      },
+      {
+        label: marksLabel,
+        element: <Icon.AntDesign name="close" style={[style.label, { color: Color.cud.red }]} />,
+        onPress: () => {
+          // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
+            const markA = marks?.[a.key]?.length ?? 0; // 大文字と小文字を無視する
+            const markB = marks?.[b.key]?.length ?? 0; // 大文字と小文字を無視する
+            return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
+          }));
+          setContentSorted(newContentSorted);
+          setTermLabel('Term');
+          setMarksLabel('↓');
+        },
+      },
+    ];
+    return (
+      <View style={style.labelContainer}>
+        {labels.map((label) => (
+          <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={label.onPress} key={label.label.toLowerCase()}>
+            <Text style={style.label}>{label.label}</Text>
+            {label?.element ?? null}
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  const renderVocabDetail = () => (
+    <Portal>
+      <PopUpMenu
+        isVisible={detailVisible}
+        setVisible={setDetailVisible}
+        renderMenu={() => (
+          <View style={style.detailcontainer}>
+            <Text style={style.detailtext}>{content[detailVisibleID]?.term}</Text>
+            <Text style={style.detailtext}>{content[detailVisibleID]?.definition}</Text>
+            <Text style={style.detailtext}>{'\nHistory:\n'}</Text>
+            <View>
+              {renderDate(20030507)}
+              {renderDate(18911101)}
+            </View>
+          </View>
+        )}
+      />
+    </Portal>
   );
 
   return (

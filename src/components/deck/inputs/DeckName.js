@@ -14,8 +14,13 @@ import Icon from '../../Icon';
 const style = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
     justifyContent: 'space-between',
+    backgroundColor: Color.white1,
+    // borderWidth: 1,
+    borderRadius: 5,
+    padding: 15,
+    borderColor: Color.gray2,
   },
   textinput: {
     flex: 1,

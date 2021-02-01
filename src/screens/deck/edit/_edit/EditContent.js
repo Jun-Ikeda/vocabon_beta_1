@@ -9,7 +9,7 @@ import Color from '../../../../config/Color';
 
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
-import { deck } from '../../../../config/Const';
+import { func } from '../../../../config/Const';
 import { contentState } from './Edit';
 import UUID from '../../../../config/UUID';
 
@@ -40,7 +40,13 @@ const style = StyleSheet.create({
     backgroundColor: Color.green2,
   },
   buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     margin: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+    padding: 20,
   },
   buttonTitle: {
     fontSize: 16,
@@ -91,7 +97,7 @@ const style = StyleSheet.create({
 const EditContent = (props) => {
   // props
   const {
-    vocabID, isVisible, setVisible, setIsChanged, setEditVocabID, onSave,
+    vocabID, isVisible, setVisible, setIsChanged, setEditVocabID,
   } = props;
   // recoil
   const [content, setContent] = useRecoilState(contentState);
@@ -106,6 +112,8 @@ const EditContent = (props) => {
   const [exampleD, setExampleD] = useState('');
   const [cf, setCf] = useState('');
   const [expand, setExpand] = useState(false);
+  // ref
+  const textinputs = [];
 
   const isNewVocab = !Object.keys(content).includes(vocabID);
 
@@ -113,15 +121,49 @@ const EditContent = (props) => {
     // visibleになるたびvocabIDからstateを更新
     const vocab = content[vocabID];
     setTerm(vocab?.term ?? '');
-    setDefinition(deck.formatArrayContent(vocab?.definition ?? []));
-    setSynonym(deck.formatArrayContent(vocab?.synonym ?? []));
-    setAntonym(deck.formatArrayContent(vocab?.antonym ?? []));
-    setPrefix(deck.formatArrayContent(vocab?.prefix ?? []));
-    setSuffix(deck.formatArrayContent(vocab?.suffix ?? []));
-    setExampleT(deck.formatArrayContent(vocab?.exampleT ?? []));
-    setExampleD(deck.formatArrayContent(vocab?.exampleD ?? []));
-    setCf(deck.formatArrayContent(vocab?.cf ?? []));
+    setDefinition(/* deck.formatArrayContent(vocab?.definition ?? []) */vocab?.definition ?? '');
+    setSynonym(/* deck.formatArrayContent(vocab?.synonym ?? []) */vocab?.synonym ?? '');
+    setAntonym(/* deck.formatArrayContent(vocab?.antonym ?? []) */vocab?.antonym ?? '');
+    setPrefix(/* deck.formatArrayContent(vocab?.prefix ?? []) */vocab?.prefix ?? '');
+    setSuffix(/* deck.formatArrayContent(vocab?.suffix ?? []) */vocab?.suffix ?? '');
+    setExampleT(/* deck.formatArrayContent(vocab?.exampleT ?? []) */vocab?.exampleT ?? '');
+    setExampleD(/* deck.formatArrayContent(vocab?.exampleD ?? []) */vocab?.exampleD ?? '');
+    setCf(/* deck.formatArrayContent(vocab?.cf ?? []) */vocab?.cf ?? '');
   }, [isVisible]);
+
+  const save = () => {
+    setContent((prev) => {
+      const result = JSON.parse(JSON.stringify(prev));
+      const newVocab = {};
+      newVocab.term = term;
+      newVocab.definition = definition;
+      if (!func.isNullOrWhitespace(synonym)) { newVocab.synonym = synonym; }
+      if (!func.isNullOrWhitespace(antonym)) { newVocab.antonym = antonym; }
+      if (!func.isNullOrWhitespace(prefix)) { newVocab.prefix = prefix; }
+      if (!func.isNullOrWhitespace(suffix)) { newVocab.suffix = suffix; }
+      if (!func.isNullOrWhitespace(exampleT)) { newVocab.exampleT = exampleT; }
+      if (!func.isNullOrWhitespace(exampleD)) { newVocab.exampleD = exampleD; }
+      if (!func.isNullOrWhitespace(cf)) { newVocab.cf = cf; }
+      result[vocabID] = newVocab;
+      return result;
+    });
+    setIsChanged(true);
+  };
+  const next = () => {
+    save();
+    setTerm('');
+    setDefinition('');
+    setSynonym('');
+    setAntonym('');
+    setPrefix('');
+    setSuffix('');
+    setExampleT('');
+    setExampleD('');
+    setCf('');
+    setExpand(false);
+    setEditVocabID(UUID.generate(8));
+    textinputs[0]?.focus();
+  };
 
   const renderTextInputs = () => {
     const items = [
@@ -153,15 +195,18 @@ const EditContent = (props) => {
         label: 'cf.', value: cf, setState: setCf, isVisible: expand,
       },
     ];
-    return items.map((item) => (item.isVisible ? (
+    return items.map((item, index) => (item.isVisible ? (
       <View key={item.label.toLowerCase()}>
         <TextInput
-          multiline
           label={item.label}
           value={item.value}
           onChangeText={item.setState}
           style={style.input}
           mode="outlined"
+          returnKeyType="next"
+          ref={(textinput) => { textinputs[index] = textinput; }}
+          autoFocus={index === 0}
+          onSubmitEditing={() => { if (!((term === '') || (definition === ''))) next(); }}
         />
       </View>
     ) : null));
@@ -169,44 +214,10 @@ const EditContent = (props) => {
 
   const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
 
-  const renderSaveButton = () => {
-    const save = () => {
-      setContent((prev) => {
-        let result = JSON.parse(JSON.stringify(prev));
-        if (isNewVocab) {
-          result = {
-            ...result,
-            [vocabID]: {
-              term, definition, synonym, antonym, prefix, suffix, exampleT, exampleD, cf,
-            },
-          };
-        } else {
-          result[vocabID] = {
-            term, definition, synonym, antonym, prefix, suffix, exampleT, exampleD, cf,
-          };
-        }
-        return result;
-      });
-      // onSave();
-      setIsChanged(true);
-    };
-    const next = () => {
-      setTerm('');
-      setDefinition('');
-      setSynonym('');
-      setAntonym('');
-      setPrefix('');
-      setSuffix('');
-      setExampleT('');
-      setExampleD('');
-      setCf('');
-      save();
-      setExpand(false);
-      setEditVocabID(UUID.generate(8));
-    };
-    return (
-      <View style={style.buttonsContainer}>
-        {isNewVocab ? (
+  const renderSaveButton = () => (
+    <View style={style.buttonsContainer}>
+      {isNewVocab ? (
+        <View style={style.buttonContainer}>
           <Button
             onPress={next}
             mode="contained"
@@ -215,7 +226,9 @@ const EditContent = (props) => {
           >
             Next
           </Button>
-        ) : null}
+        </View>
+      ) : null}
+      <View style={style.buttonContainer}>
         <Button
           onPress={() => {
             save();
@@ -228,8 +241,8 @@ const EditContent = (props) => {
           Save
         </Button>
       </View>
-    );
-  };
+    </View>
+  );
 
   const renderCancelButton = () => (
     <TouchableOpacity style={style.cancelButton} onPress={() => setVisible(false)}>

@@ -14,13 +14,14 @@ const style = StyleSheet.create({
   card: {
     flex: 1,
     justifyContent: 'center',
-    // alignItems: 'center',
+    alignItems: 'center',
     backgroundColor: Color.white1,
     borderRadius: 20,
+    padding: 30,
   },
   label: {
     color: Color.font1,
-    fontSize: 22,
+    fontSize: 24,
     textAlign: 'left',
   },
 });
@@ -55,13 +56,13 @@ class PlayCard extends Component {
     const frontItems = [
       { item: 'term', text: vocab.term, visible: itemVisible.front.includes('term') },
       { item: 'definition', text: deck.formatArrayContent(vocab.definition), visible: itemVisible.front.includes('definition') },
-      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab.synonym)}`, visible: itemVisible.front.includes('synonym') },
-      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab.antonym)}`, visible: itemVisible.front.includes('antonym') },
-      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab.prefix)}`, visible: itemVisible.front.includes('prefix') },
-      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab.suffix)}`, visible: itemVisible.front.includes('suffix') },
-      { item: 'exampleT', text: deck.formatArrayContent(vocab.exampleT), visible: itemVisible.front.includes('exampleT') },
-      { item: 'exampleD', text: deck.formatArrayContent(vocab.exampleD), visible: itemVisible.front.includes('exampleD') },
-      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab.cf)}`, visible: itemVisible.front.includes('cf') },
+      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab?.synonym ?? [])}`, visible: itemVisible.front.includes('synonym') },
+      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab?.antonym ?? [])}`, visible: itemVisible.front.includes('antonym') },
+      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab?.prefix ?? [])}`, visible: itemVisible.front.includes('prefix') },
+      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab?.suffix ?? [])}`, visible: itemVisible.front.includes('suffix') },
+      { item: 'exampleT', text: deck.formatArrayContent(vocab?.exampleT ?? []), visible: itemVisible.front.includes('exampleT') },
+      { item: 'exampleD', text: deck.formatArrayContent(vocab?.exampleD ?? []), visible: itemVisible.front.includes('exampleD') },
+      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab?.cf ?? [])}`, visible: itemVisible.front.includes('cf') },
     ];
     const backItems = [
       { item: 'term', text: vocab.term, visible: itemVisible.back.includes('term') },

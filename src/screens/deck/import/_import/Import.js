@@ -50,6 +50,7 @@ const Import = (props) => {
   const [itemDelimiter, setItemDelimiter] = useState(',');
   const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
+  const [inputArray, setInputArray] = useState([]);
 
   const isChanged = !((input === 'manzana,apple/plátano,banana') || (input === ''));
   const isFocused = useIsFocused();
@@ -74,6 +75,14 @@ const Import = (props) => {
     }
   }),
   [navigation, isChanged, isFocused]);
+
+  useEffect(() => {
+    if (input === '' || itemDelimiter === '' || cardDelimiter === '') {
+      setInputArray([]);
+    } else {
+      setInputArray(input.split(cardDelimiter).map((card) => card.split(itemDelimiter)));
+    }
+  }, [input, itemDelimiter, cardDelimiter]);
 
   const renderDelimiterInput = () => {
     const inputs = [
@@ -122,8 +131,6 @@ const Import = (props) => {
     </View>
   );
 
-  const renderList = () => <ImportList input={input} cardDelimiter={cardDelimiter} itemDelimiter={itemDelimiter} />;
-
   const renderCompileButton = () => (
     <View style={{
       padding: 10, position: 'absolute', bottom: 0, right: 0, left: 0,
@@ -132,6 +139,7 @@ const Import = (props) => {
       <Button
         color={Color.green3}
         mode="contained"
+        disabled={inputArray.length === 0}
         onPress={() => navigation.navigate('importoption', {
           input, itemDelimiter, cardDelimiter, deckID,
         })}
@@ -146,7 +154,7 @@ const Import = (props) => {
       <View style={{ flex: 1 }}>
         {inputExpand ? null : renderDelimiterInput()}
         {renderInput()}
-        {inputExpand ? null : renderList()}
+        {inputExpand ? null : <ImportList inputArray={inputArray} />}
       </View>
       {inputExpand ? null : renderCompileButton()}
     </KeyboardAvoidingView>
@@ -158,28 +166,3 @@ Import.propTypes = {
 };
 
 export default Import;
-
-export const ImportMenu = () => {
-  const [showMenu, setShowMenu] = useState(false);
-
-  return (
-    <Menu
-      visible={showMenu}
-      onDismiss={() => setShowMenu(false)}
-      anchor={(
-        <TouchableOpacity onPress={() => setShowMenu(true)}>
-          <Icon.MaterialCommunityIcons
-            name="earth"
-            size={30}
-            style={{ color: 'black' }}
-          />
-        </TouchableOpacity>
-        )}
-    >
-      <Menu.Item onPress={() => {}} title="Item 1" />
-      <Menu.Item onPress={() => {}} title="Item 2" />
-      <Divider />
-      <Menu.Item onPress={() => {}} title="Item 3" />
-    </Menu>
-  );
-};

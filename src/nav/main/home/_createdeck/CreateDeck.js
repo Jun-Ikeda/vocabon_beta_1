@@ -12,8 +12,9 @@ import DeckName from '../../../../components/deck/inputs/DeckName';
 
 import UUID from '../../../../config/UUID';
 import { getRandomImage } from '../../../../config/Unsplash';
-import { decksGeneral, saveDeckGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, saveDeckGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 import { getAccountGeneral } from '../../../../config/account/Account';
+import Redescribe from '../../../../components/deck/inputs/Redescribe';
 
 // import { getRandomImage } from '../../../../config/Unsplash';
 
@@ -79,7 +80,10 @@ const CreateDeck = (props) => {
   const [deckID, setDeckID] = useState(UUID.generate(10));
   const [title, setTitle] = useState('');
   const [language, setLanguage] = useState({ term: '', definition: '' });
+  const [description, setDescription] = useState('');
   const [thumbnail, setThumbnail] = useState({});
+  // const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
+  // const general = getDeckGeneral(deckGeneral, deckID);
   //
   const { userID } = getAccountGeneral();
 
@@ -95,7 +99,7 @@ const CreateDeck = (props) => {
     // console.log(deck);
     saveDeckGeneral(setDeckGeneral, deckID, {
       title,
-      description: '',
+      description,
       user: userID,
       language,
       num: 0,
@@ -132,7 +136,7 @@ const CreateDeck = (props) => {
   const renderItems = () => {
     const items = [
       {
-        title: 'Deck Name',
+        title: 'Title',
         element: <DeckName setTitle={setTitle} title={title} />,
       },
       {
@@ -140,6 +144,13 @@ const CreateDeck = (props) => {
         element: <LanguageSelection
           setLanguage={setLanguage}
           language={language}
+        />,
+      },
+      {
+        title: 'Description',
+        element: <Redescribe
+          setDescription={setDescription}
+          description={description}
         />,
       },
     ];

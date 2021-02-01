@@ -57,6 +57,7 @@ export const saveDeckContent = async (deckID, newData, merge = true) => {
     decksContent[deckID] = newData;
   }
   const prevLocalData = await LocalStorage.load({ key: 'deck', id: deckID });
+  console.log({ general: prevLocalData.general, content: decksContent[deckID] });
   LocalStorage.save({ key: 'deck', id: deckID, data: { general: prevLocalData.general, content: decksContent[deckID] } });
 };
 
@@ -67,6 +68,7 @@ export const deleteDeck = (setDeckGeneral, deckID) => {
     return newState;
   });
   delete decksContent[deckID];
+  LocalStorage.remove({ key: 'deck', id: deckID });
 };
 
 /*

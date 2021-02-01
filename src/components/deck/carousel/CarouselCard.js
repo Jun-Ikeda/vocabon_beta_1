@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Image, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
@@ -11,6 +11,7 @@ import { decksGeneral, getDeckGeneral } from '../../../config/deck/Deck';
 import ProfileIcon from '../../user/profileicon/ProfileIcon';
 import { getAccountContent } from '../../../config/account/Account';
 import Icon from '../../Icon';
+import langs from '../../../config/Langs';
 
 const style = StyleSheet.create({
   cardContainer: {
@@ -101,14 +102,21 @@ const CarouselCard = (props) => {
         color: Color.white2,
       }}
       >
-        n views, m reviews
+        {`${deckGeneral.num} terms`}
+      </Text>
+      <Text style={{
+        fontSize: cardStyle.height * 0.08,
+        color: Color.white2,
+      }}
+      >
+        {`${accountContent.play.length} times played`}
       </Text>
       <View>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
-          {`Term in ${deckGeneral.language.term}`}
+          {`Term in ${langs.filter((lang) => (deckGeneral.language.term === lang.tag))[0]?.name ?? 'Not Found'}`}
         </Text>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>
-          {`Definition in ${deckGeneral.language.definition}`}
+          {`Definition in ${langs.filter((lang) => (deckGeneral.language.definition === lang.tag))[0]?.name ?? 'Not Found'}`}
         </Text>
       </View>
     </View>

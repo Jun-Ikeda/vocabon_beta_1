@@ -38,14 +38,13 @@ const Options = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // state
-  const { marks } = getAccountContent(deckID);
-  // console.log({ marks });
+  const { marks, play } = getAccountContent(deckID);
   const content = getDeckContent(deckID);
 
   const MarksMax = getMax(marks);
-  const ExampleMax = getMax(content, 'exampleT');
-  const SynonymMax = getMax(content, 'synonym');
-  const AntonymMax = getMax(content, 'antonym');
+  // const ExampleMax = getMax(content, 'exampleT');
+  // const SynonymMax = getMax(content, 'synonym');
+  // const AntonymMax = getMax(content, 'antonym');
 
   const [mode, setMode] = useState('custom');
   const [itemVisible, setItemVisible] = useState({ front: ['term'], back: ['definition'] });
@@ -53,18 +52,28 @@ const Options = (props) => {
   const [expandFilter, setExpandFilter] = useState('Index');
   const [indexRange, setIndexRange] = useState({ min: 0, max: Object.values(content).length });
   const [markRange, setMarkRange] = useState({ min: 0, max: MarksMax });
-  const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
-  const [synonymRange, setSynonymRange] = useState({ min: 0, max: SynonymMax });
-  const [antonymRange, setAntonymRange] = useState({ min: 0, max: AntonymMax });
+  // const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
+  // const [synonymRange, setSynonymRange] = useState({ min: 0, max: SynonymMax });
+  // const [antonymRange, setAntonymRange] = useState({ min: 0, max: AntonymMax });
 
-  const validVocabIDs = func.convertObjectToArray(content).filter((vocab, index) => {
-    const inIndexRange = (index + 1 >= indexRange.min) && (index + 1 <= indexRange.max);
-    const inMarksRange = (marks[vocab.key]?.length ?? 0) >= markRange.min && (marks[vocab.key]?.length ?? 0) <= markRange.max;
-    const inExampleRange = vocab.value.exampleT.length >= exampleRange.min && vocab.value.exampleT.length <= exampleRange.max;
-    const inSynonymRange = vocab.value.synonym.length >= synonymRange.min && vocab.value.synonym.length <= synonymRange.max;
-    const inAntonymRange = vocab.value.antonym.length >= antonymRange.min && vocab.value.antonym.length <= antonymRange.max;
-    return inIndexRange && inMarksRange && inExampleRange && inSynonymRange && inAntonymRange;
-  }).map((vocab) => vocab.key);
+  const returnValidVocabIDs = () => {
+    switch (mode) {
+      case 'custom':
+        return func.convertObjectToArray(content).filter((vocab, index) => {
+          const inIndexRange = (index + 1 >= indexRange.min) && (index + 1 <= indexRange.max);
+          const inMarksRange = (marks[vocab.key]?.length ?? 0) >= markRange.min && (marks[vocab.key]?.length ?? 0) <= markRange.max;
+          // const inExampleRange = vocab.value.exampleT.length >= exampleRange.min && vocab.value.exampleT.length <= exampleRange.max;
+          // const inSynonymRange = vocab.value.synonym.length >= synonymRange.min && vocab.value.synonym.length <= synonymRange.max;
+          // const inAntonymRange = vocab.value.antonym.length >= antonymRange.min && vocab.value.antonym.length <= antonymRange.max;
+          return inIndexRange && inMarksRange;/*  && inExampleRange && inSynonymRange && inAntonymRange; */
+        }).map((vocab) => vocab.key);
+      case 'recentMark':
+        return func.convertObjectToArray(marks).filter((vocab) => vocab.value.includes(play.length - 1)).map((vocab) => vocab.key);
+      default:
+        return Object.keys(content);
+    }
+  };
+  const validVocabIDs = returnValidVocabIDs();
 
   const items = [
     {
@@ -73,20 +82,20 @@ const Options = (props) => {
     {
       title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
     },
-    {
-      title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange], visible: !(ExampleMax === 0),
-    },
-    {
-      title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange], visible: !(SynonymMax === 0),
-    },
-    {
-      title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange], visible: !(AntonymMax === 0),
-    },
+    // {
+    //   title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange], visible: !(ExampleMax === 0),
+    // },
+    // {
+    //   title: 'Synonyms', range: [0, SynonymMax], state: [synonymRange, setSynonymRange], visible: !(SynonymMax === 0),
+    // },
+    // {
+    //   title: 'Antonyms', range: [0, AntonymMax], state: [antonymRange, setAntonymRange], visible: !(AntonymMax === 0),
+    // },
   ];
 
   return (
     <View style={{ flex: 1 }}>
-      <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} />
+      <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} marks={marks} play={play} />
       {mode === 'custom' ? (
         <ScrollView
           style={{ flex: 1 }}
@@ -101,7 +110,7 @@ const Options = (props) => {
         itemVisible={itemVisible}
         navigation={navigation}
         deckID={deckID}
-        validVocabIDs={(mode === 'default') ? Object.keys(content) : validVocabIDs}
+        validVocabIDs={validVocabIDs}
         mode={mode}
         sortMode={sortMode}
       />

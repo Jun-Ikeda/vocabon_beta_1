@@ -1,13 +1,26 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
+import Color from '../../../../config/Color';
+import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
   container: { flexDirection: 'row' },
   label: {
-    fontSize: 20,
+    fontSize: 30,
     flex: 1,
     textAlign: 'center',
+    marginBottom: 12,
+  },
+  iconMarked: {
+    color: Color.cud.red,
+    fontSize: 24,
+  },
+  iconClear: {
+    color: Color.green2,
+    fontSize: 24,
   },
 });
 
@@ -28,9 +41,15 @@ const PlayCounter = (props) => {
 
   return (
     <View style={style.container}>
-      <Text style={style.label}>{`Marked: ${leftVocabID.length}`}</Text>
+      <Text style={style.label}>
+        <Icon.AntDesign name="close" style={style.iconMarked} />
+        {`: ${leftVocabID.length}`}
+      </Text>
       <View style={style.lebel} />
-      <Text style={style.label}>{`Clear: ${rightVocabID.length}`}</Text>
+      <Text style={style.label}>
+        <Icon.AntDesign name="check" style={style.iconClear} />
+        {`: ${rightVocabID.length}`}
+      </Text>
     </View>
   );
 };
