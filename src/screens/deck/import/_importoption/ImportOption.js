@@ -70,12 +70,12 @@ const ImportOption = (props) => {
   const {
     navigation, route: {
       params: {
-        input, itemDelimiter, cardDelimiter, deckID,
+        input, elementDelimiter, itemDelimiter, cardDelimiter, deckID,
       },
     },
   } = props;
   //
-  const inputArray = input.split(cardDelimiter).map((card) => card.split(itemDelimiter)); // [ ['manzana', 'apple'], ['platano', 'banana'], ['soy', 'be', 'yo soy estudiante'] ]
+  const inputArray = input.split(cardDelimiter).map((card) => card.split(itemDelimiter).map((item) => item.split(elementDelimiter))); // [ ['manzana', 'apple'], ['platano', 'banana'], ['soy', 'be', 'yo soy estudiante'] ]
   const itemNumber = (inputArray.length === 0) ? 0 : inputArray.reduce((a, b) => (a.length > b.length ? a : b)).length; // itemは最大何個あるか 上の例だと'soy'のカードがitem3まであるので3
   let cardIndexWithItemMax = 0;
   inputArray.reduce((a, b, index) => {

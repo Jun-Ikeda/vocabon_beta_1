@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import Color from '../../../../config/Color';
 
-import VocabList from '../../../../components/deck/list/VocabList';
+import VocabList from '../../../../components/deck/vocab/VocabList';
 import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({

@@ -66,14 +66,14 @@ class PlayCard extends Component {
     ];
     const backItems = [
       { item: 'term', text: vocab.term, visible: itemVisible.back.includes('term') },
-      { item: 'definition', text: deck.formatArrayContent(vocab.definition), visible: itemVisible.back.includes('definition') },
-      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab.synonym)}`, visible: itemVisible.back.includes('synonym') },
-      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab.antonym)}`, visible: itemVisible.back.includes('antonym') },
-      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab.prefix)}`, visible: itemVisible.back.includes('prefix') },
-      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab.suffix)}`, visible: itemVisible.back.includes('suffix') },
-      { item: 'exampleT', text: deck.formatArrayContent(vocab.exampleT), visible: itemVisible.back.includes('exampleT') },
-      { item: 'exampleD', text: deck.formatArrayContent(vocab.exampleD), visible: itemVisible.back.includes('exampleD') },
-      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab.cf)}`, visible: itemVisible.back.includes('cf') },
+      { item: 'definition', text: deck.formatArrayContent(vocab?.definition ?? []), visible: itemVisible.back.includes('definition') },
+      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab?.synonym ?? [])}`, visible: itemVisible.back.includes('synonym') },
+      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab?.antonym ?? [])}`, visible: itemVisible.back.includes('antonym') },
+      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab?.prefix ?? [])}`, visible: itemVisible.back.includes('prefix') },
+      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab?.suffix ?? [])}`, visible: itemVisible.back.includes('suffix') },
+      { item: 'exampleT', text: deck.formatArrayContent(vocab?.exampleT ?? []), visible: itemVisible.back.includes('exampleT') },
+      { item: 'exampleD', text: deck.formatArrayContent(vocab?.exampleD ?? []), visible: itemVisible.back.includes('exampleD') },
+      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab?.cf ?? [])}`, visible: itemVisible.back.includes('cf') },
     ];
     return (
       <CardFlip

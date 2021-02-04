@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
 
 import Icon from '../../../../components/Icon';
-import VocabList from '../../../../components/deck/list/VocabList';
+import VocabList from '../../../../components/deck/vocab/VocabList';
 
 import { selectedVocabIDsState } from './Edit';
 

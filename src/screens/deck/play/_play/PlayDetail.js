@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 import Color from '../../../../config/Color';
 
-import VocabList from '../../../../components/deck/list/VocabList';
+import VocabList from '../../../../components/deck/vocab/VocabList';
 import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
@@ -89,8 +89,8 @@ const PlayDetail = (props) => {
       <View style={{ flexDirection: 'row' }}>
         {renderIcon()}
         <TouchableOpacity
-          onPress={() => {
-            setOnEditVocabID(vocab.key);
+          onPress={async () => {
+            await setOnEditVocabID(vocab.key);
             setEditVisible(true);
           }}
         >

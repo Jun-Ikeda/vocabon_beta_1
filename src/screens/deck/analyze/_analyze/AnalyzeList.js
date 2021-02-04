@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Text, View, StyleSheet } from 'react-native';
 
-import VocabList from '../../../../components/deck/list/VocabList';
+import VocabList from '../../../../components/deck/vocab/VocabList';
 
 const style = StyleSheet.create({
   container: {

@@ -8,7 +8,7 @@ import RangeSlider from 'react-native-range-slider-expo';
 import lodash from 'lodash';
 import { Button } from 'react-native-paper';
 import TagsInput from '../src/components/TagsInput';
-import VocabList from '../src/components/deck/list/VocabList';
+import VocabList from '../src/components/deck/vocab/VocabList';
 import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
 import Color, { PastelColors } from '../src/config/Color';
 import { decksContent } from '../src/config/deck/Deck';
@@ -71,7 +71,7 @@ const renderTagsInput = () => {
 
   return (
     <View style={style.container}>
-      {/* <Button onPress={() => tagsinput.createNewTag()}>Push</Button> */}
+      <Button onPress={() => tagsinput.createNewTag()}>Push</Button>
       <TagsInput
         updateState={(state) => setTags(state)}
         tags={tags}

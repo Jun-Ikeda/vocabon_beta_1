@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import { Portal } from 'react-native-paper';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
-import VocabList from '../../../../components/deck/list/VocabList';
 import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';

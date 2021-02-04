@@ -13,7 +13,7 @@ import DeckSwiper from 'react-native-deck-swiper';
 import * as Speech from 'expo-speech';
 
 import { CommonActions } from '@react-navigation/native';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 import { getDeckContent } from '../../../../config/deck/Deck';
@@ -26,6 +26,7 @@ import PlayCounter from './PlayCounter';
 import PlayButtons from './PlayButtons';
 import PlayDetail, { onEditVocabIDState } from './PlayDetail';
 import PlayEdit from './PlayEdit';
+import VocabEdit from '../../../../components/deck/vocab/VocabEdit';
 
 const style = StyleSheet.create({
   container: {
@@ -85,6 +86,8 @@ const Play = (props) => {
       },
     },
   } = props;
+  // recoil
+  const [onEditVocabID, setOnEditVocabID] = useRecoilState(onEditVocabIDState);
   const [content, setContent] = useState(getDeckContent(deckID));
   const { marks, play } = getAccountContent(deckID);
 
@@ -97,7 +100,7 @@ const Play = (props) => {
 
   const [detailVisible, setDetailVisible] = useState(false);
   const [editVisible, setEditVisible] = useState(false);
-  const setOnEditVocabID = useSetRecoilState(onEditVocabIDState);
+  // const setOnEditVocabID = useSetRecoilState(onEditVocabIDState);
   const [layout, setLayout] = useState({ height: 0, width: 0 });
 
   const [card, setCard] = useState({}); // 例外的にstateに
@@ -229,8 +232,8 @@ const Play = (props) => {
         <Icon.Feather
           name="edit"
           style={[style.headerIcon, { fontSize: 24 }]}
-          onPress={() => {
-            setOnEditVocabID(validVocabIDs[rightVocabID.length + leftVocabID.length]);
+          onPress={async () => {
+            await setOnEditVocabID(validVocabIDs[rightVocabID.length + leftVocabID.length]);
             setEditVisible(true);
           }}
         />
@@ -264,13 +267,21 @@ const Play = (props) => {
         leftVocabID={leftVocabID}
         rightVocabID={rightVocabID}
       />
-      <PlayEdit
+      <VocabEdit
+        content={content}
+        setContent={setContent}
+        vocabID={onEditVocabID}
+        isVisible={editVisible}
+        setVisible={setEditVisible}
+        setEditVocabID={setOnEditVocabID}
+      />
+      {/* <PlayEdit
         deckID={deckID}
         isVisible={editVisible}
         setIsVisible={setEditVisible}
         content={content}
         setContent={setContent}
-      />
+      /> */}
     </View>
   );
 };

@@ -9,6 +9,84 @@ import {
 import { TextInput } from 'react-native-paper';
 import Icon from './Icon';
 
+const style = {
+  container: {
+    width: '100%',
+    // paddingHorizontal: 10,
+    // flex: 1,
+    // backgroundColor: 'red',
+  },
+  disabledInput: {
+    opacity: 0.5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    // paddingRight: 10,
+    // marginHorizontal: 10,
+    // backgroundColor: 'teal',
+    // flex: 1,
+  },
+  leftElement: {
+    // height: 40,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // marginLeft: 10,
+  },
+  rightElement: {
+    // height: 40,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // marginRight: 10,
+  },
+  input: {
+    color: 'black',
+    fontSize: 18,
+    // lineHeight: 60,
+    flex: 1,
+    // minHeight: 40,
+    // marginLeft: 5,
+    // marginRight: 5,
+  },
+  tagsView: {
+    // marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+  },
+  tag: {
+    flexDirection: 'row',
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#979797',
+    minWidth: 40,
+    maxWidth: 200,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    // padding: 5,
+    // margin: 5,
+    borderWidth: 0.5,
+    borderColor: 'gray',
+  },
+  tagText: {
+    marginHorizontal: 5,
+  },
+  labelStyle: {
+    fontSize: 12,
+    // marginTop: 12,
+    // marginBottom: -4,
+  },
+  deleteIcon: {
+    width: 20,
+    height: 20,
+    opacity: 0.5,
+    // marginLeft: 5,
+  },
+  pushButtonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+};
+
 class TagsInput extends React.Component {
   focus() { this.input.focus(); }
 
@@ -20,20 +98,20 @@ class TagsInput extends React.Component {
 
   setNativeProps(nativeProps) { this.input.setNativeProps(nativeProps); }
 
-  renderLabel = (text, style) => (
-    <Text style={style}>
+  renderLabel = (text, styleProp) => (
+    <Text style={styleProp}>
       {text}
     </Text>
   );
 
-  renderLeftElement = (element, style) => (
-    <View style={StyleSheet.flatten([style.leftElement, style])}>
+  renderLeftElement = (element, styleProp) => (
+    <View style={StyleSheet.flatten([styleProp.leftElement, styleProp])}>
       {element}
     </View>
   );
 
-  renderRightElement = (element, style) => (
-    <View style={StyleSheet.flatten([style.rightElement, style])}>
+  renderRightElement = (element, styleProp) => (
+    <View style={StyleSheet.flatten([styleProp.rightElement, styleProp])}>
       {element}
     </View>
   );
@@ -48,17 +126,19 @@ class TagsInput extends React.Component {
   );
 
   // If characters remain in the input field after input is completed, add them to the tag.
-  createNewTag = () => {
+  createNewTag = async () => {
     const { tags, updateState } = this.props;
     if (tags.tag) {
-      const tempArray = tags.tagsArray.concat(tags.tag);
+      const tempArray = await tags.tagsArray.concat(tags.tag);
       const tempObject = {
         tag: '',
         tagsArray: [...new Set(tempArray)], // Deduplication
       };
-      updateState(tempObject);
-      return this.input.clear();
+      await updateState(tempObject);
+      this.input.clear();
+      return tempObject;
     }
+    return tags;
   }
 
   onChangeText = (text, tags, updateState, keysForTags, keysForTagsArray) => {
@@ -75,7 +155,7 @@ class TagsInput extends React.Component {
 
     if (text.includes(keysStr)) {
       if (text === keysStr) {
-        return;
+        return null;
       }
       const tempTag = text.replace(keysStr, '');
       const tempArray = tags.tagsArray.concat(tempTag);
@@ -157,33 +237,42 @@ class TagsInput extends React.Component {
       keysForTag,
       keysForTagsArray,
       deleteElement,
-      deleteIconStyles,
+      // deleteIconStyles,
       customElement,
       pushButtonVisible,
+      mode,
+      returnKeyType,
+      onSubmitEditing,
+      style: styleProp,
     } = this.props;
 
     const { props } = this;
 
     return (
       <View style={StyleSheet.flatten([style.container, containerStyle])}>
-        {label ? this.renderLabel(label, StyleSheet.flatten([style.labelStyle, labelStyle])) : null}
+        {/* {label ? this.renderLabel(label, StyleSheet.flatten([style.labelStyle, labelStyle])) : null} */}
         <View style={StyleSheet.flatten(StyleSheet.flatten([style.inputContainer, inputContainerStyle]))}>
           {leftElement ? this.renderLeftElement(leftElement, leftElementContainerStyle) : null}
           <TextInput
             underlineColorAndroid="transparent"
+            label={label}
             editable={!disabled}
             ref={(ref) => {
               this.input = ref;
             }}
             style={StyleSheet.flatten([
               style.input,
+              styleProp,
               inputStyle,
               disabled && style.disabledInput,
               disabled && disabledInputStyle,
             ])}
-            {...props}
+            // {...props}
             value={tags.tag}
             onChangeText={(text) => this.onChangeText(text, tags, updateState, keysForTag, keysForTagsArray)}
+            mode={mode}
+            returnKeyType={returnKeyType}
+            onSubmitEditing={onSubmitEditing}
           />
           {pushButtonVisible ? this.renderPushButton() : (rightElement ? this.renderRightElement(rightElement, rightElementContainerStyle) : null)}
         </View>
@@ -192,7 +281,7 @@ class TagsInput extends React.Component {
           {tags.tagsArray.map((item, count) => (
             <View
               style={StyleSheet.flatten([style.tag, tagStyle])}
-              key={count}
+              key={item.toLowerCase()}
             >
               <Text style={StyleSheet.flatten([style.tagText, tagTextStyle])}>{item}</Text>
               <TouchableOpacity onPressIn={() => this.deleteTag(count, tags, updateState)}>
@@ -218,15 +307,22 @@ TagsInput.propTypes = {
   updateState: PropTypes.func,
   keysForTag: PropTypes.string,
   keysForTagsArray: PropTypes.arrayOf(PropTypes.string),
-  containerStyle: /* ViewPropTypes.style */PropTypes.object,
-  inputContainerStyle: /* ViewPropTypes.style */PropTypes.object,
-  inputStyle: /* TextInput.propTypes.style */PropTypes.object,
-  disabledInputStyle: /* ViewPropTypes.style */PropTypes.object,
-  leftElementContainerStyle: /* ViewPropTypes.style */PropTypes.object,
-  rightElementContainerStyle: /* ViewPropTypes.style */PropTypes.object,
-  labelStyle: /* Text.propTypes.style */PropTypes.object,
-  deleteIconStyles: /* ViewPropTypes.style */PropTypes.object,
+  containerStyle: PropTypes.object,
+  inputContainerStyle: PropTypes.object,
+  inputStyle: PropTypes.object,
+  disabledInputStyle: PropTypes.object,
+  leftElementContainerStyle: PropTypes.object,
+  rightElementContainerStyle: PropTypes.object,
+  labelStyle: PropTypes.object,
+  // deleteIconStyles: PropTypes.object,
   pushButtonVisible: PropTypes.bool,
+  tagStyle: PropTypes.object,
+  tagTextStyle: PropTypes.object,
+  tagsViewStyle: PropTypes.object,
+  deleteElement: PropTypes.node,
+  mode: PropTypes.string,
+  returnKeyType: PropTypes.string,
+  onSubmitEditing: PropTypes.func,
 };
 
 TagsInput.defaultProps = {
@@ -246,86 +342,15 @@ TagsInput.defaultProps = {
   leftElementContainerStyle: {},
   rightElementContainerStyle: {},
   labelStyle: {},
-  deleteIconStyles: {},
+  // deleteIconStyles: {},
   pushButtonVisible: false,
-};
-
-const style = {
-  container: {
-    width: '100%',
-    paddingHorizontal: 10,
-    // flex: 1,
-    // backgroundColor: 'red',
-  },
-  disabledInput: {
-    opacity: 0.5,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    // paddingRight: 10,
-    // marginHorizontal: 10,
-    // backgroundColor: 'teal',
-    // flex: 1,
-  },
-  leftElement: {
-    // height: 40,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // marginLeft: 10,
-  },
-  rightElement: {
-    // height: 40,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // marginRight: 10,
-  },
-  input: {
-    color: 'black',
-    fontSize: 18,
-    // lineHeight: 60,
-    flex: 1,
-    // minHeight: 40,
-    // marginLeft: 5,
-    // marginRight: 5,
-  },
-  tagsView: {
-    // marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-  },
-  tag: {
-    flexDirection: 'row',
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: '#979797',
-    minWidth: 40,
-    maxWidth: 200,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // padding: 5,
-    // margin: 5,
-    borderWidth: 0.5,
-    borderColor: 'gray',
-  },
-  tagText: {
-    marginHorizontal: 5,
-  },
-  labelStyle: {
-    fontSize: 12,
-    // marginTop: 12,
-    // marginBottom: -4,
-  },
-  deleteIcon: {
-    width: 20,
-    height: 20,
-    opacity: 0.5,
-    // marginLeft: 5,
-  },
-  pushButtonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  tagStyle: {},
+  tagTextStyle: {},
+  tagsViewStyle: {},
+  deleteElement: null,
+  mode: '',
+  returnKeyType: '',
+  onSubmitEditing: () => {},
 };
 
 export default TagsInput;

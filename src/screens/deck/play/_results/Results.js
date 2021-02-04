@@ -175,7 +175,7 @@ const Results = (props) => {
         {
           title: 'Analyze',
           num: '',
-          onPress: () => navigationDeletePush(['play', 'results'], 'analyze', { deckID }),
+          onPress: () => navigationDeletePush(['play'], 'analyze', { deckID }),
           isVisible: true,
           icon: 'chart-timeline-variant',
           color: Color.black,
@@ -185,7 +185,7 @@ const Results = (props) => {
         {
           title: 'Options', // go back to options
           num: '',
-          onPress: () => navigationDeletePush(['play', 'results'], 'options', { deckID, sortMode }),
+          onPress: () => navigationDeletePush(['play'], 'options', { deckID, sortMode }),
           isVisible: true,
           icon: 'tune',
           color: Color.black,

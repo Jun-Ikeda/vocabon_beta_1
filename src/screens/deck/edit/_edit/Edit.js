@@ -8,6 +8,8 @@ import { atom, useRecoilState } from 'recoil';
 import { Button } from 'react-native-paper';
 import Color from '../../../../config/Color';
 
+import VocabEdit from '../../../../components/deck/vocab/VocabEdit';
+
 import EditList from './EditList';
 import EditContent from './EditContent';
 import EditButtons from './EditButtons';
@@ -161,14 +163,22 @@ const Edit = (props) => {
         setEditVocabID={setEditVocabID}
       />
       {!contentVisible ? renderSaveButton() : null}
-      <EditContent
+      <VocabEdit
+        content={content}
+        setContent={setContent}
+        vocabID={editVocabID}
+        setEditVocabID={setEditVocabID}
+        isVisible={contentVisible}
+        setVisible={setContentVisible}
+        setIsChanged={setIsChanged}
+      />
+      {/* <EditContent
         vocabID={editVocabID}
         isVisible={contentVisible}
         setVisible={setContentVisible}
         setIsChanged={setIsChanged}
         setEditVocabID={setEditVocabID}
-        onSave={() => list.scrollToEnd({ animated: true })}
-      />
+      /> */}
       <EditHelp
         isVisible={helpVisible}
         setVisible={setHelpVisible}

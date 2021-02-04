@@ -46,13 +46,14 @@ const Import = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
   // state
-  const [input, setInput] = useState('manzana,apple/plátano,banana');
-  const [itemDelimiter, setItemDelimiter] = useState(',');
+  const [input, setInput] = useState('manzana;apple,block/plátano;banana');
+  const [elementDelimiter, setElementDelimiter] = useState(',');
+  const [itemDelimiter, setItemDelimiter] = useState(';');
   const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
   const [inputArray, setInputArray] = useState([]);
 
-  const isChanged = !((input === 'manzana,apple/plátano,banana') || (input === ''));
+  const isChanged = !((input === 'manzana;apple,block/plátano;banana') || (input === ''));
   const isFocused = useIsFocused();
 
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
@@ -80,14 +81,15 @@ const Import = (props) => {
     if (input === '' || itemDelimiter === '' || cardDelimiter === '') {
       setInputArray([]);
     } else {
-      setInputArray(input.split(cardDelimiter).map((card) => card.split(itemDelimiter)));
+      setInputArray(input.split(cardDelimiter).map((card) => card.split(itemDelimiter).map((item) => item.split(elementDelimiter))));
     }
-  }, [input, itemDelimiter, cardDelimiter]);
+  }, [input, elementDelimiter, itemDelimiter, cardDelimiter]);
 
   const renderDelimiterInput = () => {
     const inputs = [
-      { title: 'ITEM', state: [itemDelimiter, setItemDelimiter] },
       { title: 'CARD', state: [cardDelimiter, setCardDelimiter] },
+      { title: 'ITEM', state: [itemDelimiter, setItemDelimiter] },
+      { title: 'ELEMENT', state: [elementDelimiter, setElementDelimiter] },
     ];
     return (
       <View style={{ flexDirection: 'row', paddingHorizontal: 5 }}>
@@ -141,7 +143,7 @@ const Import = (props) => {
         mode="contained"
         disabled={inputArray.length === 0}
         onPress={() => navigation.navigate('importoption', {
-          input, itemDelimiter, cardDelimiter, deckID,
+          input, elementDelimiter, itemDelimiter, cardDelimiter, deckID,
         })}
       >
         Import

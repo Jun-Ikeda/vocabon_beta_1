@@ -34,7 +34,7 @@ const ImportList = (props) => {
                 {`${(labels[itemIndex] !== '' && labels[itemIndex] !== undefined) ? labels[itemIndex] : `item${itemIndex + 1}`}: `}
                 {(item === '')
                   ? <Text style={style.emptyText}>empty</Text>
-                  : <Text>{item}</Text>}
+                  : <Text>{item.reduce((a, b) => `${a}, ${b}`)}</Text>}
               </Text>
             );
             return isButton ? <TouchableOpacity onPress={() => onPress(cardIndex, itemIndex)}>{renderText()}</TouchableOpacity> : <View>{renderText()}</View>;
