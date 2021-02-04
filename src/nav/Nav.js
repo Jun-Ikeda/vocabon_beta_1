@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Platform } from 'react-native';
+import { View, Text } from 'react-native';
 import { useSetRecoilState } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Audio } from 'expo-av';
 
 import LaunchNav from './launch/LaunchNav';
 import MainNav from './main/MainNav';
@@ -24,6 +23,13 @@ const Nav = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const initializeDeck = async () => {
+    // const newDecksGeneral = {};
+    // const deckIDs = Object.keys(Deck); // ['7NCodht%}0', '-BiGIisZb*', 'rUiKQdnLb9', 'xn>EfhY:2*', 'Q38xR=rnKc']
+    // deckIDs.forEach((deckID) => {
+    //   newDecksGeneral[deckID] = Deck[deckID].general; // newDecksGeneral = { '7NCodht%}0': Deck['7NCodht%}0'].general }
+    //   decksContent[deckID] = Deck[deckID].content; // decksContent = { '7NCodht%}0': Deck['7NCodht%}0'].content }
+    // });
+    // setDeckGeneral(newDecksGeneral);
     const deckIDs = await LocalStorage.getIdsForKey('deck');
     const decks = await LocalStorage.getAllDataForKey('deck');
     const newDecksGeneral = {};
@@ -48,34 +54,14 @@ const Nav = () => {
 
   useEffect(() => {
     (async () => {
-      // Deck を TestDataから取ってきて、config/deck/Deck.jsのdecksGeneral, decksContentに代入
-      // const newDecksGeneral = {};
-      // const deckIDs = Object.keys(Deck); // ['7NCodht%}0', '-BiGIisZb*', 'rUiKQdnLb9', 'xn>EfhY:2*', 'Q38xR=rnKc']
-      // deckIDs.forEach((deckID) => {
-      //   newDecksGeneral[deckID] = Deck[deckID].general; // newDecksGeneral = { '7NCodht%}0': Deck['7NCodht%}0'].general }
-      //   decksContent[deckID] = Deck[deckID].content; // decksContent = { '7NCodht%}0': Deck['7NCodht%}0'].content }
-      // });
-      // setDeckGeneral(newDecksGeneral);
       await initializeDeck();
-
       // User を TestDataから取ってきて、config/user/User.jsのuserに代入 !contentをgeneralに分けてない!
       const userIDs = Object.keys(User);
       userIDs.forEach((userID) => {
         users[userID] = User[userID];
       });
-
-      // Account
       await initializeAccount();
-
       setIsInitialized(true);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS === 'ios') {
-        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      }
     })();
   }, []);
 

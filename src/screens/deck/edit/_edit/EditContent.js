@@ -275,7 +275,6 @@ EditContent.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   setVisible: PropTypes.func.isRequired,
   setIsChanged: PropTypes.func.isRequired,
-  onSave: PropTypes.func,
 };
 
 EditContent.defaultProps = {
@@ -287,3 +286,179 @@ EditContent.defaultProps = {
 };
 
 export default EditContent;
+
+/* const EditContent = (props) => {
+  // props
+  const {
+    vocabID, isVisible, setVisible, setIsChanged, setEditVocabID,
+  } = props;
+  // recoil
+  const [content, setContent] = useRecoilState(contentState);
+  // state
+  const [term, setTerm] = useState('');
+  const [definition, setDefinition] = useState('');
+  const [synonym, setSynonym] = useState('');
+  const [antonym, setAntonym] = useState('');
+  const [prefix, setPrefix] = useState('');
+  const [suffix, setSuffix] = useState('');
+  const [exampleT, setExampleT] = useState('');
+  const [exampleD, setExampleD] = useState('');
+  const [cf, setCf] = useState('');
+  const [expand, setExpand] = useState(false);
+  // ref
+  const textinputs = [];
+
+  const isNewVocab = !Object.keys(content).includes(vocabID);
+
+  useEffect(() => {
+    // visibleになるたびvocabIDからstateを更新
+    const vocab = content[vocabID];
+    setTerm(vocab?.term ?? '');
+    setDefinition(vocab?.definition ?? '');
+    setSynonym(vocab?.synonym ?? '');
+    setAntonym(vocab?.antonym ?? '');
+    setPrefix(vocab?.prefix ?? '');
+    setSuffix(vocab?.suffix ?? '');
+    setExampleT(vocab?.exampleT ?? '');
+    setExampleD(vocab?.exampleD ?? '');
+    setCf(vocab?.cf ?? '');
+  }, [isVisible]);
+
+  const save = () => {
+    setContent((prev) => {
+      const result = JSON.parse(JSON.stringify(prev));
+      const newVocab = {};
+      newVocab.term = term;
+      newVocab.definition = definition;
+      if (!func.isNullOrWhitespace(synonym)) { newVocab.synonym = synonym; }
+      if (!func.isNullOrWhitespace(antonym)) { newVocab.antonym = antonym; }
+      if (!func.isNullOrWhitespace(prefix)) { newVocab.prefix = prefix; }
+      if (!func.isNullOrWhitespace(suffix)) { newVocab.suffix = suffix; }
+      if (!func.isNullOrWhitespace(exampleT)) { newVocab.exampleT = exampleT; }
+      if (!func.isNullOrWhitespace(exampleD)) { newVocab.exampleD = exampleD; }
+      if (!func.isNullOrWhitespace(cf)) { newVocab.cf = cf; }
+      result[vocabID] = newVocab;
+      return result;
+    });
+    setIsChanged(true);
+  };
+  const next = () => {
+    save();
+    setTerm('');
+    setDefinition('');
+    setSynonym('');
+    setAntonym('');
+    setPrefix('');
+    setSuffix('');
+    setExampleT('');
+    setExampleD('');
+    setCf('');
+    setExpand(false);
+    setEditVocabID(UUID.generate(8));
+    textinputs[0]?.focus();
+  };
+
+  const renderTextInputs = () => {
+    const items = [
+      {
+        label: 'Term', value: term, setState: setTerm, isVisible: true,
+      },
+      {
+        label: 'Definition', value: definition, setState: setDefinition, isVisible: true,
+      },
+      {
+        label: 'ExampleT', value: exampleT, setState: setExampleT, isVisible: true,
+      },
+      {
+        label: 'ExampleD', value: exampleD, setState: setExampleD, isVisible: true,
+      },
+      {
+        label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand,
+      },
+      {
+        label: 'Antonym', value: antonym, setState: setAntonym, isVisible: expand,
+      },
+      {
+        label: 'Prefix', value: prefix, setState: setPrefix, isVisible: expand,
+      },
+      {
+        label: 'Suffix', value: suffix, setState: setSuffix, isVisible: expand,
+      },
+      {
+        label: 'cf.', value: cf, setState: setCf, isVisible: expand,
+      },
+    ];
+    return items.map((item, index) => (item.isVisible ? (
+      <View key={item.label.toLowerCase()}>
+        <TextInput
+          label={item.label}
+          value={item.value}
+          onChangeText={item.setState}
+          style={style.input}
+          mode="outlined"
+          returnKeyType="next"
+          ref={(textinput) => { textinputs[index] = textinput; }}
+          autoFocus={index === 0}
+          onSubmitEditing={() => { if (!((term === '') || (definition === ''))) next(); }}
+        />
+      </View>
+    ) : null));
+  };
+
+  const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
+
+  const renderSaveButton = () => (
+    <View style={style.buttonsContainer}>
+      {isNewVocab ? (
+        <View style={style.buttonContainer}>
+          <Button
+            onPress={next}
+            mode="contained"
+            color={Color.green2}
+            disabled={(term === '') || (definition === '')}
+          >
+            Next
+          </Button>
+        </View>
+      ) : null}
+      <View style={style.buttonContainer}>
+        <Button
+          onPress={() => {
+            save();
+            setVisible(false);
+          }}
+          mode="contained"
+          color={Color.green2}
+          disabled={(term === '') || (definition === '')}
+        >
+          Save
+        </Button>
+      </View>
+    </View>
+  );
+
+  const renderCancelButton = () => (
+    <TouchableOpacity style={style.cancelButton} onPress={() => setVisible(false)}>
+      <Icon.Feather name="x" style={style.cancelButtonIcon} />
+    </TouchableOpacity>
+  );
+
+  const renderMenu = () => (
+    <View style={style.container}>
+      <ScrollView contentContainerStyle={style.contentContainer}>
+        {renderTextInputs()}
+        {renderExpandButton()}
+      </ScrollView>
+      {renderSaveButton()}
+      {renderCancelButton()}
+    </View>
+  );
+
+  return (
+    <PopUpMenu
+      isVisible={isVisible}
+      renderMenu={renderMenu}
+      overlayStyle={style.overlayStyle}
+    />
+  );
+}; */

@@ -43,13 +43,6 @@ const ExportOption = (props) => {
   const [itemCustomInput, setItemCustomInput] = useState(''); // 非表示切り替え？ textinputに書いてある内容を他のボタンおしても変わらないようにしようかなって
   const [cardCustomInput, setCardCustomInput] = useState('');
 
-  // ちょっとスタイリング優先で
-  // なんかスタイリングで俺がやったほうがいいことある？
-  // おれ一人でやっていいってこと？
-  // そうしたほうがかん
-  // そうっすね
-  // 機能面やっててもいい？ soussune
-  // ryoukai
   const renderCustomText = (options) => (
     <TextInput
       value={options.delimiterInputState[0]}
@@ -68,7 +61,7 @@ const ExportOption = (props) => {
         options.radioState[1](newValue);
         options.delimiterState[1](newValue);
         if (newValue === options.buttonValue3) {
-          console.log('test; you pressed the 3rd button');
+          options.delimiterState[1](options.delimiterInputState[0]);
         }
       }}
       value={options.radioState[0]}
@@ -96,7 +89,7 @@ const ExportOption = (props) => {
       </TouchableOpacity>
       <Divider style={style.divider} />
       <TouchableOpacity
-        style={style.radioContainer1}
+        style={style.radioContainer}
         onPress={() => {
           options.radioState[1](options.buttonValue3);
           options.delimiterState[1](options.delimiterInputState[0]);

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-
 import {
-  View, Text, StyleSheet, ScrollView, Dimensions,
+  View, Text, StyleSheet, ScrollView, Dimensions, SafeAreaView,
 } from 'react-native';
+import PropTypes from 'prop-types';
+import { Button } from 'react-native-paper';
+import { header } from '../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    // width: ScreenWidth,
-    // backgroundColor: 'skyblue',
-    // marginVertical: 10,
-    // borderRadius: 20,
+    paddingTop: header.paddingTop,
   },
   text: {
     fontSize: 40,
@@ -23,32 +22,16 @@ const style = StyleSheet.create({
   },
 });
 
-// kochiya
-
 const SlideData = [
   { title: 'slide1', text: 'Welcome to Vocabon!', color: 'red' },
   { title: 'slide2', text: 'Are you ready?', color: 'skyblue' },
   { title: 'slide3', text: "Then let's go!", color: 'green' },
 ];
 const { height: heightInitial, width: widthInitial } = Dimensions.get('window');
-// const renderSlides = () => (SlideData.map((slide, index) => (
-//   <View>
-//     <Text>{slide.title}</Text>
-//     <Text>{slide.text}</Text>
-//     <Text>
-//       {index + 1}
-//       /3
-//     </Text>
-//   </View>
-// )));
-
-// const Readme = () => (
-//   <ScrollView style={style.container} horizontal pagingEnabled>
-//     {renderSlides()}
-//   </ScrollView>
-// );
 
 const Readme = (props) => {
+  // props
+  const { navigation } = props;
   // state
   const [layout, setLayout] = useState({ height: heightInitial, width: widthInitial });
 
@@ -60,9 +43,9 @@ const Readme = (props) => {
   }, []);
 
   const renderSlides = () => SlideData.map((slide, index) => (
-    <View
+    <SafeAreaView
       style={[style.container, { width: layout.width }, { backgroundColor: slide.color }]}
-      key={index}
+      key={slide.title.toLowerCase()}
     >
       {/* <Text>{slide.title}</Text> */}
       <Text style={style.text}>{slide.text}</Text>
@@ -70,7 +53,8 @@ const Readme = (props) => {
         {index + 1}
         /3
       </Text>
-    </View>
+      {index === (SlideData.length - 1) ? <Button onPress={() => navigation.navigate('signup')}>Start</Button> : null}
+    </SafeAreaView>
   ));
 
   return (
@@ -93,42 +77,8 @@ const Readme = (props) => {
   );
 };
 
-/* class Readme extends React.Component {
-  renderSlides() {
-    return SlideData.map((slide, index) => (
-      <View
-        style={style.container}
-        key={index}
-      >
-        <Text>{slide.title}</Text>
-        <Text>{slide.text}</Text>
-        <Text>
-          {index + 1}
-          /3
-        </Text>
-      </View>
-    ));
-  }
-
-  render() {
-    return (
-    <View
-    style={{
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-    >
-      <ScrollView
-        horizontal
-        pagingEnabled
-      >
-        {this.renderSlides()}
-      </ScrollView>
-      </View>
-    );
-  }
-} */
+Readme.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default Readme;

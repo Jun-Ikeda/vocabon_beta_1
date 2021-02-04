@@ -3,7 +3,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 // import { BlurView } from 'expo-blur';
 
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { LayoutAnimation, TouchableOpacity } from 'react-native';
 import Color from '../../../config/Color';
 
@@ -11,7 +11,6 @@ import Color from '../../../config/Color';
 
 // import Home from './_home/Home';
 import { header } from '../../../config/Const';
-import { getAccountGeneral } from '../../../config/account/Account';
 
 import Home from './_home/Home';
 import CreateDeck from './_createdeck/CreateDeck';
@@ -26,7 +25,6 @@ import ImportOption from '../../../screens/deck/import/_importoption/ImportOptio
 import Export from '../../../screens/deck/export/_export/Export';
 import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
 
-import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
 import { docVisibleState } from '../../../../dev/Switch';
 import Icon from '../../../components/Icon';
 
@@ -75,7 +73,7 @@ const HomeNav = () => {
       <Stack.Screen
         name="createdeck"
         component={CreateDeck}
-        options={{ headerTitle: 'Create Deck' }}
+        options={{ headerTitle: 'Create a New Deck' }}
       />
       <Stack.Screen
         name="menu"

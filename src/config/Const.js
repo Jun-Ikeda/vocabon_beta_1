@@ -1,7 +1,7 @@
 // import React from 'react';
 import ExpoClipboard from 'expo-clipboard';
 import {
-  Platform, Dimensions, StyleSheet, Alert,
+  Platform, Dimensions, StyleSheet, Alert, StatusBar,
 } from 'react-native';
 
 export const header = {
@@ -15,6 +15,7 @@ export const header = {
       fontSize: 22,
     },
   }),
+  paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
 };
 
 const carousel = {

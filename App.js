@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Platform, StyleSheet, UIManager, View,
 } from 'react-native';
 import { Provider } from 'react-native-paper';
 import { RecoilRoot } from 'recoil';
+import { Audio } from 'expo-av';
 
 import Switch from './dev/Switch';
 
@@ -18,14 +19,23 @@ const style = StyleSheet.create({
   },
 });
 
-const App = () => (
-  <RecoilRoot>
-    <Provider>
-      <View style={style.container}>
-        <Switch />
-      </View>
-    </Provider>
-  </RecoilRoot>
-);
+const App = () => {
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS === 'ios') {
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+      }
+    })();
+  }, []);
+  return (
+    <RecoilRoot>
+      <Provider>
+        <View style={style.container}>
+          <Switch />
+        </View>
+      </Provider>
+    </RecoilRoot>
+  );
+};
 
 export default App;

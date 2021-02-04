@@ -97,7 +97,7 @@ const Button = [
   {
     title: 'Speech',
     onPress: () => {
-      Speech.speak("Hello, I'm Jun Ikeda. I'm the chief developer of this app, Vocabon", { language: 'en' });
+      Speech.speak('Yo soy estudiante', { language: 'es' });
     },
   },
 ];

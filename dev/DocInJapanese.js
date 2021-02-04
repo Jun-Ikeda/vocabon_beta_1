@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
-  Platform,
-  ScrollView,
-  StatusBar, StyleSheet, Text, View,
+  ScrollView, StyleSheet, Text, View,
 } from 'react-native';
 import { atom, useRecoilState } from 'recoil';
 import Color from '../src/config/Color';
+import { header } from '../src/config/Const';
 
 export const currentRouteState = atom({
   key: 'currentRouteState',
@@ -17,7 +16,7 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.white1,
-    paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
+    paddingTop: header.paddingTop,
   },
   document: {
     padding: 15,
@@ -44,7 +43,7 @@ const style = StyleSheet.create({
 });
 
 const DocInJapanese = () => {
-  const [visibleParagraph, setVisibleParagraph] = useState('');
+  // const [visibleParagraph, setVisibleParagraph] = useState('');
   const currentRoute = useRecoilState(currentRouteState);
 
   const menuContents = [
@@ -65,10 +64,12 @@ const DocInJapanese = () => {
         <View style={style.h1Container}>
           <Text style={style.h1}>1. 基本操作</Text>
           <Text>①　単語帳を作成、編集する：まずは右下の＋ボタンからCreate Deckというタイトルの画面を開く</Text>
-          <Text>②　</Text>
+          <Text>②　単語帳のタイトルと言語を決める。単語帳の説明をDescriptionに書いて付け加えることができる</Text>
+          <Text>③　☑ボタンを押して単語帳を保存する。作成した単語帳はホーム画面に追加され、いつでも見られるようになる</Text>
         </View>
         <View style={style.h1Container}>
           <Text style={style.h1}>2. Home</Text>
+          <Text>作成した単語帳は全てここで見ることができる。新しく作成した単語帳は古いものの右側に追加されていく</Text>
         </View>
         <View style={style.h1Container}>
           <Text style={style.h1}>3. Menu</Text>

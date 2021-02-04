@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Text,
+  StyleSheet, ScrollView, View, Text, TouchableOpacity,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 import ExpoClipboard from 'expo-clipboard';
@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import Color from '../../../../config/Color';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
+
 import ExportOption from './ExportOption';
 
 const style = StyleSheet.create({
@@ -22,6 +24,10 @@ const style = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: Color.white1,
     justifyContent: 'center',
+  },
+  popUp: {
+    backgroundColor: Color.white1,
+    borderRadius: 10,
   },
 });
 
@@ -41,6 +47,18 @@ const Export = (props) => {
 
   // const renderExportTypes = () => {//   const exportButtons = [//     {//       title: 'JSON',//       onPress: () => func.alert('Export as JSON'),//       textStyle: {}, //       flex: 1,//     },//     {//       title: 'Excel',//       onPress: () => func.alert('Export as Excel'),//       textStyle: {},//       flex: 1,//     },//     {//       title: 'Copy',//       onPress: () => func.alert('Export as a Copy'),//       textStyle: {},//       flex: 1,//     },//   ];//   if (visible) {//     return exportButtons.map((button) => (//       <View style={[{ borderWidth: 1 }]}>//         <Button title={button.title} onPress={button.onPress} />//       </View>//     ));//   }//   return null;// };
 
+  const renderMenu = () => (
+    <View style={style.container}>
+      <Text> this is the popup screen </Text>
+      <TouchableOpacity
+        onPress={() => setContentVisible(false)}
+        style={{ borderWidth: 1 }}
+      >
+        <Text>Press</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   const renderDataBox = () => {
     const contentArray = func.convertObjectToArray(content);
     const output = contentArray.map((element) => [element.value.term, element.value.definition].join(itemDelimiter)).join(cardDelimiter);
@@ -48,7 +66,17 @@ const Export = (props) => {
 
     return (
       <View style={style.dataBox}>
-        <Text style={{ fontSize: 22, padding: 10 }}> Data </Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 22, padding: 10 }}> Data </Text>
+          <TouchableOpacity
+            onPress={() => setContentVisible(true)}
+            style={{ borderWidth: 1 }}
+          >
+            <Text> Press </Text>
+
+          </TouchableOpacity>
+
+        </View>
         <ScrollView contentContainerStyle={{ padding: 10 }}>
           <Text>{output}</Text>
         </ScrollView>
@@ -61,6 +89,7 @@ const Export = (props) => {
 
   return (
     <View style={style.container}>
+
       <ExportOption
         itemValue={itemValue}
         setItemValue={setItemValue}
@@ -72,6 +101,11 @@ const Export = (props) => {
         setCardDelimiter={setCardDelimiter}
       />
       {renderDataBox()}
+      <PopUpMenu
+        isVisible={contentVisible}
+        renderMenu={renderMenu}
+        overlayStyle={style.popUp}
+      />
     </View>
   );
 };

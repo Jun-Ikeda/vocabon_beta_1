@@ -9,6 +9,7 @@ import Demo from './Demo';
 import Nav from '../src/nav/Nav';
 import Readme from '../src/nav/launch/_readme/Readme';
 import DocInJapanese from './DocInJapanese';
+import LaunchNav from '../src/nav/launch/LaunchNav';
 // import EditSearch from '../src/screens/deck/edit/_edit/EditSearch';
 
 export const docVisibleState = atom({
@@ -36,9 +37,8 @@ const style = StyleSheet.create({
 const buttons = [
   { title: 'Product', element: <Nav /> },
   { title: 'Demo', element: <Demo /> },
-  // { title: 'Suzuki', element: <Analyze navigation={{}} route={{ params: { deckID: '7NCodht%}0' } }} /> },
-  // { title: 'Iwasaki', element: <Options navigation={{}} route={{ params: { deckID: '7NCodht%}0' } }} /> },
   { title: 'Kochiya', element: <Readme /> },
+  { title: 'Launch', element: <LaunchNav /> },
 ];
 
 const Switch = () => {
