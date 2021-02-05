@@ -84,6 +84,13 @@ const style = {
   pushButtonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    top: 0,
+  },
+  pushButton: {
+    padding: 10,
   },
 };
 
@@ -117,19 +124,21 @@ class TagsInput extends React.Component {
   );
 
   renderPushButton = () => (
-    <TouchableOpacity
-      onPress={this.createNewTag}
-      style={style.pushButtonContainer}
-    >
-      <Icon.AntDesign name="plussquareo" size={25} />
-    </TouchableOpacity>
+    <View style={style.pushButtonContainer}>
+      <TouchableOpacity
+        onPress={this.createNewTag}
+        style={style.pushButton}
+      >
+        <Icon.AntDesign name="plussquareo" size={25} />
+      </TouchableOpacity>
+    </View>
   );
 
   // If characters remain in the input field after input is completed, add them to the tag.
   createNewTag = async () => {
     const { tags, updateState } = this.props;
-    if (tags.tag) {
-      const tempArray = await tags.tagsArray.concat(tags.tag);
+    if (tags?.tag) {
+      const tempArray = await tags?.tagsArray.concat(tags?.tag);
       const tempObject = {
         tag: '',
         tagsArray: [...new Set(tempArray)], // Deduplication
@@ -158,7 +167,7 @@ class TagsInput extends React.Component {
         return null;
       }
       const tempTag = text.replace(keysStr, '');
-      const tempArray = tags.tagsArray.concat(tempTag);
+      const tempArray = tags?.tagsArray.concat(tempTag);
       const tempObject = {
         tag: '',
         tagsArray: [...new Set(tempArray)], // Deduplication
@@ -168,7 +177,7 @@ class TagsInput extends React.Component {
     }
     const tempObject = {
       tag: text,
-      tagsArray: tags.tagsArray,
+      tagsArray: tags?.tagsArray,
     };
     return updateState(tempObject);
   };
@@ -184,13 +193,13 @@ class TagsInput extends React.Component {
         // The following processing is required because multiple characters may be specified as one delimiter.
         const tempObject = {
           tag: '',
-          tagsArray: tags.tagsArray,
+          tagsArray: tags?.tagsArray,
         };
         updateState(tempObject);
         return this.input.clear();
       }
       const tempTag = text.replace(regexp, '');
-      const tempArray = tags.tagsArray.concat(tempTag);
+      const tempArray = tags?.tagsArray.concat(tempTag);
       const tempObject = {
         tag: '',
         tagsArray: [...new Set(tempArray)], // Deduplication
@@ -200,17 +209,17 @@ class TagsInput extends React.Component {
     }
     const tempObject = {
       tag: text,
-      tagsArray: tags.tagsArray,
+      tagsArray: tags?.tagsArray,
     };
     return updateState(tempObject);
   };
 
   deleteTag = (tagToDelete, tags, updateState) => {
-    const tempArray = tags.tagsArray;
+    const tempArray = tags?.tagsArray;
     tempArray.splice(tagToDelete, 1);
 
     const tempObject = {
-      tag: tags.tag,
+      tag: tags?.tag,
       tagsArray: tempArray,
     };
     updateState(tempObject);
@@ -268,7 +277,7 @@ class TagsInput extends React.Component {
               disabled && disabledInputStyle,
             ])}
             // {...props}
-            value={tags.tag}
+            value={tags?.tag}
             onChangeText={(text) => this.onChangeText(text, tags, updateState, keysForTag, keysForTagsArray)}
             mode={mode}
             returnKeyType={returnKeyType}
@@ -278,7 +287,7 @@ class TagsInput extends React.Component {
         </View>
         {customElement || null}
         <View style={StyleSheet.flatten([style.tagsView, tagsViewStyle])}>
-          {tags.tagsArray.map((item, count) => (
+          {tags?.tagsArray?.map((item, count) => (
             <View
               style={StyleSheet.flatten([style.tag, tagStyle])}
               key={item.toLowerCase()}

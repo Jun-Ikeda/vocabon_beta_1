@@ -110,13 +110,14 @@ const VocabList = (props) => {
       <View style={style.card}>
         <View style={style.contentContainer}>
           {deck.items.map((item) => {
-            const isVisible = (typeof itemVisible === 'function') ? itemVisible(vocab)[item] : itemVisible[item];
-            const string = deck.formatArrayContent(value?.[item] ?? '');
+            const { key, title } = item;
+            const isVisible = (typeof itemVisible === 'function') ? itemVisible(vocab)[key] : itemVisible[key];
+            const string = deck.formatArrayContent(value?.[key] ?? []);
             if (isVisible) {
-              if (labelVisible[item]) {
-                return <Text style={[style.text, textStyle, itemStyle[item]]} key={item}>{`${item}: ${string}`}</Text>;
+              if (labelVisible[key]) {
+                return <Text style={[style.text, textStyle, itemStyle[key]]} key={key}>{`${title}: ${string}`}</Text>;
               }
-              return <Text style={[style.text, textStyle, itemStyle[item]]} key={item}>{string}</Text>;
+              return <Text style={[style.text, textStyle, itemStyle[key]]} key={key}>{string}</Text>;
             }
             return null;
           })}

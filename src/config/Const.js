@@ -194,15 +194,16 @@ export const deck = {
     return validVocabIDsSorted;
   },
   items: [
-    'term',
-    'definition',
-    'exampleT',
-    'exampleD',
-    'synonym',
-    'antonym',
-    'prefix',
-    'suffix',
-    'cf'],
+    { key: 'term', title: 'Term' },
+    { key: 'definition', title: 'Definition' },
+    { key: 'exampleT', title: 'Example in Term\'s language' },
+    { key: 'exampleD', title: 'Example in Definition\'s language' },
+    { key: 'synonym', title: 'Synonym' },
+    { key: 'antonym', title: 'Antonym' },
+    { key: 'prefix', title: 'Prefix' },
+    { key: 'suffix', title: 'Suffix' },
+    { key: 'cf', title: 'cf.' },
+  ],
 };
 
 export default {

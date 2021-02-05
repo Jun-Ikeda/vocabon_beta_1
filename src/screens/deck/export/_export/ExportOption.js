@@ -38,8 +38,13 @@ const ExportOption = (props) => {
   const {
     itemValue, setItemValue, cardValue, setCardValue,
     itemDelimiter, setItemDelimiter, cardDelimiter, setCardDelimiter,
+    elementValue,
+    setElementValue,
+    elementDelimiter,
+    setElementDelimiter,
   } = props;
 
+  const [elementCustomInput, setElementCustomInput] = useState(''); // 非表示切り替え？ textinputに書いてある内容を他のボタンおしても変わらないようにしようかなって
   const [itemCustomInput, setItemCustomInput] = useState(''); // 非表示切り替え？ textinputに書いてある内容を他のボタンおしても変わらないようにしようかなって
   const [cardCustomInput, setCardCustomInput] = useState('');
 
@@ -103,35 +108,43 @@ const ExportOption = (props) => {
 
   const options = [
     {
-      title: 'Between Term and Definition',
-      buttonTitle1: 'Comma',
+      title: 'Cards',
+      buttonTitle1: 'Slash',
+      buttonTitle2: 'Change Line',
+      buttonValue1: '/',
+      buttonValue2: '\n',
+      radioState: [cardValue, setCardValue],
+      delimiterState: [cardDelimiter, setCardDelimiter],
+      delimiterInputState: [cardCustomInput, setCardCustomInput],
+    },
+    {
+      title: 'Items',
+      buttonTitle1: 'Semicolon',
       buttonTitle2: 'Tab',
-      buttonValue1: ', ',
-      buttonValue2: '\t\t',
-      buttonValue3: '',
+      buttonValue1: ';',
+      buttonValue2: '\t',
       radioState: [itemValue, setItemValue],
       delimiterState: [itemDelimiter, setItemDelimiter],
       delimiterInputState: [itemCustomInput, setItemCustomInput],
     },
     {
-      title: 'Between Terms',
-      buttonTitle1: 'Semicolon',
-      buttonTitle2: 'Change Line',
-      buttonValue1: '; ',
-      buttonValue2: '\n',
-      buttonValue3: '',
-      radioState: [cardValue, setCardValue],
-      delimiterState: [cardDelimiter, setCardDelimiter],
-      delimiterInputState: [cardCustomInput, setCardCustomInput],
+      title: 'Elements',
+      buttonTitle1: 'Comma',
+      buttonTitle2: 'Space',
+      buttonValue1: ',',
+      buttonValue2: ' ',
+      radioState: [elementValue, setElementValue],
+      delimiterState: [elementDelimiter, setElementDelimiter],
+      delimiterInputState: [elementCustomInput, setElementCustomInput],
     },
   ];
   return (
     <View style={style.optionBox}>
-      <Text style={{ fontSize: 22, padding: 10 }}> Options </Text>
+      <Text style={{ fontSize: 18, padding: 10 }}> Options </Text>
       <View style={style.delimiterContainer}>
         {options.map((option) => (
           <View style={{ flex: 1, paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: 18, padding: 5 }}>{option.title}</Text>
+            <Text style={{ fontSize: 14, padding: 5 }}>{option.title}</Text>
             {renderRadioButtons(option)}
           </View>
         ))}

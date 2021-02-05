@@ -13,10 +13,10 @@ import DeckSwiper from 'react-native-deck-swiper';
 import * as Speech from 'expo-speech';
 
 import { CommonActions } from '@react-navigation/native';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
-import { getDeckContent } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
 import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
 
 import Icon from '../../../../components/Icon';
@@ -88,6 +88,9 @@ const Play = (props) => {
   } = props;
   // recoil
   const [onEditVocabID, setOnEditVocabID] = useRecoilState(onEditVocabIDState);
+  const deckGeneral = useRecoilValue(decksGeneral);
+  const general = getDeckGeneral(deckGeneral, deckID);
+  // state
   const [content, setContent] = useState(getDeckContent(deckID));
   const { marks, play } = getAccountContent(deckID);
 
@@ -226,7 +229,9 @@ const Play = (props) => {
           style={style.headerIcon}
           onPress={() => {
             const vocab = validVocab[rightVocabID.length + leftVocabID.length];
-            Speech.speak(vocab?.term ?? '', { language: vocab?.language?.term });
+            vocab?.term?.forEach((term) => {
+              Speech.speak(term ?? '', { language: general?.language?.term });
+            });
           }}
         />
         <Icon.Feather

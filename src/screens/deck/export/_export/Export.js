@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity,
+  StyleSheet, ScrollView, View, Text, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import { Button } from 'react-native-paper';
-import ExpoClipboard from 'expo-clipboard';
 
 import PropTypes from 'prop-types';
+import ExpoClipboard from 'expo-clipboard';
+import { useRecoilValue } from 'recoil';
 import Color from '../../../../config/Color';
-import { getDeckContent } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
+import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
 import ExportOption from './ExportOption';
+import ExportQRcode from './ExportQRcode';
 
 const style = StyleSheet.create({
   container: {
@@ -27,70 +30,67 @@ const style = StyleSheet.create({
   },
   popUp: {
     backgroundColor: Color.white1,
-    borderRadius: 10,
+  },
+  qrbutton: {
+    marginRight: 15,
+    marginTop: 10,
   },
 });
 
 const Export = (props) => {
   // props
   const { navigation, route: { params: { deckID } } } = props;
+  // recoil
+  const deckGeneral = useRecoilValue(decksGeneral);
   // state
   // const [layout, setLayout] = useState({ height: 300, width: 300 });
-  const [itemValue, setItemValue] = useState(', ');
-  const [cardValue, setCardValue] = useState('; ');
-  const [itemDelimiter, setItemDelimiter] = useState(', ');
-  const [cardDelimiter, setCardDelimiter] = useState('; ');
+  const [elementValue, setElementValue] = useState(', ');
+  const [itemValue, setItemValue] = useState('; ');
+  const [cardValue, setCardValue] = useState('/ ');
+  const [elementDelimiter, setElementDelimiter] = useState(', ');
+  const [itemDelimiter, setItemDelimiter] = useState('; ');
+  const [cardDelimiter, setCardDelimiter] = useState('/ ');
 
   const [contentVisible, setContentVisible] = useState(false);
 
   const content = getDeckContent(deckID);
+  const general = getDeckGeneral(deckGeneral, deckID);
 
+  const output = func.convertObjectToArray(content).map((element) => [element.value.term?.join(elementDelimiter), element.value.definition.join(elementDelimiter)].join(itemDelimiter)).join(cardDelimiter);
   // const renderExportTypes = () => {//   const exportButtons = [//     {//       title: 'JSON',//       onPress: () => func.alert('Export as JSON'),//       textStyle: {}, //       flex: 1,//     },//     {//       title: 'Excel',//       onPress: () => func.alert('Export as Excel'),//       textStyle: {},//       flex: 1,//     },//     {//       title: 'Copy',//       onPress: () => func.alert('Export as a Copy'),//       textStyle: {},//       flex: 1,//     },//   ];//   if (visible) {//     return exportButtons.map((button) => (//       <View style={[{ borderWidth: 1 }]}>//         <Button title={button.title} onPress={button.onPress} />//       </View>//     ));//   }//   return null;// };
 
-  const renderMenu = () => (
-    <View style={style.container}>
-      <Text> this is the popup screen </Text>
-      <TouchableOpacity
-        onPress={() => setContentVisible(false)}
-        style={{ borderWidth: 1 }}
-      >
-        <Text>Press</Text>
-      </TouchableOpacity>
+  const renderDataBox = () => (
+    <View style={style.dataBox}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 22, padding: 10 }}> Data </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setContentVisible(true);
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          }}
+          style={style.qrbutton}
+        >
+          <Icon.MaterialCommunityIcons name="qrcode" style={{ fontSize: 30 }} />
+        </TouchableOpacity>
+
+      </View>
+      <ScrollView contentContainerStyle={{ padding: 10 }}>
+        <Text>{output}</Text>
+      </ScrollView>
+      <View style={{ padding: 10 }}>
+        <Button onPress={() => ExpoClipboard.setString(output)} mode="contained" color={Color.green2}>Copy</Button>
+      </View>
     </View>
   );
-
-  const renderDataBox = () => {
-    const contentArray = func.convertObjectToArray(content);
-    const output = contentArray.map((element) => [element.value.term, element.value.definition].join(itemDelimiter)).join(cardDelimiter);
-    // const deckString = deckItems.map((element) => element.map)// const deckString = JSON.stringify(deckItems, null, 4);
-
-    return (
-      <View style={style.dataBox}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 22, padding: 10 }}> Data </Text>
-          <TouchableOpacity
-            onPress={() => setContentVisible(true)}
-            style={{ borderWidth: 1 }}
-          >
-            <Text> Press </Text>
-
-          </TouchableOpacity>
-
-        </View>
-        <ScrollView contentContainerStyle={{ padding: 10 }}>
-          <Text>{output}</Text>
-        </ScrollView>
-        <View style={{ padding: 10 }}>
-          <Button onPress={() => ExpoClipboard.setString(output)} mode="contained" color={Color.green2}>Copy</Button>
-        </View>
-      </View>
-    );
-  };
 
   return (
     <View style={style.container}>
 
       <ExportOption
+        elementValue={elementValue}
+        setElementValue={setElementValue}
+        elementDelimiter={elementDelimiter}
+        setElementDelimiter={setElementDelimiter}
         itemValue={itemValue}
         setItemValue={setItemValue}
         cardValue={cardValue}
@@ -103,8 +103,15 @@ const Export = (props) => {
       {renderDataBox()}
       <PopUpMenu
         isVisible={contentVisible}
-        renderMenu={renderMenu}
+        renderMenu={() => (
+          <ExportQRcode
+            data={output}
+            general={general}
+            setContentVisible={setContentVisible}
+          />
+        )}
         overlayStyle={style.popUp}
+        containerStyle={{ justifyContent: 'center' }}
       />
     </View>
   );

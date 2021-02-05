@@ -54,7 +54,7 @@ class PlayCard extends Component {
       vocab, itemVisible,
     } = this.props;
     const frontItems = [
-      { item: 'term', text: vocab.term, visible: itemVisible.front.includes('term') },
+      { item: 'term', text: deck.formatArrayContent(vocab.term), visible: itemVisible.front.includes('term') },
       { item: 'definition', text: deck.formatArrayContent(vocab.definition), visible: itemVisible.front.includes('definition') },
       { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab?.synonym ?? [])}`, visible: itemVisible.front.includes('synonym') },
       { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab?.antonym ?? [])}`, visible: itemVisible.front.includes('antonym') },

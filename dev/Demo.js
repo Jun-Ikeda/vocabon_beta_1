@@ -7,6 +7,7 @@ import RangeSlider from 'react-native-range-slider-expo';
 // import {  } from 'react-native-paper';
 import lodash from 'lodash';
 import { Button } from 'react-native-paper';
+import SvgQRCode from 'react-native-qrcode-svg';
 import TagsInput from '../src/components/TagsInput';
 import VocabList from '../src/components/deck/vocab/VocabList';
 import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
@@ -59,7 +60,8 @@ const Demo = (props) => (
     {/* {renderVocabList()} */}
     {/* {renderRangeBar()} */}
     {/* {renderSearchFlatList()} */}
-    {renderTagsInput()}
+    {/* {renderTagsInput()} */}
+    {qrcode()}
   </View>
 );
 
@@ -165,6 +167,16 @@ const renderRangeBar = () => {
           {value}
         </Text>
       </View>
+    </View>
+  );
+};
+
+const qrcode = () => {
+  const [qrvisible, setQRvisible] = useState(false);
+  return (
+    <View>
+      <Button onPress={() => setQRvisible(true)}>AAA</Button>
+      <SvgQRCode value="https://qiita.com/jigengineer/items/00bbfa10defc0c2f2fad" />
     </View>
   );
 };

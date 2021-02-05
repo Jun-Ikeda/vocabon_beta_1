@@ -10,7 +10,7 @@ import PopUpMenu from '../../popup/PopUpMenu';
 import Icon from '../../Icon';
 import UUID from '../../../config/UUID';
 import TagsInput from '../../TagsInput';
-import { func } from '../../../config/Const';
+import { deck, func } from '../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -102,7 +102,7 @@ const VocabEdit = (props) => {
   } = props;
   // recoil
   // state
-  const [term, setTerm] = useState('');
+  const [term, setTerm] = useState(initialTag);
   const [definition, setDefinition] = useState(initialTag);
   const [synonym, setSynonym] = useState(initialTag);
   const [antonym, setAntonym] = useState(initialTag);
@@ -113,15 +113,23 @@ const VocabEdit = (props) => {
   const [cf, setCf] = useState(initialTag);
   const [expand, setExpand] = useState(false);
   // ref
-  let textinputs = {};
+  // const textinputs = {};
   const tagsinputs = [];
 
+  const isReady = !(((term.tagsArray.length === 0) && term.tag === '') || ((definition.tagsArray.length === 0) && definition.tag === ''));
+
   const isNewVocab = !Object.keys(content).includes(vocabID);
+
+  const createNewTag = ([state, setState]) => {
+    const newTagsArray = (state.tag === '') ? state.tagsArray : [...state.tagsArray, state.tag];
+    setState({ tag: '', tagsArray: newTagsArray });
+    return { tag: '', tagsArray: newTagsArray };
+  };
 
   useEffect(() => {
     // visibleになるたびvocabIDからstateを更新
     const vocab = content[vocabID];
-    setTerm(vocab?.term ?? '');
+    setTerm({ ...initialTag, tagsArray: vocab?.term ?? [] });
     setDefinition({ ...initialTag, tagsArray: vocab?.definition ?? [] });
     setSynonym({ ...initialTag, tagsArray: vocab?.synonym ?? [] });
     setAntonym({ ...initialTag, tagsArray: vocab?.antonym ?? [] });
@@ -130,21 +138,31 @@ const VocabEdit = (props) => {
     setExampleT({ ...initialTag, tagsArray: vocab?.exampleT ?? [] });
     setExampleD({ ...initialTag, tagsArray: vocab?.exampleD ?? [] });
     setCf({ ...initialTag, tagsArray: vocab?.cf ?? [] });
+    tagsinputs[0]?.focus();
   }, [isVisible]);
 
   const save = () => {
+    const newTerm = createNewTag([term, setTerm]);
+    const newDefinition = createNewTag([definition, setDefinition]);
+    const newSynonym = createNewTag([synonym, setSynonym]);
+    const newAntonym = createNewTag([antonym, setAntonym]);
+    const newPrefix = createNewTag([prefix, setPrefix]);
+    const newSuffix = createNewTag([suffix, setSuffix]);
+    const newExampleT = createNewTag([exampleT, setExampleT]);
+    const newExampleD = createNewTag([exampleD, setExampleD]);
+    const newCf = createNewTag([cf, setCf]);
     setContent((prev) => {
       const result = JSON.parse(JSON.stringify(prev));
       const newVocab = {};
-      newVocab.term = term;
-      newVocab.definition = definition.tagsArray;
-      if (synonym.tagsArray.length !== 0) { newVocab.synonym = synonym.tagsArray; }
-      if (antonym.tagsArray.length !== 0) { newVocab.antonym = antonym.tagsArray; }
-      if (prefix.tagsArray.length !== 0) { newVocab.prefix = prefix.tagsArray; }
-      if (suffix.tagsArray.length !== 0) { newVocab.suffix = suffix.tagsArray; }
-      if (exampleT.tagsArray.length !== 0) { newVocab.exampleT = exampleT.tagsArray; }
-      if (exampleD.tagsArray.length !== 0) { newVocab.exampleD = exampleD.tagsArray; }
-      if (cf.tagsArray.length !== 0) { newVocab.cf = cf.tagsArray; }
+      newVocab.term = newTerm.tagsArray;
+      newVocab.definition = newDefinition.tagsArray;
+      if (synonym.tagsArray.length !== 0) { newVocab.synonym = newSynonym.tagsArray; }
+      if (antonym.tagsArray.length !== 0) { newVocab.antonym = newAntonym.tagsArray; }
+      if (prefix.tagsArray.length !== 0) { newVocab.prefix = newPrefix.tagsArray; }
+      if (suffix.tagsArray.length !== 0) { newVocab.suffix = newSuffix.tagsArray; }
+      if (exampleT.tagsArray.length !== 0) { newVocab.exampleT = newExampleT.tagsArray; }
+      if (exampleD.tagsArray.length !== 0) { newVocab.exampleD = newExampleD.tagsArray; }
+      if (cf.tagsArray.length !== 0) { newVocab.cf = newCf.tagsArray; }
       result[vocabID] = newVocab;
       return result;
     });
@@ -152,7 +170,7 @@ const VocabEdit = (props) => {
   };
   const next = () => {
     save();
-    setTerm('');
+    setTerm(initialTag);
     setDefinition(initialTag);
     setSynonym(initialTag);
     setAntonym(initialTag);
@@ -163,66 +181,56 @@ const VocabEdit = (props) => {
     setCf(initialTag);
     setExpand(false);
     setEditVocabID(UUID.generate(8));
-    textinputs?.focus();
+    tagsinputs[0]?.focus();
   };
 
   const renderTextInputs = () => {
-    const renderTermTextInput = () => (
-      <View key="term">
-        <TextInput
-          label="Term"
-          value={term}
-          onChangeText={setTerm}
-          style={style.input}
-          mode="outlined"
-          returnKeyType="next"
-          ref={(textinput) => { textinputs = textinput; }}
-          autoFocus
-          onSubmitEditing={() => { if (!((term === '') || (definition.tagsArray.length === 0))) next(); }}
-        />
-      </View>
-    );
+    const onSubmitEditing = () => { if (isReady) next(); };
     const items = [
       {
-        label: 'Definition', value: definition, setState: setDefinition, isVisible: true,
+        label: 'Term', value: term, setState: setTerm, isVisible: true, keysForTags: [',', '.', ' ', '。', '、', '　'],
       },
       {
-        label: 'ExampleT', value: exampleT, setState: setExampleT, isVisible: true,
+        label: 'Definition', value: definition, setState: setDefinition, isVisible: true, keysForTags: [',', '.', ' ', '。', '、', '　'],
       },
       {
-        label: 'ExampleD', value: exampleD, setState: setExampleD, isVisible: true,
+        label: 'Example in Term\'s language', value: exampleT, setState: setExampleT, isVisible: true, keysForTags: ['/'],
       },
       {
-        label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand,
+        label: 'Example in Definition\'s language', value: exampleD, setState: setExampleD, isVisible: true, keysForTags: ['/'],
       },
       {
-        label: 'Antonym', value: antonym, setState: setAntonym, isVisible: expand,
+        label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
       },
       {
-        label: 'Prefix', value: prefix, setState: setPrefix, isVisible: expand,
+        label: 'Antonym', value: antonym, setState: setAntonym, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
       },
       {
-        label: 'Suffix', value: suffix, setState: setSuffix, isVisible: expand,
+        label: 'Prefix', value: prefix, setState: setPrefix, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
       },
       {
-        label: 'cf.', value: cf, setState: setCf, isVisible: expand,
+        label: 'Suffix', value: suffix, setState: setSuffix, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
+      },
+      {
+        label: 'cf.', value: cf, setState: setCf, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
       },
     ];
     return (
       <View style={{ flex: 1 }}>
-        {renderTermTextInput()}
+        {/* {renderTermTextInput()} */}
         {items.map((item, index) => (item.isVisible ? (
           <View key={item.label.toLowerCase()}>
             <TagsInput
               label={item.label}
               updateState={(state) => item.setState(state)}
               tags={item.value}
-              keysForTagsArray={['.', '。']}
+              keysForTagsArray={item.keysForTags}
               style={style.input}
               mode="outlined"
               ref={(textinput) => { tagsinputs[index] = textinput; }}
               returnKeyType="next"
-              onSubmitEditing={() => { if (!((term === '') || (definition.tagsArray.length === 0))) next(); }}
+              onSubmitEditing={onSubmitEditing}
+              pushButtonVisible
             />
           </View>
         ) : null))}
@@ -240,7 +248,7 @@ const VocabEdit = (props) => {
             onPress={next}
             mode="contained"
             color={Color.green2}
-            disabled={(term === '') || (definition.tagsArray.length === 0)}
+            disabled={!isReady}
           >
             Next
           </Button>
@@ -254,7 +262,7 @@ const VocabEdit = (props) => {
           }}
           mode="contained"
           color={Color.green2}
-          disabled={(term === '') || (definition.tagsArray.length === 0)}
+          disabled={!isReady}
         >
           Save
         </Button>
