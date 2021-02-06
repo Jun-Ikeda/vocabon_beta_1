@@ -63,9 +63,17 @@ const DocInJapanese = () => {
         <Text style={style.title}>校内限定公開用説明書</Text>
         <View style={style.h1Container}>
           <Text style={style.h1}>1. 基本操作</Text>
-          <Text>①　単語帳を作成、編集する：まずは右下の＋ボタンからCreate Deckというタイトルの画面を開く</Text>
-          <Text>②　単語帳のタイトルと言語を決める。単語帳の説明をDescriptionに書いて付け加えることができる</Text>
-          <Text>③　☑ボタンを押して単語帳を保存する。作成した単語帳はホーム画面に追加され、いつでも見られるようになる</Text>
+          <Text>単語帳を作成、編集、再生</Text>
+          <Text>①　まずは右下の＋ボタンからCreate Deckというタイトルの画面を開く</Text>
+          <Text>②　単語帳のタイトルと、単語(Term)と定義(Definition)の言語を決める。単語帳の説明をDescriptionに書いて付け加えることができる。</Text>
+          <Text>③　☑ボタンを押して単語帳を保存する。作成した単語帳はホーム画面に追加されるので、タップする</Text>
+          <Text>④　単語帳のメニューが開くので、Editを押して遷移する</Text>
+          <Text>⑤　画面右下のプラスボタンを押し、新規単語の追加をする</Text>
+          <Text>※　一つの単語に複数の定義、例文、同義語などを追加する場合、入力ボックス右のボタンを押すか、スペースなどで区切ることができる</Text>
+          <Text>⑥　追加が完了したら、画面下のSaveボタンを押す。</Text>
+          <Text>⑦　メニューに戻ったらPlayを押し、Optionsという画面でDefaultを選択して画面下のPlayを押す</Text>
+          <Text>⑧　タップして裏返し、スワイプで分からなかった単語を分類する</Text>
+          <Text>⑨　再生が終了すると、ボタンが出現し、結果が表示される。Menuを押すと再生が終了する。</Text>
         </View>
         <View style={style.h1Container}>
           <Text style={style.h1}>2. Home</Text>

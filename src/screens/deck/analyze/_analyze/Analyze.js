@@ -117,8 +117,8 @@ const Analyze = (props) => {
         onPress: () => {
           // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
-            const nameA = a.value.term.toLowerCase(); // 大文字と小文字を無視する
-            const nameB = b.value.term.toLowerCase(); // 大文字と小文字を無視する
+            const nameA = a.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
+            const nameB = b.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
             return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
