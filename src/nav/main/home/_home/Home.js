@@ -17,6 +17,7 @@ import { decksGeneral } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
 
 import { currentRouteState } from '../../../../../dev/DocInJapanese';
+import { getAccountContent } from '../../../../config/account/Account';
 
 const style = StyleSheet.create({
   container: {
@@ -62,7 +63,7 @@ const Home = (props) => {
 
   // const allDeckIDs = Object.keys(general);
   // const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
-  // const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
+  const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
 
   useEffect(() => {
     setAllDeckIDs(Object.keys(general));
@@ -82,7 +83,7 @@ const Home = (props) => {
     <View style={style.container}>
       <ScrollView style={style.scrollContainer} contentContainerStyle={{ paddingBottom: 20 }}>
         {allDeckIDs.length === 0 ? null : renderRow({ title: 'LOCAL', deckIDs: allDeckIDs })}
-        {/* {renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })} */}
+        {bookmarkDeckIDs.length === 0 ? null : (renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs }))}
         {/* {renderRow({ title: 'ALL', deckIDs: allDeckIDs })} */}
       </ScrollView>
       <AddButton navigation={navigation} />

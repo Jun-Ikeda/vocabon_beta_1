@@ -13,6 +13,7 @@ import VocabList from '../src/components/deck/vocab/VocabList';
 import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
 import Color, { PastelColors } from '../src/config/Color';
 import { decksContent } from '../src/config/deck/Deck';
+import DemoBarCodeScanner from './DemoBarCodeScanner';
 // import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
@@ -61,7 +62,8 @@ const Demo = (props) => (
     {/* {renderRangeBar()} */}
     {/* {renderSearchFlatList()} */}
     {/* {renderTagsInput()} */}
-    {qrcode()}
+    {/* {qrcode()} */}
+    <DemoBarCodeScanner />
   </View>
 );
 

@@ -17,7 +17,7 @@ const style = StyleSheet.create({
     backgroundColor: Color.white1,
     flex: 1,
     marginHorizontal: '5%',
-    marginVertical: '15%',
+    marginVertical: '5%',
     borderRadius: 10,
     height: Platform.OS === 'web' ? 500 : null,
   },

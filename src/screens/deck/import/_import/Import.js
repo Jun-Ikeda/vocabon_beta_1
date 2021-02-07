@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, LayoutAnimation, Platform, Alert, KeyboardAvoidingView,
+  View, Text, StyleSheet, Linking, TextInput, TouchableOpacity, LayoutAnimation, Platform, Alert, KeyboardAvoidingView,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import * as Permissions from 'expo-permissions';
 
 import { Button, Divider, Menu } from 'react-native-paper';
 
 import { useIsFocused, useNavigationState } from '@react-navigation/native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import Color from '../../../../config/Color';
-
 import Icon from '../../../../components/Icon';
 import ImportList from '../ImportList';
+import ImportQRcode from '../_importQRcode/ImportQRcode';
+import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -35,10 +38,16 @@ const style = StyleSheet.create({
     paddingHorizontal: 5,
   },
   expandIcon: {
-    fontSize: 24,
+    fontSize: 26,
   },
   emptyText: {
     fontStyle: 'italic',
+  },
+  qrbutton: {
+    paddingHorizontal: 5,
+  },
+  qrIcon: {
+    fontSize: 23,
   },
 });
 
@@ -51,8 +60,9 @@ const Import = (props) => {
   const [itemDelimiter, setItemDelimiter] = useState(';');
   const [cardDelimiter, setCardDelimiter] = useState('/');
   const [inputExpand, setInputExpand] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
   const [inputArray, setInputArray] = useState([]);
-
+  const [qrScannerVisible, setQRScannerVisible] = useState(false);
   const isChanged = !((input === 'manzana;apple,block/plátano;banana') || (input === ''));
   const isFocused = useIsFocused();
 
@@ -76,6 +86,26 @@ const Import = (props) => {
     }
   }),
   [navigation, isChanged, isFocused]);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA).catch((error) => func.alertConsole(error));
+      func.alertConsole(status);
+      if (status === 'granted') {
+        setHasPermission(status === 'granted');
+      } else {
+        Alert.alert(
+          'Camera has been deactivated',
+          'Move to Setting？',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Setting', onPress: () => Linking.openURL('app-settings:') },
+          ],
+        );
+      }
+    }
+    )();
+  }, []);
 
   useEffect(() => {
     if (input === '' || itemDelimiter === '' || cardDelimiter === '') {
@@ -108,7 +138,10 @@ const Import = (props) => {
   };
 
   const renderInput = () => (
-    <View style={{ padding: 10, flex: inputExpand ? 1 : null, height: 240 }}>
+    <View style={{
+      marginTop: 10, padding: 10, flex: inputExpand ? 1 : null, height: 240,
+    }}
+    >
       <Text style={{ fontSize: 18 }}>INPUT</Text>
       <TextInput
         multiline
@@ -117,7 +150,21 @@ const Import = (props) => {
         onChangeText={setInput}
       />
       <View style={{
-        position: 'absolute', bottom: 15, right: 20, flexDirection: 'row',
+        position: 'absolute', right: 25, flexDirection: 'row', marginTop: 1.5,
+      }}
+      >
+        <TouchableOpacity
+          style={style.qrButton}
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setQRScannerVisible(true);
+          }}
+        >
+          <Icon.MaterialCommunityIcons style={style.qrIcon} name="qrcode-scan" />
+        </TouchableOpacity>
+      </View>
+      <View style={{
+        position: 'absolute', right: 60, flexDirection: 'row',
       }}
       >
         <TouchableOpacity
@@ -150,7 +197,6 @@ const Import = (props) => {
       </Button>
     </View>
   );
-
   return (
     <KeyboardAvoidingView style={style.container}>
       <View style={{ flex: 1 }}>
@@ -159,6 +205,12 @@ const Import = (props) => {
         {inputExpand ? null : <ImportList inputArray={inputArray} />}
       </View>
       {inputExpand ? null : renderCompileButton()}
+      <ImportQRcode
+        isContentVisible={qrScannerVisible}
+        setContentVisible={setQRScannerVisible}
+        setInput={setInput}
+        hasPermission={hasPermission}
+      />
     </KeyboardAvoidingView>
   );
 };

@@ -11,6 +11,9 @@ import { RangeSlider } from '@sharcoux/slider';
 import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
+  labelContainer: {
+    paddingVertical: 10,
+  },
   counterBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -39,10 +42,12 @@ const OptionFilter = (props) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const renderTitle = () => (
-    <TouchableOpacity onPress={() => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      setIsVisible(!isVisible);
-    }}
+    <TouchableOpacity
+      onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setIsVisible(!isVisible);
+      }}
+      style={style.labelContainer}
     >
       <Text style={{ justifyContent: 'center', fontSize: 20 }}>Filter</Text>
     </TouchableOpacity>

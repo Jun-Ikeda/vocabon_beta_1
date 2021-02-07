@@ -43,7 +43,8 @@
     "react-native-web": "~0.13.12",
     "recoil": "^0.1.2",
     "unsplash-js": "^6.3.0",
-    "expo-barcode-scanner": "~9.1.0"
+    "expo-barcode-scanner": "~9.1.0",
+    "expo-permissions": "~10.0.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

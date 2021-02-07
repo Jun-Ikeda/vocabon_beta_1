@@ -43,6 +43,9 @@ const style = StyleSheet.create({
   container: {
     flex: 1,
   },
+  labelContainer: {
+    paddingVertical: 10,
+  },
 });
 
 const SortMode = (props) => {
@@ -61,10 +64,12 @@ const SortMode = (props) => {
   ];
   return (
     <View>
-      <TouchableOpacity onPress={() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setIsVisible(!isVisible);
-      }}
+      <TouchableOpacity
+        onPress={() => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setIsVisible(!isVisible);
+        }}
+        style={style.labelContainer}
       >
         <Text style={{ justifyContent: 'center', fontSize: 20 }}>Sort by</Text>
       </TouchableOpacity>

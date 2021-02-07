@@ -46,6 +46,7 @@ const style = StyleSheet.create({
 
 const ExportQRcode = (props) => {
   const { data, general, setContentVisible } = props;
+  // const dataLength = data.length;
 
   const renderCancelButton = () => (
     <TouchableOpacity
@@ -59,6 +60,11 @@ const ExportQRcode = (props) => {
     </TouchableOpacity>
   );
 
+  // const divideContent = () => (
+  //   console.log(Math.floor(dataLength / 10) + 1)
+
+  // );
+
   return (
     <View style={style.content}>
       <View style={style.title}>
@@ -69,10 +75,11 @@ const ExportQRcode = (props) => {
           value={data}
           size={240}
           enableLinearGradient
-
+          linearGradient={[Color.green6, Color.green2]}
         />
       </View>
       {renderCancelButton()}
+      {/* {divideContent()} */}
     </View>
   );
 };

@@ -9,6 +9,9 @@ import { Switch } from 'react-native-paper';
 import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
+  labelContainer: {
+    paddingVertical: 10,
+  },
   cardflip: {
     flex: 1,
   },
@@ -79,10 +82,12 @@ const FrontBack = (props) => {
 
   return (
     <View style={{ }}>
-      <TouchableOpacity onPress={() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setIsVisible(!isVisible);
-      }}
+      <TouchableOpacity
+        onPress={() => {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setIsVisible(!isVisible);
+        }}
+        style={style.labelContainer}
       >
         <Text style={{ fontSize: 20 }}>Visible Items</Text>
       </TouchableOpacity>

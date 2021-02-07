@@ -46,6 +46,7 @@ const style = StyleSheet.create({
     marginVertical: '15%',
     backgroundColor: Color.white1,
     borderRadius: 10,
+    // flex: 1,
   },
   detailtext: {
     // borderWidth: 1,

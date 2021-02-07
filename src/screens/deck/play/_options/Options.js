@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, ScrollView,
+  View, ScrollView, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import { Divider } from 'react-native-paper';
 import { func } from '../../../../config/Const';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
@@ -13,6 +14,15 @@ import OptionStartButton from './OptionStartButton';
 import OptionRadioButton from './OptionRadioButton';
 import OptionFilter from './OptionFilter';
 import FrontBack from './FrontBack';
+import Color from '../../../../config/Color';
+
+const style = StyleSheet.create({
+  divider: {
+    backgroundColor: Color.gray3,
+    height: 1.5,
+    opacity: 0.5,
+  },
+});
 
 const getMax = (object, path = '') => {
   const array = Object.values(object);
@@ -80,7 +90,7 @@ const Options = (props) => {
       title: 'Index', range: [1, Object.values(content).length], state: [indexRange, setIndexRange], visible: validVocabIDs.length > 1,
     },
     {
-      title: 'Marks', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
+      title: 'X', range: [0, MarksMax], state: [markRange, setMarkRange], visible: !(MarksMax === 0),
     },
     // {
     //   title: 'Examples', range: [0, ExampleMax], state: [exampleRange, setExampleRange], visible: !(ExampleMax === 0),
@@ -102,7 +112,9 @@ const Options = (props) => {
           contentContainerStyle={{ padding: 10, paddingBottom: 80 }}
         >
           <SortMode sortMode={sortMode} setSortMode={setSortMode} />
+          <Divider style={style.divider} />
           <OptionFilter items={items} setExpand={setExpandFilter} expand={expandFilter} />
+          <Divider style={style.divider} />
           <FrontBack itemVisible={itemVisible} setItemVisible={setItemVisible} />
         </ScrollView>
       ) : null}

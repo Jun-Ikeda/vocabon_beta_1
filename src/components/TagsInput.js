@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import Icon from './Icon';
+import Color from '../config/Color';
 
 const style = {
   container: {
@@ -57,15 +58,13 @@ const style = {
     flexDirection: 'row',
     height: 26,
     borderRadius: 13,
-    backgroundColor: '#979797',
+    backgroundColor: Color.gray3,
     minWidth: 40,
     maxWidth: 200,
     justifyContent: 'space-between',
     alignItems: 'center',
     // padding: 5,
     // margin: 5,
-    borderWidth: 0.5,
-    borderColor: 'gray',
   },
   tagText: {
     marginHorizontal: 5,
@@ -295,7 +294,7 @@ class TagsInput extends React.Component {
               <Text style={StyleSheet.flatten([style.tagText, tagTextStyle])}>{item}</Text>
               <TouchableOpacity onPressIn={() => this.deleteTag(count, tags, updateState)}>
                 {deleteElement || (
-                <Icon.AntDesign name="close" />
+                <Icon.AntDesign name="close" style={{ paddingRight: 5, fontSize: 16 }} />
                 )}
               </TouchableOpacity>
             </View>

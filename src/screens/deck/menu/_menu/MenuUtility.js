@@ -85,6 +85,9 @@ const MenuUtility = (props) => {
           </TouchableOpacity>
         ))}
         <Text>{`${num} terms`}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('analyze', { deckID })}>
+          <Text>{`${playLength} times play`}</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setExpand(!expand);
@@ -98,10 +101,6 @@ const MenuUtility = (props) => {
               <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}>
                 <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('analyze', { deckID })}>
-                <Text>{`${playLength} times play`}</Text>
-              </TouchableOpacity>
-              <Text>{`${recentMarks}`}</Text>
             </View>
           )
           : null}

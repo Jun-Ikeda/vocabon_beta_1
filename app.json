@@ -17,7 +17,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "[テスト文言]写真をアップロードするためにカメラを使用します",
+        "NSPhotoLibraryUsageDescription": "[テスト文言]アカウント画像をアップロードするためにフォトライブラリを使用します",
+        "NSLocationAlwaysUsageDescription": "[テスト文言]位置情報をアップロードします",
+        "NSLocationUsageDescription": "[テスト文言]位置情報をアップロードします",
+        "NSLocationWhenInUseUsageDescription": "[テスト文言]位置情報をアップロードします"
+      }
     },
     "android": {
       "adaptiveIcon": {

@@ -393,7 +393,7 @@ const langs = [
 ];
 
 const majorLangTags = [
-  'en', 'en-GB', 'zh', 'es', 'ar', 'hi', 'fr', 'de', 'ja', 'ru',
+  'en', 'en-GB', 'zh', 'zh-Hant', 'es', 'ar', 'hi', 'fr', 'de', 'ja', 'ru',
 ];
 const majorLangs = langs.filter((lang) => majorLangTags.includes(lang.tag));
 

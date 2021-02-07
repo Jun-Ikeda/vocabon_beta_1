@@ -13,6 +13,7 @@ import { func } from '../../../../config/Const';
 import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
+import ExportItemOption from './ExportItemOption';
 import ExportOption from './ExportOption';
 import ExportQRcode from './ExportQRcode';
 
@@ -44,14 +45,17 @@ const Export = (props) => {
   const deckGeneral = useRecoilValue(decksGeneral);
   // state
   // const [layout, setLayout] = useState({ height: 300, width: 300 });
-  const [elementValue, setElementValue] = useState(', ');
-  const [itemValue, setItemValue] = useState('; ');
-  const [cardValue, setCardValue] = useState('/ ');
-  const [elementDelimiter, setElementDelimiter] = useState(', ');
-  const [itemDelimiter, setItemDelimiter] = useState('; ');
-  const [cardDelimiter, setCardDelimiter] = useState('/ ');
+  const [elementValue, setElementValue] = useState(',');
+  const [itemValue, setItemValue] = useState(';');
+  const [cardValue, setCardValue] = useState('/');
+  const [elementDelimiter, setElementDelimiter] = useState(',');
+  const [itemDelimiter, setItemDelimiter] = useState(';');
+  const [cardDelimiter, setCardDelimiter] = useState('/');
 
-  const [contentVisible, setContentVisible] = useState(false);
+  const [qrContentVisible, setQRContentVisible] = useState(false);
+  const [optionContentVisible, setOptionContentVisible] = useState(false);
+
+  const [optionSwitch, setOptionSwitch] = useState(false);
 
   const content = getDeckContent(deckID);
   const general = getDeckGeneral(deckGeneral, deckID);
@@ -65,7 +69,16 @@ const Export = (props) => {
         <Text style={{ fontSize: 22, padding: 10 }}> Data </Text>
         <TouchableOpacity
           onPress={() => {
-            setContentVisible(true);
+            setOptionContentVisible(true);
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          }}
+          style={style.qrbutton}
+        >
+          <Text>Item Option</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setQRContentVisible(true);
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           }}
           style={style.qrbutton}
@@ -85,7 +98,6 @@ const Export = (props) => {
 
   return (
     <View style={style.container}>
-
       <ExportOption
         elementValue={elementValue}
         setElementValue={setElementValue}
@@ -102,12 +114,24 @@ const Export = (props) => {
       />
       {renderDataBox()}
       <PopUpMenu
-        isVisible={contentVisible}
+        isVisible={qrContentVisible}
         renderMenu={() => (
           <ExportQRcode
             data={output}
             general={general}
-            setContentVisible={setContentVisible}
+            setContentVisible={setQRContentVisible}
+          />
+        )}
+        overlayStyle={style.popUp}
+        containerStyle={{ justifyContent: 'center' }}
+      />
+      <PopUpMenu
+        isVisible={optionContentVisible}
+        renderMenu={() => (
+          <ExportItemOption
+            setContentVisible={setOptionContentVisible}
+            optionSwitch={optionSwitch}
+            setOptionSwitch={setOptionSwitch}
           />
         )}
         overlayStyle={style.popUp}
@@ -121,8 +145,5 @@ Export.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
-Export.defaultPrps = {
 
-};
-
-export default Export;
+export default Export;//
