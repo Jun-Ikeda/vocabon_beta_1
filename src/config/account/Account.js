@@ -4,7 +4,20 @@ import account from './AccountModule';
 
 export { account };
 
-export const getAccountGeneral = () => account?.general ?? { email: '', password: '', userID: '' };
+const initialAccountGeneral = {
+  email: '',
+  name: '',
+  password: '',
+  userID: '',
+  loggedin: '',
+  emailVerified: '',
+};
+
+export const getAccountGeneral = () => account?.general ?? initialAccountGeneral;
+
+export const saveAccountGeneral = (newData, merge = true) => {
+  account.general = merge ? { ...initialAccountGeneral, ...account.general, ...newData } : newData;
+};
 
 export const getAccountContent = (deckID = '') => {
   if (deckID === '') {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import {
   LayoutAnimation,
   ScrollView, StyleSheet, Text, TouchableOpacity, View,
@@ -122,10 +121,24 @@ const DocInJapanese = () => {
         {renderTutorial()}
         {renderHome()}
         {renderMenu()}
-        <Text style={style.footerText}>{'開発者:\n池田隼、市川大祐、IわさきSんぺい、奥田悠斗、東風谷順正、鈴木柾孝'}</Text>
+        <Text style={style.footerText}>{'開発者:\n池田隼、市川大祐、岩崎慎平、奥田悠斗、東風谷順正、鈴木柾孝'}</Text>
       </ScrollView>
     </View>
   );
 };
 
 export default DocInJapanese;
+
+/*
+単語帳を作成、編集、再生
+① まずは右下の＋ボタンからCreate Deckというタイトルの画面を開く
+② 単語帳のタイトルと、単語(Term)と定義(Definition)の言語を決める。単語帳の説明をDescriptionに書いて付け加えることができる。
+③ ☑ボタンを押して単語帳を保存する。作成した単語帳はホーム画面に追加されるので、タップする
+④ 単語帳のメニューが開くので、Editを押して遷移する
+⑤ 画面右下のプラスボタンを押し、新規単語の追加をする
+※ 一つの単語に複数の定義、例文、同義語などを追加する場合、入力ボックス右のボタンを押すか、スペースなどで区切ることができる
+⑥ 追加が完了したら、画面下のSaveボタンを押す。
+⑦ メニューに戻ったらPlayを押し、Optionsという画面でDefaultを選択して画面下のPlayを押す
+⑧ タップして裏返し、スワイプで分からなかった単語を分類する
+⑨ 再生が終了すると、ボタンが出現し、結果が表示される。Menuを押すと再生が終了する。
+*/

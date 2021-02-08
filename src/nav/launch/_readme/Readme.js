@@ -4,9 +4,11 @@ import {
   Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, View,
 } from 'react-native';
 import { Button } from 'react-native-paper';
-import Color from '../../../config/Color';
+import Color, { getRandomPastel } from '../../../config/Color';
 import { header } from '../../../config/Const';
+import Icon from '../../../components/Icon';
 
+const screenshot0 = require('../../../../assets/icon.png');
 const screenshot1 = require('../../../../assets/screenshots/S__74235908.png');
 const screenshot2 = require('../../../../assets/screenshots/S__74235909.png');
 const screenshot3 = require('../../../../assets/screenshots/S__74235910.png');
@@ -18,8 +20,12 @@ const style = StyleSheet.create({
     flex: 1,
     paddingTop: header.paddingTop,
   },
+  backgroundColor: {
+    // backgroundColor: getRandomPastel(),
+    flex: 1,
+  },
   onlyText: {
-    marginVertical: 100,
+    marginVertical: 120,
   },
   page: {
     justifyContent: 'center',
@@ -27,24 +33,33 @@ const style = StyleSheet.create({
   },
   text: {
     fontSize: 40,
-    padding: 20,
+    padding: 30,
   },
   subText: {
     fontSize: 30,
-    marginHorizontal: 25,
+    marginHorizontal: 5,
     textAlign: 'center',
+    padding: 30,
   },
-  // number: {
-  //   fontSize: 24,
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   right: 0,
-  // },
+  iconRight: {
+    fontSize: 40,
+    position: 'absolute',
+    top: 30,
+    right: 20,
+    color: Color.gray4,
+  },
+  iconLeft: {
+    fontSize: 40,
+    position: 'absolute',
+    top: 30,
+    left: 20,
+    color: Color.gray4,
+  },
   picture: {
     resizeMode: 'contain',
-    height: '80%',
-    width: '80%',
-    marginHorizontal: '10%',
+    height: '70%',
+    width: '70%',
+    marginHorizontal: '15%',
     // flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -57,12 +72,12 @@ const SlideData = [
     color: Color.defaultBackground,
     text: 'Welcome to Vocabon!',
     subText: 'Build up Your Vocabulary',
-    img: null,
+    img: screenshot0,
   },
   {
     title: 'slide2',
     color: Color.defaultBackground,
-    text: '1.Create',
+    text: '1.Edit',
     subText: 'Add Terms Easily',
     img: screenshot1,
   },
@@ -97,7 +112,7 @@ const SlideData = [
   {
     title: 'slide7',
     color: Color.defaultBackground,
-    text: "Then,let's go!",
+    text: "Then, let's go!",
     subText: '',
     img: null,
   },
@@ -122,96 +137,20 @@ const Readme = (props) => {
       style={[style.container, { width: layout.width }, { backgroundColor: slide.color }]}
       key={slide.title.toLowerCase()}
     >
-      {/* <Text>{slide.title}</Text> */}
-      {/* <Text style={style.text}>{slide.text}</Text> */}
-      {/* <Text style={style.number}>
-        {index + 1}
-        /
-        {SlideData.length}
-      </Text> */}
-      <View style={index === SlideData.length - 1 || index === 0 ? style.onlyText : null}>
-        <View style={style.page}>
-          <Text style={style.text}>{slide.text}</Text>
-          {slide.img ? <Image source={screenshot1} style={style.picture} /> : null}
-          <Text style={style.subText}>{slide.subText}</Text>
-          {index === 6
-            ? <Button onPress={() => navigation.navigate('signup')}>Start</Button>
-            : null}
-        </View>
-      </View>
-      {/* {index === (SlideData.length - 7) ? (
-        <View style={style.onlyText}>
+      <View style={[style.backgroundColor, { backgroundColor: getRandomPastel() }]}>
+        {index === 6 ? null : <Icon.MaterialCommunityIcons name="chevron-triple-right" style={style.iconRight} />}
+        {index === 0 ? null : <Icon.MaterialCommunityIcons name="chevron-triple-left" style={style.iconLeft} />}
+        <View style={index === SlideData.length - 1 || index === 0 ? style.onlyText : null}>
           <View style={style.page}>
             <Text style={style.text}>{slide.text}</Text>
+            {slide.img ? <Image source={slide.img} style={style.picture} /> : null}
             <Text style={style.subText}>{slide.subText}</Text>
+            {index === 6
+              ? <Button onPress={() => navigation.navigate('signup')}>Start</Button>
+              : null }
           </View>
         </View>
-      ) : null}
-      {index === (SlideData.length - 6) ? (
-        <View style={style.page}>
-          <Text style={style.text}>
-            {slide.text}
-          </Text>
-          <Text style={style.subText}>
-            {slide.subText}
-          </Text>
-          <Image source={screenshot1} style={style.picture} />
-        </View>
-      ) : null}
-      {index === (SlideData.length - 5) ? (
-        <View style={style.page}>
-          <Text style={style.text}>
-            {slide.text}
-          </Text>
-          <Text style={style.subText}>
-            {slide.subText}
-          </Text>
-          <Image source={screenshot2} style={style.picture} />
-        </View>
-      ) : null}
-      {index === (SlideData.length - 4) ? (
-        <View style={style.page}>
-          <Text style={style.text}>
-            {slide.text}
-          </Text>
-          <Text style={style.subText}>
-            {slide.subText}
-          </Text>
-          <Image source={screenshot3} style={style.picture} />
-        </View>
-      ) : null}
-      {index === (SlideData.length - 3) ? (
-        <View style={style.page}>
-          <Text style={style.text}>
-            {slide.text}
-          </Text>
-          <Text style={style.subText}>
-            {slide.subText}
-          </Text>
-          <Image source={screenshot4} style={style.picture} />
-        </View>
-      ) : null}
-      {index === (SlideData.length - 2) ? (
-        <View style={style.page}>
-          <Text style={style.text}>
-            {slide.text}
-          </Text>
-          <Text style={style.subText}>
-            {slide.subText}
-          </Text>
-          <Image source={screenshot5} style={style.picture} />
-        </View>
-      ) : null} */}
-      {/* {index === (SlideData.length - 1) ? (
-        <View style={style.onlyText}>
-          <View style={style.page}>
-            <Text style={style.text}>
-              {slide.text}
-            </Text>
-            <Button onPress={() => navigation.navigate('signup')}>Start</Button>
-          </View>
-        </View>
-      ) : null} */}
+      </View>
     </SafeAreaView>
   ));
 

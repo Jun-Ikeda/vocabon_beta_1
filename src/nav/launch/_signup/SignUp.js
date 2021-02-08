@@ -1,11 +1,15 @@
 import React from 'react';
 import {
+  Alert,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
+import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
-import AuthForms from '../AuthForms';
+import AuthForms, { formsInputState } from '../AuthForms';
+import { signup } from '../../../config/firebase/Firebase';
+import { saveAccountGeneral } from '../../../config/account/Account';
 
 const style = StyleSheet.create({
   container: {
@@ -29,10 +33,33 @@ const style = StyleSheet.create({
 
 const SignUp = (props) => {
   const { navigation } = props;
+  const formsInput = useRecoilValue(formsInputState);
+
+  const signupAndSave = async () => {
+    if (Object.values(formsInput).includes('')) {
+      Alert.alert('Error', 'Please fill in all the blanks');
+    } else {
+      const { email, password, name } = formsInput;
+      const user = await signup(formsInput.email, formsInput.password, formsInput.name);
+      if (user != null) {
+        saveAccountGeneral({
+          email, name, password, userID: user.user.uid, loggedin: true, emailVerified: user.user.emailVerified,
+        });
+        navigation.navigate('emailverify');
+      }
+    }
+  };
 
   const renderSignUpButton = () => (
     <View style={style.signupButtonContainer}>
-      <Button color={Color.green3} mode="contained" style={style.signupButton}>Sign Up</Button>
+      <Button
+        color={Color.green3}
+        mode="contained"
+        style={style.signupButton}
+        onPress={signupAndSave}
+      >
+        Sign Up
+      </Button>
     </View>
   );
 

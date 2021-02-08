@@ -993,6 +993,7 @@ export const Account = {
   general: {
     email: 'vocabon.team@gmail.com',
     password: 'bossbaby0121',
+    name: 'Vocabon',
     userID: 'WUgzMNtDDAap5TkAXZbrPwF97Bu2',
   },
   content: { // 履歴

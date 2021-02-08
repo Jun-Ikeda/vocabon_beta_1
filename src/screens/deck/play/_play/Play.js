@@ -10,7 +10,6 @@ import {
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
 import DeckSwiper from 'react-native-deck-swiper';
-import * as Speech from 'expo-speech';
 
 import { CommonActions } from '@react-navigation/native';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
@@ -164,7 +163,7 @@ const Play = (props) => {
         <DeckSwiper
           cards={validVocab}
           cardIndex={rightVocabID.length + leftVocabID.length}
-          renderCard={(vocab) => (<PlayCard vocab={vocab} ref={(ref) => { setCard(ref); }} itemVisible={itemVisible} />)}
+          renderCard={(vocab) => (<PlayCard vocab={vocab} ref={(ref) => { setCard(ref); }} itemVisible={itemVisible} language={general?.language} />)}
           onSwipedRight={(index) => {
             setIsChanged(true);
             setRightVocabID([...rightVocabID, validVocabIDs[index]]);
@@ -224,16 +223,6 @@ const Play = (props) => {
     const uri = finished ? '' : `https://www.google.com/search?q=${validVocab[leftVocabID.length + rightVocabID.length].term}`;
     return (
       <View style={{ flexDirection: 'row' }}>
-        <Icon.MaterialIcons
-          name="record-voice-over"
-          style={style.headerIcon}
-          onPress={() => {
-            const vocab = validVocab[rightVocabID.length + leftVocabID.length];
-            vocab?.term?.forEach((term) => {
-              Speech.speak(term ?? '', { language: general?.language?.term });
-            });
-          }}
-        />
         <Icon.Feather
           name="edit"
           style={[style.headerIcon, { fontSize: 24 }]}

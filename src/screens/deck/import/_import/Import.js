@@ -90,7 +90,6 @@ const Import = (props) => {
   useEffect(() => {
     (async () => {
       const { status } = await Permissions.askAsync(Permissions.CAMERA).catch((error) => func.alertConsole(error));
-      func.alertConsole(status);
       if (status === 'granted') {
         setHasPermission(status === 'granted');
       } else {

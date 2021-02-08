@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View, Text, StyleSheet, TouchableOpacity,
+} from 'react-native';
 import CardFlip from 'react-native-card-flip';
 import PropTypes from 'prop-types';
+import * as Speech from 'expo-speech';
 // import HTML from 'react-native-render-html';
 
 import Color from '../../../../config/Color';
-import { deck } from '../../../../config/Const';
+import { deck, func } from '../../../../config/Const';
+import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
   cardflip: {
@@ -23,6 +27,13 @@ const style = StyleSheet.create({
     color: Color.font1,
     fontSize: 24,
     textAlign: 'left',
+  },
+  headerIcon: {
+    textAlign: 'right',
+    fontSize: 30,
+    paddingHorizontal: 10,
+    alignSelf: 'center',
+    color: Color.gray1,
   },
 });
 
@@ -51,29 +62,29 @@ class PlayCard extends Component {
 
   render() {
     const {
-      vocab, itemVisible,
+      vocab, itemVisible, language,
     } = this.props;
     const frontItems = [
-      { item: 'term', text: deck.formatArrayContent(vocab.term), visible: itemVisible.front.includes('term') },
-      { item: 'definition', text: deck.formatArrayContent(vocab.definition), visible: itemVisible.front.includes('definition') },
-      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab?.synonym ?? [])}`, visible: itemVisible.front.includes('synonym') },
-      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab?.antonym ?? [])}`, visible: itemVisible.front.includes('antonym') },
-      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab?.prefix ?? [])}`, visible: itemVisible.front.includes('prefix') },
-      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab?.suffix ?? [])}`, visible: itemVisible.front.includes('suffix') },
-      { item: 'exampleT', text: deck.formatArrayContent(vocab?.exampleT ?? []), visible: itemVisible.front.includes('exampleT') },
-      { item: 'exampleD', text: deck.formatArrayContent(vocab?.exampleD ?? []), visible: itemVisible.front.includes('exampleD') },
-      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab?.cf ?? [])}`, visible: itemVisible.front.includes('cf') },
+      { item: 'term', array: vocab.term ?? [], lang: language.term },
+      { item: 'definition', array: vocab.definition ?? [], lang: language.definition },
+      { item: 'synonym', array: vocab?.synonym ?? [], lang: language.term },
+      { item: 'antonym', array: vocab?.antonym ?? [], lang: language.term },
+      { item: 'prefix', array: vocab?.prefix ?? [], lang: language.term },
+      { item: 'suffix', array: vocab?.suffix ?? [], lang: language.term },
+      { item: 'exampleT', array: vocab?.exampleT ?? [], lang: language.term },
+      { item: 'exampleD', array: vocab?.exampleD ?? [], lang: language.term },
+      { item: 'cf', array: vocab?.cf ?? [], lang: language.term },
     ];
     const backItems = [
-      { item: 'term', text: vocab.term, visible: itemVisible.back.includes('term') },
-      { item: 'definition', text: deck.formatArrayContent(vocab?.definition ?? []), visible: itemVisible.back.includes('definition') },
-      { item: 'synonym', text: `Synonym: ${deck.formatArrayContent(vocab?.synonym ?? [])}`, visible: itemVisible.back.includes('synonym') },
-      { item: 'antonym', text: `Antonym: ${deck.formatArrayContent(vocab?.antonym ?? [])}`, visible: itemVisible.back.includes('antonym') },
-      { item: 'prefix', text: `Prefix: ${deck.formatArrayContent(vocab?.prefix ?? [])}`, visible: itemVisible.back.includes('prefix') },
-      { item: 'suffix', text: `Suffix: ${deck.formatArrayContent(vocab?.suffix ?? [])}`, visible: itemVisible.back.includes('suffix') },
-      { item: 'exampleT', text: deck.formatArrayContent(vocab?.exampleT ?? []), visible: itemVisible.back.includes('exampleT') },
-      { item: 'exampleD', text: deck.formatArrayContent(vocab?.exampleD ?? []), visible: itemVisible.back.includes('exampleD') },
-      { item: 'cf', text: `cf. ${deck.formatArrayContent(vocab?.cf ?? [])}`, visible: itemVisible.back.includes('cf') },
+      { item: 'term', array: vocab.term ?? [], lang: language.term },
+      { item: 'definition', array: vocab?.definition ?? [], lang: language.definition },
+      { item: 'synonym', array: vocab?.synonym ?? [], lang: language.term },
+      { item: 'antonym', array: vocab?.antonym ?? [], lang: language.term },
+      { item: 'prefix', array: vocab?.prefix ?? [], lang: language.term },
+      { item: 'suffix', array: vocab?.suffix ?? [], lang: language.term },
+      { item: 'exampleT', array: vocab?.exampleT ?? [], lang: language.term },
+      { item: 'exampleD', array: vocab?.exampleD ?? [], lang: language.definition },
+      { item: 'cf', array: vocab?.cf ?? [], lang: language.term },
     ];
     return (
       <CardFlip
@@ -82,10 +93,36 @@ class PlayCard extends Component {
         ref={(card) => { this.card = card; }}
       >
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          {frontItems.map((item) => (item.visible ? <Text style={style.label} key={item.item}>{item.text}</Text> : null))}
+          {frontItems.map((item) => (itemVisible.front.includes(item.item) ? (
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={style.label} key={item.item}>{deck.formatArrayContent(item.array)}</Text>
+              <Icon.MaterialIcons
+                name="record-voice-over"
+                style={style.headerIcon}
+                onPress={() => {
+                  item.array?.forEach((term) => {
+                    Speech.speak(term ?? '', { language: item.lang });
+                  });
+                }}
+              />
+            </View>
+          ) : null))}
         </TouchableOpacity>
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          {backItems.map((item) => (item.visible ? <Text style={style.label} key={item.item}>{item.text}</Text> : null))}
+          {backItems.map((item) => (itemVisible.back.includes(item.item) ? (
+            <View>
+              <Text style={style.label} key={item.item}>{deck.formatArrayContent(item.array)}</Text>
+              <Icon.MaterialIcons
+                name="record-voice-over"
+                style={style.headerIcon}
+                onPress={() => {
+                  item.array?.forEach((term) => {
+                    Speech.speak(term ?? '', { language: item.lang });
+                  });
+                }}
+              />
+            </View>
+          ) : null))}
         </TouchableOpacity>
       </CardFlip>
     );
@@ -95,6 +132,10 @@ class PlayCard extends Component {
 PlayCard.propTypes = {
   vocab: PropTypes.object,
   itemVisible: PropTypes.object.isRequired,
+  language: PropTypes.shape(({
+    term: PropTypes.string,
+    definition: PropTypes.string,
+  })).isRequired,
 };
 
 PlayCard.defaultProps = {

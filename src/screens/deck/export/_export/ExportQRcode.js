@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import {
   View, Text, StyleSheet, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
@@ -46,6 +47,7 @@ const style = StyleSheet.create({
 
 const ExportQRcode = (props) => {
   const { data, general, setContentVisible } = props;
+  const [errorOrNot, setErrorOrNot] = useState(false);
   // const dataLength = data.length;
 
   const renderCancelButton = () => (
@@ -71,12 +73,20 @@ const ExportQRcode = (props) => {
         <Text style={{ fontSize: 20 }}>{general.title}</Text>
       </View>
       <View style={style.qrcode}>
-        <SvgQRCode
-          value={data}
-          size={240}
-          enableLinearGradient
-          linearGradient={[Color.green6, Color.green2]}
-        />
+        {errorOrNot ? (
+          <View>
+            <Text>Sorry...</Text>
+          </View>
+        )
+          : (
+            <SvgQRCode
+              value={data}
+              size={240}
+              enableLinearGradient
+              linearGradient={[Color.green6, Color.green2]}
+              onError={() => setErrorOrNot(true)}
+            />
+          )}
       </View>
       {renderCancelButton()}
       {/* {divideContent()} */}

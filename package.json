@@ -17,9 +17,12 @@
     "@sharcoux/slider": "^5.0.4",
     "expo": "^40.0.0",
     "expo-av": "~8.7.0",
+    "expo-barcode-scanner": "~9.1.0",
     "expo-clipboard": "~1.0.1",
+    "expo-permissions": "~10.0.0",
     "expo-speech": "~8.5.0",
     "expo-status-bar": "~1.0.3",
+    "firebase": "^7.9.0",
     "lodash": "^4.17.20",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
@@ -42,9 +45,7 @@
     "react-native-vector-icons": "^7.1.0",
     "react-native-web": "~0.13.12",
     "recoil": "^0.1.2",
-    "unsplash-js": "^6.3.0",
-    "expo-barcode-scanner": "~9.1.0",
-    "expo-permissions": "~10.0.0"
+    "unsplash-js": "^6.3.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

@@ -5,8 +5,9 @@ import { TextInput } from 'react-native-paper';
 import { atom, useRecoilState } from 'recoil';
 import { func } from '../../config/Const';
 import Icon from '../../components/Icon';
+import Color from '../../config/Color';
 
-const formsInputState = atom({
+export const formsInputState = atom({
   key: 'formsInputState',
   default: { name: '', email: '', password: '' },
 });
@@ -17,6 +18,8 @@ const style = StyleSheet.create({
     right: 0,
     bottom: 0,
     top: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
@@ -43,16 +46,19 @@ const AuthForms = (props) => {
 
   const inputs = [
     {
-      title: 'Name', value: name, onChangeText: setName, buttons: [/* { icon: { collection: '', name: '' }, onPress: () => {} } */],
+      title: 'Name', value: name, onChangeText: setName, buttons: [{ icon: { collection: 'Feather', name: 'x' }, onPress: () => setName('') }],
     },
     {
-      title: 'Email', value: email, onChangeText: setEmail, buttons: [],
+      title: 'Email', value: email, onChangeText: setEmail, buttons: [{ icon: { collection: 'Feather', name: 'x' }, onPress: () => setEmail('') }],
     },
     {
       title: 'Password',
       value: password,
       onChangeText: setPassword,
-      buttons: [{ icon: { collection: 'Ionicons', name: hidePassword ? 'md-eye' : 'md-eye-off' }, onPress: () => setHidePassword(!hidePassword) }],
+      buttons: [
+        { icon: { collection: 'Ionicons', name: hidePassword ? 'md-eye' : 'md-eye-off' }, onPress: () => setHidePassword(!hidePassword) },
+        { icon: { collection: 'Feather', name: 'x' }, onPress: () => setPassword('') },
+      ],
     },
   ];
   return (
@@ -60,19 +66,21 @@ const AuthForms = (props) => {
       {inputs.map((input) => ((visible?.[input.title.toLowerCase()]) ? (
         <View style={{ paddingHorizontal: 30 }} key={input.title.toLowerCase()}>
           <Text style={{ padding: 10, fontSize: 18 }}>{input.title.toUpperCase()}</Text>
-          <TextInput
-            value={input.value}
-            onChangeText={input.onChangeText}
-            label={input.title}
-            secureTextEntry={(input.title.toLowerCase() === 'password') && hidePassword}
-          />
-          <View style={style.absoluteIconContainer}>
-            {input.buttons.map((button) => {
-              const IconComponent = Icon[button.icon.collection];
-              return (
-                <IconComponent name={button.icon.name} onPress={button.onPress} />
-              );
-            })}
+          <View>
+            <TextInput
+              value={input.value}
+              onChangeText={input.onChangeText}
+              label={input.title}
+              secureTextEntry={(input.title.toLowerCase() === 'password') && hidePassword}
+            />
+            <View style={style.absoluteIconContainer}>
+              {input.buttons.map((button) => {
+                const IconComponent = Icon[button.icon.collection];
+                return (
+                  <IconComponent name={button.icon.name} onPress={button.onPress} style={{ fontSize: 28, marginHorizontal: 10, color: Color.gray4 }} />
+                );
+              })}
+            </View>
           </View>
         </View>
       ) : null))}
