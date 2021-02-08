@@ -85,7 +85,6 @@ const Export = (props) => {
         >
           <Icon.MaterialCommunityIcons name="qrcode" style={{ fontSize: 30 }} />
         </TouchableOpacity>
-
       </View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
         <Text>{output}</Text>

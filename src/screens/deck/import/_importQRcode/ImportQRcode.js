@@ -80,8 +80,10 @@ const ImportQRcode = (props) => {
     isContentVisible, setContentVisible, hasPermission, setInput,
   } = props;
   const [scanned, setScanned] = useState(false);
-  const [scannedData, setScannedData] = useState('');
-  const [preScannedData, setPreScannedData] = useState('');
+  const [scannedData, setScannedData] = useState(''); // そのときにスキャンしたデータ
+  const [dataLog, setDataLog] = useState(''); // 今までにスキャンした集計したデータ
+  // const [scannedData, setScannedData] = useState('');
+  // const [preScannedData, setPreScannedData] = useState('');
 
   const renderCancelButton = () => (scanned
     ? null
@@ -99,53 +101,56 @@ const ImportQRcode = (props) => {
 
   const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
-    setPreScannedData(scannedData);
-    setScannedData(scannedData + data);
+    setScannedData(data);
+    // setPreScannedData(scannedData);
+    // setScannedData(scannedData + data);
   };
 
-  const renderAfterScanned = () => (
-    <View style={{ width: '100%', height: '100%' }}>
-      <ScrollView style={style.result}>
-        <Text style={{ fontSize: 18 }}>{scannedData}</Text>
-      </ScrollView>
-      <View style={style.buttonsContainer}>
-        <View style={style.buttonContainer}>
-          <Button
-            onPress={() => {
-              setScanned(false);
-              setScannedData(preScannedData);
-            }}
-            mode="contained"
-            color={Color.green2}
-          >
-            <Icon.Ionicons name="md-refresh-outline" style={style.ButtonIcon} />
-          </Button>
-        </View>
-        <View style={style.buttonContainer}>
-          <Button
-            onPress={() => setScanned(false)}
-            mode="contained"
-            color={Color.green2}
-          >
-            <Icon.Ionicons name="ios-add-sharp" style={style.ButtonIcon} />
-          </Button>
-        </View>
-        <View style={style.buttonContainer}>
-          <Button
-            onPress={() => {
-              setScanned(false);
-              setInput((pre) => `${pre}${scannedData}`);
-              setContentVisible(false);
-            }}
-            mode="contained"
-            color={Color.green2}
-          >
-            <Icon.Ionicons name="ios-checkmark" style={style.ButtonIcon} />
-          </Button>
+  const renderAfterScanned = () => {
+    const buttons = [
+      {
+        icon: { name: 'md-refresh-outline' },
+        onPress: () => {
+          setScanned(false);
+          setScannedData('');
+          // setScannedData(preScannedData);
+        },
+      },
+      {
+        icon: { name: 'ios-add-sharp' },
+        onPress: () => {
+          setScanned(false);
+          setDataLog((pre) => `${pre}${scannedData}`);
+          setScannedData('');
+        },
+      },
+      {
+        icon: { name: 'ios-checkmark' },
+        onPress: () => {
+          setScanned(false);
+          setDataLog((pre) => `${pre}${scannedData}`);
+          setInput(dataLog);
+          setContentVisible(false);
+        },
+      },
+    ];
+    return (
+      <View style={{ width: '100%', height: '100%' }}>
+        <ScrollView style={style.result}>
+          <Text style={{ fontSize: 18 }}>{dataLog}</Text>
+        </ScrollView>
+        <View style={style.buttonsContainer}>
+          {buttons.map((button) => (
+            <View style={style.buttonContainer}>
+              <Button onPress={button.onPress} mode="contained" color={Color.green2}>
+                <Icon.Ionicons name={button.icon.name} style={style.ButtonIcon} />
+              </Button>
+            </View>
+          ))}
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const renderCamera = () => {
     if (hasPermission === null) {
@@ -163,7 +168,7 @@ const ImportQRcode = (props) => {
         )
           : (
             <BarCodeScanner
-              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+              onBarCodeScanned={scanned ? () => {} : handleBarCodeScanned}
               style={StyleSheet.absoluteFillObject}
             />
           )}
