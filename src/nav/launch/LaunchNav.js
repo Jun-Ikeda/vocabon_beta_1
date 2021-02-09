@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 const LaunchNav = () => (
   <NavigationContainer>
     <Stack.Navigator>
-      <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} />
+      {/* <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} /> */}
       <Stack.Screen
         name="signup"
         component={SignUp}

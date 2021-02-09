@@ -1,14 +1,13 @@
 import firebase from 'firebase';
 
 const config = {
-  apiKey: 'AIzaSyAePqLoHJwYgVRxegYmkhu7XI6VkPKZb0c',
-  authDomain: 'vocabon02.firebaseapp.com',
-  databaseURL: 'https://vocabon02.firebaseio.com',
-  projectId: 'vocabon02',
-  storageBucket: 'vocabon02.appspot.com',
-  messagingSenderId: '424728039803',
-  appId: '1:424728039803:web:4bc69213dc2bffbbdeedde',
-  measurementId: 'G-T5YVZFB21P',
+  apiKey: 'AIzaSyCK5b7sjxtbgIRWSDY_Y-wiIp2HFJJpUI8',
+  authDomain: 'vocabonbeta1.firebaseapp.com',
+  projectId: 'vocabonbeta1',
+  storageBucket: 'vocabonbeta1.appspot.com',
+  messagingSenderId: '80492018713',
+  appId: '1:80492018713:web:02cc19128725f900ad7e88',
+  measurementId: 'G-93SF39B3LT',
 };
 
 firebase.initializeApp(config);
@@ -40,5 +39,7 @@ export const deleteAccount = async () => {
   const user = await firebase.auth().currentUser;
   await user.delete();
 };
+
+export const getFirebaseUser = () => firebase.auth().currentUser;
 
 export default firebase;
