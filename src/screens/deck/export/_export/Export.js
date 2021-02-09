@@ -60,7 +60,8 @@ const Export = (props) => {
   const content = getDeckContent(deckID);
   const general = getDeckGeneral(deckGeneral, deckID);
 
-  const output = func.convertObjectToArray(content).map((element) => [element.value.term?.join(elementDelimiter), element.value.definition.join(elementDelimiter)].join(itemDelimiter)).join(cardDelimiter);
+  const output = func.convertObjectToArray(content).map((element) => [element.value.term?.join(elementDelimiter),
+    element.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter);
   // const renderExportTypes = () => {//   const exportButtons = [//     {//       title: 'JSON',//       onPress: () => func.alert('Export as JSON'),//       textStyle: {}, //       flex: 1,//     },//     {//       title: 'Excel',//       onPress: () => func.alert('Export as Excel'),//       textStyle: {},//       flex: 1,//     },//     {//       title: 'Copy',//       onPress: () => func.alert('Export as a Copy'),//       textStyle: {},//       flex: 1,//     },//   ];//   if (visible) {//     return exportButtons.map((button) => (//       <View style={[{ borderWidth: 1 }]}>//         <Button title={button.title} onPress={button.onPress} />//       </View>//     ));//   }//   return null;// };
 
   const renderDataBox = () => (

@@ -1,4 +1,6 @@
 import firebase from 'firebase';
+import { getAccountContent, getAccountGeneral } from '../account/Account';
+import { func } from '../Const';
 
 const config = {
   apiKey: 'AIzaSyCK5b7sjxtbgIRWSDY_Y-wiIp2HFJJpUI8',
@@ -27,10 +29,7 @@ export const signup = (email, password, name) => firebase.auth().createUserWithE
 
 // メール＆パスワードログイン
 export const login = (email, password) => firebase.auth().signInWithEmailAndPassword(email, password)
-  .then((user) => {
-    alert('Login Success!');
-    return user;
-  })
+  .then((user) => user)
   .catch((error) => {
     alert(error.message);
   });
@@ -40,6 +39,18 @@ export const deleteAccount = async () => {
   await user.delete();
 };
 
-export const getFirebaseUser = () => firebase.auth().currentUser;
+export const getFirebaseUser = async () => {
+  const account = getAccountGeneral();
+  await firebase.auth().signOut();
+  await firebase.auth().signInWithEmailAndPassword(account.email, account.password).then((user) => {
+    // func.alertConsole(user.user);
+  });
+  return firebase.auth().currentUser;
+};
+
+export const sendEmail = async () => {
+  const user = await getFirebaseUser();
+  user.sendEmailVerification();
+};
 
 export default firebase;

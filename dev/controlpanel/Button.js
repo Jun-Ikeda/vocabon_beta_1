@@ -3,9 +3,11 @@ import * as Speech from 'expo-speech';
 import { getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
 import { func } from '../../src/config/Const';
 import LocalStorage from '../../src/config/LocalStorage';
-import Deck from '../../src/config/deck/Deck';
+import Deck, { getDeckContent } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import UUID from '../../src/config/UUID';
+
+import firebase, { getFirebaseUser } from '../../src/config/firebase/Firebase';
 
 const Button = [
   {
@@ -98,6 +100,13 @@ const Button = [
     title: 'Speech',
     onPress: () => {
       Speech.speak('Yo soy estudiante', { language: 'es' });
+    },
+  },
+  {
+    title: 'Firebase auth',
+    onPress: async () => {
+      const user = getFirebaseUser();
+      // return user;
     },
   },
 ];

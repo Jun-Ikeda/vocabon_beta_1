@@ -9,6 +9,7 @@ import SignUp from './_signup/SignUp';
 import LogIn from './_login/LogIn';
 import ResetPassword from './_resetpassword/ResetPassword';
 import EmailVerify from './_emailverify/EmailVerify';
+import Welcome from './_welcome/Welcome';
 
 const Stack = createStackNavigator();
 
@@ -56,6 +57,18 @@ const LaunchNav = () => (
       <Stack.Screen
         name="emailverify"
         component={EmailVerify}
+        options={{
+          headerTitle: '',
+          headerStyle: {
+            shadowColor: 'transparent',
+            elevation: 0,
+          },
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="welcome"
+        component={Welcome}
         options={{
           headerTitle: '',
           headerStyle: {

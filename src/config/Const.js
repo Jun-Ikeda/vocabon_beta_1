@@ -1,5 +1,6 @@
 // import React from 'react';
 import ExpoClipboard from 'expo-clipboard';
+import { element } from 'prop-types';
 import {
   Platform, Dimensions, StyleSheet, Alert, StatusBar,
 } from 'react-native';
@@ -15,7 +16,7 @@ export const header = {
       fontSize: 22,
     },
   }),
-  paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+  paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
 };
 
 const carousel = {
@@ -160,6 +161,29 @@ export const func = {
     const month = (`0${today.getMonth() + 1}`).slice(-2);
     const date = (`0${today.getDate()}`).slice(-2);
     return `${year}${month}${date}`;
+  },
+  dataInBytes: (data) => (encodeURIComponent(data).replace(/%../g, 'x').length),
+  separateDeckData: (content, elementDelimiter, itemDelimiter, cardDelimiter) => {
+    // const
+    const contentArray = func.convertObjectToArray(content);
+    const resultArray = []; // ['一個目の集団','二個目の集団',...]
+    // let
+    let sumBytes = '';
+    let num = 0; // 何個作られたか
+    let curData = '';
+
+    while (contentArray.length !== 0) { // 空になるまでのつもり
+      curData = ''; // curData reset
+      while (sumBytes < 500) {
+        const curContent = contentArray.splice(0, 1); // curContentに最初の、contentArrayは削られる
+        curData = curContent.map((card) => [card.value.term?.join(elementDelimiter), card.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter);// Exportでoutputされるときの形
+        const bytes = func.dataInBytes(curData); // bytes取得
+        sumBytes += bytes;
+      }
+      resultArray.push(curData);
+      num += 1;
+      sumBytes = 0;
+    }
   },
 };
 

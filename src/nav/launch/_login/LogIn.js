@@ -43,7 +43,7 @@ const LogIn = (props) => {
       Alert.alert('Error', 'Please fill in all the blanks');
     } else {
       const user = await login(formsInput.email, formsInput.password);
-      func.alertConsole(user);
+      // func.alertConsole(user);
       if (user != null) {
         saveAccountGeneral({
           email, name: user.user.displayName, password, userID: user.user.uid, loggedin: true, emailVerified: user.user.emailVerified,

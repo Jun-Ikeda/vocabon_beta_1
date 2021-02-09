@@ -46,6 +46,8 @@ const SignUp = (props) => {
           email, name, password, userID: user.user.uid, loggedin: true, emailVerified: user.user.emailVerified,
         });
         navigation.navigate('emailverify');
+      } else {
+        Alert.alert('Error', 'Something went wrong. Please try again');
       }
     }
   };
