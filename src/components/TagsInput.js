@@ -56,15 +56,15 @@ const style = {
   },
   tag: {
     flexDirection: 'row',
-    height: 26,
-    borderRadius: 13,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: Color.gray3,
     minWidth: 40,
     maxWidth: 200,
     justifyContent: 'space-between',
     alignItems: 'center',
-    // padding: 5,
-    // margin: 5,
+    padding: 5,
+    marginHorizontal: 3,
   },
   tagText: {
     marginHorizontal: 5,
@@ -213,6 +213,16 @@ class TagsInput extends React.Component {
     return updateState(tempObject);
   };
 
+  handleEditExistingTag = (tags, updateState, index) => {
+    const tempTagsArray = tags?.tagsArray?.slice();
+    delete tempTagsArray[index];
+    const tempObject = {
+      tag: tags?.tagsArray?.[index],
+      tagsArray: tempTagsArray,
+    };
+    updateState(tempObject);
+  }
+
   deleteTag = (tagToDelete, tags, updateState) => {
     const tempArray = tags?.tagsArray;
     tempArray.splice(tagToDelete, 1);
@@ -286,18 +296,19 @@ class TagsInput extends React.Component {
         </View>
         {customElement || null}
         <View style={StyleSheet.flatten([style.tagsView, tagsViewStyle])}>
-          {tags?.tagsArray?.map((item, count) => (
-            <View
+          {tags?.tagsArray?.map((item, index) => (
+            <TouchableOpacity
               style={StyleSheet.flatten([style.tag, tagStyle])}
-              key={item.toLowerCase()}
+              key={item?.toLowerCase()}
+              onPress={() => this.handleEditExistingTag(tags, updateState, index)}
             >
               <Text style={StyleSheet.flatten([style.tagText, tagTextStyle])}>{item}</Text>
-              <TouchableOpacity onPressIn={() => this.deleteTag(count, tags, updateState)}>
+              <TouchableOpacity onPressIn={() => this.deleteTag(index, tags, updateState)}>
                 {deleteElement || (
                 <Icon.AntDesign name="close" style={{ paddingRight: 5, fontSize: 16 }} />
                 )}
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

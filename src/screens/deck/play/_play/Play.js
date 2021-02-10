@@ -15,7 +15,9 @@ import { CommonActions } from '@react-navigation/native';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
-import { decksGeneral, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
+import {
+  decksGeneral, getDeckContent, getDeckGeneral, saveDeckContent,
+} from '../../../../config/deck/Deck';
 import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
 
 import Icon from '../../../../components/Icon';
@@ -108,10 +110,11 @@ const Play = (props) => {
   const [card, setCard] = useState({}); // 例外的にstateに
   let swiper = {};
 
-  const [isChanged, setIsChanged] = useState(false);
+  const [hasUnsavedHistory, setHasUnsavedHistory] = useState(false);
+  const [isEditChanged, setIsEditChanged] = useState(false);
 
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
-    if (!(Platform.OS === 'web') && isChanged) {
+    if (!(Platform.OS === 'web') && hasUnsavedHistory) {
       e.preventDefault();
       Alert.alert(
         'Discard play history?',
@@ -123,7 +126,7 @@ const Play = (props) => {
       );
     }
   }),
-  [navigation, isChanged]);
+  [navigation, hasUnsavedHistory]);
 
   const goToResults = () => {
     const newMark = JSON.parse(JSON.stringify(marks));
@@ -134,7 +137,8 @@ const Play = (props) => {
     });
     const newPlay = play ? play.slice() : [];
     newPlay.push(func.getDate());
-    saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
+    if (hasUnsavedHistory) saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
+    if (isEditChanged) saveDeckContent(deckID, content);
     navigation.dispatch((state) => {
       const params = {
         deckID, rightVocabID, leftVocabID, validVocabIDs, itemVisible, sortMode,
@@ -145,7 +149,7 @@ const Play = (props) => {
       ];
       return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
     });
-    setIsChanged(false);
+    setHasUnsavedHistory(false);
   };
 
   const renderCounterTop = () => {
@@ -165,11 +169,11 @@ const Play = (props) => {
           cardIndex={rightVocabID.length + leftVocabID.length}
           renderCard={(vocab) => (<PlayCard vocab={vocab} ref={(ref) => { setCard(ref); }} itemVisible={itemVisible} language={general?.language} />)}
           onSwipedRight={(index) => {
-            setIsChanged(true);
+            setHasUnsavedHistory(true);
             setRightVocabID([...rightVocabID, validVocabIDs[index]]);
           }}
           onSwipedLeft={(index) => {
-            setIsChanged(true);
+            setHasUnsavedHistory(true);
             setLeftVocabID([...leftVocabID, validVocabIDs[index]]);
           }}
           disableTopSwipe
@@ -206,7 +210,7 @@ const Play = (props) => {
       await swiper.jumpToCardIndex(previousCardIndex);
       setRightVocabID(rightVocabID.filter((vocabID) => vocabID !== validVocabIDs[previousCardIndex]));
       setLeftVocabID(leftVocabID.filter((vocabID) => vocabID !== validVocabIDs[previousCardIndex]));
-      setIsChanged(true);
+      setHasUnsavedHistory(true);
     };
     return (
       <PlayButtons
@@ -268,14 +272,8 @@ const Play = (props) => {
         isVisible={editVisible}
         setVisible={setEditVisible}
         setEditVocabID={setOnEditVocabID}
+        setIsChanged={setIsEditChanged}
       />
-      {/* <PlayEdit
-        deckID={deckID}
-        isVisible={editVisible}
-        setIsVisible={setEditVisible}
-        content={content}
-        setContent={setContent}
-      /> */}
     </View>
   );
 };
