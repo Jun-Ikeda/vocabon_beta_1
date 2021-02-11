@@ -9,6 +9,8 @@ import Icon from '../../../../components/Icon';
 import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 
+// const icon = require('../../../../../assets/screenshots/')
+
 const style = StyleSheet.create({
   content: {
     justifyContent: 'center',
@@ -76,6 +78,9 @@ const ExportQRcode = (props) => {
       <SvgQRCode
         value={text}
         size={260}
+        logo={}
+        logoSize={30}
+        logoBackgroundColor="transparent"
         enableLinearGradient
         linearGradient={[Color.green6, Color.green2]}
         onError={() => setErrorOrNot(true)}
