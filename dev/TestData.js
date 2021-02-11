@@ -979,14 +979,14 @@ export const Deck = {
 };
 
 export const User = {
-  KgZLhZvgTiTSYJ7VBFbfutjjtUE2: {
-    name: 'Sumio',
-    icon: { uri: 'https://spring-js.com/wp-content/uploads/2017/06/01-1.jpg' },
-  },
-  WUgzMNtDDAap5TkAXZbrPwF97Bu2: {
-    name: 'Vocabon',
-    icon: { color: PastelColors[UUID.getRandom({ max: PastelColors.length })] },
-  },
+  // KgZLhZvgTiTSYJ7VBFbfutjjtUE2: {
+  //   name: 'Sumio',
+  //   icon: { uri: 'https://spring-js.com/wp-content/uploads/2017/06/01-1.jpg' },
+  // },
+  // WUgzMNtDDAap5TkAXZbrPwF97Bu2: {
+  //   name: 'Vocabon',
+  //   icon: { color: PastelColors[UUID.getRandom({ max: PastelColors.length })] },
+  // },
 };
 
 export const Account = {

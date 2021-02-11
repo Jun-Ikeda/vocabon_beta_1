@@ -3,6 +3,7 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
 import VocabList from '../../../../components/deck/vocab/VocabList';
+import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -26,7 +27,10 @@ const AnalyzeList = (props) => {
       content={contentSorted}
       itemVisible={{ term: true, definition: true }}
       renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
-      onPressCard={(vocab) => setVocabDetailVisible(vocab.key)}
+      onPressCard={(vocab) => {
+        // func.alertConsole(vocab.key);
+        setVocabDetailVisible(vocab.key);
+      }}
       searchBar
       // renderViewContent={(vocab) => <View style={{ width: 100, backgroundColor: 'red' }}><Text>{JSON.stringify(vocab.value, null, 2)}</Text></View>}
     />

@@ -53,8 +53,8 @@ const SortMode = (props) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const sortModes = [
-    { label: 'Index - smaller to larger', value: 'index' },
-    { label: 'Index - larger to smaller', value: 'index-reverse' },
+    { label: 'Index - Ascending', value: 'index' },
+    { label: 'Index - Descending', value: 'index-reverse' },
     { label: 'Shuffle', value: 'shuffle' },
     // { label: 'Marks', value: 'marks' },
     // { label: 'Definitions', value: 'definitions' },

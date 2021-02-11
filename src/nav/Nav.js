@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { useSetRecoilState } from 'recoil';
+import {
+  atom, useRecoilState, useRecoilValue, useSetRecoilState,
+} from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -10,17 +12,23 @@ import MainNav from './main/MainNav';
 import { Account, User } from '../../dev/TestData';
 import { decksContent, decksGeneral } from '../config/deck/Deck';
 import { users } from '../config/user/User';
-import { account } from '../config/account/Account';
+import { account, initialAccountGeneral } from '../config/account/Account';
 import LocalStorage from '../config/LocalStorage';
+import { func } from '../config/Const';
 
 const Stack = createStackNavigator();
+
+export const isLoggedInState = atom({
+  key: 'isLoggedInState',
+  default: false,
+});
 
 const Nav = () => {
   // recoil
   const setDeckGeneral = useSetRecoilState(decksGeneral);
   // state
   const [isInitialized, setIsInitialized] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   const initializeDeck = async () => {
     // const newDecksGeneral = {};
@@ -41,7 +49,7 @@ const Nav = () => {
   };
 
   const initializeAccount = async () => {
-    account.general = Account.general;
+    account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
 
     account.content = {};
     const deckIDs = await LocalStorage.getIdsForKey('accountContent');
@@ -49,6 +57,8 @@ const Nav = () => {
     await deckIDs.forEach((deckID, index) => {
       account.content[deckID] = accountContent[index];
     });
+    func.alertConsole(account);
+    setIsLoggedIn((account?.general?.loggedin ?? false) && (account?.general?.emailVerified ?? false));
     // account.content = Account.content;
   };
 

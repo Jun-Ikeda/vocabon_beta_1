@@ -56,6 +56,13 @@ const Button = [
     },
   },
   {
+    title: 'Play History',
+    onPress: async () => {
+      const data = await LocalStorage.getAllDataForKey('playhistory');
+      return data;
+    },
+  },
+  {
     title: 'Deck (LocalStorage)',
     onPress: async () => {
       const decks = await LocalStorage.getAllDataForKey('deck');
@@ -65,7 +72,8 @@ const Button = [
   {
     title: 'Account (LocalStorage)',
     onPress: async () => {
-      const account = await LocalStorage.getAllDataForKey('accountContent');
+      // const account = await LocalStorage.getAllDataForKey('accountContent');
+      const account = await LocalStorage.load({ key: 'accountGeneral' });
       return account;
     },
   },

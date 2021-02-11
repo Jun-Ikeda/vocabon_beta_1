@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, ScrollView, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { Divider } from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 import { func } from '../../../../config/Const';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
@@ -15,6 +15,8 @@ import OptionRadioButton from './OptionRadioButton';
 import OptionFilter from './OptionFilter';
 import FrontBack from './FrontBack';
 import Color from '../../../../config/Color';
+
+import { playhistory, playoption } from '../../../../config/PersistentData';
 
 const style = StyleSheet.create({
   divider: {
@@ -56,6 +58,7 @@ const Options = (props) => {
   // const SynonymMax = getMax(content, 'synonym');
   // const AntonymMax = getMax(content, 'antonym');
 
+  const [suspended, setSuspended] = useState({});
   const [mode, setMode] = useState('custom');
   const [itemVisible, setItemVisible] = useState({ front: ['term'], back: ['definition'] });
   const [sortMode, setSortMode] = useState('shuffle');
@@ -65,6 +68,29 @@ const Options = (props) => {
   // const [exampleRange, setExampleRange] = useState({ min: 0, max: ExampleMax });
   // const [synonymRange, setSynonymRange] = useState({ min: 0, max: SynonymMax });
   // const [antonymRange, setAntonymRange] = useState({ min: 0, max: AntonymMax });
+
+  useEffect(() => {
+    (async () => {
+      const playoptionData = await playoption.get();
+      const { sortMode: sortModeStorage, visibleItem, filter } = playoptionData;
+      setSortMode(sortModeStorage);
+      setItemVisible(visibleItem);
+      const newIndexRange = { ...indexRange, ...filter.index };
+      if (indexRange.max <= filter.index.max) { newIndexRange.max = indexRange.max; }
+      setIndexRange(newIndexRange);
+      const newMarkRange = { ...markRange, ...filter.mark };
+      if (markRange.max <= filter.mark.max) { newMarkRange.max = markRange.max; }
+      setMarkRange(newMarkRange);
+    })();
+    (async () => {
+      const playhistoryData = await playhistory.get(deckID);
+      setSuspended(playhistoryData);
+    })();
+  }, []);
+
+  const saveCurrentOption = () => {
+    playoption.save(sortMode, { index: indexRange, mark: markRange }, itemVisible);
+  };
 
   const returnValidVocabIDs = () => {
     switch (mode) {
@@ -105,7 +131,7 @@ const Options = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} marks={marks} play={play} />
+      <OptionRadioButton content={content} validVocabIDs={validVocabIDs} setMode={setMode} mode={mode} marks={marks} play={play} suspended={suspended} />
       {mode === 'custom' ? (
         <ScrollView
           style={{ flex: 1 }}
@@ -125,6 +151,8 @@ const Options = (props) => {
         validVocabIDs={validVocabIDs}
         mode={mode}
         sortMode={sortMode}
+        saveCurrentOption={saveCurrentOption}
+        suspended={suspended}
       />
     </View>
   );

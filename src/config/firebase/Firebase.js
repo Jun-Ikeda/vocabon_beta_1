@@ -14,6 +14,8 @@ const config = {
 
 firebase.initializeApp(config);
 
+export const auth = firebase.auth();
+
 export const signup = (email, password, name) => firebase.auth().createUserWithEmailAndPassword(email, password)
   .then((user) => {
     if (user) {
@@ -27,7 +29,6 @@ export const signup = (email, password, name) => firebase.auth().createUserWithE
     console.log(error);
   });
 
-// メール＆パスワードログイン
 export const login = (email, password) => firebase.auth().signInWithEmailAndPassword(email, password)
   .then((user) => user)
   .catch((error) => {

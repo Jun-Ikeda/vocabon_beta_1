@@ -8,7 +8,7 @@ import { Button } from 'react-native-paper';
 import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
 import AuthForms, { formsInputState } from '../AuthForms';
-import { signup } from '../../../config/firebase/Firebase';
+import { signup } from '../../../config/firebase/Auth';
 import { saveAccountGeneral } from '../../../config/account/Account';
 
 const style = StyleSheet.create({
@@ -42,7 +42,7 @@ const SignUp = (props) => {
       const { email, password, name } = formsInput;
       const user = await signup(formsInput.email, formsInput.password, formsInput.name);
       if (user != null) {
-        saveAccountGeneral({
+        await saveAccountGeneral({
           email, name, password, userID: user.user.uid, loggedin: true, emailVerified: user.user.emailVerified,
         });
         navigation.navigate('emailverify');

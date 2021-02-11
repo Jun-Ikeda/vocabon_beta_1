@@ -96,6 +96,18 @@ const Export = (props) => {
     </View>
   );
 
+  const renderQRcode = () => {
+    const dataArray = func.separateDeckData(content, elementDelimiter, itemDelimiter, cardDelimiter);
+
+    return (
+      <ExportQRcode
+        dataArray={dataArray}
+        general={general}
+        setContentVisible={setQRContentVisible}
+      />
+    );
+  };
+
   return (
     <View style={style.container}>
       <ExportOption
@@ -114,18 +126,6 @@ const Export = (props) => {
       />
       {renderDataBox()}
       <PopUpMenu
-        isVisible={qrContentVisible}
-        renderMenu={() => (
-          <ExportQRcode
-            data={output}
-            general={general}
-            setContentVisible={setQRContentVisible}
-          />
-        )}
-        overlayStyle={style.popUp}
-        containerStyle={{ justifyContent: 'center' }}
-      />
-      <PopUpMenu
         isVisible={optionContentVisible}
         renderMenu={() => (
           <ExportItemOption
@@ -134,6 +134,12 @@ const Export = (props) => {
             setOptionSwitch={setOptionSwitch}
           />
         )}
+        overlayStyle={style.popUp}
+        containerStyle={{ justifyContent: 'center' }}
+      />
+      <PopUpMenu
+        isVisible={qrContentVisible}
+        renderMenu={renderQRcode}
         overlayStyle={style.popUp}
         containerStyle={{ justifyContent: 'center' }}
       />

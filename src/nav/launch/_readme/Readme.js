@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import {
-  Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, View,
+  Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 import Color, { getRandomPastel } from '../../../config/Color';
@@ -64,6 +64,27 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  startButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderRadius: 1000,
+  },
+  startText: {
+    // // resizeMode: 'contain',
+    // // height: '70%',
+    // // width: 'auto',
+    // // marginHorizontal: '15%',
+    color: Color.black,
+    backgroundColor: getRandomPastel(),
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // borderRadius: 100,
+    fontSize: 60,
+  },
+  // startText: {
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
 });
 
 const SlideData = [
@@ -146,7 +167,7 @@ const Readme = (props) => {
             {slide.img ? <Image source={slide.img} style={style.picture} /> : null}
             <Text style={style.subText}>{slide.subText}</Text>
             {index === 6
-              ? <Button onPress={() => navigation.navigate('signup')}>Start</Button>
+              ? <View style={style.startButton}><TouchableOpacity onPress={() => navigation.navigate('signup')}><Text style={style.startText}>START!</Text></TouchableOpacity></View>
               : null }
           </View>
         </View>

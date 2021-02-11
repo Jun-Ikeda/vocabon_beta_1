@@ -168,22 +168,28 @@ export const func = {
     const contentArray = func.convertObjectToArray(content);
     const resultArray = []; // ['一個目の集団','二個目の集団',...]
     // let
-    let sumBytes = '';
-    let num = 0; // 何個作られたか
+    let sumBytes = 0;
     let curData = '';
-
+    // let num = 0; // 何個作られたか
+    // let sum = 0;
     while (contentArray.length !== 0) { // 空になるまでのつもり
-      curData = ''; // curData reset
-      while (sumBytes < 500) {
+      while (sumBytes < 500 && contentArray.length !== 0) {
         const curContent = contentArray.splice(0, 1); // curContentに最初の、contentArrayは削られる
-        curData = curContent.map((card) => [card.value.term?.join(elementDelimiter), card.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter);// Exportでoutputされるときの形
+        curData += curContent.map((card) => [card.value.term?.join(elementDelimiter), card.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter);// Exportでoutputされるときの形
         const bytes = func.dataInBytes(curData); // bytes取得
         sumBytes += bytes;
+        // sum += 1;
       }
       resultArray.push(curData);
-      num += 1;
       sumBytes = 0;
+      if (contentArray.length === 0) {
+        break;
+      } else {
+        curData = ''; // curData reset
+      }
     }
+    console.log(resultArray);
+    return resultArray;
   },
 };
 

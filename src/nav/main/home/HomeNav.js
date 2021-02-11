@@ -27,6 +27,8 @@ import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
 
 import { docVisibleState } from '../../../../dev/Switch';
 import Icon from '../../../components/Icon';
+import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
+import { getAccountGeneral } from '../../../config/account/Account';
 
 const Stack = createStackNavigator();
 
@@ -38,17 +40,17 @@ const HomeNav = () => {
       screenOptions={{
         headerTitleAlign: 'left',
         gestureDirection: 'vertical',
-        headerRight: () => (
-          <TouchableOpacity
-            style={{ paddingHorizontal: 10 }}
-            onPress={() => {
-              LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-              setDocVisible(!docVisible);
-            }}
-          >
-            <Icon.Feather name="help-circle" style={{ fontSize: 28, color: Color.gray2 }} />
-          </TouchableOpacity>
-        ),
+        // headerRight: () => (
+        //   <TouchableOpacity
+        //     style={{ paddingHorizontal: 10 }}
+        //     onPress={() => {
+        //       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        //       setDocVisible(!docVisible);
+        //     }}
+        //   >
+        //     <Icon.Feather name="help-circle" style={{ fontSize: 28, color: Color.gray2 }} />
+        //   </TouchableOpacity>
+        // ),
       }}
     >
       <Stack.Screen
@@ -57,17 +59,17 @@ const HomeNav = () => {
         options={({ navigation }) => ({
           ...header.mainHeaderStyles,
           headerTitle: 'Home',
-          // headerRight: () => (
-          //   <ProfileIcon
-          //     userID={getAccountGeneral().userID}
-          //     style={{ marginRight: 20 }}
-          //     size={44}
-          //     onPress={() => {
-          //       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          //       setDocVisible(!docVisible);
-          //     }}
-          //   />
-          // ),
+          headerRight: () => (
+            <ProfileIcon
+              userID={getAccountGeneral().userID}
+              style={{ marginRight: 20 }}
+              size={44}
+              onPress={() => {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                setDocVisible(!docVisible);
+              }}
+            />
+          ),
         })}
       />
       <Stack.Screen

@@ -8,6 +8,7 @@ import { Button } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
 import Color from '../../../../config/Color';
 import { deck } from '../../../../config/Const';
+import { playhistory } from '../../../../config/PersistentData';
 
 const style = StyleSheet.create({
   container: {
@@ -17,13 +18,14 @@ const style = StyleSheet.create({
 
 const OptionStartButton = (props) => {
   const {
-    navigation, deckID, validVocabIDs, mode, itemVisible, sortMode,
+    navigation, deckID, validVocabIDs, mode, itemVisible, sortMode, saveCurrentOption, suspended,
   } = props;
 
-  const start = () => {
+  const start = async () => {
+    saveCurrentOption();
     const validVocabIDsSorted = deck.sortVocabs(validVocabIDs, sortMode);
     navigation.dispatch((state) => {
-      const params = {
+      const params = mode === 'suspended' ? { deckID, ...suspended } : {
         deckID, itemVisible, validVocabIDs: validVocabIDsSorted, sortMode,
       };
       const routes = [
@@ -56,6 +58,9 @@ OptionStartButton.propTypes = {
   mode: PropTypes.string.isRequired,
   itemVisible: PropTypes.object.isRequired,
   sortMode: PropTypes.string.isRequired,
+  saveCurrentOption: PropTypes.func.isRequired,
+  leftVocabID: PropTypes.array.isRequired,
+  rightVocabID: PropTypes.array.isRequired,
 };
 
 OptionStartButton.defaultProps = {

@@ -82,7 +82,7 @@ const OptionFilter = (props) => {
           {(index === 0) ? null : <Divider style={style.divider} />}
           {renderFilterTitle(item)}
           {(expand === item.title) && item.visible ? (
-            <View style={{ /* paddingHorizontal: 35 */height: 50 }}>
+            <View style={{ /* paddingHorizontal: 35 */paddingHorizontal: 20, paddingVertical: 50 }}>
               <RangeSlider
                 range={[item.range[0], item.range[1]]}
                 minimumValue={item.range[0]}

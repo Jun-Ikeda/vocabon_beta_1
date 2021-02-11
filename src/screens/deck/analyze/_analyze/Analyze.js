@@ -39,13 +39,14 @@ const style = StyleSheet.create({
     fontSize: iconSize,
   },
   detailcontainer: {
-    borderWidth: 1,
+    // borderWidth: 1,
     paddingLeft: '8%',
     paddingVertical: 20,
     marginHorizontal: '5%',
     marginVertical: '15%',
     backgroundColor: Color.white1,
     borderRadius: 10,
+    flex: 1,
     // flex: 1,
   },
   detailtext: {
@@ -65,8 +66,8 @@ const Analyze = (props) => {
   const content = getDeckContent(deckID);
   // state
   const [contentSorted, setContentSorted] = useState(content);
-  const [detailVisibleID, setDetailVisibleID] = useState('');
-  const [detailVisible, setDetailVisible] = useState(false);
+  const [detailVisibleID, setDetailVisibleID] = useState('aiueo');
+  // const [detailVisible, setDetailVisible] = useState(false);
   const [graphVisible, setGraphVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
   const [mode, setMode] = useState('noDate');
@@ -159,17 +160,14 @@ const Analyze = (props) => {
   const renderVocabDetail = () => (
     <Portal>
       <PopUpMenu
-        isVisible={detailVisible}
-        setVisible={setDetailVisible}
+        isVisible={!(detailVisibleID === '')}
+        setVisible={() => setDetailVisibleID('')}
         renderMenu={() => (
           <View style={style.detailcontainer}>
             <Text style={style.detailtext}>{content[detailVisibleID]?.term}</Text>
             <Text style={style.detailtext}>{content[detailVisibleID]?.definition}</Text>
-            <Text style={style.detailtext}>{'\nHistory:\n'}</Text>
-            <View>
-              {renderDate(20030507)}
-              {renderDate(18911101)}
-            </View>
+            <Text style={style.detailtext}>History:</Text>
+            {marks[detailVisibleID]?.map((time) => <Text>{func.formatDate(play[time])}</Text>)}
           </View>
         )}
       />

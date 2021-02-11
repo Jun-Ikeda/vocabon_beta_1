@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
-import { deleteAccount, getFirebaseUser, sendEmail } from '../../../config/firebase/Firebase';
+import { deleteAccount, getFirebaseUser, sendEmail } from '../../../config/firebase/Auth';
 import { getAccountGeneral, saveAccountGeneral } from '../../../config/account/Account';
 import { func, header } from '../../../config/Const';
 import Icon from '../../../components/Icon';
@@ -30,6 +30,29 @@ const EmailVerify = (props) => {
     })();
   }, []);
 
+  useEffect(() => navigation.addListener('beforeRemove', (e) => {
+    if (Platform.OS !== 'web') {
+      e.preventDefault();
+      Alert.alert(
+        'Delete Your Account?',
+        'Please delete your account if you recreate an account again.',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => {} },
+          {
+            text: 'Delete the account',
+            style: 'destructive',
+            onPress: async () => {
+              deleteAccount();
+              saveAccountGeneral({}, false);
+              navigation.dispatch(e.data.action);
+            },
+          },
+        ],
+      );
+    }
+  }),
+  [navigation]);
+
   return (
     <View style={style.container}>
       <Text>Email Verification</Text>
@@ -41,7 +64,16 @@ const EmailVerify = (props) => {
       >
         <Icon.Ionicons name="md-refresh-outline" style={{ fontSize: 24 }} />
       </Button>
-      <Button disabled={!emailVerified} onPress={() => navigation.navigate('welcome')}>Start</Button>
+      <Button
+        disabled={!emailVerified}
+        onPress={() => {
+          saveAccountGeneral({ emailVerified: true });
+          navigation.navigate('welcome');
+        }}
+      >
+        Start
+
+      </Button>
     </View>
   );
 };

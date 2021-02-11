@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import PropTypes from 'prop-types';
 import { saveAccountGeneral } from '../../../config/account/Account';
 import Color from '../../../config/Color';
-import { login } from '../../../config/firebase/Firebase';
+import { login } from '../../../config/firebase/Auth';
 import AuthForms, { formsInputState } from '../AuthForms';
 import { func } from '../../../config/Const';
 
@@ -45,7 +45,7 @@ const LogIn = (props) => {
       const user = await login(formsInput.email, formsInput.password);
       // func.alertConsole(user);
       if (user != null) {
-        saveAccountGeneral({
+        await saveAccountGeneral({
           email, name: user.user.displayName, password, userID: user.user.uid, loggedin: true, emailVerified: user.user.emailVerified,
         });
         navigation.navigate('emailverify');

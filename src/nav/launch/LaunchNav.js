@@ -14,72 +14,71 @@ import Welcome from './_welcome/Welcome';
 const Stack = createStackNavigator();
 
 const LaunchNav = () => (
-  <NavigationContainer>
-    <Stack.Navigator>
-      {/* <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} /> */}
-      <Stack.Screen
-        name="signup"
-        component={SignUp}
-        options={{
-          headerTitle: '',
-          headerStyle: {
-            shadowColor: 'transparent',
-            elevation: 0,
-          },
-          headerTransparent: true,
-          headerBackTitleVisible: false,
-        }}
-      />
-      <Stack.Screen
-        name="login"
-        component={LogIn}
-        options={{
-          headerTitle: '',
-          headerStyle: {
-            shadowColor: 'transparent',
-            elevation: 0,
-          },
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name="resetpassword"
-        component={ResetPassword}
-        options={{
-          headerTitle: '',
-          headerStyle: {
-            shadowColor: 'transparent',
-            elevation: 0,
-          },
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name="emailverify"
-        component={EmailVerify}
-        options={{
-          headerTitle: '',
-          headerStyle: {
-            shadowColor: 'transparent',
-            elevation: 0,
-          },
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name="welcome"
-        component={Welcome}
-        options={{
-          headerTitle: '',
-          headerStyle: {
-            shadowColor: 'transparent',
-            elevation: 0,
-          },
-          headerTransparent: true,
-        }}
-      />
-    </Stack.Navigator>
-  </NavigationContainer>
+  <Stack.Navigator>
+    {/* <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} /> */}
+    <Stack.Screen
+      name="signup"
+      component={SignUp}
+      options={{
+        headerTitle: '',
+        headerStyle: {
+          shadowColor: 'transparent',
+          elevation: 0,
+        },
+        headerTransparent: true,
+        headerBackTitleVisible: false,
+      }}
+    />
+    <Stack.Screen
+      name="login"
+      component={LogIn}
+      options={{
+        headerTitle: '',
+        headerStyle: {
+          shadowColor: 'transparent',
+          elevation: 0,
+        },
+        headerTransparent: true,
+      }}
+    />
+    <Stack.Screen
+      name="resetpassword"
+      component={ResetPassword}
+      options={{
+        headerTitle: '',
+        headerStyle: {
+          shadowColor: 'transparent',
+          elevation: 0,
+        },
+        headerTransparent: true,
+      }}
+    />
+    <Stack.Screen
+      name="emailverify"
+      component={EmailVerify}
+      options={{
+        headerTitle: '',
+        headerStyle: {
+          shadowColor: 'transparent',
+          elevation: 0,
+        },
+        headerTransparent: true,
+      }}
+    />
+    <Stack.Screen
+      name="welcome"
+      component={Welcome}
+      options={{
+        headerTitle: '',
+        headerLeft: null,
+        headerStyle: {
+          shadowColor: 'transparent',
+          elevation: 0,
+        },
+        headerTransparent: true,
+      }}
+    />
+  </Stack.Navigator>
 );
 
 export default LaunchNav;

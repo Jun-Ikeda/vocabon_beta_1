@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-
 import {
-  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation,
+  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, ScrollView,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import SvgQRCode from 'react-native-qrcode-svg';
+import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from '../../../../components/Icon';
+import { func } from '../../../../config/Const';
 import Color from '../../../../config/Color';
 
 const style = StyleSheet.create({
   content: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Color.white1,
+    backgroundColor: Color.defaultBackground,
     marginHorizontal: '5%',
     marginVertical: '15%',
     borderRadius: 10,
@@ -25,6 +27,7 @@ const style = StyleSheet.create({
 
   title: {
     flex: 1,
+    marginHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -46,9 +49,12 @@ const style = StyleSheet.create({
 });
 
 const ExportQRcode = (props) => {
-  const { data, general, setContentVisible } = props;
+  const {
+    dataArray, general, setContentVisible,
+  } = props;
   const [errorOrNot, setErrorOrNot] = useState(false);
-  // const dataLength = data.length;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [layout, setLayout] = useState({ height: 0, width: 0 });
 
   const renderCancelButton = () => (
     <TouchableOpacity
@@ -62,36 +68,51 @@ const ExportQRcode = (props) => {
     </TouchableOpacity>
   );
 
-  // const divideContent = () => (
-  //   console.log(Math.floor(dataLength / 10) + 1)
+  const renderQRCodeView = ({ item: text, index }) => (
+    <View style={{ flex: 1 }}>
+      <View style={style.title}>
+        <Text style={{ fontSize: 20 }}>{`${general.title}  No.${index + 1}`}</Text>
+      </View>
+      <SvgQRCode
+        value={text}
+        size={260}
+        enableLinearGradient
+        linearGradient={[Color.green6, Color.green2]}
+        onError={() => setErrorOrNot(true)}
+      />
+    </View>
 
-  // );
+  );
 
   return (
-    <View style={style.content}>
-      <View style={style.title}>
-        <Text style={{ fontSize: 20 }}>{general.title}</Text>
-      </View>
-      <View style={style.qrcode}>
-        {errorOrNot ? (
-          <View>
-            <Text>Sorry...</Text>
-          </View>
-        )
-          : (
-            <SvgQRCode
-              value={data}
-              size={240}
-              enableLinearGradient
-              linearGradient={[Color.green6, Color.green2]}
-              onError={() => setErrorOrNot(true)}
-            />
-          )}
-      </View>
+    <View
+      style={style.content}
+      onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+    >
+      <DeckCarousel
+        data={dataArray}
+        renderItem={renderQRCodeView}
+        itemWidth={260}
+        sliderWidth={layout.width}
+        onSnapToItem={(index) => setActiveIndex(index)}
+      />
+      <Pagination
+        dotsLength={dataArray.length}
+        inactiveDotStyle={{ backgroundColor: Color.gray2 }}
+        activeDotIndex={activeIndex}
+        containerStyle={{ padding: 25 }}
+          // countainerStyle={{ paddingVertical: 10 }}
+        dotStyle={{ backgroundColor: Color.gray4 }}
+      />
       {renderCancelButton()}
-      {/* {divideContent()} */}
     </View>
   );
+};
+
+ExportQRcode.propTypes = {
+  dataArray: PropTypes.array.isRequired,
+  general: PropTypes.object.isRequired,
+  setContentVisible: PropTypes.func.isRequired,
 };
 
 export default ExportQRcode;

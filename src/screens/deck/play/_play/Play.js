@@ -28,6 +28,7 @@ import PlayButtons from './PlayButtons';
 import PlayDetail, { onEditVocabIDState } from './PlayDetail';
 import PlayEdit from './PlayEdit';
 import VocabEdit from '../../../../components/deck/vocab/VocabEdit';
+import { playhistory } from '../../../../config/PersistentData';
 
 const style = StyleSheet.create({
   container: {
@@ -114,6 +115,9 @@ const Play = (props) => {
   const [isEditChanged, setIsEditChanged] = useState(false);
 
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
+    const suspend = async () => {
+      playhistory.save(deckID, validVocabIDs, sortMode, itemVisible, leftVocabID, rightVocabID);
+    };
     if (!(Platform.OS === 'web') && hasUnsavedHistory) {
       e.preventDefault();
       Alert.alert(
@@ -121,14 +125,30 @@ const Play = (props) => {
         'You have unsaved history. Are you sure to discard them and leave the screen?',
         [
           { text: "Don't leave", style: 'cancel', onPress: () => {} },
-          { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
+          {
+            text: 'Suspend',
+            style: 'default',
+            onPress: async () => {
+              await suspend();
+              if (isEditChanged) saveDeckContent(deckID, content);
+              navigation.dispatch(e.data.action);
+            },
+          },
+          {
+            text: 'Discard',
+            style: 'destructive',
+            onPress: () => {
+              if (isEditChanged) saveDeckContent(deckID, content);
+              navigation.dispatch(e.data.action);
+            },
+          },
         ],
       );
     }
   }),
-  [navigation, hasUnsavedHistory]);
+  [navigation, hasUnsavedHistory, leftVocabID, rightVocabID, isEditChanged, content]);
 
-  const goToResults = () => {
+  const goToResults = async () => {
     const newMark = JSON.parse(JSON.stringify(marks));
     leftVocabID.forEach((vocabID) => {
       const vocabMarks = newMark?.[vocabID] ?? [];
@@ -139,6 +159,8 @@ const Play = (props) => {
     newPlay.push(func.getDate());
     if (hasUnsavedHistory) saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
     if (isEditChanged) saveDeckContent(deckID, content);
+    await playhistory.remove(deckID);
+    setHasUnsavedHistory(false);
     navigation.dispatch((state) => {
       const params = {
         deckID, rightVocabID, leftVocabID, validVocabIDs, itemVisible, sortMode,
@@ -149,7 +171,6 @@ const Play = (props) => {
       ];
       return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
     });
-    setHasUnsavedHistory(false);
   };
 
   const renderCounterTop = () => {
@@ -254,6 +275,7 @@ const Play = (props) => {
         {renderSwiper()}
         {renderFinishButton()}
       </View>
+      <Button onPress={() => func.alertConsole({ leftVocabID, rightVocabID })}>state</Button>
       <PlayCounter leftVocabID={leftVocabID} rightVocabID={rightVocabID} />
       {renderBottomButtons()}
       <PlayDetail

@@ -4,7 +4,7 @@ import account from './AccountModule';
 
 export { account };
 
-const initialAccountGeneral = {
+export const initialAccountGeneral = {
   email: '',
   name: '',
   password: '',
@@ -17,6 +17,7 @@ export const getAccountGeneral = () => account?.general ?? initialAccountGeneral
 
 export const saveAccountGeneral = (newData, merge = true) => {
   account.general = merge ? { ...initialAccountGeneral, ...account.general, ...newData } : newData;
+  LocalStorage.save({ key: 'accountGeneral', data: account.general });
 };
 
 export const getAccountContent = (deckID = '') => {
