@@ -1,6 +1,8 @@
 // デッキの情報のグローバル変数を定義する所
 
+import { Alert } from 'react-native';
 import { atom } from 'recoil';
+import { firestore, storage } from '../firebase/Firebase';
 import LocalStorage from '../LocalStorage';
 import decksContent from './DeckModule';
 
@@ -41,6 +43,7 @@ export const saveDeckGeneral = async (setDeckGeneral, deckID, newData) => {
   });
   const prevLocalData = await LocalStorage.load({ key: 'deck', id: deckID });
   LocalStorage.save({ key: 'deck', id: deckID, data: { general: newState[deckID], content: prevLocalData?.content ?? {} } });
+  firestore.collection('deck').doc(deckID).set(newState[deckID], { merge: true });
 };
 
 export const getDeckContent = (deckID) => {
@@ -59,6 +62,7 @@ export const saveDeckContent = async (deckID, newData, merge = true) => {
   const prevLocalData = await LocalStorage.load({ key: 'deck', id: deckID });
   console.log({ general: prevLocalData.general, content: decksContent[deckID] });
   LocalStorage.save({ key: 'deck', id: deckID, data: { general: prevLocalData.general, content: decksContent[deckID] } });
+  storage.ref('deck').child(deckID).put(new Blob([JSON.stringify(decksContent[deckID])], { type: 'application\/json' }));
 };
 
 export const deleteDeck = (setDeckGeneral, deckID) => {
@@ -69,6 +73,8 @@ export const deleteDeck = (setDeckGeneral, deckID) => {
   });
   delete decksContent[deckID];
   LocalStorage.remove({ key: 'deck', id: deckID });
+  storage.ref('deck').child(deckID).delete();
+  firestore.collection('deck').doc(deckID).delete().then(() => Alert.alert('The deck was successfully deleted'));
 };
 
 /*

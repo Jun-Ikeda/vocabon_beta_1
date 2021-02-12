@@ -1,4 +1,6 @@
 // デッキの情報の変数を定義する所
+import { Alert } from 'react-native';
+import { storage } from '../firebase/Firebase';
 import LocalStorage from '../LocalStorage';
 import account from './AccountModule';
 
@@ -48,6 +50,7 @@ export const saveAccountContent = (deckID = '', newData, merge = true) => {
     } : newData;
   }
   LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
+  storage.ref('account').child(account.general.userID).put(new Blob([JSON.stringify(account.content)], { type: 'application\/json' }));
   // }
 };
 

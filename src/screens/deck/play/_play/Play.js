@@ -157,7 +157,9 @@ const Play = (props) => {
     });
     const newPlay = play ? play.slice() : [];
     newPlay.push(func.getDate());
-    if (hasUnsavedHistory) saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
+    if (hasUnsavedHistory) {
+      saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
+    }
     if (isEditChanged) saveDeckContent(deckID, content);
     await playhistory.remove(deckID);
     setHasUnsavedHistory(false);

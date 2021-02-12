@@ -29,7 +29,8 @@ const style = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    padding: 20,
+    margin: 5,
+    // padding: 20,
   },
   qrcode: {
     flex: 1,
@@ -81,9 +82,8 @@ const ImportQRcode = (props) => {
   } = props;
   const [scanned, setScanned] = useState(false);
   const [scannedData, setScannedData] = useState(''); // そのときにスキャンしたデータ
-  const [dataLog, setDataLog] = useState(''); // 今までにスキャンした集計したデータ
-  // const [scannedData, setScannedData] = useState('');
-  // const [preScannedData, setPreScannedData] = useState('');
+  // const [dataLog, setDataLog] = useState(''); // 今までにスキャンした集計したデータ
+  const [preScannedData, setPreScannedData] = useState('');
 
   const renderCancelButton = () => (scanned
     ? null
@@ -92,6 +92,8 @@ const ImportQRcode = (props) => {
         style={style.cancelButton}
         onPress={() => {
           setContentVisible(false);
+          setScannedData('');
+          setPreScannedData('');
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         }}
       >
@@ -100,10 +102,14 @@ const ImportQRcode = (props) => {
     ));
 
   const handleBarCodeScanned = ({ data }) => {
-    setScanned(true);
-    setScannedData(data);
-    // setPreScannedData(scannedData);
-    // setScannedData(scannedData + data);
+    if (data === null) {
+      Alert.alert('Oops!');
+    } else {
+      setScanned(true);
+      // setScannedData(data);
+      setPreScannedData(scannedData);
+      setScannedData(scannedData + data);
+    }
   };
 
   const renderAfterScanned = () => {
@@ -112,32 +118,41 @@ const ImportQRcode = (props) => {
         icon: { name: 'md-refresh-outline' },
         onPress: () => {
           setScanned(false);
-          setScannedData('');
-          // setScannedData(preScannedData);
+          // setScannedData('');
+          setScannedData(preScannedData);
         },
       },
       {
         icon: { name: 'ios-add-sharp' },
         onPress: () => {
           setScanned(false);
-          setDataLog((pre) => `${pre}${scannedData}`);
-          setScannedData('');
+          // setDataLog((pre) => `${pre}${scannedData}`);
         },
       },
       {
         icon: { name: 'ios-checkmark' },
         onPress: () => {
           setScanned(false);
-          setDataLog((pre) => `${pre}${scannedData}`);
-          setInput(dataLog);
+          // setDataLog((pre) => `${pre}${scannedData}`);
+          setInput(scannedData);
           setContentVisible(false);
+        },
+      },
+      {
+        icon: { name: 'close-outline' },
+        onPress: () => {
+          setScanned(false);
+          setContentVisible(false);
+          setScannedData('');
+          setPreScannedData('');
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         },
       },
     ];
     return (
       <View style={{ width: '100%', height: '100%' }}>
         <ScrollView style={style.result}>
-          <Text style={{ fontSize: 18 }}>{dataLog}</Text>
+          <Text style={{ fontSize: 18 }}>{scannedData}</Text>
         </ScrollView>
         <View style={style.buttonsContainer}>
           {buttons.map((button) => (

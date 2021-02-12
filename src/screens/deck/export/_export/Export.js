@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity, LayoutAnimation,
+  StyleSheet, ScrollView, View, Text, TouchableOpacity, LayoutAnimation, Share,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 
@@ -29,10 +29,13 @@ const style = StyleSheet.create({
     backgroundColor: Color.white1,
     justifyContent: 'center',
   },
-  popUp: {
-    backgroundColor: Color.white1,
-  },
-  qrbutton: {
+  // popUp: {
+  //   backgroundColor: Color.white1,
+  //   flex: 1,
+  //   // padding: 20,
+  // },
+  button: {
+    // flex: 1,
     marginRight: 15,
     marginTop: 10,
   },
@@ -55,14 +58,53 @@ const Export = (props) => {
   const [qrContentVisible, setQRContentVisible] = useState(false);
   const [optionContentVisible, setOptionContentVisible] = useState(false);
 
-  const [optionSwitch, setOptionSwitch] = useState(false);
+  const [elementVisible, setElementVisible] = useState({
+    term: true,
+    definition: true,
+    synonym: false,
+    antonym: false,
+    prefix: false,
+    suffix: false,
+    exampleT: false,
+    exampleD: false,
+    cf: false,
+  });
+
+  // const [termVisible, setTermVisible] = useState(true);
+  // const [definitonVisible, setDefinitionVisible] = useState(true);
+  // const [synonymVisible, setSynonymVisible] = useState(false);
+  // const [antonymVisible, serAntonymVisible] = useState(false);
+  // const [prefixVisible, setPrefixVisible] = useState(false);
+  // const [suffixVisible, setSuffixVisible] = useState(false);
+  // const [exampleTVisible, setExampleTVisible] = useState(false);
+  // const [exampleDVisible, setExampleDVisible] = useState(false);
+  // const [cfVisible, setCfVisible] = useState(false);
 
   const content = getDeckContent(deckID);
   const general = getDeckGeneral(deckGeneral, deckID);
 
   const output = func.convertObjectToArray(content).map((element) => [element.value.term?.join(elementDelimiter),
-    element.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter);
+    element.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter) + (cardDelimiter);
   // const renderExportTypes = () => {//   const exportButtons = [//     {//       title: 'JSON',//       onPress: () => func.alert('Export as JSON'),//       textStyle: {}, //       flex: 1,//     },//     {//       title: 'Excel',//       onPress: () => func.alert('Export as Excel'),//       textStyle: {},//       flex: 1,//     },//     {//       title: 'Copy',//       onPress: () => func.alert('Export as a Copy'),//       textStyle: {},//       flex: 1,//     },//   ];//   if (visible) {//     return exportButtons.map((button) => (//       <View style={[{ borderWidth: 1 }]}>//         <Button title={button.title} onPress={button.onPress} />//       </View>//     ));//   }//   return null;// };
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: output,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   const renderDataBox = () => (
     <View style={style.dataBox}>
@@ -73,16 +115,22 @@ const Export = (props) => {
             setOptionContentVisible(true);
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           }}
-          style={style.qrbutton}
+          style={style.button}
         >
           <Text>Item Option</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={onShare}
+          style={style.button}
+        >
+          <Icon.Ionicons name="share-outline" style={{ fontSize: 30 }} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             setQRContentVisible(true);
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           }}
-          style={style.qrbutton}
+          style={style.button}
         >
           <Icon.MaterialCommunityIcons name="qrcode" style={{ fontSize: 30 }} />
         </TouchableOpacity>
@@ -130,17 +178,23 @@ const Export = (props) => {
         renderMenu={() => (
           <ExportItemOption
             setContentVisible={setOptionContentVisible}
-            optionSwitch={optionSwitch}
-            setOptionSwitch={setOptionSwitch}
+            elementVisible={elementVisible}
+            setElementVisible={setElementVisible}
+            termVisible={termVisible}
+            setTermVisible={setTermVisible}
+            definitionVisible={definitionVisible}
+            setDefinitionVisible={setDefinVisible}
+            termVisible={termVisible}
+            termVisible={termVisible}
+            termVisible={termVisible}
+            termVisible={termVisible}
           />
         )}
-        overlayStyle={style.popUp}
         containerStyle={{ justifyContent: 'center' }}
       />
       <PopUpMenu
         isVisible={qrContentVisible}
         renderMenu={renderQRcode}
-        overlayStyle={style.popUp}
         containerStyle={{ justifyContent: 'center' }}
       />
     </View>

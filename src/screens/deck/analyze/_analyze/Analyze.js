@@ -50,12 +50,13 @@ const style = StyleSheet.create({
     // flex: 1,
   },
   detailtext: {
-    // borderWidth: 1,
     fontSize: iconSize * 0.66,
+    padding: iconSize * 0.176,
   },
   detaildate: {
     fontSize: iconSize * 0.66,
-
+    padding: iconSize * 0.176,
+    paddingLeft: 20,
   },
 });
 
@@ -66,10 +67,11 @@ const Analyze = (props) => {
   const content = getDeckContent(deckID);
   // state
   const [contentSorted, setContentSorted] = useState(content);
-  const [detailVisibleID, setDetailVisibleID] = useState('aiueo');
+  const [detailVisibleID, setDetailVisibleID] = useState('');
   // const [detailVisible, setDetailVisible] = useState(false);
   const [graphVisible, setGraphVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
+  const [ascendOrDescend, setAscendOrDecend] = useState(true); // if true ascend; otherwise descend
   const [mode, setMode] = useState('noDate');
   const [termLabel, setTermLabel] = useState('Term ↓');
   const [marksLabel, setMarksLabel] = useState('');
@@ -164,10 +166,10 @@ const Analyze = (props) => {
         setVisible={() => setDetailVisibleID('')}
         renderMenu={() => (
           <View style={style.detailcontainer}>
-            <Text style={style.detailtext}>{content[detailVisibleID]?.term}</Text>
-            <Text style={style.detailtext}>{content[detailVisibleID]?.definition}</Text>
-            <Text style={style.detailtext}>History:</Text>
-            {marks[detailVisibleID]?.map((time) => <Text>{func.formatDate(play[time])}</Text>)}
+            <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
+            <Text style={style.detailtext}>{` Def: ${content[detailVisibleID]?.definition}`}</Text>
+            <Text style={style.detailtext}>{'Mistake History:\n'}</Text>
+            {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(play[time])}</Text>)}
           </View>
         )}
       />

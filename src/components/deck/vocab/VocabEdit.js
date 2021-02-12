@@ -151,6 +151,7 @@ const VocabEdit = (props) => {
     const newExampleT = createNewTag([exampleT, setExampleT]);
     const newExampleD = createNewTag([exampleD, setExampleD]);
     const newCf = createNewTag([cf, setCf]);
+    console.log(newTerm, newDefinition);
     setContent((prev) => {
       const result = JSON.parse(JSON.stringify(prev));
       const newVocab = {};
@@ -164,6 +165,8 @@ const VocabEdit = (props) => {
       if (exampleD.tagsArray.length !== 0) { newVocab.exampleD = newExampleD.tagsArray; }
       if (cf.tagsArray.length !== 0) { newVocab.cf = newCf.tagsArray; }
       result[vocabID] = newVocab;
+      // alert(JSON.stringify(result));
+      console.log(result);
       return result;
     });
     setIsChanged(true);

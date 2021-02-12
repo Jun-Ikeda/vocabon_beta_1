@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import 'firebase/firestore';
 import { getAccountContent, getAccountGeneral } from '../account/Account';
 import { func } from '../Const';
 

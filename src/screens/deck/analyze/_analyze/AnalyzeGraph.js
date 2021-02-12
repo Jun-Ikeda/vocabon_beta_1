@@ -12,7 +12,7 @@ const style = StyleSheet.create({
   container: {
     backgroundColor: Color.white1,
     marginHorizontal: '5%',
-    marginVertical: '15%',
+    marginVertical: '10%',
     flex: 1,
     borderRadius: 10,
     // alignItems: 'center',

@@ -19,14 +19,15 @@ const Button = [
             decksGeneralはsrc/config/deck/Deckからimport
       第二引数: deckID(このidで見つからなかったら今のところ空を返す)
       */
-      // const content = getDeckContent('7NCodht%}0');
-      const contentAll = Deck.decksContent;
+      const content = getDeckContent();
+      // const contentAll = Deck.decksContent;
       /*
       引数: deckID(このidで見つからなかったら今のところ空を返す)
       */
+      const deck = {};
       // const contentArray = func.convertObjectToArray(content);
       // const contentObject = func.convertArrayToObject(contentArray);
-      return { contentAll };
+      return content;
     },
     // onPress: () => ({ decksGeneral, decksContent }),
   },
@@ -73,7 +74,7 @@ const Button = [
     title: 'Account (LocalStorage)',
     onPress: async () => {
       // const account = await LocalStorage.getAllDataForKey('accountContent');
-      const account = await LocalStorage.load({ key: 'accountGeneral' });
+      const account = await LocalStorage.getAllDataForKey('accountContent');
       return account;
     },
   },
@@ -121,9 +122,28 @@ const Button = [
   {
     title: 'Firebase firestore',
     onPress: async () => {
-      await firestore
+      // set
+      // await firestore.collection('test').doc('doc').set({ field: 'this is a value' }, { merge: true });
+
+      // get
+      const data = await firestore
         .collection('test')
-        .doc('id').set({ name: 'aiueo' });
+        .doc('doc').get().then((doc) => {
+          if (doc.exists) {
+            console.log(doc.data());
+          }
+        });
+    },
+  },
+  {
+    title: 'json',
+    onPress: () => {
+      fetch('https://firebasestorage.googleapis.com/v0/b/vocabonbeta1.appspot.com/o/account%2FTKQ0EYBHPpdvNIgsdxUPgCKoyTv1?alt=media&token=815e89a6-4fa4-454c-abe2-634b601acd17')
+        .then((response) => response.json())
+        .then((card) => {
+          func.alertConsole(card);
+          // return card;
+        });
     },
   },
 ];

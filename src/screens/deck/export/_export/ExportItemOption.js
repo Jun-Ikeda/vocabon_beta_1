@@ -54,7 +54,7 @@ const style = StyleSheet.create({
 });
 
 const ExportItemOption = (props) => {
-  const { setContentVisible, optionSwitch, setOptionSwitch } = props;
+  const { setContentVisible, elementVisible, setElementVisible } = props;
 
   const renderCancelButton = () => (
     <TouchableOpacity
@@ -85,7 +85,12 @@ const ExportItemOption = (props) => {
         {items.map((item) => (
           <View style={style.switchBox}>
             <Text style={{ flex: 1, fontSize: 15 }}>{item.title}</Text>
-            <Switch value={optionSwitch} onValueChange={setOptionSwitch(!optionSwitch)} />
+            <Switch
+              value={elementVisible[item.value]}
+              onValueChange={() => {
+                setElementVisible(...elementVisible);
+              }}
+            />
           </View>
         ))}
       </View>

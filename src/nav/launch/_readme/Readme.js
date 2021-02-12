@@ -76,9 +76,10 @@ const style = StyleSheet.create({
     // // marginHorizontal: '15%',
     color: Color.black,
     backgroundColor: getRandomPastel(),
+    // backgroundColor:'red',
     // justifyContent: 'center',
     // alignItems: 'center',
-    // borderRadius: 100,
+    borderRadius: 100,
     fontSize: 60,
   },
   // startText: {
