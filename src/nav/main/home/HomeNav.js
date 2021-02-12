@@ -64,10 +64,10 @@ const HomeNav = () => {
               userID={getAccountGeneral().userID}
               style={{ marginRight: 20 }}
               size={44}
-              onPress={() => {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                setDocVisible(!docVisible);
-              }}
+              // onPress={() => {
+              //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+              //   // setDocVisible(!docVisible);
+              // }}
             />
           ),
         })}

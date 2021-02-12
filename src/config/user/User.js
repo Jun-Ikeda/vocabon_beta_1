@@ -13,6 +13,11 @@ export const getUserGeneral = (userID) => {
   };
 };
 
+export const saveUserGeneral = (userID, data, merge = true) => {
+  const newData = { ...data, ...(merge ? users[userID] : {}) };
+  users[userID] = newData;
+};
+
 export default { users, getUserGeneral };
 
 /*

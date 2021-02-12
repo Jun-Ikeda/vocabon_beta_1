@@ -130,15 +130,15 @@ const Play = (props) => {
             style: 'default',
             onPress: async () => {
               await suspend();
-              if (isEditChanged) saveDeckContent(deckID, content);
+              if (isEditChanged) await saveDeckContent(deckID, content);
               navigation.dispatch(e.data.action);
             },
           },
           {
             text: 'Discard',
             style: 'destructive',
-            onPress: () => {
-              if (isEditChanged) saveDeckContent(deckID, content);
+            onPress: async () => {
+              if (isEditChanged) await saveDeckContent(deckID, content);
               navigation.dispatch(e.data.action);
             },
           },

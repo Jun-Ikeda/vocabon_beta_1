@@ -78,7 +78,7 @@ const ExportQRcode = (props) => {
       <SvgQRCode
         value={text}
         size={260}
-        logo={}
+        // logo={}
         logoSize={30}
         logoBackgroundColor="transparent"
         enableLinearGradient

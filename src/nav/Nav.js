@@ -11,10 +11,12 @@ import MainNav from './main/MainNav';
 
 import { Account, User } from '../../dev/TestData';
 import { decksContent, decksGeneral } from '../config/deck/Deck';
-import { users } from '../config/user/User';
+import { saveUserGeneral, users } from '../config/user/User';
 import { account, initialAccountGeneral } from '../config/account/Account';
 import LocalStorage from '../config/LocalStorage';
 import { func } from '../config/Const';
+import { login } from '../config/firebase/Auth';
+import { getRandomPastel } from '../config/Color';
 
 const Stack = createStackNavigator();
 
@@ -57,20 +59,27 @@ const Nav = () => {
     await deckIDs.forEach((deckID, index) => {
       account.content[deckID] = accountContent[index];
     });
-    func.alertConsole(account);
+    // func.alertConsole(account);
     setIsLoggedIn((account?.general?.loggedin ?? false) && (account?.general?.emailVerified ?? false));
+    login(account.general.email, account.general.password);
     // account.content = Account.content;
+  };
+
+  const initializeUser = async () => {
+    const userIDSelf = account.general.userID;
+    saveUserGeneral(userIDSelf, { name: account.general.name, icon: { color: getRandomPastel() } });
   };
 
   useEffect(() => {
     (async () => {
       await initializeDeck();
       // User を TestDataから取ってきて、config/user/User.jsのuserに代入 !contentをgeneralに分けてない!
-      const userIDs = Object.keys(User);
-      userIDs.forEach((userID) => {
-        users[userID] = User[userID];
-      });
+      // // const userIDs = Object.keys(User);
+      // userIDs.forEach((userID) => {
+      //   users[userID] = User[userID];
+      // });
       await initializeAccount();
+      await initializeUser();
       setIsInitialized(true);
     })();
   }, []);

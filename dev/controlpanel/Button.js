@@ -7,7 +7,7 @@ import Deck, { getDeckContent } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import UUID from '../../src/config/UUID';
 
-import firebase, { getFirebaseUser } from '../../src/config/firebase/Firebase';
+import firebase, { auth, firestore, getFirebaseUser } from '../../src/config/firebase/Firebase';
 
 const Button = [
   {
@@ -113,8 +113,17 @@ const Button = [
   {
     title: 'Firebase auth',
     onPress: async () => {
-      const user = getFirebaseUser();
-      // return user;
+      // const user = await getFirebaseUser();
+      const user = auth.currentUser;
+      return user;
+    },
+  },
+  {
+    title: 'Firebase firestore',
+    onPress: async () => {
+      await firestore
+        .collection('test')
+        .doc('id').set({ name: 'aiueo' });
     },
   },
 ];
