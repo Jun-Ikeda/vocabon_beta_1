@@ -28,12 +28,14 @@ import Analyze from '../../../screens/deck/analyze/_analyze/Analyze';
 import { docVisibleState } from '../../../../dev/Switch';
 import Icon from '../../../components/Icon';
 import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
-import { getAccountGeneral } from '../../../config/account/Account';
+import { getAccountContent, getAccountGeneral } from '../../../config/account/Account';
+import Profile from '../../../screens/user/Profile';
 
 const Stack = createStackNavigator();
 
 const HomeNav = () => {
   const [docVisible, setDocVisible] = useRecoilState(docVisibleState);
+  const accountGeneral = getAccountGeneral();
   return (
     <Stack.Navigator
       headerMode="screen"
@@ -61,13 +63,15 @@ const HomeNav = () => {
           headerTitle: 'Home',
           headerRight: () => (
             <ProfileIcon
-              userID={getAccountGeneral().userID}
+              userID={accountGeneral.userID}
               style={{ marginRight: 20 }}
               size={44}
-              // onPress={() => {
-              //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-              //   // setDocVisible(!docVisible);
-              // }}
+              onPress={() => {
+                // alert('aiueo');
+                navigation.navigate('profile', { userID: accountGeneral?.userID });
+                // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                // setDocVisible(!docVisible);
+              }}
             />
           ),
         })}
@@ -150,6 +154,11 @@ const HomeNav = () => {
           headerTitle: 'Option',
           // headerRight: () => <ImportMenu />,
         }}
+      />
+      <Stack.Screen
+        name="profile"
+        component={Profile}
+        options={{ headerTitle: 'Profile' }}
       />
     </Stack.Navigator>
   );

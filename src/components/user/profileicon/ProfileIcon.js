@@ -39,7 +39,7 @@ const ProfileIcon = (props) => {
   const renderColorIcon = () => (
     <View style={[circle, style.color, { backgroundColor: color || general?.icon.color }]}>
       <Text style={{ color: 'white', fontSize: size * 0.5 }}>
-        {char || general?.name?.slice(0, 1)}
+        {char || general?.name?.slice(0, 1).toUpperCase()}
       </Text>
     </View>
   );

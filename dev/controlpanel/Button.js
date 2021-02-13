@@ -73,8 +73,8 @@ const Button = [
   {
     title: 'Account (LocalStorage)',
     onPress: async () => {
+      const account = await LocalStorage.load({ key: 'accountGeneral' });
       // const account = await LocalStorage.getAllDataForKey('accountContent');
-      const account = await LocalStorage.getAllDataForKey('accountContent');
       return account;
     },
   },

@@ -1,6 +1,6 @@
 // デッキの情報の変数を定義する所
 import { Alert } from 'react-native';
-import { storage } from '../firebase/Firebase';
+import { database, storage } from '../firebase/Firebase';
 import LocalStorage from '../LocalStorage';
 import account from './AccountModule';
 
@@ -11,8 +11,8 @@ export const initialAccountGeneral = {
   name: '',
   password: '',
   userID: '',
-  loggedin: '',
-  emailVerified: '',
+  loggedin: false,
+  emailVerified: false,
 };
 
 export const getAccountGeneral = () => account?.general ?? initialAccountGeneral;
@@ -34,9 +34,8 @@ export const getAccountContent = (deckID = '') => {
 };
 
 export const saveAccountContent = (deckID = '', newData, merge = true) => {
-  // if (deckID === '') {
-  //   account.content = merge ? { ...account.content, ...newData } : newData;
-  // } else {
+  const timestamp = Date.now();
+  // recoil/global
   if (Object.keys(account.content).includes(deckID)) {
     account.content[deckID] = merge ? { ...account?.content?.[deckID], ...newData } : newData;
   } else {
@@ -49,9 +48,14 @@ export const saveAccountContent = (deckID = '', newData, merge = true) => {
       ...newData,
     } : newData;
   }
+  // localstorage
   LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
+  // firebase
   storage.ref('account').child(account.general.userID).put(new Blob([JSON.stringify(account.content)], { type: 'application\/json' }));
   // }
+  // timestamp
+  database.ref(`timestamp/account/${getAccountGeneral().userID}`).set(timestamp);
+  LocalStorage.save({ key: 'accountContent', data: timestamp });
 };
 
 export const deleteAccountContent = (deckID) => {

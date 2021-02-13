@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import {
   atom, useRecoilState, useRecoilValue, useSetRecoilState,
 } from 'recoil';
@@ -12,12 +12,14 @@ import MainNav from './main/MainNav';
 import { Account, User } from '../../dev/TestData';
 import { decksContent, decksGeneral } from '../config/deck/Deck';
 import { saveUserGeneral, users } from '../config/user/User';
-import { account, initialAccountGeneral } from '../config/account/Account';
+import { account, initialAccountGeneral, saveAccountGeneral } from '../config/account/Account';
 import LocalStorage from '../config/LocalStorage';
 import { func } from '../config/Const';
-import { login } from '../config/firebase/Auth';
+import { getFirebaseUser, login } from '../config/firebase/Auth';
 import { getRandomPastel } from '../config/Color';
-import { firestore, storage } from '../config/firebase/Firebase';
+import {
+  auth, database, firestore, storage,
+} from '../config/firebase/Firebase';
 
 const Stack = createStackNavigator();
 
@@ -33,38 +35,106 @@ const Nav = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
-  const initializeAccount = async () => {
-    // alert('Account');
-    account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
-
-    account.content = {};
-    // const deckIDs = await LocalStorage.getIdsForKey('accountContent');
-    // const accountContent = await LocalStorage.getAllDataForKey('accountContent');
-    // await deckIDs.forEach((deckID, index) => {
-    //   account.content[deckID] = accountContent[index];
-    // });
-    // func.alertConsole(account);
-    const isLoggedInLocal = (account?.general?.loggedin ?? false) && (account?.general?.emailVerified ?? false);
-    setIsLoggedIn(isLoggedInLocal);
-    if (isLoggedInLocal) {
-      // alert('isloggedin');
-      login(account.general.email, account.general.password);
-      storage.ref('account').child(account.general.userID).getDownloadURL().then((url) => fetch(url)
-        .then((response) => response.json())
-        .then((card) => {
-        // func.alertConsole(card);
-          account.content = card;
-          // return card;
-          Object.keys(account.content).forEach((deckID) => {
-            LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
-          });
-        }));
+  const initializeAuth = async () => {
+    const preLocalGeneral = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
+    let preIsLoggedIn = (preLocalGeneral?.loggedin ?? false) && (preLocalGeneral?.emailVerified ?? false);
+    if (preIsLoggedIn) {
+      await login(preLocalGeneral?.email, preLocalGeneral?.password).catch((error) => {
+        Alert.alert('Error', error);
+        preIsLoggedIn = false;
+      });
     }
-    // account.content = Account.content;
+    return preIsLoggedIn;
+  };
+  // const initializeAuth = () => true;
+
+  const initializeAccount = async () => {
+    // general
+    const user = auth.currentUser;
+    const preAccountGeneral = await LocalStorage.load({ key: 'accountGeneral' });
+    const newAccountGeneral = { ...preAccountGeneral, name: user.displayName, emailVerified: user.emailVerified };
+    // recoil/global
+    account.general = newAccountGeneral;
+    // localstorage
+    LocalStorage.save({ key: 'accountGeneral', data: newAccountGeneral });
+
+    // content
+    // get timestamp
+    try {
+      let fireTimeStamp = '';
+      await database.ref(`timestamp/account/${preAccountGeneral.userID}`).once('value', (timestamp) => { fireTimeStamp = timestamp; });
+      const localTimeStamp = LocalStorage.load({ key: 'accountContent' });
+      // compare
+      if (fireTimeStamp < localTimeStamp) {
+      // get local
+        const deckIDs = await LocalStorage.getIdsForKey('accountContent');
+        const accountContent = await LocalStorage.getAllDataForKey('accountContent');
+        // apply to recoil/global
+        await deckIDs.forEach((deckID, index) => {
+          account.content[deckID] = accountContent[index];
+        });
+        // set firebase
+        await storage.ref('account').child(preAccountGeneral.userID).put(new Blob([JSON.stringify(account.content)], { type: 'application\/json' }));
+        // set timestamp
+        await database.ref(`timestamp/account/${preAccountGeneral.userID}`).set(localTimeStamp);
+      } else {
+      // get firebase
+        await storage.ref('account').child(preAccountGeneral.userID).getDownloadURL()
+          .then((url) => fetch(url)
+            .then((response) => response.json())
+            .then((accountContent) => {
+            // apply to recoil/global
+              account.content = accountContent;
+              // apply to localstorage
+              Object.keys(account.content).forEach((deckID) => {
+                LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
+              });
+            }));
+        // set timestamp
+        await LocalStorage.save({ key: 'accountContent', data: fireTimeStamp });
+      }
+    } catch (error) {
+      func.alert(error);
+    }
+    // const localGeneral = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
+    // const isLoggedInLocal = (localGeneral?.loggedin ?? false) && (localGeneral?.emailVerified ?? false);
+
+    // if (isLoggedInLocal) {
+    //   // general
+    //   await login(localGeneral.email, localGeneral.password).then((user) => {
+    //     const newAccountGeneral = { ...localGeneral, user: user.user.displayName, emailVerified: user.user.emailVerified };
+    //     saveAccountGeneral(newAccountGeneral);
+    //   }).catch((error) => {
+    //     Alert.alert(error);
+    //     setIsLoggedIn(false);
+    //   });
+    // }
+    // account.content = {};
+    // // const deckIDs = await LocalStorage.getIdsForKey('accountContent');
+    // // const accountContent = await LocalStorage.getAllDataForKey('accountContent');
+    // // await deckIDs.forEach((deckID, index) => {
+    // //   account.content[deckID] = accountContent[index];
+    // // });
+    // // func.alertConsole(account);
+    // setIsLoggedIn(isLoggedInLocal);
+    // if (isLoggedInLocal) {
+    //   login(account.general.email, account.general.password);
+    //   // firebase -> localstorage, recoil/global
+    //   storage.ref('account').child(account.general.userID).getDownloadURL()
+    //     .then((url) => fetch(url)
+    //       .then((response) => response.json())
+    //       .then((card) => {
+    //         account.content = card;
+    //         Object.keys(account.content).forEach((deckID) => {
+    //           LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
+    //         });
+    //       }))
+    //     .catch(() => {});
+    // }
+    // // account.content = Account.content;
   };
 
   const initializeDeck = async () => {
-    // alert('Deck');
     // firebase
     const newDecksGeneral = {};
     const deckIDsFirebase = [];
@@ -103,22 +173,40 @@ const Nav = () => {
     saveUserGeneral(userIDSelf, { name: account.general.name, icon: { color: getRandomPastel() } });
   };
 
+  const initialize = async () => {
+    await alert('initialize');
+  };
+
   useEffect(() => {
     (async () => {
-      setIsInitialized(false);
-      await initializeAccount();
-      if (isLoggedIn) {
-        await initializeUser();
-        await initializeDeck();
-        // User を TestDataから取ってきて、config/user/User.jsのuserに代入 !contentをgeneralに分けてない!
-        // // const userIDs = Object.keys(User);
-        // userIDs.forEach((userID) => {
-        //   users[userID] = User[userID];
-        // });
-      }
+      const newIsLoggedIn = await initializeAuth();
       setIsInitialized(true);
+      setIsLoggedIn(newIsLoggedIn);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (isLoggedIn) {
+        setIsInitialized(false);
+        await initialize();
+        setIsInitialized(true);
+      }
     })();
   }, [isLoggedIn]);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     setIsInitialized(false);
+  //     // if (newIsLoggedIn) {
+  //     //   await initializeAccount();
+  //     //   // await initializeUser();
+  //     //   // await initializeDeck();
+  //     // }
+  //     // setIsLoggedIn(newIsLoggedIn);
+  //     setIsInitialized(true);
+  //   })();
+  // }, [isLoggedIn]);
 
   if (isInitialized) {
     return (
