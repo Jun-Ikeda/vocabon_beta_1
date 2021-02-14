@@ -4,12 +4,14 @@ import {
 } from 'react-native';
 
 import { atom, useRecoilValue } from 'recoil';
+import { NavigationContainer } from '@react-navigation/native';
 import ControlPanel from './controlpanel/ControlPanel';
 import Demo from './Demo';
 import Nav from '../src/nav/Nav';
 import Readme from '../src/nav/launch/_readme/Readme';
 import DocInJapanese from './DocInJapanese';
 import LaunchNav from '../src/nav/launch/LaunchNav';
+import EmailVerify from '../src/nav/launch/_emailverify/EmailVerify';
 // import Export from '../src/screens/deck/export/Export';
 
 // import EditSearch from '../src/screens/deck/edit/_edit/EditSearch';
@@ -40,7 +42,8 @@ const buttons = [
   { title: 'Product', element: <Nav /> },
   { title: 'Demo', element: <Demo /> },
   { title: 'Kochiya', element: <Readme /> },
-  { title: 'Launch', element: <LaunchNav /> },
+  { title: 'Email Verify', element: <EmailVerify navigation={{ addListener: () => {} }} /> },
+  // { title: 'Launch', element: <NavigationContainer><LaunchNav /></NavigationContainer> },
   // { title: 'Okuda', element: <Export />},
 ];
 

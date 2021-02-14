@@ -1,8 +1,12 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet, Text, View, Alert,
+} from 'react-native';
 import { Button } from 'react-native-paper';
+import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
-import AuthForms from '../AuthForms';
+import auth from '../../../config/firebase/Auth';
+import AuthForms, { formsInputState } from '../AuthForms';
 
 const style = StyleSheet.create({
   container: {
@@ -22,13 +26,50 @@ const style = StyleSheet.create({
 
 const ResetPassword = (props) => {
   const { } = props;
+  const [isSent, setIsSent] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const formsInput = useRecoilValue(formsInputState); // fomrsInput.email
+  // const [errorMessage, setErrorMessage] = useState('');
+
   return (
     <View style={style.container}>
       <Text style={{ fontSize: 22, padding: 20, borderWidth: 1 }}>Reset your password</Text>
       <AuthForms visible={{ email: true }} />
       <View style={style.signupButtonContainer}>
-        <Button color={Color.green3} mode="contained" style={style.signupButton}>Send Reset Link</Button>
+        <Button
+          color={Color.green3}
+          mode="contained"
+          style={style.signupButton}
+          onPress={() => auth.sendPasswordResetEmail(formsInput.email).then(() => {
+            // Email sent.
+            setIsSent(true);
+            setIsError(false);
+            Alert.alert('Sent an email', 'Check your inbox!');
+          }).catch((error) => {
+            // An error happened.
+            setIsError(true);
+            setIsSent(false);
+            console.log(error);
+            // setErrorMessage(error);
+            Alert.alert('Opps!', error.message);
+          })}
+        >
+          Send Reset Link
+
+        </Button>
+
       </View>
+      {/* {isSent ? (
+        <View style={{ margin: 20, alignSelf: 'center' }}>
+          <Text>Check your inbox!</Text>
+        </View>
+      ) : null} */}
+      {/* {isError ? (
+        // Alert.alert('Fill correctly')
+        <View style={{ margin: 20, alignSelf: 'center' }}>
+          <Text>{errorMessage.message}</Text>
+        </View>
+      ) : null} */}
     </View>
   );
 };

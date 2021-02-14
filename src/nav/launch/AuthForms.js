@@ -77,7 +77,7 @@ const AuthForms = (props) => {
               {input.buttons.map((button) => {
                 const IconComponent = Icon[button.icon.collection];
                 return (
-                  <IconComponent name={button.icon.name} onPress={button.onPress} style={{ fontSize: 28, marginHorizontal: 10, color: Color.gray4 }} />
+                  <IconComponent name={button.icon.name} onPress={button.onPress} style={{ fontSize: 28, marginHorizontal: 10, color: Color.gray4 }} key={button.icon.collection.toLowerCase()} />
                 );
               })}
             </View>

@@ -2,6 +2,8 @@
 
 import { Alert } from 'react-native';
 import { atom } from 'recoil';
+import { getAccountGeneral } from '../account/Account';
+import { func } from '../Const';
 import { database, firestore, storage } from '../firebase/Firebase';
 import LocalStorage from '../LocalStorage';
 import decksContent from './DeckModule';
@@ -34,9 +36,11 @@ export const getDeckGeneral = (general, deckID) => {
 // export const saveDeckGeneral = (setState) => {
 //   setState();
 // };
+// timestampはユーザーごとに管理
 export const saveDeckGeneral = async (setDeckGeneral, deckID, newData) => {
   let newState = {};
-  const timestamp = Date.now();
+  const timestamp = func.compressUnix();
+  const account = getAccountGeneral();
   // recoil/global variables
   await setDeckGeneral((prev) => {
     newState = JSON.parse(JSON.stringify(prev));
@@ -45,11 +49,12 @@ export const saveDeckGeneral = async (setDeckGeneral, deckID, newData) => {
   });
   // localstorage
   const prevLocalData = await LocalStorage.load({ key: 'deck', id: deckID });
-  LocalStorage.save({ key: 'deck', id: deckID, data: { general: newState[deckID], content: prevLocalData?.content ?? {}, timestamp } });
+  LocalStorage.save({ key: 'deck', id: deckID, data: { general: newState[deckID], content: prevLocalData?.content ?? {}, timestamp: prevLocalData?.timestamp ?? null } });
   // firebase
   firestore.collection('deck').doc(deckID).set(newState[deckID], { merge: true });
   // timestamp
-  database.ref(`timestamp/deck/${deckID}`).set(timestamp);
+  LocalStorage.save({ key: 'deckGeneral', data: timestamp });
+  database.ref(`timestamp/deckGeneral/${account.userID}`).set(timestamp);
 };
 
 export const getDeckContent = (deckID) => {
@@ -59,9 +64,10 @@ export const getDeckContent = (deckID) => {
   return {};
 };
 
+// timestampはデッキ毎に管理
 export const saveDeckContent = async (deckID, newData, merge = true) => {
   // recoil/global variables
-  const timestamp = Date.now();
+  const timestamp = func.compressUnix();
   if (merge) {
     decksContent[deckID] = { ...decksContent[deckID], ...newData };
   } else {
@@ -73,10 +79,12 @@ export const saveDeckContent = async (deckID, newData, merge = true) => {
   // firebase
   storage.ref('deck').child(deckID).put(new Blob([JSON.stringify(decksContent[deckID])], { type: 'application\/json' }));
   // timestamp
-  database.ref(`timestamp/deck/${deckID}`).set(timestamp);
+  database.ref(`timestamp/deckContent/${deckID}`).set(timestamp);
 };
 
 export const deleteDeck = (setDeckGeneral, deckID) => {
+  const account = getAccountGeneral();
+  const timestamp = func.compressUnix();
   // recoil/global variables
   setDeckGeneral((prev) => {
     const newState = JSON.parse(JSON.stringify(prev));
@@ -90,7 +98,34 @@ export const deleteDeck = (setDeckGeneral, deckID) => {
   storage.ref('deck').child(deckID).delete();
   firestore.collection('deck').doc(deckID).delete().then(() => Alert.alert('The deck was successfully deleted'));
   // timestamp
-  database.ref(`timestamp/deck/${deckID}`).remove();
+  database.ref(`timestamp/deckContent/${deckID}`).set(0);
+  database.ref(`timestamp/deckGeneral/${account.userID}`).set(timestamp);
+};
+
+export const deleteAllDecks = (setDeckGeneral) => {
+  const account = getAccountGeneral();
+  const deckIDsAll = Object.keys(decksContent);
+  // recoil/global variables
+  deckIDsAll.forEach((deckID) => {
+    delete decksContent[deckID];
+  });
+  setDeckGeneral({});
+  // localstorage
+  LocalStorage.clearMapForKey('deck');
+  // firebase
+  firestore.collection('deck').where('user', '==', account.userID).get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      doc.ref.delete();
+    });
+  });
+  deckIDsAll.forEach((deckID) => {
+    storage.ref('deck').child(deckID).delete();
+  });
+  // timestamp
+  deckIDsAll.forEach((deckID) => {
+    database.ref(`timestamp/deckContent/${deckID}`).remove();
+  });
+  database.ref(`timestamp/deckGeneral/${account.userID}`).remove();
 };
 
 /*

@@ -87,10 +87,10 @@ const MenuButtons = (props) => {
   }),
   [navigation, bookmark, isDeleted]);
 
-  const deleteDeckAndAccountContent = () => {
+  const deleteDeckAndAccountContent = async () => {
     setIsDeleted(true);
-    deleteDeck(setDecksGeneralState, deckID);
-    deleteAccountContent(deckID);
+    await deleteDeck(setDecksGeneralState, deckID);
+    await deleteAccountContent(deckID);
     navigation.goBack();
   };
 
@@ -206,14 +206,15 @@ const MenuButtons = (props) => {
         {
           title: 'Duplicate',
           icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { /* color: Color.gray3 */ }]} />,
-          onPress: () => {
-            const newDeckID = UUID.generate(10);
+          onPress: async () => {
             const num = func.convertObjectToArray(decksGeneralState).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
             if (num >= 10) {
-              Alert.alert('Storage full', 'You can save up to 10 decks.');
+              Alert.alert('Storage is full', 'You can save up to 10 decks.');
             } else {
-              saveDeckGeneral(setDecksGeneralState, newDeckID, deckGeneral);
-              saveDeckContent(newDeckID, deckContent);
+              const newDeckID = UUID.generate(10);
+              const newDeckGeneral = { ...deckGeneral, user: accountGeneral?.userID };
+              await saveDeckGeneral(setDecksGeneralState, newDeckID, newDeckGeneral);
+              await saveDeckContent(newDeckID, deckContent);
               navigation.goBack();
             }
           },

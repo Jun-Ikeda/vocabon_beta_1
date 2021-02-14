@@ -72,7 +72,7 @@ const SignUp = (props) => {
     ];
     return (
       suggestions.map((suggestion) => (
-        <TouchableOpacity onPress={suggestion.onPress} style={style.suggestionContainer}>
+        <TouchableOpacity onPress={suggestion.onPress} style={style.suggestionContainer} key={suggestion.title.toLowerCase()}>
           <Text style={{ color: Color.gray1 }}>{suggestion.title}</Text>
         </TouchableOpacity>
       ))

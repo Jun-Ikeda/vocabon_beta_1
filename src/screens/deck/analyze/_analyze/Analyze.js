@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import { Portal } from 'react-native-paper';
+import { Button, Portal } from 'react-native-paper';
 import { getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
@@ -34,6 +34,7 @@ const style = StyleSheet.create({
   },
   label: {
     fontSize: iconSize * 0.66,
+    marginLeft: 20,
   },
   text: {
     fontSize: iconSize,
@@ -71,7 +72,7 @@ const Analyze = (props) => {
   // const [detailVisible, setDetailVisible] = useState(false);
   const [graphVisible, setGraphVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
-  const [ascendOrDescend, setAscendOrDecend] = useState(true); // if true ascend; otherwise descend
+  const [ascendOrDescend, setAscendOrDescend] = useState(true); // if true ascend; otherwise descend
   const [mode, setMode] = useState('noDate');
   const [termLabel, setTermLabel] = useState('Term ↓');
   const [marksLabel, setMarksLabel] = useState('');
@@ -159,22 +160,52 @@ const Analyze = (props) => {
     );
   };
 
-  const renderVocabDetail = () => (
-    <Portal>
-      <PopUpMenu
-        isVisible={!(detailVisibleID === '')}
-        setVisible={() => setDetailVisibleID('')}
-        renderMenu={() => (
-          <View style={style.detailcontainer}>
-            <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
-            <Text style={style.detailtext}>{` Def: ${content[detailVisibleID]?.definition}`}</Text>
-            <Text style={style.detailtext}>{'Mistake History:\n'}</Text>
-            {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(play[time])}</Text>)}
-          </View>
-        )}
-      />
-    </Portal>
+  const renderNextButton = () => (
+    <View>
+      <TouchableOpacity />
+    </View>
   );
+
+  const renderVocabDetail = () => {
+    let dateList = [];
+    let iconName = '';
+    if (ascendOrDescend === true) {
+      dateList = play.sort((a, b) => a - b);
+      iconName = 'chevron-up';
+    } else {
+      dateList = play.sort((a, b) => b - a);
+      iconName = 'chevron-down';
+    }
+    return (
+      <Portal>
+        <PopUpMenu
+          isVisible={!(detailVisibleID === '')}
+          setVisible={() => setDetailVisibleID('')}
+          renderMenu={() => (
+            <View style={style.detailcontainer}>
+              <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
+              <Text style={style.detailtext}>{` Def: ${content[detailVisibleID]?.definition}`}</Text>
+              <Text style={style.detailtext}>{'Mistake History:\n'}</Text>
+              <TouchableOpacity
+                onPress={() => setAscendOrDescend(!ascendOrDescend)}
+              >
+                <Icon.Entypo name={iconName} style={{}} />
+              </TouchableOpacity>
+              {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(dateList[time])}</Text>)}
+              <Button onPress={() => setDetailVisibleID()}>Next</Button>
+              {/* Object.keys(contentSorted) のなかに 今の detailVisibleID がどのindexに入ってるかを検索する？で、index+1番目のdetailVisibleIDをセットしなおす */}
+            </View>
+          )}
+        />
+      </Portal>
+    );
+  };
+
+  // <TouchableOpacity
+  //         onPress={() => setAscendOrDescend(!ascendOrDescend)}
+  //       >
+  //         <Icon.Entypo name={iconName} style={{}} />
+  //       </TouchableOpacity>
 
   return (
     <View style={{ flex: 1 }}>
@@ -192,8 +223,6 @@ Analyze.propTypes = {
   route: PropTypes.object.isRequired,
 };
 
-Analyze.defaultProps = {
-
-};
+Analyze.defaultProps = {};
 
 export default Analyze;

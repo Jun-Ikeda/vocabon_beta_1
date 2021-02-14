@@ -14,7 +14,7 @@ const icon = require('../../../../../assets/icon.png');
 const style = StyleSheet.create({
   content: {
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: Color.green6,
     marginHorizontal: '5%',
     marginVertical: '10%',
@@ -27,10 +27,11 @@ const style = StyleSheet.create({
   //   alignItems: 'center',
   // },
   qrView: {
-    flex: 4,
+    // flex: 4,
   },
   qrContentView: {
-    flex: 1,
+    // flex: 1,
+    padding: 30,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 10,
@@ -38,8 +39,8 @@ const style = StyleSheet.create({
     borderRadius: 10,
   },
   title: {
-    flex: 1,
-    marginHorizontal: 20,
+    // flex: 1,
+    // marginHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -59,8 +60,10 @@ const style = StyleSheet.create({
     color: Color.gray1,
   },
   carouselView: {
-    marginVertical: 5,
+    // marginVertical: 5,
     flex: 1,
+    // borderWidth: 1,
+    justifyContent: 'center',
   },
   paginationView: {
   },
@@ -72,7 +75,7 @@ const ExportQRcode = (props) => {
   } = props;
   const [errorOrNot, setErrorOrNot] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [layout, setLayout] = useState({ height: 0, width: 0 });
+  const [layout, setLayout] = useState({ height: 100, width: 100 });
   const [layoutQR, setLayoutQR] = useState({ height: 0, width: 0 });
 
   const renderCancelButton = () => (
@@ -108,7 +111,6 @@ const ExportQRcode = (props) => {
         />
       </View>
     </View>
-
   );
 
   return (

@@ -1,5 +1,6 @@
 // デッキの情報の変数を定義する所
 import { Alert } from 'react-native';
+import { func } from '../Const';
 import { database, storage } from '../firebase/Firebase';
 import LocalStorage from '../LocalStorage';
 import account from './AccountModule';
@@ -34,7 +35,7 @@ export const getAccountContent = (deckID = '') => {
 };
 
 export const saveAccountContent = (deckID = '', newData, merge = true) => {
-  const timestamp = Date.now();
+  const timestamp = func.compressUnix();
   // recoil/global
   if (Object.keys(account.content).includes(deckID)) {
     account.content[deckID] = merge ? { ...account?.content?.[deckID], ...newData } : newData;
@@ -58,9 +59,31 @@ export const saveAccountContent = (deckID = '', newData, merge = true) => {
   LocalStorage.save({ key: 'accountContent', data: timestamp });
 };
 
-export const deleteAccountContent = (deckID) => {
+export const deleteAccountContent = async (deckID) => {
+  const timestamp = func.compressUnix();
+  // recoil/global
   delete account.content[deckID];
+  // localstorage
   LocalStorage.remove({ key: 'accountContent', id: deckID });
+  // firebase
+  storage.ref('account').child(account.general.userID).put(new Blob([JSON.stringify(account.content)], { type: 'application\/json' }));
+  // timestamp
+  database.ref(`timestamp/account/${getAccountGeneral().userID}`).set(timestamp);
+  LocalStorage.save({ key: 'accountContent', data: timestamp });
+};
+
+export const deleteAccountContentAll = () => {
+  // recoil/global
+  Object.keys(account.content).forEach((deckID) => {
+    delete account.content[deckID];
+  });
+  // localstorage
+  LocalStorage.clearMapForKey('accountContent');
+  // firebase
+  storage.ref('account').child(account.general.userID).delete();
+  // timestamp
+  database.ref(`timestamp/account/${getAccountGeneral().userID}`).remove();
+  LocalStorage.remove({ key: 'accountContent' });
 };
 
 export default { account, getAccountGeneral, getAccountContent };

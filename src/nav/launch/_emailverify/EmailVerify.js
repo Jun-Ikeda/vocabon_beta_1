@@ -4,10 +4,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { deleteAccount, getFirebaseUser, sendEmail } from '../../../config/firebase/Auth';
 import { getAccountGeneral, saveAccountGeneral } from '../../../config/account/Account';
 import { func, header } from '../../../config/Const';
 import Icon from '../../../components/Icon';
+import Color from '../../../config/Color';
 
 const style = StyleSheet.create({
   container: {
@@ -15,6 +17,19 @@ const style = StyleSheet.create({
     paddingTop: header.paddingTop,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  textcontainer: {
+    fontSize: 24,
+
+  },
+
+  buttoncontainer: {
+    margin: 10, /* widthは決めないでmarginとかでやっほうがいいよ */
+    height: 36,
+    borderRadius: 20,
+    padding: 20,
+    justifyContent: 'center',
   },
 });
 
@@ -55,25 +70,35 @@ const EmailVerify = (props) => {
 
   return (
     <View style={style.container}>
-      <Text>Email Verification</Text>
-      <Text>{`Status: ${emailVerified ? 'Verified successfully' : 'Not yet verified'}`}</Text>
+      <Text style={{ fontSize: 24 }}>Email Verification</Text>
+      <Text style={{ fontSize: 20 }}>{`Status: ${emailVerified ? 'Verified successfully' : 'Not yet verified'}`}</Text>
       <Button onPress={async () => {
         const user = await getFirebaseUser();
         setEmailVerified(user.emailVerified);
       }}
       >
-        <Icon.Ionicons name="md-refresh-outline" style={{ fontSize: 24 }} />
+        <Icon.Ionicons name="md-refresh-outline" style={{ fontSize: 36 }} />
       </Button>
       <Button
+        style={{
+          width: 220, height: 36, borderRadius: 20, backgroundColor: Color.purple,
+        }}
         disabled={!emailVerified}
+        mode="contained"
         onPress={() => {
           saveAccountGeneral({ emailVerified: true });
           navigation.navigate('welcome');
         }}
       >
         Start
-
       </Button>
+      <TouchableOpacity
+        style={style.buttoncontainer}
+        onPress={() => sendEmail()}
+      >
+        {/* 認証用のメールを再送信 */}
+        <Text style={{ fontSize: 20 }}>Resend an email</Text>
+      </TouchableOpacity>
     </View>
   );
 };

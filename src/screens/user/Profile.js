@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Divider, List } from 'react-native-paper';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import ProfileIcon from '../../components/user/profileicon/ProfileIcon';
-import { getAccountGeneral } from '../../config/account/Account';
+import {
+  deleteAccountContent, deleteAccountContentAll, getAccountGeneral, saveAccountGeneral,
+} from '../../config/account/Account';
 import Color from '../../config/Color';
 import { getUserGeneral } from '../../config/user/User';
+import ChangeProfile from '../../components/user/profileicon/ChangeProfile';
+import { clearStorage, isLoggedInState } from '../../nav/Nav';
+import {
+  decksGeneral, deleteAllDecks, deleteDeck, getDeckGeneral,
+} from '../../config/deck/Deck';
+import { deleteAccount } from '../../config/firebase/Auth';
+import { func } from '../../config/Const';
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -26,23 +36,54 @@ const Profile = (props) => {
   const accountGeneral = getAccountGeneral();
   const isMe = accountGeneral.userID === userID;
   const user = getUserGeneral(userID);
+  const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
+  // recoil
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  // state
+  const [changeProfileVisble, setChangeProfileVisble] = useState(false);
 
   const renderAuthButtons = () => {
     const buttons = [
-      { title: 'Change Profile', onPress: () => {} },
-      { title: 'Log out', onPress: () => {} },
-      { title: 'Delete', onPress: () => {} },
+      {
+        title: 'Change Profile',
+        onPress: () => (changeProfileVisble ? (setChangeProfileVisble(false)) : (setChangeProfileVisble(true))),
+        render: <ChangeProfile changeProfileVisble={changeProfileVisble} setChangeProfileVisble={setChangeProfileVisble} />,
+      },
+      {
+        title: 'Log out',
+        onPress: async () => {
+          await clearStorage();
+          setIsLoggedIn(false);
+        },
+        render: null,
+      },
+      {
+        title: 'Delete',
+        onPress: async () => {
+          try {
+            deleteAllDecks(setDeckGeneral);
+            deleteAccountContentAll();
+            saveAccountGeneral({}, false);
+            await deleteAccount();
+            setIsLoggedIn(false);
+          } catch (error) {
+            func.alertConsole(error);
+          }
+        },
+        render: null,
+      },
     ];
     return buttons.map((button, index) => (
-      <View>
+      <View key={button.title.toLowerCase()}>
         {index !== 0 ? <Divider style={style.divider} /> : null}
         <List.Item
           style={style.itemContainer}
           title={button.title}
           titleStyle={style.text1}
-          // onPress={() => navigation.navigate(item.nav)}
+          onPress={button.onPress}
           // left={() => <List.Icon icon={item.icon} color={Color.gray1} />}
         />
+        {button.render}
       </View>
     ));
   };

@@ -6,6 +6,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { Button } from 'react-native-paper';
 import LaunchNav from './launch/LaunchNav';
 import MainNav from './main/MainNav';
 
@@ -23,9 +24,16 @@ import {
 
 const Stack = createStackNavigator();
 
+export const clearStorage = async () => {
+  await LocalStorage.remove({ key: 'deckGeneral' });
+  await LocalStorage.remove({ key: 'accountGeneral' });
+  await LocalStorage.clearMapForKey('accountContent');
+  await LocalStorage.clearMapForKey('deck');
+};
+
 export const isLoggedInState = atom({
   key: 'isLoggedInState',
-  default: false,
+  default: null,
 });
 
 const Nav = () => {
@@ -34,19 +42,21 @@ const Nav = () => {
   // state
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
+  const [syncState, setSyncState] = useState([]);
 
   const initializeAuth = async () => {
+    setSyncState([]);
     const preLocalGeneral = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
     let preIsLoggedIn = (preLocalGeneral?.loggedin ?? false) && (preLocalGeneral?.emailVerified ?? false);
     if (preIsLoggedIn) {
-      await login(preLocalGeneral?.email, preLocalGeneral?.password).catch((error) => {
-        Alert.alert('Error', error);
+      await login(preLocalGeneral?.email, preLocalGeneral?.password, () => {
+        clearStorage();
         preIsLoggedIn = false;
       });
     }
+    setSyncState((prev) => ([...prev, 'auth initialized']));
     return preIsLoggedIn;
   };
-  // const initializeAuth = () => true;
 
   const initializeAccount = async () => {
     // general
@@ -57,16 +67,19 @@ const Nav = () => {
     account.general = newAccountGeneral;
     // localstorage
     LocalStorage.save({ key: 'accountGeneral', data: newAccountGeneral });
+    setSyncState((prev) => ([...prev, 'accountGeneral: download']));
 
     // content
+    account.content = {};
     // get timestamp
     try {
-      let fireTimeStamp = '';
-      await database.ref(`timestamp/account/${preAccountGeneral.userID}`).once('value', (timestamp) => { fireTimeStamp = timestamp; });
-      const localTimeStamp = LocalStorage.load({ key: 'accountContent' });
+      let fireTimeStamp = 0;
+      await database.ref(`timestamp/account/${preAccountGeneral.userID}`).once('value', (timestamp) => { fireTimeStamp = timestamp.val(); });
+      const localTimeStamp = await LocalStorage.load({ key: 'accountContent' }).then((result) => result).catch(() => null);
       // compare
       if (fireTimeStamp < localTimeStamp) {
-      // get local
+        setSyncState((prev) => ([...prev, `accountContent: upload  (fire: ${fireTimeStamp}, local: ${localTimeStamp})`]));
+        // get local
         const deckIDs = await LocalStorage.getIdsForKey('accountContent');
         const accountContent = await LocalStorage.getAllDataForKey('accountContent');
         // apply to recoil/global
@@ -77,8 +90,9 @@ const Nav = () => {
         await storage.ref('account').child(preAccountGeneral.userID).put(new Blob([JSON.stringify(account.content)], { type: 'application\/json' }));
         // set timestamp
         await database.ref(`timestamp/account/${preAccountGeneral.userID}`).set(localTimeStamp);
-      } else {
-      // get firebase
+      } else if (fireTimeStamp > localTimeStamp) {
+        setSyncState((prev) => ([...prev, `accountContent: download (fire: ${fireTimeStamp}, local: ${localTimeStamp})`]));
+        // get firebase
         await storage.ref('account').child(preAccountGeneral.userID).getDownloadURL()
           .then((url) => fetch(url)
             .then((response) => response.json())
@@ -86,85 +100,25 @@ const Nav = () => {
             // apply to recoil/global
               account.content = accountContent;
               // apply to localstorage
-              Object.keys(account.content).forEach((deckID) => {
-                LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
+              Object.keys(accountContent).forEach((deckID) => {
+                LocalStorage.save({ key: 'accountContent', id: deckID, data: accountContent[deckID] });
               });
             }));
         // set timestamp
         await LocalStorage.save({ key: 'accountContent', data: fireTimeStamp });
+      } else {
+        setSyncState((prev) => ([...prev, `accountContent: nochange (fire: ${fireTimeStamp}, local: ${localTimeStamp})`]));
+        // get local
+        const deckIDs = await LocalStorage.getIdsForKey('accountContent').catch(() => []);
+        const accountContent = await LocalStorage.getAllDataForKey('accountContent').catch(() => []);
+        // apply to recoil/global
+        await deckIDs.forEach((deckID, index) => {
+          account.content[deckID] = accountContent[index];
+        });
       }
     } catch (error) {
       func.alert(error);
     }
-    // const localGeneral = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
-    // const isLoggedInLocal = (localGeneral?.loggedin ?? false) && (localGeneral?.emailVerified ?? false);
-
-    // if (isLoggedInLocal) {
-    //   // general
-    //   await login(localGeneral.email, localGeneral.password).then((user) => {
-    //     const newAccountGeneral = { ...localGeneral, user: user.user.displayName, emailVerified: user.user.emailVerified };
-    //     saveAccountGeneral(newAccountGeneral);
-    //   }).catch((error) => {
-    //     Alert.alert(error);
-    //     setIsLoggedIn(false);
-    //   });
-    // }
-    // account.content = {};
-    // // const deckIDs = await LocalStorage.getIdsForKey('accountContent');
-    // // const accountContent = await LocalStorage.getAllDataForKey('accountContent');
-    // // await deckIDs.forEach((deckID, index) => {
-    // //   account.content[deckID] = accountContent[index];
-    // // });
-    // // func.alertConsole(account);
-    // setIsLoggedIn(isLoggedInLocal);
-    // if (isLoggedInLocal) {
-    //   login(account.general.email, account.general.password);
-    //   // firebase -> localstorage, recoil/global
-    //   storage.ref('account').child(account.general.userID).getDownloadURL()
-    //     .then((url) => fetch(url)
-    //       .then((response) => response.json())
-    //       .then((card) => {
-    //         account.content = card;
-    //         Object.keys(account.content).forEach((deckID) => {
-    //           LocalStorage.save({ key: 'accountContent', id: deckID, data: account.content[deckID] });
-    //         });
-    //       }))
-    //     .catch(() => {});
-    // }
-    // // account.content = Account.content;
-  };
-
-  const initializeDeck = async () => {
-    // firebase
-    const newDecksGeneral = {};
-    const deckIDsFirebase = [];
-    const decksFirebase = [];
-    await firestore.collection('deck').where('user', '==', account.general.userID).get().then(async (snapshot) => {
-      await snapshot.forEach(async (doc) => {
-        await deckIDsFirebase.push(doc.id);
-        await storage.ref('deck').child(doc.id).getDownloadURL().then((url) => fetch(url)
-          .then(async (response) => response.json())
-          .then(async (result) => {
-            await decksFirebase.push({ general: doc.data(), content: result });
-            LocalStorage.save({ key: 'deck', id: doc.id, data: { general: doc.data(), content: result } });
-            decksContent[doc.id] = result;
-          }));
-        newDecksGeneral[doc.id] = doc.data();
-        setDeckGeneral(newDecksGeneral);
-      });
-    });
-    // console.log(deckIDs, decks);
-    // local
-    // const deckIDsLocal = await LocalStorage.getIdsForKey('deck');
-    // const decksLocal = await LocalStorage.getAllDataForKey('deck');
-    // console.log(deckIDsLocal, decksLocal);
-    // const deckIDs = await LocalStorage.getIdsForKey('deck');
-    // const decks = await LocalStorage.getAllDataForKey('deck');
-    // console.log(deckIDs, decks);
-    // await deckIDs.forEach((deckID, index) => {
-    //   decksContent[deckID] = decks[index]?.content ?? {};
-    //   newDecksGeneral[deckID] = decks[index]?.general;
-    // });
   };
 
   const initializeUser = async () => {
@@ -173,14 +127,124 @@ const Nav = () => {
     saveUserGeneral(userIDSelf, { name: account.general.name, icon: { color: getRandomPastel() } });
   };
 
+  const initializeDeck = async () => {
+    const userIDSelf = account.general.userID;
+    let deckIDsAll = [];
+    // general
+    // timestamp
+    let fireTimeStamp = 0;
+    await database.ref(`timestamp/deckGeneral/${userIDSelf}`).once('value', (snapshot) => { fireTimeStamp = snapshot.val(); });
+    const localTimeStamp = await LocalStorage.load({ key: 'deckGeneral' }).catch(() => null);
+    if (fireTimeStamp < localTimeStamp) {
+      setSyncState((prev) => ([...prev, 'deckGeneral: upload']));
+      // get localstorage
+      const deckIDs = await LocalStorage.getIdsForKey('deck');
+      const decks = await LocalStorage.getAllDataForKey('deck');
+      // apply to recoil/global
+      const newDecksGeneral = {};
+      deckIDs.forEach((deckID, index) => {
+        newDecksGeneral[deckID] = decks[index]?.general;
+      });
+      setDeckGeneral(newDecksGeneral);
+      // set firebase
+      deckIDs.forEach((deckID, index) => {
+        firestore.collection('deck').doc(deckID).set(decks[index]?.general, { merge: false });
+      });
+      // set timestamp
+      await database.ref(`timestamp/deckGeneral/${userIDSelf}`).set(localTimeStamp);
+      //
+      deckIDsAll = deckIDs;
+    } else if (fireTimeStamp > localTimeStamp) {
+      setSyncState((prev) => ([...prev, 'deckGeneral: download']));
+      const newDeckGeneral = {};
+      // get firebase
+      await firestore.collection('deck').where('user', '==', userIDSelf).get().then(async (snapshot) => {
+        await snapshot.forEach(async (doc) => {
+          // apply to recoil/global
+          newDeckGeneral[doc.id] = doc.data();
+          // set localstorage
+          const prevLocalStorage = await LocalStorage.load({ key: 'deck', id: doc.id });
+          LocalStorage.save({ key: 'deck', id: doc.id, data: { ...prevLocalStorage, general: doc.data() } });
+        });
+        setDeckGeneral(newDeckGeneral);
+      });
+      // set timestamp
+      await LocalStorage.save({ key: 'deckGeneral', data: fireTimeStamp });
+      //
+      deckIDsAll = Object.keys(newDeckGeneral);
+    } else { // firestoreの内容とlocalstorageの内容は同じ
+      setSyncState((prev) => ([...prev, `deckGeneral: nochange (fire: ${fireTimeStamp} local: ${localTimeStamp})`]));
+      // get local
+      const deckIDs = await LocalStorage.getIdsForKey('deck');
+      const decks = await LocalStorage.getAllDataForKey('deck');
+      // apply to recoil/global
+      const newDecksGeneral = {};
+      await deckIDs.forEach((deckID, index) => {
+        newDecksGeneral[deckID] = decks[index]?.general ?? {};
+      });
+      setDeckGeneral(newDecksGeneral);
+      //
+      deckIDsAll = deckIDs;
+    }
+
+    // content
+    deckIDsAll.forEach(async (deckID) => {
+      // timestamp
+      let fireTimeStampDeck = null;
+      const localstorage = await LocalStorage.load({ key: 'deck', id: deckID }).catch(() => null);
+      const localTimeStampDeck = localstorage?.timestamp ?? null;
+      await database.ref(`timestamp/deckContent/${deckID}`).once('value', (snapshot) => { fireTimeStampDeck = snapshot.val(); });
+      if (fireTimeStamp === 0) { // deleteされた
+        // delete localstorage
+        LocalStorage.remove({ key: 'deck', id: deckID });
+      } else if (fireTimeStampDeck < localTimeStampDeck) {
+        setSyncState((prev) => ([...prev, `deckContent: ${deckID}: upload (fire: ${fireTimeStampDeck}, local: ${localTimeStampDeck})`]));
+        // get local
+        const deck = await LocalStorage.load({ key: 'deck', id: deckID });
+        // apply to recoil/global
+        decksContent[deckID] = deck?.content;
+        // set firebase
+        await storage.ref('deck').child(deckID).put(new Blob([JSON.stringify(decksContent[deckID])]));
+        // set timestamp
+        database.ref(`timestamp/deckContent/${deckID}`).set(localTimeStampDeck);
+      } else if (fireTimeStampDeck > localTimeStampDeck) {
+        setSyncState((prev) => ([...prev, `deckContent: ${deckID}: download (fire: ${fireTimeStampDeck}, local: ${localTimeStampDeck})`]));
+        // get firebase
+        await storage.ref('deck').child(deckID).getDownloadURL().then((url) => fetch(url)
+          .then(async (response) => response.json())
+          .then(async (result) => {
+            // apply to recoil/global
+            decksContent[deckID] = result;
+            // save to localstorage, timestamp
+            const prevLocalStorage = await LocalStorage.load({ key: 'deck', id: deckID });
+            await LocalStorage.save({ key: 'deck', id: deckID, data: { ...prevLocalStorage, content: result, timestamp: fireTimeStampDeck } });
+          }));
+      } else {
+        setSyncState((prev) => ([...prev, `deckContent: ${deckID}: nochange (fire: ${fireTimeStampDeck}, local: ${localTimeStampDeck})`]));
+        // get local
+        const deck = await LocalStorage.load({ key: 'deck', id: deckID });
+        // apply to recoil/global
+        decksContent[deckID] = deck.content;
+      }
+    });
+    // deleteされてたらlocalstorage削除
+    const deckIDsAllLocal = await LocalStorage.getIdsForKey('deck');
+    deckIDsAllLocal.forEach(async (deckID) => {
+      if (!deckIDsAll.includes(deckID)) {
+        await LocalStorage.remove({ key: 'deck', id: deckID });
+      }
+    });
+  };
+
   const initialize = async () => {
-    await alert('initialize');
+    await initializeAccount();
+    await initializeUser();
+    await initializeDeck();
   };
 
   useEffect(() => {
     (async () => {
       const newIsLoggedIn = await initializeAuth();
-      setIsInitialized(true);
       setIsLoggedIn(newIsLoggedIn);
     })();
   }, []);
@@ -191,36 +255,28 @@ const Nav = () => {
         setIsInitialized(false);
         await initialize();
         setIsInitialized(true);
+      } else if (isLoggedIn === false) {
+        setIsInitialized(true);
       }
     })();
   }, [isLoggedIn]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     setIsInitialized(false);
-  //     // if (newIsLoggedIn) {
-  //     //   await initializeAccount();
-  //     //   // await initializeUser();
-  //     //   // await initializeDeck();
-  //     // }
-  //     // setIsLoggedIn(newIsLoggedIn);
-  //     setIsInitialized(true);
-  //   })();
-  // }, [isLoggedIn]);
-
   if (isInitialized) {
     return (
-      <NavigationContainer
-        onStateChange={(state) => console.log(state)}
-      >
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {isLoggedIn ? (
-            <Stack.Screen name="main" component={MainNav} />
-          ) : (
-            <Stack.Screen name="launch" component={LaunchNav} />
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <View style={{ flex: 1 }}>
+        <NavigationContainer
+          onStateChange={(state) => console.log(state)}
+        >
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {isLoggedIn ? (
+              <Stack.Screen name="main" component={MainNav} />
+            ) : (
+              <Stack.Screen name="launch" component={LaunchNav} />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+        {/* <Button onPress={() => func.alertConsole(syncState)}>SynsState</Button> */}
+      </View>
     );
   }
   return (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Loading</Text></View>);

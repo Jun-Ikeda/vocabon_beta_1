@@ -6,6 +6,7 @@ import { func } from '../Const';
 const config = {
   apiKey: 'AIzaSyCK5b7sjxtbgIRWSDY_Y-wiIp2HFJJpUI8',
   authDomain: 'vocabonbeta1.firebaseapp.com',
+  databaseURL: 'https://vocabonbeta1-default-rtdb.firebaseio.com',
   projectId: 'vocabonbeta1',
   storageBucket: 'vocabonbeta1.appspot.com',
   messagingSenderId: '80492018713',

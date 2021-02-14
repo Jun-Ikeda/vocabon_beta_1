@@ -277,7 +277,7 @@ const Play = (props) => {
         {renderSwiper()}
         {renderFinishButton()}
       </View>
-      <Button onPress={() => func.alertConsole({ leftVocabID, rightVocabID })}>state</Button>
+      {/* <Button onPress={() => func.alertConsole({ leftVocabID, rightVocabID })}>state</Button> */}
       <PlayCounter leftVocabID={leftVocabID} rightVocabID={rightVocabID} />
       {renderBottomButtons()}
       <PlayDetail

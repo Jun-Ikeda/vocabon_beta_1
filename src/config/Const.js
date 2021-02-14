@@ -133,7 +133,7 @@ export const func = {
     const shortenedMonthName = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
     const formalMonthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     let hoge = '';
-    let stringToReturn;
+    let stringToReturn = '';
     const monthName = [shortenedMonthName[month - 1], formalMonthName[month - 1]];
 
     if (lastNum === 1) {
@@ -143,6 +143,10 @@ export const func = {
     } else if (lastNum === 3) {
       hoge = 'rd';
     } else {
+      hoge = 'th';
+    }
+
+    if (day === 11 || day === 12 || day === 13) {
       hoge = 'th';
     }
 
@@ -163,7 +167,33 @@ export const func = {
     return `${year}${month}${date}`;
   },
   dataInBytes: (data) => (encodeURIComponent(data).replace(/%../g, 'x').length),
-  separateDeckData: (content, elementDelimiter, itemDelimiter, cardDelimiter) => {
+  compressUnix: (unix = undefined) => {
+    const unixtime = (unix === undefined) ? Date.now() : unix;
+    const compressed = Math.floor(unixtime / 1000) - 1609459200; // 2021/01/01/0/00から何秒か
+    return compressed;
+  },
+  decompressUnix: (compressed = undefined) => {
+    const decompressed = compressed === undefined ? Date.now() : (compressed + 1609459200) * 1000;
+    return decompressed;
+  },
+  showEachItem: (object) => {
+    const showArray = [];
+    console.log(object);
+    Object.keys(object).map((item) => {
+      if (object[item].value) {
+        showArray.push(item.key);
+      }
+    });
+    return showArray;
+  },
+  createItemArray: (wordSet, showArray, elementDelimiter) => {
+    const outputByWords = [];
+    showArray.map((item) => {
+      outputByWords.push(wordSet.value.item?.join(elementDelimiter));
+    });
+    return outputByWords;
+  },
+  separateDeckData: (content, elementDelimiter, elementVisible, itemDelimiter, cardDelimiter) => {
     // const
     const contentArray = func.convertObjectToArray(content);
     const resultArray = []; // ['一個目の集団','二個目の集団',...]
@@ -171,11 +201,13 @@ export const func = {
     let sumBytes = 0;
     let curData = '';
     // let num = 0; // 何個作られたか
-    // let sum = 0;
+
     while (contentArray.length !== 0) { // 空になるまでのつもり
       while (sumBytes < 500 && contentArray.length !== 0) {
         const curContent = contentArray.splice(0, 1); // curContentに最初の、contentArrayは削られる
-        curData += curContent.map((card) => [card.value.term?.join(elementDelimiter), card.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter);// Exportでoutputされるときの形
+        curData += curContent.map((card) => {
+          func.createItemArray(card, func.showEachItem(elementVisible), elementDelimiter)?.join(itemDelimiter);
+        })?.join(cardDelimiter) + (cardDelimiter);// Exportでoutputされるときの形
         const bytes = func.dataInBytes(curData); // bytes取得
         sumBytes += bytes;
         // sum += 1;

@@ -78,7 +78,7 @@ const style = StyleSheet.create({
 
 const ImportQRcode = (props) => {
   const {
-    isContentVisible, setContentVisible, hasPermission, setInput,
+    isContentVisible, setContentVisible, hasPermission, setInput, cardDelimiter,
   } = props;
   const [scanned, setScanned] = useState(false);
   const [scannedData, setScannedData] = useState(''); // そのときにスキャンしたデータ
@@ -103,12 +103,12 @@ const ImportQRcode = (props) => {
 
   const handleBarCodeScanned = ({ data }) => {
     if (data === null) {
-      Alert.alert('Oops!');
+      Alert.alert('Oops!', 'Read slowly');
     } else {
       setScanned(true);
       // setScannedData(data);
       setPreScannedData(scannedData);
-      setScannedData(scannedData + data);
+      setScannedData((prev) => (prev === '' ? data : scannedData + cardDelimiter + data));
     }
   };
 
@@ -134,7 +134,8 @@ const ImportQRcode = (props) => {
         onPress: () => {
           setScanned(false);
           // setDataLog((pre) => `${pre}${scannedData}`);
-          setInput(scannedData);
+          setInput((prev) => (prev === '' ? scannedData : prev + cardDelimiter + scannedData));
+          setScannedData('');
           setContentVisible(false);
         },
       },
@@ -213,6 +214,7 @@ ImportQRcode.propTypes = {
   setContentVisible: PropTypes.func.isRequired,
   hasPermission: PropTypes.bool.isRequired,
   setInput: PropTypes.func.isRequired,
+  cardDelimiter: PropTypes.string.isRequired,
 };
 
 export default ImportQRcode;

@@ -1,5 +1,7 @@
 !!!各機能は、優先順位の高いものを上に!!!
 
+【アプリの申請に関するものは55行目から】
+
 最低限欲しい機能
 ・デッキ作成
 ・デッキ編集
@@ -48,78 +50,86 @@
 // ・Playで、DefaultとCustomと並んで前回のMarked cardsを再生って項目があるといいな
 // ・Propertyでdescription <- 市川がやってる createDeckにも項目作ってください
 // ・Play中のEdit
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
-・
 
+
+【アプリ申請に関して】
+＠✅アプリ名
+    ：Vocabon
+
+＠✅サブタイトル（〜30）（ASO（アプリストア内の検索エンジン最適化的なやつ）対策で、あからさまにキーワードを並べるとリジェクト対象）
+    ：Build up your vocabulary!
+
+＠✅‼️カテゴリ
+    ：「教育」と「辞書/辞典/その他」
+
+＠‼️スクショ
+    :
+    ●5.5インチ用画像　1242×2208ピクセル
+    ●6.5インチ用画像　1242×2688ピクセル
+    ●12.9インチ用画像　2048×2732ピクセル
+    (縦横不問　（1〜5枚、最初に表示されるのは2枚）)
+
+
+＠✅‼️アプリの更新情報（バージョンの最新情報）
+    ：今は不要
+
+＠‼️レーティング（暴力表現、ギャンブル性、無制限のWebアクセスの有無等）
+    ：無制限のwebアクセス？？
+
+＠✅‼️プライバシーポリシーURL（ アプリのプライバシーポリシーが書かれたページのURL）
+    ：まっす～
+
+＠✅‼️サポートURL（ ストアページで「このデベロッパのWebサイト」をタップすると表示されるページのURL。）
+    ：ボスのFacebook
+
+＠✅‼️概要（6行目以降は「さらに見る」に格納）
+    ：  Vocabonは、語学学習のための単語帳アプリです！
+        Vocabon is a vocabulary app for language learning!
+
+        具体的な機能　～Each function～
+
+        ①【Play】
+        間違えた単語のやり直しはもちろん、読み上げ、即時編集、その単語のweb検索などの機能も付いています
+        It has functions such as redoing the wrong word, reading out, immediate editing, and web search for the word.
+        
+        ②【Analyze】
+        単語ごとのこれまでに間違えた回数などを表示します
+        It shows the number of mistakes made so far for each word
+
+        ③【Edit】
+        単語の増設、削除、修正を行えます
+        You can add, delete, and modify words
+
+        ④【Property】
+        言語の設定（何語に関する何語の単語帳か）やデッキの名称などを変更できます
+        You can change the language setting the language　of Term and that of Definition), deck name, etc.
+
+        ⑤【Boolmark】
+        お気に入りの単語帳をブックマークに登録することができます
+        You can bookmark your favorite decks
+
+        ⑥【Dupllicate】
+        ほかの人の作ったデッキを保存し、編集できるようにします
+        Save and edit decks made by others
+        
+        ⑦【Import,Export】
+        作ったデッキの情報を他の人やアプリに渡したり、他の人やアプリから得たデッキの情報を移植したりできます
+        You can pass the information of the deck you made to other people and apps, and you can port the information of decks obtained from other people and apps.
+        
+        ⑧【Delete】
+        作ったデッキの削除ができます
+        You can delete the deck you made
+
+＠✅‼️Copyright（アプリの独占権を入手した年、所有する人物または組織の名前。ストアページの一番下に表示される）
+    ：まっす～
+    
+＠✅プロモーション用テキスト（アップデートなしで文言を変更可）（〜170）
+    ：無し
+    
+＠✅キーワード（検索にヒットさせる、「無料、英語、単語帳、...」のように書く）（〜100）
+    ：単語帳 flashcard　暗記 memorize　英語 English 日本語 Japanese  古典　spanish french chinese russian  語彙　vocabulary
+
+＠✅マーケティングURL（ アプリのマーケティング情報へのURL）
+    :不要
+
+‼️は必須（「アプリの更新情報」はアップデート後必須）

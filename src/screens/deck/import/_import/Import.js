@@ -209,6 +209,7 @@ const Import = (props) => {
         setContentVisible={setQRScannerVisible}
         setInput={setInput}
         hasPermission={hasPermission}
+        cardDelimiter={cardDelimiter}
       />
     </KeyboardAvoidingView>
   );

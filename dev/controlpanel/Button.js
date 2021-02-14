@@ -1,15 +1,40 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Speech from 'expo-speech';
-import { getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
+import { account, getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
 import { func } from '../../src/config/Const';
 import LocalStorage from '../../src/config/LocalStorage';
 import Deck, { getDeckContent } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import UUID from '../../src/config/UUID';
 
-import firebase, { auth, firestore, getFirebaseUser } from '../../src/config/firebase/Firebase';
+import firebase, {
+  auth, database, firestore, getFirebaseUser,
+} from '../../src/config/firebase/Firebase';
 
 const Button = [
+  {
+    title: 'Clear Local Storage',
+    onPress: async () => {
+      await AsyncStorage.clear();
+    },
+  },
+  {
+    title: 'Account General',
+    onPress: async () => {
+      // general
+      const generalRecoilGlobal = account.general; // recoil/global
+      const generalLocalStorage = await LocalStorage.load({ key: 'accountGeneral' });
+      return ({ global: generalRecoilGlobal, local: generalLocalStorage });
+    },
+  },
+  {
+    title: 'Deck General',
+    onPress: async () => {
+      const localTimeStamp = await LocalStorage.load({ key: 'deckGeneral' });
+      const generalLocalStorage = await LocalStorage.getAllDataForKey('deck');
+      return ({ timestamp: localTimeStamp, local: generalLocalStorage });
+    },
+  },
   {
     title: 'Deck (Global Vari)',
     onPress: () => {
@@ -79,12 +104,6 @@ const Button = [
     },
   },
   {
-    title: 'Clear Local Storage',
-    onPress: async () => {
-      await AsyncStorage.clear();
-    },
-  },
-  {
     title: 'UUID',
     onPress: () => {
       const uuids = [];
@@ -136,6 +155,13 @@ const Button = [
     },
   },
   {
+    title: 'firebase database',
+    onPress: async () => {
+      const data = await database.ref('test/testdata').once('value', (snapshot) => snapshot.val());
+      return data;
+    },
+  },
+  {
     title: 'json',
     onPress: () => {
       fetch('https://firebasestorage.googleapis.com/v0/b/vocabonbeta1.appspot.com/o/account%2FTKQ0EYBHPpdvNIgsdxUPgCKoyTv1?alt=media&token=815e89a6-4fa4-454c-abe2-634b601acd17')
@@ -144,6 +170,22 @@ const Button = [
           func.alertConsole(card);
           // return card;
         });
+    },
+  },
+  {
+    title: 'Time',
+    onPress: () => {
+      // const now = Math.floor(new Date().getTime() / 1000);
+      const compressed = func.compressUnix();
+      const decompressed = Date.now();
+      return { compressed, decompressed };
+    },
+  },
+  {
+    title: 'Deck General',
+    onPress: async () => {
+      const data = await LocalStorage.load({ key: 'deckGeneral' });
+      return data;
     },
   },
 ];

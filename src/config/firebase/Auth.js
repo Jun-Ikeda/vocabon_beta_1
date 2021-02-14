@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import { getAccountGeneral } from '../account/Account';
 import { auth } from './Firebase';
 
@@ -14,10 +15,11 @@ export const signup = (email, password, name) => auth.createUserWithEmailAndPass
     console.log(error);
   });
 
-export const login = (email, password) => auth.signInWithEmailAndPassword(email, password)
+export const login = (email, password, catchFunction) => auth.signInWithEmailAndPassword(email, password)
   .then((user) => user)
   .catch((error) => {
-    alert(error.message);
+    Alert.alert('Error', error.message);
+    catchFunction(error);
   });
 
 export const deleteAccount = async () => {

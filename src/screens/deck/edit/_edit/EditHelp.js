@@ -11,14 +11,17 @@ import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: Color.white1,
+    backgroundColor: Color.defaultBackground,
     marginHorizontal: '5%',
     // marginVertical: '15%',
     borderRadius: 10,
+    padding: 10,
   },
   contentContainer: {
     paddingHorizontal: 20,
     paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: Color.white1,
   },
   cancelButton: {
     position: 'absolute',
@@ -54,6 +57,13 @@ const style = StyleSheet.create({
   },
   deskText: {
     fontSize: 20,
+  },
+  google: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginBottom: 10,
+    backgroundColor: Color.white1,
+    borderRadius: 10,
   },
 });
 
@@ -133,6 +143,9 @@ const EditHelp = (props) => {
 
   const renderMenu = () => (
     <View style={style.container}>
+      <View style={style.google}>
+        <Text>You can google each term directly by pressing long</Text>
+      </View>
       <ScrollView contentContainerStyle={style.contentContainer}>
         {renderItems()}
       </ScrollView>

@@ -86,10 +86,16 @@ const ExportItemOption = (props) => {
           <View style={style.switchBox}>
             <Text style={{ flex: 1, fontSize: 15 }}>{item.title}</Text>
             <Switch
-              value={elementVisible[item.value]}
               onValueChange={() => {
-                setElementVisible(...elementVisible);
+                console.log(elementVisible[item.value]);
+                // console.log(elementVisible);
+                setElementVisible((elementVisible) => {
+                  elementVisible[item.value] = !elementVisible[item.value];
+                  return elementVisible;
+                });
+                console.log(elementVisible[item.value]);
               }}
+              value={elementVisible[item.value]}
             />
           </View>
         ))}

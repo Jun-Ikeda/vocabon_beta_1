@@ -57,7 +57,7 @@ const CarouselCard = (props) => {
       <Image
         source={{ uri: unshortenURI(deckGeneral?.thumbnail.uri) }}
         style={cardStyle}
-        blurRadius={0.5}
+        // blurRadius={0.5}
       />
       <View style={[{ position: 'absolute' }, cardStyle, { backgroundColor: Color.gray1, opacity: 0.5 }]} />
     </View>
