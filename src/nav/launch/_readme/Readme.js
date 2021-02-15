@@ -8,7 +8,7 @@ import Color, { getRandomPastel } from '../../../config/Color';
 import { header } from '../../../config/Const';
 import Icon from '../../../components/Icon';
 
-const screenshot0 = require('../../../../assets/icon.png');
+const screenshot0 = require('../../../../assets/adaptive-icon.png');
 const screenshot1 = require('../../../../assets/screenshots/S__74235908.png');
 const screenshot2 = require('../../../../assets/screenshots/S__74235909.png');
 const screenshot3 = require('../../../../assets/screenshots/S__74235910.png');

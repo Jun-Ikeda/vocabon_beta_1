@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation,
+  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, ScrollView,
 } from 'react-native';
 import { Switch } from 'react-native-paper';
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
+import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   content: {
@@ -84,18 +85,18 @@ const ExportItemOption = (props) => {
       <View style={style.card}>
         {items.map((item) => (
           <View style={style.switchBox}>
-            <Text style={{ flex: 1, fontSize: 15 }}>{item.title}</Text>
+            <Text style={{ fontSize: 15 }}>{item.title}</Text>
             <Switch
-              onValueChange={() => {
-                console.log(elementVisible[item.value]);
-                // console.log(elementVisible);
-                setElementVisible((elementVisible) => {
-                  elementVisible[item.value] = !elementVisible[item.value];
-                  return elementVisible;
-                });
-                console.log(elementVisible[item.value]);
-              }}
               value={elementVisible[item.value]}
+              onValueChange={() => {
+                // func.alertConsole({ value: item.value, elementVisible });
+                setElementVisible(() => {
+                  const elementVisibleCopy = JSON.parse(JSON.stringify(elementVisible));
+                  elementVisibleCopy[item.value] = !elementVisible[item.value];
+                  // func.alertConsole({ value: item.value, elementVisibleCopy });
+                  return elementVisibleCopy;
+                });
+              }}
             />
           </View>
         ))}
@@ -109,7 +110,7 @@ const ExportItemOption = (props) => {
         <Text style={{ fontSize: 20 }}>Item Option</Text>
       </View>
       {renderCancelButton()}
-      {renderSwitch()}
+      <ScrollView>{renderSwitch()}</ScrollView>
     </View>
   );
 };

@@ -90,9 +90,9 @@ const Export = (props) => {
 
   // const showEachItem = (object) => {
   //   const showArray = [];
-  //   object.forEach((item) => {
-  //     if (item.value) {
-  //       showArray.push(item.key);
+  //   Object.keys(object).forEach((key) => {
+  //     if (object[key]) {
+  //       showArray.push(key);
   //     }
   //   });
   //   return showArray;
@@ -100,15 +100,16 @@ const Export = (props) => {
 
   // const createItemArray = (wordSet, showArray) => {
   //   const outputByWords = [];
-  //   showArray.forEach((item) => {
-  //     outputByWords.push(wordSet.value.item?.join(elementDelimiter));
+  //   showArray.forEach((element) => {
+  //     outputByWords.push(wordSet.value[element]?.join(elementDelimiter));
   //   });
+  //   // console.log(outputByWords);
   //   return outputByWords;
   // };
 
-  const output = func.convertObjectToArray(content).map((element) => {
-    func.createItemArray(element, func.showEachItem(elementVisible), elementDelimiter).join(itemDelimiter);
-  }).join(cardDelimiter) + (cardDelimiter);
+  // console.log(showEachItem(elementVisible));
+  const output = func.convertObjectToArray(content).map((element) => func.createItemArray(element,
+    func.showEachItem(elementVisible), elementDelimiter)?.join(itemDelimiter))?.join(cardDelimiter) + (cardDelimiter);
 
   // const output = func.output(content,elementDelimiter,itemDelimiter,cardDelimiter);
 
@@ -142,7 +143,7 @@ const Export = (props) => {
           }}
           style={style.button}
         >
-          <Text>Item Option</Text>
+          <Icon.Ionicons name="options" style={{ fontSize: 30 }} />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onShare}
@@ -170,7 +171,7 @@ const Export = (props) => {
   );
 
   const renderQRcode = () => {
-    const dataArray = func.separateDeckData(content, elementDelimiter, itemDelimiter, cardDelimiter);
+    const dataArray = func.separateDeckData(content, elementDelimiter, elementVisible, itemDelimiter, cardDelimiter);
 
     return (
       <ExportQRcode
@@ -223,4 +224,4 @@ Export.propTypes = {
   route: PropTypes.object.isRequired,
 };
 
-export default Export;//
+export default Export;

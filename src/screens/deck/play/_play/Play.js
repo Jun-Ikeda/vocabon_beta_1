@@ -291,7 +291,10 @@ const Play = (props) => {
       />
       <VocabEdit
         content={content}
-        setContent={setContent}
+        setContent={(newContent) => {
+          Alert.alert('Caution', 'The change may not be applied until you finish this deck');
+          setContent(newContent);
+        }}
         vocabID={onEditVocabID}
         isVisible={editVisible}
         setVisible={setEditVisible}

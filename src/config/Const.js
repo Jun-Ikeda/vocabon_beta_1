@@ -178,21 +178,39 @@ export const func = {
   },
   showEachItem: (object) => {
     const showArray = [];
-    console.log(object);
-    Object.keys(object).map((item) => {
-      if (object[item].value) {
-        showArray.push(item.key);
+    Object.keys(object).forEach((key) => {
+      if (object[key]) {
+        showArray.push(key);
       }
     });
     return showArray;
   },
+
   createItemArray: (wordSet, showArray, elementDelimiter) => {
     const outputByWords = [];
-    showArray.map((item) => {
-      outputByWords.push(wordSet.value.item?.join(elementDelimiter));
+    showArray.forEach((element) => {
+      outputByWords.push(wordSet.value[element]?.join(elementDelimiter));
     });
+    console.log(outputByWords);
     return outputByWords;
   },
+  // showEachItem: (object) => {
+  //   const showArray = [];
+  //   // console.log(object);
+  //   Object.keys(object).forEach((key) => {
+  //     if (object[key]) {
+  //       showArray.push(key);
+  //     }
+  //   });
+  //   return showArray;
+  // },
+  // createItemArray: (wordSet, showArray, elementDelimiter) => {
+  //   const outputByWords = [];
+  //   showArray.forEach((item) => {
+  //     outputByWords.push(wordSet.value.item?.join(elementDelimiter));
+  //   });
+  //   return outputByWords;
+  // },
   separateDeckData: (content, elementDelimiter, elementVisible, itemDelimiter, cardDelimiter) => {
     // const
     const contentArray = func.convertObjectToArray(content);
@@ -205,9 +223,8 @@ export const func = {
     while (contentArray.length !== 0) { // 空になるまでのつもり
       while (sumBytes < 500 && contentArray.length !== 0) {
         const curContent = contentArray.splice(0, 1); // curContentに最初の、contentArrayは削られる
-        curData += curContent.map((card) => {
-          func.createItemArray(card, func.showEachItem(elementVisible), elementDelimiter)?.join(itemDelimiter);
-        })?.join(cardDelimiter) + (cardDelimiter);// Exportでoutputされるときの形
+        curData += curContent.map((card) => (
+          func.createItemArray(card, func.showEachItem(elementVisible), elementDelimiter)?.join(itemDelimiter)))?.join(cardDelimiter) + (cardDelimiter);// Exportでoutputされるときの形
         const bytes = func.dataInBytes(curData); // bytes取得
         sumBytes += bytes;
         // sum += 1;

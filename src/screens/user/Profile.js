@@ -8,7 +8,7 @@ import {
 } from '../../config/account/Account';
 import Color from '../../config/Color';
 import { getUserGeneral } from '../../config/user/User';
-import ChangeProfile from '../../components/user/profileicon/ChangeProfile';
+// import ChangeProfile from '../../components/user/profileicon/ChangeProfile';
 import { clearStorage, isLoggedInState } from '../../nav/Nav';
 import {
   decksGeneral, deleteAllDecks, deleteDeck, getDeckGeneral,
@@ -47,7 +47,6 @@ const Profile = (props) => {
       {
         title: 'Change Profile',
         onPress: () => (changeProfileVisble ? (setChangeProfileVisble(false)) : (setChangeProfileVisble(true))),
-        render: <ChangeProfile changeProfileVisble={changeProfileVisble} setChangeProfileVisble={setChangeProfileVisble} />,
       },
       {
         title: 'Log out',
@@ -55,7 +54,6 @@ const Profile = (props) => {
           await clearStorage();
           setIsLoggedIn(false);
         },
-        render: null,
       },
       {
         title: 'Delete',
@@ -70,7 +68,6 @@ const Profile = (props) => {
             func.alertConsole(error);
           }
         },
-        render: null,
       },
     ];
     return buttons.map((button, index) => (
@@ -83,7 +80,7 @@ const Profile = (props) => {
           onPress={button.onPress}
           // left={() => <List.Icon icon={item.icon} color={Color.gray1} />}
         />
-        {button.render}
+        {/* {button.render} */}
       </View>
     ));
   };

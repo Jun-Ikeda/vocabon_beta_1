@@ -30,6 +30,7 @@ import Icon from '../../../components/Icon';
 import ProfileIcon from '../../../components/user/profileicon/ProfileIcon';
 import { getAccountContent, getAccountGeneral } from '../../../config/account/Account';
 import Profile from '../../../screens/user/Profile';
+import ProfileChange from '../../../screens/user/ProfileChange';
 
 const Stack = createStackNavigator();
 
@@ -158,6 +159,11 @@ const HomeNav = () => {
       <Stack.Screen
         name="profile"
         component={Profile}
+        options={{ headerTitle: 'Profile' }}
+      />
+      <Stack.Screen
+        name="profilechange"
+        component={ProfileChange}
         options={{ headerTitle: 'Profile' }}
       />
     </Stack.Navigator>

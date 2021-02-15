@@ -3,6 +3,7 @@ import { View, Text, Alert } from 'react-native';
 import {
   atom, useRecoilState, useRecoilValue, useSetRecoilState,
 } from 'recoil';
+import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -25,10 +26,11 @@ import {
 const Stack = createStackNavigator();
 
 export const clearStorage = async () => {
-  await LocalStorage.remove({ key: 'deckGeneral' });
-  await LocalStorage.remove({ key: 'accountGeneral' });
-  await LocalStorage.clearMapForKey('accountContent');
-  await LocalStorage.clearMapForKey('deck');
+  await LocalStorage.remove({ key: 'deckGeneral' }); // timestamp of deck general
+  await LocalStorage.remove({ key: 'accountGeneral' }); // account general
+  await LocalStorage.clearMapForKey('accountContent'); // account content
+  await LocalStorage.remove({ key: 'accountContent' }); // timestamp of account content
+  await LocalStorage.clearMapForKey('deck'); // deck general, content, timestamp
 };
 
 export const isLoggedInState = atom({
@@ -244,6 +246,7 @@ const Nav = () => {
 
   useEffect(() => {
     (async () => {
+      await SplashScreen.preventAutoHideAsync();
       const newIsLoggedIn = await initializeAuth();
       setIsLoggedIn(newIsLoggedIn);
     })();
@@ -256,8 +259,10 @@ const Nav = () => {
         await initialize();
         setIsInitialized(true);
       } else if (isLoggedIn === false) {
+        account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => {});
         setIsInitialized(true);
       }
+      await SplashScreen.hideAsync();
     })();
   }, [isLoggedIn]);
 
@@ -275,7 +280,7 @@ const Nav = () => {
             )}
           </Stack.Navigator>
         </NavigationContainer>
-        {/* <Button onPress={() => func.alertConsole(syncState)}>SynsState</Button> */}
+        <Button onPress={() => func.alertConsole(syncState)}>SynsState</Button>
       </View>
     );
   }

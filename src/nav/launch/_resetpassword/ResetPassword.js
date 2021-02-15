@@ -33,7 +33,7 @@ const ResetPassword = (props) => {
 
   return (
     <View style={style.container}>
-      <Text style={{ fontSize: 22, padding: 20, borderWidth: 1 }}>Reset your password</Text>
+      <Text style={{ fontSize: 22, padding: 20 }}>Reset your password</Text>
       <AuthForms visible={{ email: true }} />
       <View style={style.signupButtonContainer}>
         <Button

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView, Platform, StyleSheet, Text, View,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { TextInput } from 'react-native-paper';
 import { atom, useRecoilState } from 'recoil';
@@ -62,16 +64,19 @@ const AuthForms = (props) => {
     },
   ];
   return (
-    <View style={{ }}>
+    <View
+      style={{ }}
+    >
       {inputs.map((input) => ((visible?.[input.title.toLowerCase()]) ? (
         <View style={{ paddingHorizontal: 30 }} key={input.title.toLowerCase()}>
           <Text style={{ padding: 10, fontSize: 18 }}>{input.title.toUpperCase()}</Text>
-          <View>
+          <View style={{ }}>
             <TextInput
               value={input.value}
               onChangeText={input.onChangeText}
               label={input.title}
               secureTextEntry={(input.title.toLowerCase() === 'password') && hidePassword}
+              // style={{ color: Color.green2 }}
             />
             <View style={style.absoluteIconContainer}>
               {input.buttons.map((button) => {

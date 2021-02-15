@@ -12,8 +12,8 @@ import Icon from '../../../../components/Icon';
 const style = StyleSheet.create({
   container: {
     backgroundColor: Color.defaultBackground,
-    marginHorizontal: '5%',
-    // marginVertical: '15%',
+    marginHorizontal: '8%',
+    marginVertical: '30%',
     borderRadius: 10,
     padding: 10,
   },
@@ -103,12 +103,12 @@ const EditHelp = (props) => {
         descJp: '接尾辞(ly, nessなど)',
       },
       {
-        label: 'ExampleT',
+        label: 'Example in Term\'s language',
         descEn: 'Example sentence of the Term',
         descJp: '例文',
       },
       {
-        label: 'ExampleD',
+        label: 'Example in Definition\'s language',
         descEn: 'Translation of the example sentence',
         descJp: '例文の翻訳',
       },
@@ -143,9 +143,14 @@ const EditHelp = (props) => {
 
   const renderMenu = () => (
     <View style={style.container}>
-      <View style={style.google}>
-        <Text>You can google each term directly by pressing long</Text>
+      <View style={{ marginLeft: 15, marginBottom: 5 }}>
+        <Text style={{ color: Color.gray4 }}>Tips</Text>
       </View>
+      <View style={style.google}>
+        <Text>You can google each term directly by long press</Text>
+        <Text>{'You can add a tag by \'/\'\''}</Text>
+      </View>
+      <View style={{ marginLeft: 15, marginBottom: 5 }} />
       <ScrollView contentContainerStyle={style.contentContainer}>
         {renderItems()}
       </ScrollView>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert, Platform, StyleSheet, Text, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -19,29 +20,57 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
 
-  textcontainer: {
-    fontSize: 24,
-
+  buttoncontainer: {
+    flex: 1,
+    // paddingTop: header.paddingTop,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Color.defaultBackground,
   },
 
-  buttoncontainer: {
-    margin: 10, /* widthは決めないでmarginとかでやっほうがいいよ */
-    height: 36,
+  mainText: {
+    fontSize: 48,
+    color: Color.black,
+    margin: 20,
+  },
+
+  subText: {
+    fontSize: 30,
+    color: Color.black,
+    margin: 20,
+  },
+
+  refleshbuttoncontainer: {
+    margin: 10,
+    borderRadius: 50,
+    padding: 5,
+  },
+
+  startbuttoncontainer: {
+    margin: 20,
+    borderRadius: 20,
+    padding: 50,
+    backgroundColor: Color.green2,
+  },
+
+  resendbuttoncontainer: {
+    margin: 20,
     borderRadius: 20,
     padding: 20,
-    justifyContent: 'center',
   },
 });
 
 const EmailVerify = (props) => {
   const { navigation } = props;
   const [emailVerified, setEmailVerified] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const user = await getFirebaseUser();
       setEmailVerified(user.emailVerified);
       if (!user.emailVerified) sendEmail();
+      setLoading(false);
     })();
   }, []);
 
@@ -68,32 +97,47 @@ const EmailVerify = (props) => {
   }),
   [navigation]);
 
+  // if (loading) {
+  //   return (
+  //     <ActivityIndicator
+  //       animating={loading}
+  //       color={Color.gray1}
+  //       size="large"
+  //     />
+  //   );
+  // }
   return (
     <View style={style.container}>
-      <Text style={{ fontSize: 24 }}>Email Verification</Text>
-      <Text style={{ fontSize: 20 }}>{`Status: ${emailVerified ? 'Verified successfully' : 'Not yet verified'}`}</Text>
-      <Button onPress={async () => {
-        const user = await getFirebaseUser();
-        setEmailVerified(user.emailVerified);
-      }}
-      >
-        <Icon.Ionicons name="md-refresh-outline" style={{ fontSize: 36 }} />
-      </Button>
-      <Button
-        style={{
-          width: 220, height: 36, borderRadius: 20, backgroundColor: Color.purple,
-        }}
+      <Text style={style.mainText}>Email Verification</Text>
+      <Text style={style.subText}>{`Status: ${emailVerified ? 'Verified successfully' : 'Not yet verified'}`}</Text>
+      <TouchableOpacity
+        // style={{
+        //   width: 220, height: 36, borderRadius: 20, backgroundColor: Color.purple,
+        // }}
+        style={style.startbuttoncontainer}
         disabled={!emailVerified}
-        mode="contained"
+        // mode="contained"
         onPress={() => {
           saveAccountGeneral({ emailVerified: true });
           navigation.navigate('welcome');
         }}
       >
-        Start
+        <Text style={{ fontSize: 60 }}>Start</Text>
+        {/* <Icon.AntDesign name="playcircleo" /> */}
+      </TouchableOpacity>
+      <Button
+        style={style.refleshbuttoncontainer}
+        onPress={async () => {
+          const user = await getFirebaseUser();
+          setEmailVerified(user.emailVerified);
+        }}
+        color={Color.green2}
+        mode="contained"
+      >
+        <Icon.Ionicons name="md-refresh-outline" style={{ fontSize: 36 }} />
       </Button>
       <TouchableOpacity
-        style={style.buttoncontainer}
+        style={style.resendbuttoncontainer}
         onPress={() => sendEmail()}
       >
         {/* 認証用のメールを再送信 */}

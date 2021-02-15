@@ -157,13 +157,13 @@ const VocabEdit = (props) => {
       const newVocab = {};
       newVocab.term = newTerm.tagsArray;
       newVocab.definition = newDefinition.tagsArray;
-      if (synonym.tagsArray.length !== 0) { newVocab.synonym = newSynonym.tagsArray; }
-      if (antonym.tagsArray.length !== 0) { newVocab.antonym = newAntonym.tagsArray; }
-      if (prefix.tagsArray.length !== 0) { newVocab.prefix = newPrefix.tagsArray; }
-      if (suffix.tagsArray.length !== 0) { newVocab.suffix = newSuffix.tagsArray; }
-      if (exampleT.tagsArray.length !== 0) { newVocab.exampleT = newExampleT.tagsArray; }
-      if (exampleD.tagsArray.length !== 0) { newVocab.exampleD = newExampleD.tagsArray; }
-      if (cf.tagsArray.length !== 0) { newVocab.cf = newCf.tagsArray; }
+      if (newSynonym.length !== 0) { newVocab.synonym = newSynonym.tagsArray; }
+      if (newAntonym.length !== 0) { newVocab.antonym = newAntonym.tagsArray; }
+      if (newPrefix.length !== 0) { newVocab.prefix = newPrefix.tagsArray; }
+      if (newSuffix.length !== 0) { newVocab.suffix = newSuffix.tagsArray; }
+      if (newExampleT.length !== 0) { newVocab.exampleT = newExampleT.tagsArray; }
+      if (newExampleD.length !== 0) { newVocab.exampleD = newExampleD.tagsArray; }
+      if (newCf.length !== 0) { newVocab.cf = newCf.tagsArray; }
       result[vocabID] = newVocab;
       // alert(JSON.stringify(result));
       console.log(result);
@@ -191,10 +191,10 @@ const VocabEdit = (props) => {
     const onSubmitEditing = () => { if (isReady) next(); };
     const items = [
       {
-        label: 'Term', value: term, setState: setTerm, isVisible: true, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'Term', value: term, setState: setTerm, isVisible: true, keysForTags: ['/'],
       },
       {
-        label: 'Definition', value: definition, setState: setDefinition, isVisible: true, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'Definition', value: definition, setState: setDefinition, isVisible: true, keysForTags: ['/'],
       },
       {
         label: 'Example in Term\'s language', value: exampleT, setState: setExampleT, isVisible: true, keysForTags: ['/'],
@@ -203,19 +203,19 @@ const VocabEdit = (props) => {
         label: 'Example in Definition\'s language', value: exampleD, setState: setExampleD, isVisible: true, keysForTags: ['/'],
       },
       {
-        label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand, keysForTags: ['/'],
       },
       {
-        label: 'Antonym', value: antonym, setState: setAntonym, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'Antonym', value: antonym, setState: setAntonym, isVisible: expand, keysForTags: ['/'],
       },
       {
-        label: 'Prefix', value: prefix, setState: setPrefix, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'Prefix', value: prefix, setState: setPrefix, isVisible: expand, keysForTags: ['/'],
       },
       {
-        label: 'Suffix', value: suffix, setState: setSuffix, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'Suffix', value: suffix, setState: setSuffix, isVisible: expand, keysForTags: ['/'],
       },
       {
-        label: 'cf.', value: cf, setState: setCf, isVisible: expand, keysForTags: [',', '.', ' ', '。', '、', '　'],
+        label: 'cf.', value: cf, setState: setCf, isVisible: expand, keysForTags: ['/'],
       },
     ];
     return (

@@ -59,6 +59,12 @@ const style = StyleSheet.create({
     padding: iconSize * 0.176,
     paddingLeft: 20,
   },
+  detailbutton: {
+
+  },
+  popupmenu: {
+    marginHorizontal: '15%',
+  },
 });
 
 const Analyze = (props) => {
@@ -76,6 +82,7 @@ const Analyze = (props) => {
   const [mode, setMode] = useState('noDate');
   const [termLabel, setTermLabel] = useState('Term ↓');
   const [marksLabel, setMarksLabel] = useState('');
+  const [vocabButtonS, setvocabButtonS] = useRecoilState(vocabButtonSState);
 
   const renderVocab = () => (
     <AnalyzeList
@@ -179,6 +186,7 @@ const Analyze = (props) => {
     return (
       <Portal>
         <PopUpMenu
+          style={style.popupmenu}
           isVisible={!(detailVisibleID === '')}
           setVisible={() => setDetailVisibleID('')}
           renderMenu={() => (
@@ -189,10 +197,10 @@ const Analyze = (props) => {
               <TouchableOpacity
                 onPress={() => setAscendOrDescend(!ascendOrDescend)}
               >
-                <Icon.Entypo name={iconName} style={{}} />
+                <Icon.Entypo name={iconName} style={style.detailbutton} />
               </TouchableOpacity>
               {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(dateList[time])}</Text>)}
-              <Button onPress={() => setDetailVisibleID()}>Next</Button>
+              <Button onPress={() => setDetailVisibleID()}>NEXT</Button>
               {/* Object.keys(contentSorted) のなかに 今の detailVisibleID がどのindexに入ってるかを検索する？で、index+1番目のdetailVisibleIDをセットしなおす */}
             </View>
           )}

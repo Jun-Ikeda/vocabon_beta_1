@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Alert, StyleSheet, Text, View,
+  Alert, KeyboardAvoidingView, StyleSheet, Text, View,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useRecoilValue } from 'recoil';
@@ -42,7 +42,7 @@ const LogIn = (props) => {
     if (Object.values({ email, password }).includes('')) {
       Alert.alert('Error', 'Please fill in all the blanks');
     } else {
-      const user = await login(formsInput.email, formsInput.password);
+      const user = await login(formsInput.email, formsInput.password, () => {});
       // func.alertConsole(user);
       if (user != null) {
         await saveAccountGeneral({
@@ -61,8 +61,10 @@ const LogIn = (props) => {
 
   return (
     <View style={style.container}>
-      <Text style={{ fontSize: 22, padding: 20, borderWidth: 1 }}>Log In</Text>
-      <AuthForms visible={{ email: true, password: true }} />
+      <KeyboardAvoidingView behavior="position">
+        <Text style={{ fontSize: 22, padding: 20 }}>Log In</Text>
+        <AuthForms visible={{ email: true, password: true }} />
+      </KeyboardAvoidingView>
       {renderLogInButton()}
     </View>
   );

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Alert,
+  KeyboardAvoidingView,
   StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -9,7 +10,9 @@ import { useRecoilValue } from 'recoil';
 import Color from '../../../config/Color';
 import AuthForms, { formsInputState } from '../AuthForms';
 import { signup } from '../../../config/firebase/Auth';
-import { saveAccountGeneral } from '../../../config/account/Account';
+import { getAccountGeneral, saveAccountGeneral } from '../../../config/account/Account';
+import { func } from '../../../config/Const';
+import LocalStorage from '../../../config/LocalStorage';
 
 const style = StyleSheet.create({
   container: {
@@ -34,6 +37,13 @@ const style = StyleSheet.create({
 const SignUp = (props) => {
   const { navigation } = props;
   const formsInput = useRecoilValue(formsInputState);
+
+  useEffect(() => {
+    (async () => {
+      const accountGeneral = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => undefined);
+      if (accountGeneral?.loggedin) navigation.navigate('emailverify');
+    })();
+  }, []);
 
   const signupAndSave = async () => {
     if (Object.values(formsInput).includes('')) {
@@ -81,8 +91,10 @@ const SignUp = (props) => {
 
   return (
     <View style={style.container}>
-      <Text style={{ fontSize: 22, padding: 20, borderWidth: 1 }}>Sign Up</Text>
-      <AuthForms visible={{ name: true, email: true, password: true }} />
+      <KeyboardAvoidingView behavior="position">
+        <Text style={{ fontSize: 22, padding: 20 }}>Sign Up</Text>
+        <AuthForms visible={{ name: true, email: true, password: true }} />
+      </KeyboardAvoidingView>
       {renderSignUpButton()}
       {renderSuggestions()}
     </View>
