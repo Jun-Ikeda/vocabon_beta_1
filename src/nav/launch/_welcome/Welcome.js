@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 
 import {
-  Text, View, StyleSheet, Image,
+  Text, View, StyleSheet, Image, TouchableOpacity,
 } from 'react-native';
 import { Button } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSetRecoilState } from 'recoil';
 import { saveAccountGeneral } from '../../../config/account/Account';
 import Color, { getRandomPastel } from '../../../config/Color';

@@ -28,6 +28,7 @@ const style = StyleSheet.create({
   // },
   qrView: {
     // flex: 4,
+    justifyContent: 'center',
   },
   qrContentView: {
     // flex: 1,
@@ -66,6 +67,8 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   paginationView: {
+    // height: 60,
+    marginHorizontal: 5,
   },
 });
 
@@ -132,11 +135,11 @@ const ExportQRcode = (props) => {
       <View style={style.paginationView}>
         <Pagination
           dotsLength={dataArray.length}
-          inactiveDotStyle={{ backgroundColor: Color.gray2 }}
+          inactiveDotStyle={{ backgroundColor: Color.white1 }}
           activeDotIndex={activeIndex}
           containerStyle={{ padding: 25 }}
-      	    // countainerStyle={{ paddingVertical: 10 }}
-          dotStyle={{ backgroundColor: Color.gray4 }}
+          countainerStyle={{ paddingVertical: 10 }}
+          dotStyle={{ backgroundColor: Color.white3 }}
         />
       </View>
       {renderCancelButton()}

@@ -1,22 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import {
+  ActivityIndicator,
   Alert,
-  StyleSheet, Text, View,
+  LayoutAnimation,
+  ScrollView,
+  StyleSheet, Switch, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Button, Divider, List } from 'react-native-paper';
+import {
+  Button, Divider, List, Portal,
+} from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
 
+import { divide } from 'lodash';
 import { getAccountContent } from '../../../../config/account/Account';
 import Color from '../../../../config/Color';
-import { func } from '../../../../config/Const';
+import { deck, func } from '../../../../config/Const';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import { playhistory } from '../../../../config/PersistentData';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  divider: {
+    backgroundColor: Color.gray3,
+    height: 1.5,
+    opacity: 0.5,
+  },
+  card: {
+    flex: 1,
+    justifyContent: 'center',
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    backgroundColor: Color.white1,
+    borderRadius: 20,
+  },
+  cancelButton: {
+    position: 'absolute',
+    top: -15,
+    right: -15,
+    height: 40,
+    width: 40,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Color.gray3,
+  },
+  cancelButtonIcon: {
+    fontSize: 24,
+    color: Color.gray1,
   },
 });
 
@@ -24,7 +60,7 @@ const pickerSelectStyles = StyleSheet.create({
   // eslint-disable-next-line react-native/no-unused-styles
   inputIOSContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   // eslint-disable-next-line react-native/no-unused-styles
   inputAndroidContainer: {
@@ -34,18 +70,16 @@ const pickerSelectStyles = StyleSheet.create({
   // eslint-disable-next-line react-native/no-unused-styles
   inputIOS: {
     fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    color: Color.gray5,
+    padding: 10,
+    // paddingRight: 30, // to ensure the text is never behind the icon
   },
   // eslint-disable-next-line react-native/no-unused-styles
   inputAndroid: {
     fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    color: Color.gray5,
+    padding: 10,
+    // paddingRight: 30, // to ensure the text is never behind the icon
   },
   // eslint-disable-next-line react-native/no-unused-styles
   iconContainer: {
@@ -62,13 +96,20 @@ const Options = (props) => {
   const { marks, play } = getAccountContent(deckID);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [sortMode, setSortMode] = useState('shuffle');
-  const [recent, setRecent] = useState({});
-  const [custom, setCustom] = useState({});
+  const all = Object.keys(deckContent);
+  const [recent, setRecent] = useState([]);
+  const [custom, setCustom] = useState([]);
 
   useEffect(() => {
     (async () => {
       const playhistoryData = await playhistory.get(deckID);
+      const navigate = () => navigation.dispatch((state) => {
+        const routes = [
+          ...state.routes.filter((route) => route.name !== 'options'),
+          { name: 'play', params: { deckID, ...playhistoryData } },
+        ];
+        return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
+      });
       /* {
         validVocabIDs, sortMode, itemVisible, leftVocabID, rightVocabID,
       } or flase */
@@ -76,8 +117,14 @@ const Options = (props) => {
         Alert.alert(
           'Suspended',
           'You have a suspended history. Would you continue from the middle or restart?',
-          [{ text: 'Continue', style: 'default', onPress: () => {} }, { text: 'Restart', style: 'cancel', onPress: () => setIsLoading(false) }],
+          [{
+            text: 'Continue',
+            style: 'default',
+            onPress: navigate,
+          }, { text: 'Restart', style: 'cancel', onPress: () => setIsLoading(false) }],
         );
+      } else {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -85,11 +132,12 @@ const Options = (props) => {
   useEffect(() => {
     (async () => {
       const playMax = play.length - 1;
-      const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.marks?.includes(playMax)));
-      setRecent(newRecent);
+      const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.includes(playMax)));
+      setRecent(Object.keys(newRecent));
     })();
   }, [isLoading]);
 
+  const [sortMode, setSortMode] = useState('shuffle');
   const renderSort = () => {
     const sortModes = [
       { label: 'Index - Ascending', value: 'index' },
@@ -100,60 +148,150 @@ const Options = (props) => {
       <View style={{ flexDirection: 'row' }}>
         <List.Item
           title="Sort"
+          style={{ flex: 1 }}
           right={() => (
-            <RNPickerSelect
-              onValueChange={setSortMode}
-              value={sortMode}
-              style={pickerSelectStyles}
-              items={sortModes}
-              useNativeAndroidPickerStyle={false}
-            />
+            <View style={{ flex: 10 }}>
+              <RNPickerSelect
+                onValueChange={setSortMode}
+                value={sortMode}
+                style={pickerSelectStyles}
+                items={sortModes}
+                useNativeAndroidPickerStyle={false}
+              />
+            </View>
           )}
         />
       </View>
     );
   };
 
+  const [itemConfig, setItemConfig] = useState({ front: ['term'], back: ['definition'] });
+  const [itemConfigVisible, setItemConfigVisible] = useState(false);
+  const renderItemConfig = () => (
+    <List.Item
+      title="Visible Items"
+      onPress={() => setItemConfigVisible(!itemConfigVisible)}
+      right={() => (
+        <Text style={{
+          flex: 1, color: Color.gray5, fontSize: 16, alignSelf: 'center', textAlign: 'right',
+        }}
+        >
+          {` front: ${deck.formatArrayContent(itemConfig.front)},  back: ${deck.formatArrayContent(itemConfig.back)}`}
+        </Text>
+      )}
+    />
+  );
+  const renderItemConfigPopUp = () => {
+    const renderMenu = () => {
+      const setBool = (item, frontOrback, bool = null) => {
+        if (bool) {
+          setItemConfig({ ...itemConfig, [frontOrback]: [...itemConfig[frontOrback], item] });
+        } else {
+          const newItemVisible = itemConfig[frontOrback].filter((_item) => (_item !== item));
+          setItemConfig({ ...itemConfig, [frontOrback]: newItemVisible });
+        }
+      };
+      return (
+        <View style={{
+          flexDirection: 'row', flex: 1, backgroundColor: Color.defaultBackground, margin: '5%', borderRadius: 10,
+        }}
+        >
+          <View style={style.card}>
+            <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Front</Text>
+            {deck.items.map((item) => (
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
+                <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
+                <Switch value={itemConfig.front.includes(item.key)} onValueChange={(bool) => setBool(item.key, 'front', bool)} />
+              </View>
+            ))}
+          </View>
+          <View style={style.card}>
+            <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Back</Text>
+            {deck.items.map((item) => (
+              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
+                <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
+                <Switch value={itemConfig.back.includes(item.key)} onValueChange={(bool) => setBool(item.key, 'back', bool)} />
+              </View>
+            ))}
+          </View>
+          <TouchableOpacity style={style.cancelButton} onPress={() => setItemConfigVisible(false)}>
+            <Icon.Feather name="x" style={style.cancelButtonIcon} />
+          </TouchableOpacity>
+        </View>
+      );
+    };
+    return (
+      <Portal>
+        <PopUpMenu isVisible={itemConfigVisible} setVisible={setItemConfigVisible} renderMenu={renderMenu} />
+      </Portal>
+    );
+  };
+
+  const [isExpanded, setIsExpanded] = useState(false);
   const renderCardFilter = () => {
+    const renderCustom = () => (<Text>Index</Text>);
     const items = [
-      { title: 'All', value: 'all', num: func.convertObjectToArray(deckContent).length },
-      { title: 'Recent X', value: 'recent', num: 0 },
+      { title: 'All', value: 'all', num: all.length },
+      { title: 'Recent X', value: 'recent', num: recent.length },
       { title: 'Custom', value: 'custom', num: 0 },
     ];
     return (
       <View>
-        <Text>Filter</Text>
-        {items.map((item, index) => (
-          <View>
-            {index === 0 ? null : <Divider />}
-            <List.Item
-              title={item.title}
-              onPress={() => setMode(item.value)}
-              left={() => <List.Icon color={Color.green6} icon={item.value === mode ? 'checkbox-blank-circle' : 'checkbox-blank-circle-outline'} /* color={Color.gray1} */ />}
-              right={() => <Text style={{ fontSize: 22, alignSelf: 'center' }}>{item.num}</Text>}
-            />
-          </View>
-        ))}
+        <List.Item
+          title="Filter"
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            setIsExpanded(!isExpanded);
+          }}
+          // right={() => isExpa}
+        />
+        {isExpanded ? items.map((item, index) => {
+          const disabled = (item.value !== 'custom') && item.num === 0;
+          const textColor = disabled ? Color.gray2 : Color.black;
+          const iconColor = disabled ? Color.gray2 : Color.green6;
+          return (
+            <View>
+              {(index === 0) ? null : <Divider style={style.divider} />}
+              <List.Item
+                title={item.title}
+                titleStyle={{ color: textColor }}
+                onPress={() => {
+                  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                  setMode(item.value);
+                }}
+                left={() => <List.Icon color={iconColor} icon={item.value === mode ? 'checkbox-blank-circle' : 'checkbox-blank-circle-outline'} /* color={Color.gray1} */ />}
+                right={() => <Text style={{ fontSize: 22, alignSelf: 'center', color: textColor }}>{item.num}</Text>}
+                disabled={disabled}
+              />
+            </View>
+          );
+        }) : null}
+        {mode === 'custom' ? renderCustom() : null}
       </View>
     );
   };
 
   const renderStartButton = () => {
-    let params = {};
+    let validVocabIDsYetToBeSorted = [];
+    // let params = {};
     switch (mode) {
       case 'all':
-        params = { deckID };
+        validVocabIDsYetToBeSorted = all;
+        break;
+      case 'recent':
+        validVocabIDsYetToBeSorted = recent;
         break;
       default:
     }
-    // const params = {
-    //   deckID,
-    //   validVocabIDs: {},
-    //   sortMode: {},
-    //   itemVisible: {},
-    //   leftVocabID: {},
-    //   rightVocabID: {},
-    // };
+    const validVocabIDsSorted = deck.sortVocabs(validVocabIDsYetToBeSorted, sortMode);
+    const params = {
+      deckID,
+      validVocabIDs: validVocabIDsSorted,
+      sortMode,
+      itemVisible: itemConfig,
+      leftVocabID: [],
+      rightVocabID: [],
+    };
     const navigate = () => navigation.dispatch((state) => {
       const routes = [
         ...state.routes.filter((route) => route.name !== 'options'),
@@ -170,13 +308,18 @@ const Options = (props) => {
 
   return (
     <View style={style.container}>
-      <View style={{ flex: 1 }}>
+      <ActivityIndicator animating={isLoading} />
+      <ScrollView style={{ flex: 1 }}>
         {renderSort()}
+        <Divider style={style.divider} />
+        {renderItemConfig()}
+        <Divider style={style.divider} />
         {renderCardFilter()}
-      </View>
+      </ScrollView>
       <Text>{JSON.stringify(playhistory)}</Text>
       <Text>{JSON.stringify(recent)}</Text>
       {renderStartButton()}
+      {renderItemConfigPopUp()}
     </View>
   );
 };

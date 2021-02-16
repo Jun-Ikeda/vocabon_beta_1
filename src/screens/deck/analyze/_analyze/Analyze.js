@@ -41,7 +41,7 @@ const style = StyleSheet.create({
   },
   detailcontainer: {
     // borderWidth: 1,
-    paddingLeft: '8%',
+    paddingHorizontal: '8%',
     paddingVertical: 20,
     marginHorizontal: '5%',
     marginVertical: '15%',
@@ -56,14 +56,19 @@ const style = StyleSheet.create({
   },
   detaildate: {
     fontSize: iconSize * 0.66,
-    padding: iconSize * 0.176,
-    paddingLeft: 20,
+    paddingVertical: iconSize * 0.176,
+    paddingHorizontal: 20,
   },
   detailbutton: {
-
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    marginHorizontal: 25,
+    backgroundColor: Color.green2,
+    fontSize: iconSize * 0.66,
+    borderRadius: 7,
   },
   popupmenu: {
-    marginHorizontal: '15%',
+    marginHorizontal: '20%',
   },
 });
 
@@ -82,7 +87,7 @@ const Analyze = (props) => {
   const [mode, setMode] = useState('noDate');
   const [termLabel, setTermLabel] = useState('Term ↓');
   const [marksLabel, setMarksLabel] = useState('');
-  const [vocabButtonS, setvocabButtonS] = useRecoilState(vocabButtonSState);
+  // const [vocabButtonS, setvocabButtonS] = useRecoilState(vocabButtonState);
 
   const renderVocab = () => (
     <AnalyzeList
@@ -191,16 +196,32 @@ const Analyze = (props) => {
           setVisible={() => setDetailVisibleID('')}
           renderMenu={() => (
             <View style={style.detailcontainer}>
-              <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
-              <Text style={style.detailtext}>{` Def: ${content[detailVisibleID]?.definition}`}</Text>
-              <Text style={style.detailtext}>{'Mistake History:\n'}</Text>
-              <TouchableOpacity
-                onPress={() => setAscendOrDescend(!ascendOrDescend)}
-              >
-                <Icon.Entypo name={iconName} style={style.detailbutton} />
-              </TouchableOpacity>
-              {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(dateList[time])}</Text>)}
-              <Button onPress={() => setDetailVisibleID()}>NEXT</Button>
+              <View style={{ flex: 1 }}>
+                <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
+                <Text style={style.detailtext}>{`Def: ${content[detailVisibleID]?.definition}`}</Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 5,
+                  }}
+                >
+                  <Text style={[style.detailtext, { flex: 1, color: Color.cud.red }]}>Mistake History</Text>
+                  <TouchableOpacity
+                    style={{ marginHorizontal: 10, padding: iconSize / 2 }}
+                    onPress={() => setAscendOrDescend(!ascendOrDescend)}
+                  >
+                    <Icon.Entypo name={iconName} size={iconSize} />
+                  </TouchableOpacity>
+                </View>
+                <View style={{ backgroundColor: Color.white2, borderRadius: iconSize / 3 }}>
+                  {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(dateList[time])}</Text>)}
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => setDetailVisibleID()} style={style.detailbutton}><Text style={{ color: Color.white1 }}>NEXT</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => setDetailVisibleID()} style={style.detailbutton}><Text style={{ color: Color.white1 }}>BACK</Text></TouchableOpacity>
+              </View>
               {/* Object.keys(contentSorted) のなかに 今の detailVisibleID がどのindexに入ってるかを検索する？で、index+1番目のdetailVisibleIDをセットしなおす */}
             </View>
           )}

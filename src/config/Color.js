@@ -18,6 +18,7 @@ const Color = {
   gray2: '#999999',
   gray3: '#cccccc',
   gray4: '#888888',
+  gray5: '#666666',
   cud: { // color universal design
     red: 'rgb(255,75,0)',
     yellow: 'rgb(255,241,0)',

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert, Platform, StyleSheet, Text, View,
+  Alert, Platform, StyleSheet, Text, View, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { deleteAccount, getFirebaseUser, sendEmail } from '../../../config/firebase/Auth';
 import { getAccountGeneral, saveAccountGeneral } from '../../../config/account/Account';
 import { func, header } from '../../../config/Const';
@@ -47,6 +46,7 @@ const style = StyleSheet.create({
   },
 
   startbuttoncontainer: {
+    flex: 1,
     margin: 20,
     borderRadius: 20,
     padding: 50,
@@ -118,6 +118,7 @@ const EmailVerify = (props) => {
         disabled={!emailVerified}
         // mode="contained"
         onPress={() => {
+          console.log('aiueo');
           saveAccountGeneral({ emailVerified: true });
           navigation.navigate('welcome');
         }}

@@ -13,7 +13,7 @@ const style = StyleSheet.create({
   container: {
     backgroundColor: Color.defaultBackground,
     marginHorizontal: '8%',
-    marginVertical: '30%',
+    marginVertical: '16%',
     borderRadius: 10,
     padding: 10,
   },
@@ -151,7 +151,7 @@ const EditHelp = (props) => {
         <Text>{'You can add a tag by \'/\'\''}</Text>
       </View>
       <View style={{ marginLeft: 15, marginBottom: 5 }} />
-      <ScrollView contentContainerStyle={style.contentContainer}>
+      <ScrollView style={style.contentContainer}>
         {renderItems()}
       </ScrollView>
       {renderCancelButton()}

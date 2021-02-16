@@ -1,7 +1,7 @@
 // デッキの情報の変数を定義する所
 import { Alert } from 'react-native';
 import { func } from '../Const';
-import { database, storage } from '../firebase/Firebase';
+import { auth, database, storage } from '../firebase/Firebase';
 import LocalStorage from '../LocalStorage';
 import account from './AccountModule';
 
@@ -21,6 +21,17 @@ export const getAccountGeneral = () => account?.general ?? initialAccountGeneral
 export const saveAccountGeneral = (newData, merge = true) => {
   account.general = merge ? { ...initialAccountGeneral, ...account.general, ...newData } : newData;
   LocalStorage.save({ key: 'accountGeneral', data: account.general });
+  // もし名前が変更されてたらauth.updateProfile({ displayName: '' })
+  const user = auth.currentUser;
+  if (Object.keys(newData).includes('name')) {
+    // 変更されたら
+    user.updateProfile({ displayName: newData.name }).then(() => {
+      // Update successful.
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
+  // saveAccountGeneral({ name: 'aiueo' })
 };
 
 export const getAccountContent = (deckID = '') => {

@@ -36,8 +36,9 @@ const style = StyleSheet.create({
   // },
   button: {
     // flex: 1,
-    marginRight: 15,
-    marginTop: 10,
+    // marginRight: 15,
+    // marginTop: 10,
+    paddingHorizontal: 10,
   },
 });
 
@@ -134,8 +135,8 @@ const Export = (props) => {
 
   const renderDataBox = () => (
     <View style={style.dataBox}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 22, padding: 10 }}> Data </Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ fontSize: 22, padding: 10, flex: 1 }}> Data </Text>
         <TouchableOpacity
           onPress={() => {
             setOptionContentVisible(true);

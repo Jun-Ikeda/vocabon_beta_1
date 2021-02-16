@@ -2,7 +2,7 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, ScrollView,
 } from 'react-native';
-import { Switch } from 'react-native-paper';
+import { Divider, Switch } from 'react-native-paper';
 
 import Icon from '../../../../components/Icon';
 import Color from '../../../../config/Color';
@@ -11,21 +11,26 @@ import { func } from '../../../../config/Const';
 const style = StyleSheet.create({
   content: {
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Color.white1,
+    // alignItems: 'center',
+    backgroundColor: Color.defaultBackground,
     marginHorizontal: '5%',
     marginVertical: '15%',
     borderRadius: 10,
     flex: 1,
+    padding: 15,
+
   },
   title: {
-    flex: 1,
+    // flex: 1,
+    marginLeft: 10,
+    marginBottom: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
   },
   card: {
-    flex: 2,
-    justifyContent: 'center',
+    // flex: 1,
+    padding: 10,
+    // justifyContent: 'center',
   },
   cancelButton: {
     position: 'absolute',
@@ -39,9 +44,15 @@ const style = StyleSheet.create({
     backgroundColor: Color.gray3,
   },
   switchBox: {
+    // flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     padding: 5,
+  },
+  switchView: {
+    flex: 1,
+    backgroundColor: Color.white1,
+    borderRadius: 10,
   },
   cancelButtonIcon: {
     fontSize: 24,
@@ -51,6 +62,9 @@ const style = StyleSheet.create({
     color: Color.font1,
     fontSize: 24,
     textAlign: 'left',
+  },
+  divider: {
+    backgroundColor: Color.gray3, height: 1.5, opacity: 0.5,
   },
 });
 
@@ -83,9 +97,10 @@ const ExportItemOption = (props) => {
     ];
     return (
       <View style={style.card}>
-        {items.map((item) => (
+        {items.map((item, index) => (
           <View style={style.switchBox}>
-            <Text style={{ fontSize: 15 }}>{item.title}</Text>
+            <Divider style={style.divider} />
+            <Text style={{ fontSize: 15, flex: 1 }}>{item.title}</Text>
             <Switch
               value={elementVisible[item.value]}
               onValueChange={() => {
@@ -110,7 +125,7 @@ const ExportItemOption = (props) => {
         <Text style={{ fontSize: 20 }}>Item Option</Text>
       </View>
       {renderCancelButton()}
-      <ScrollView>{renderSwitch()}</ScrollView>
+      <ScrollView style={style.switchView}>{renderSwitch()}</ScrollView>
     </View>
   );
 };

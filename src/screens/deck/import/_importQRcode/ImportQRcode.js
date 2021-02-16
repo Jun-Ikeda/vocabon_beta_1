@@ -102,7 +102,8 @@ const ImportQRcode = (props) => {
     ));
 
   const handleBarCodeScanned = ({ data }) => {
-    if (data === null) {
+    // Alert.alert('Oops!', ` ${data.length}`);
+    if (data.length === 0) {
       Alert.alert('Oops!', 'Read slowly');
     } else {
       setScanned(true);
