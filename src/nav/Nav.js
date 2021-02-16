@@ -246,7 +246,7 @@ const Nav = () => {
 
   useEffect(() => {
     (async () => {
-      await SplashScreen.preventAutoHideAsync();
+      // await SplashScreen.preventAutoHideAsync();
       const newIsLoggedIn = await initializeAuth();
       setIsLoggedIn(newIsLoggedIn);
     })();
@@ -257,12 +257,13 @@ const Nav = () => {
       if (isLoggedIn) {
         setIsInitialized(false);
         await initialize();
-        setIsInitialized(true);
+        await setIsInitialized(true);
+        await SplashScreen.hideAsync();
       } else if (isLoggedIn === false) {
         account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => {});
-        setIsInitialized(true);
+        await setIsInitialized(true);
+        await SplashScreen.hideAsync();
       }
-      await SplashScreen.hideAsync();
     })();
   }, [isLoggedIn]);
 
@@ -284,7 +285,7 @@ const Nav = () => {
       </View>
     );
   }
-  return (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Loading</Text></View>);
+  return null;
 };
 
 export default Nav;

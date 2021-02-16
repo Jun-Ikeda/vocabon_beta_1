@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Alert,
+  StyleSheet, Text, View,
+} from 'react-native';
+import PropTypes from 'prop-types';
+import { Button, Divider, List } from 'react-native-paper';
+import { CommonActions } from '@react-navigation/native';
+import RNPickerSelect from 'react-native-picker-select';
 
-import { StyleSheet, Text, View } from 'react-native';
-import { Divider, List } from 'react-native-paper';
 import { getAccountContent } from '../../../../config/account/Account';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
@@ -14,6 +20,40 @@ const style = StyleSheet.create({
   },
 });
 
+const pickerSelectStyles = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputIOSContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputAndroidContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  // eslint-disable-next-line react-native/no-unused-styles
+  iconContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+});
+
 const Options = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
   const [mode, setMode] = useState('all');
@@ -21,32 +61,63 @@ const Options = (props) => {
   const deckContent = getDeckContent(deckID);
   const { marks, play } = getAccountContent(deckID);
 
-  const [playHistory, setPlayHistory] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [sortMode, setSortMode] = useState('shuffle');
   const [recent, setRecent] = useState({});
+  const [custom, setCustom] = useState({});
 
   useEffect(() => {
     (async () => {
       const playhistoryData = await playhistory.get(deckID);
-      setPlayHistory(playhistoryData);
-    })();
-    (async () => {
-      const playMax = play.length - 1;
-      const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.includes(playMax)));
-      setRecent(newRecent);
+      /* {
+        validVocabIDs, sortMode, itemVisible, leftVocabID, rightVocabID,
+      } or flase */
+      if (playhistoryData) {
+        Alert.alert(
+          'Suspended',
+          'You have a suspended history. Would you continue from the middle or restart?',
+          [{ text: 'Continue', style: 'default', onPress: () => {} }, { text: 'Restart', style: 'cancel', onPress: () => setIsLoading(false) }],
+        );
+      }
     })();
   }, []);
 
-  const renderSort = () => (
-    <View>
-      <Text>Sort by</Text>
-    </View>
-  );
+  useEffect(() => {
+    (async () => {
+      const playMax = play.length - 1;
+      const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.marks?.includes(playMax)));
+      setRecent(newRecent);
+    })();
+  }, [isLoading]);
+
+  const renderSort = () => {
+    const sortModes = [
+      { label: 'Index - Ascending', value: 'index' },
+      { label: 'Index - Descending', value: 'index-reverse' },
+      { label: 'Shuffle', value: 'shuffle' },
+    ];
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <List.Item
+          title="Sort"
+          right={() => (
+            <RNPickerSelect
+              onValueChange={setSortMode}
+              value={sortMode}
+              style={pickerSelectStyles}
+              items={sortModes}
+              useNativeAndroidPickerStyle={false}
+            />
+          )}
+        />
+      </View>
+    );
+  };
 
   const renderCardFilter = () => {
     const items = [
       { title: 'All', value: 'all', num: func.convertObjectToArray(deckContent).length },
-      { title: 'Suspended', value: 'suspended', num: playHistory?.validVocabIDs ?? 1 },
-      { title: 'Recent X', value: 'recent', num: JSON.stringify(func.convertObjectToArray(deckContent)) },
+      { title: 'Recent X', value: 'recent', num: 0 },
       { title: 'Custom', value: 'custom', num: 0 },
     ];
     return (
@@ -66,12 +137,53 @@ const Options = (props) => {
       </View>
     );
   };
+
+  const renderStartButton = () => {
+    let params = {};
+    switch (mode) {
+      case 'all':
+        params = { deckID };
+        break;
+      default:
+    }
+    // const params = {
+    //   deckID,
+    //   validVocabIDs: {},
+    //   sortMode: {},
+    //   itemVisible: {},
+    //   leftVocabID: {},
+    //   rightVocabID: {},
+    // };
+    const navigate = () => navigation.dispatch((state) => {
+      const routes = [
+        ...state.routes.filter((route) => route.name !== 'options'),
+        { name: 'play', params },
+      ];
+      return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
+    });
+    return (
+      <View style={{ padding: 10 }}>
+        <Button color={Color.green2} mode="contained" onPress={navigate}>Play</Button>
+      </View>
+    );
+  };
+
   return (
     <View style={style.container}>
-      {renderSort()}
-      {renderCardFilter()}
+      <View style={{ flex: 1 }}>
+        {renderSort()}
+        {renderCardFilter()}
+      </View>
+      <Text>{JSON.stringify(playhistory)}</Text>
+      <Text>{JSON.stringify(recent)}</Text>
+      {renderStartButton()}
     </View>
   );
+};
+
+Options.propTypes = {
+  navigation: PropTypes.object.isRequired,
+
 };
 
 export default Options;

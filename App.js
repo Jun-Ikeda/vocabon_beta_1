@@ -5,6 +5,7 @@ import {
 import { Provider } from 'react-native-paper';
 import { RecoilRoot } from 'recoil';
 import { Audio } from 'expo-av';
+import * as SplashScreen from 'expo-splash-screen';
 
 import Switch from './dev/Switch';
 
@@ -24,6 +25,7 @@ const App = () => {
     (async () => {
       if (Platform.OS === 'ios') {
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+        await SplashScreen.preventAutoHideAsync();
       }
     })();
   }, []);
