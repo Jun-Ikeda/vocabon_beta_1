@@ -24,7 +24,7 @@ const ImportList = (props) => {
 
   return (
     <FlatList
-      data={inputArray}
+      data={inputArray.length > 500 ? [] : inputArray}
       renderItem={({ item: card, index: cardIndex }) => (
         <View style={style.cardContainer}>
           <Text>{`Card${cardIndex + 1}: `}</Text>

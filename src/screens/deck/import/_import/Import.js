@@ -107,7 +107,7 @@ const Import = (props) => {
   }, []);
 
   useEffect(() => {
-    if (input === '' || itemDelimiter === '' || cardDelimiter === '') {
+    if (input === '' || itemDelimiter === '' || cardDelimiter === '' || elementDelimiter === '') {
       setInputArray([]);
     } else {
       setInputArray(input.split(cardDelimiter).map((card) => card.split(itemDelimiter).map((item) => item.split(elementDelimiter))));

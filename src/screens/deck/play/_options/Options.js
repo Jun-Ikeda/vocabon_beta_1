@@ -11,6 +11,7 @@ import {
   Button, Divider, List, Portal,
 } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
+import { RangeSlider } from '@sharcoux/slider';
 import RNPickerSelect from 'react-native-picker-select';
 
 import { divide } from 'lodash';
@@ -30,11 +31,12 @@ const style = StyleSheet.create({
     backgroundColor: Color.gray3,
     height: 1.5,
     opacity: 0.5,
+    marginHorizontal: 5,
   },
   card: {
     flex: 1,
     justifyContent: 'center',
-    marginHorizontal: 10,
+    margin: 15,
     paddingHorizontal: 10,
     backgroundColor: Color.white1,
     borderRadius: 20,
@@ -96,8 +98,8 @@ const Options = (props) => {
   const { marks, play } = getAccountContent(deckID);
 
   const [isLoading, setIsLoading] = useState(true);
-  const all = Object.keys(deckContent);
-  const [recent, setRecent] = useState([]);
+  const allKeys = Object.keys(deckContent);
+  const [recentKeys, setRecentKeys] = useState([]);
   const [custom, setCustom] = useState([]);
 
   useEffect(() => {
@@ -133,7 +135,7 @@ const Options = (props) => {
     (async () => {
       const playMax = play.length - 1;
       const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.includes(playMax)));
-      setRecent(Object.keys(newRecent));
+      setRecentKeys(Object.keys(newRecent));
     })();
   }, [isLoading]);
 
@@ -228,11 +230,23 @@ const Options = (props) => {
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [customPopUpVisible, setCustomPopUpVisible] = useState('');
+  const XMax = Object.keys(marks).length === 0 ? 0 : func.convertObjectToArray(marks).reduce((a, b) => (a.value.length > b.value.length ? a : b)).value.length;
+  const initialCustomProperty = { index: [1, allKeys.length], x: [0, XMax] };
+  const [customProperty, setCustomProperty] = useState(initialCustomProperty);
+  const [indexRange, setIndexRange] = useState(initialCustomProperty.index);
+  const [xRange, setXRange] = useState(initialCustomProperty.x);
   const renderCardFilter = () => {
-    const renderCustom = () => (<Text>Index</Text>);
+    const renderCustom = () => (
+      <View style={{ paddingHorizontal: 20 }}>
+        <List.Item title="Index" onPress={() => setCustomPopUpVisible('index')} right={() => <Text style={{ alignSelf: 'center' }}>{`${indexRange[0]} ~ ${indexRange[1]}`}</Text>} />
+        <Divider style={style.divider} />
+        <List.Item title="X" onPress={() => setCustomPopUpVisible('x')} right={() => <Text style={{ alignSelf: 'center' }}>{`${xRange[0]} ~ ${xRange[1]}`}</Text>} />
+      </View>
+    );
     const items = [
-      { title: 'All', value: 'all', num: all.length },
-      { title: 'Recent X', value: 'recent', num: recent.length },
+      { title: 'All', value: 'all', num: allKeys.length },
+      { title: 'Recent X', value: 'recent', num: recentKeys.length },
       { title: 'Custom', value: 'custom', num: 0 },
     ];
     return (
@@ -245,29 +259,74 @@ const Options = (props) => {
           }}
           // right={() => isExpa}
         />
-        {isExpanded ? items.map((item, index) => {
-          const disabled = (item.value !== 'custom') && item.num === 0;
-          const textColor = disabled ? Color.gray2 : Color.black;
-          const iconColor = disabled ? Color.gray2 : Color.green6;
-          return (
-            <View>
-              {(index === 0) ? null : <Divider style={style.divider} />}
-              <List.Item
-                title={item.title}
-                titleStyle={{ color: textColor }}
-                onPress={() => {
-                  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                  setMode(item.value);
-                }}
-                left={() => <List.Icon color={iconColor} icon={item.value === mode ? 'checkbox-blank-circle' : 'checkbox-blank-circle-outline'} /* color={Color.gray1} */ />}
-                right={() => <Text style={{ fontSize: 22, alignSelf: 'center', color: textColor }}>{item.num}</Text>}
-                disabled={disabled}
-              />
-            </View>
-          );
-        }) : null}
-        {mode === 'custom' ? renderCustom() : null}
+        {isExpanded ? <Divider style={style.divider} /> : null}
+        {isExpanded ? (
+          <View style={{
+            margin: 10, padding: 10, backgroundColor: Color.white5, borderRadius: 20,
+          }}
+          >
+            {items.map((item, index) => {
+              const disabled = (item.value !== 'custom') && item.num === 0;
+              const textColor = disabled ? Color.gray2 : Color.black;
+              const iconColor = disabled ? Color.gray2 : Color.green6;
+              return (
+                <View>
+                  <List.Item
+                    title={item.title}
+                    titleStyle={{ color: textColor }}
+                    onPress={() => {
+                      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                      setMode(item.value);
+                    }}
+                    left={() => <List.Icon color={iconColor} icon={item.value === mode ? 'checkbox-blank-circle' : 'checkbox-blank-circle-outline'} /* color={Color.gray1} */ />}
+                    right={() => <Text style={{ fontSize: 22, alignSelf: 'center', color: textColor }}>{item.num}</Text>}
+                    disabled={disabled}
+                  />
+                  {(index === items.length - 1) ? null : <Divider style={style.divider} />}
+                </View>
+              );
+            })}
+            {mode === 'custom' ? <Divider style={style.divider} /> : null}
+            {mode === 'custom' ? renderCustom() : null}
+          </View>
+        ) : null}
       </View>
+    );
+  };
+  const renderCustomPopUp = () => {
+    const renderMenu = () => (
+      <View style={{
+        /* flex: 1,  */backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 20, flex: 1,
+      }}
+      >
+        <Text style={{ fontSize: 20 }}>{customPopUpVisible}</Text>
+        <RangeSlider
+          range={[0, 500]}
+          minimumValue={indexRange[0]}
+          maximumValue={indexRange[1]}
+          step={1}
+          outboundColor={Color.gray3}
+          inboundColor={Color.gray2}
+          thumbTintColor={Color.green2}
+          thumbStyle={undefined}
+          trackStyle={undefined}
+          enabled
+          trackHeight={5}
+          thumbSize={20}
+          slideOnTap
+          onValueChange={setIndexRange}
+          onSlidingStart={undefined}
+          onSlidingComplete={undefined}
+        />
+        <TouchableOpacity style={style.cancelButton} onPress={() => setCustomPopUpVisible('')}>
+          <Icon.Feather name="x" style={style.cancelButtonIcon} />
+        </TouchableOpacity>
+      </View>
+    );
+    return (
+      <Portal>
+        <PopUpMenu isVisible={customPopUpVisible !== ''} setVisible={() => setCustomPopUpVisible('')} renderMenu={renderMenu} containerStyle={{ justifyContent: 'center' }} />
+      </Portal>
     );
   };
 
@@ -276,10 +335,10 @@ const Options = (props) => {
     // let params = {};
     switch (mode) {
       case 'all':
-        validVocabIDsYetToBeSorted = all;
+        validVocabIDsYetToBeSorted = allKeys;
         break;
       case 'recent':
-        validVocabIDsYetToBeSorted = recent;
+        validVocabIDsYetToBeSorted = recentKeys;
         break;
       default:
     }
@@ -317,9 +376,10 @@ const Options = (props) => {
         {renderCardFilter()}
       </ScrollView>
       <Text>{JSON.stringify(playhistory)}</Text>
-      <Text>{JSON.stringify(recent)}</Text>
+      <Text>{JSON.stringify(recentKeys)}</Text>
       {renderStartButton()}
       {renderItemConfigPopUp()}
+      {renderCustomPopUp()}
     </View>
   );
 };
