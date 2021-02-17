@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, Text, View, Alert, Platform,
+  StyleSheet, Text, View, Alert, Platform, ScrollView, LayoutAnimation,
 } from 'react-native';
 import { Divider, List, Button } from 'react-native-paper';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -71,7 +71,7 @@ const Profile = (props) => {
       );
     }
   }),
-  [navigation]);
+  [navigation, isChanged]);
 
   const save = async () => {
     await setIsChanged(false);
@@ -82,7 +82,10 @@ const Profile = (props) => {
     const buttons = [
       {
         title: 'Change Profile',
-        onPress: () => (setChangeProfileVisible(!changeProfileVisible)),
+        onPress: () => {
+          setChangeProfileVisible(!changeProfileVisible);
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        },
         render: (changeProfileVisible ? (
           <ProfileChange
             accountGeneral={accountGeneral}
@@ -90,8 +93,10 @@ const Profile = (props) => {
             setInputState={setInputState}
             isChanged={isChanged}
             setIsChanged={setIsChanged}
+            // user={user}
           />
         ) : null),
+        titleStyle: style.text1,
       },
       {
         title: 'Log out',
@@ -108,11 +113,12 @@ const Profile = (props) => {
           ]);
         },
         render: null,
+        titleStyle: style.text1,
       },
       {
         title: 'Delete',
         onPress: () => {
-          Alert.alert('Caution', 'Would you really want to log out?', [
+          Alert.alert('Caution', 'Would you really want to delete your account?', [
             { text: 'cancel', style: 'cancel', onPress: () => {} },
             {
               text: 'Delete',
@@ -132,6 +138,7 @@ const Profile = (props) => {
           ]);
         },
         render: null,
+        titleStyle: { color: Color.red1, fontSize: 20 },
       },
     ];
     return buttons.map((button, index) => (
@@ -140,7 +147,7 @@ const Profile = (props) => {
         <List.Item
           style={style.itemContainer}
           title={button.title}
-          titleStyle={style.text1}
+          titleStyle={button.titleStyle}
           onPress={button.onPress}
           // left={() => <List.Icon icon={item.icon} color={Color.gray1} />}
         />
@@ -175,7 +182,7 @@ const Profile = (props) => {
         </View>
       </View>
       {!contentVisible ? renderSaveButton() : null}
-      {isMe ? renderAuthButtons() : null}
+      <ScrollView>{isMe ? renderAuthButtons() : null}</ScrollView>
     </View>
   );
 };

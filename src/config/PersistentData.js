@@ -12,8 +12,8 @@ const playoption = {
   get: async () => {
     const data = await LocalStorage.load({ key: 'playoption' }).then((result) => result)
       .catch(() => ({
-        SortMode: 'index',
-        filter: { index: {}, mark: {} },
+        sortMode: 'index',
+        filter: { index: [], mark: {} },
         visibleItem: { front: ['term'], back: ['definition'] },
       }));
     return data;

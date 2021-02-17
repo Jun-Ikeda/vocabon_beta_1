@@ -173,7 +173,7 @@ const Export = (props) => {
 
   const renderQRcode = () => {
     const dataArray = func.separateDeckData(content, elementDelimiter, elementVisible, itemDelimiter, cardDelimiter);
-
+    console.log(dataArray);
     return (
       <ExportQRcode
         dataArray={dataArray}

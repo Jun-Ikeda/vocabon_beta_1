@@ -41,4 +41,15 @@ export const sendEmail = async () => {
   user.sendEmailVerification();
 };
 
+export const updateEmail = async (newAddress) => {
+  const user = await auth.currentUser;
+  user.updateEmail(newAddress).then(() => {
+    // Update successful.
+    Alert.alert('Scuccess to update', '');
+  }).catch((error) => {
+    // An error happened.
+    Alert.alert('Error', error);
+  });
+};
+
 export default auth;

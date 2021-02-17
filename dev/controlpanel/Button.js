@@ -10,6 +10,7 @@ import UUID from '../../src/config/UUID';
 import firebase, {
   auth, database, firestore, getFirebaseUser,
 } from '../../src/config/firebase/Firebase';
+import { playoption } from '../../src/config/PersistentData';
 
 const Button = [
   {
@@ -185,6 +186,13 @@ const Button = [
     title: 'Deck General',
     onPress: async () => {
       const data = await LocalStorage.load({ key: 'deckGeneral' });
+      return data;
+    },
+  },
+  {
+    title: 'playoption',
+    onPress: async () => {
+      const data = await playoption.get();
       return data;
     },
   },

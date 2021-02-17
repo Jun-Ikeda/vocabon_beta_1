@@ -13,6 +13,7 @@ import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 import ImportList from '../ImportList';
 import ImportQRcode from '../_importQRcode/ImportQRcode';
+import ImportHelp from './importHelp';
 import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
@@ -49,6 +50,13 @@ const style = StyleSheet.create({
   qrIcon: {
     fontSize: 23,
   },
+  button: {
+    width: 60,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+  },
 });
 
 const Import = (props) => {
@@ -63,6 +71,7 @@ const Import = (props) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [inputArray, setInputArray] = useState([]);
   const [qrScannerVisible, setQRScannerVisible] = useState(false);
+  const [helpVisible, setHelpVisible] = useState(false);
   const isChanged = !((input === 'manzana;apple,block/plátano;banana') || (input === ''));
   const isFocused = useIsFocused();
 
@@ -211,6 +220,16 @@ const Import = (props) => {
         hasPermission={hasPermission}
         cardDelimiter={cardDelimiter}
       />
+      {/* <TouchableOpacity
+        style={style.button}
+        onPress={() => setHelpVisible(true)}
+      >
+        <Icon.Feather name="help-circle" size={20} />
+      </TouchableOpacity>
+      <ImportHelp
+        isVisible={helpVisible}
+        setIsVisible={setHelpVisible}
+      /> */}
     </KeyboardAvoidingView>
   );
 };

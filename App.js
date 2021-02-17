@@ -25,8 +25,8 @@ const App = () => {
     (async () => {
       if (Platform.OS === 'ios') {
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-        await SplashScreen.preventAutoHideAsync();
       }
+      await SplashScreen.preventAutoHideAsync();
     })();
   }, []);
   return (

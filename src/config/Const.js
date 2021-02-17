@@ -230,6 +230,7 @@ export const func = {
         // sum += 1;
       }
       resultArray.push(curData);
+      console.log(sumBytes);
       sumBytes = 0;
       if (contentArray.length === 0) {
         break;
@@ -237,7 +238,6 @@ export const func = {
         curData = ''; // curData reset
       }
     }
-    console.log(resultArray);
     return resultArray;
   },
 };

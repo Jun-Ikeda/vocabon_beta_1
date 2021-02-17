@@ -50,7 +50,6 @@ const ResetPassword = (props) => {
             setIsError(true);
             setIsSent(false);
             console.log(error);
-            // setErrorMessage(error);
             Alert.alert('Opps!', error.message);
           })}
         >

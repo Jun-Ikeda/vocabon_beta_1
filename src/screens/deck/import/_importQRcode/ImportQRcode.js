@@ -109,7 +109,7 @@ const ImportQRcode = (props) => {
       setScanned(true);
       // setScannedData(data);
       setPreScannedData(scannedData);
-      setScannedData((prev) => (prev === '' ? data : scannedData + cardDelimiter + data));
+      setScannedData((prev) => (prev === '' ? data : scannedData + data));
     }
   };
 

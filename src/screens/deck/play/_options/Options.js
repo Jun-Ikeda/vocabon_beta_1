@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
   LayoutAnimation,
   ScrollView,
   StyleSheet, Switch, Text, TouchableOpacity, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {
-  Button, Divider, List, Portal,
+  Button, Divider, List, Portal, TextInput,
 } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
 import { RangeSlider } from '@sharcoux/slider';
@@ -19,7 +20,7 @@ import { getAccountContent } from '../../../../config/account/Account';
 import Color from '../../../../config/Color';
 import { deck, func } from '../../../../config/Const';
 import { getDeckContent } from '../../../../config/deck/Deck';
-import { playhistory } from '../../../../config/PersistentData';
+import { playhistory, playoption } from '../../../../config/PersistentData';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
 
@@ -100,7 +101,7 @@ const Options = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const allKeys = Object.keys(deckContent);
   const [recentKeys, setRecentKeys] = useState([]);
-  const [custom, setCustom] = useState([]);
+  const [customKeys, setCustomKeys] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -138,6 +139,16 @@ const Options = (props) => {
       setRecentKeys(Object.keys(newRecent));
     })();
   }, [isLoading]);
+
+  useEffect(() => {
+    (async () => {
+      const { sortMode, filter, visibleItem } = await playoption.get();
+      setSortMode(sortMode);
+      setItemConfig(visibleItem);
+      setIndexRange(filter.index);
+      setXRange(filter.x);
+    })();
+  }, []);
 
   const [sortMode, setSortMode] = useState('shuffle');
   const renderSort = () => {
@@ -230,24 +241,24 @@ const Options = (props) => {
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const [customPopUpVisible, setCustomPopUpVisible] = useState('');
+  const [customPopUpVisible, setCustomPopUpVisible] = useState(false);
   const XMax = Object.keys(marks).length === 0 ? 0 : func.convertObjectToArray(marks).reduce((a, b) => (a.value.length > b.value.length ? a : b)).value.length;
-  const initialCustomProperty = { index: [1, allKeys.length], x: [0, XMax] };
-  const [customProperty, setCustomProperty] = useState(initialCustomProperty);
+  const initialCustomProperty = { index: ['1', `${allKeys.length}`], x: ['0', `${XMax}`] };
   const [indexRange, setIndexRange] = useState(initialCustomProperty.index);
   const [xRange, setXRange] = useState(initialCustomProperty.x);
+  useEffect(() => {
+    const newCustomKeys = allKeys.filter((vocabID, index) => {
+      const indexInRange = (Number(indexRange[0] - 1) <= index) && (index <= Number(indexRange[1] - 1));
+      const xInRange = Number(xRange[0]) <= (marks?.[vocabID]?.length ?? 0) && (marks?.[vocabID]?.length ?? 0) <= Number(xRange[1]);
+      return indexInRange && xInRange;
+    });
+    setCustomKeys(newCustomKeys);
+  }, [indexRange, xRange]);
   const renderCardFilter = () => {
-    const renderCustom = () => (
-      <View style={{ paddingHorizontal: 20 }}>
-        <List.Item title="Index" onPress={() => setCustomPopUpVisible('index')} right={() => <Text style={{ alignSelf: 'center' }}>{`${indexRange[0]} ~ ${indexRange[1]}`}</Text>} />
-        <Divider style={style.divider} />
-        <List.Item title="X" onPress={() => setCustomPopUpVisible('x')} right={() => <Text style={{ alignSelf: 'center' }}>{`${xRange[0]} ~ ${xRange[1]}`}</Text>} />
-      </View>
-    );
     const items = [
       { title: 'All', value: 'all', num: allKeys.length },
       { title: 'Recent X', value: 'recent', num: recentKeys.length },
-      { title: 'Custom', value: 'custom', num: 0 },
+      { title: 'Custom', value: 'custom', num: customKeys.length },
     ];
     return (
       <View>
@@ -277,6 +288,7 @@ const Options = (props) => {
                     onPress={() => {
                       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                       setMode(item.value);
+                      if (item.value === 'custom') { setCustomPopUpVisible(true); }
                     }}
                     left={() => <List.Icon color={iconColor} icon={item.value === mode ? 'checkbox-blank-circle' : 'checkbox-blank-circle-outline'} /* color={Color.gray1} */ />}
                     right={() => <Text style={{ fontSize: 22, alignSelf: 'center', color: textColor }}>{item.num}</Text>}
@@ -286,38 +298,104 @@ const Options = (props) => {
                 </View>
               );
             })}
-            {mode === 'custom' ? <Divider style={style.divider} /> : null}
-            {mode === 'custom' ? renderCustom() : null}
           </View>
         ) : null}
       </View>
     );
   };
   const renderCustomPopUp = () => {
+    const items = [
+      {
+        title: 'Index', range: [1, allKeys.length], state: indexRange, setState: setIndexRange,
+      },
+      {
+        title: <Icon.Feather name="x" style={{ fontSize: 26, color: Color.red2 }} />, range: [0, XMax], state: xRange, setState: setXRange,
+      },
+    ];
     const renderMenu = () => (
-      <View style={{
-        /* flex: 1,  */backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 20, flex: 1,
-      }}
+      <View
+        style={{
+          /* flex: 1,  */backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 20, flex: 1,
+        }}
       >
-        <Text style={{ fontSize: 20 }}>{customPopUpVisible}</Text>
-        <RangeSlider
-          range={[0, 500]}
-          minimumValue={indexRange[0]}
-          maximumValue={indexRange[1]}
-          step={1}
-          outboundColor={Color.gray3}
-          inboundColor={Color.gray2}
-          thumbTintColor={Color.green2}
-          thumbStyle={undefined}
-          trackStyle={undefined}
-          enabled
-          trackHeight={5}
-          thumbSize={20}
-          slideOnTap
-          onValueChange={setIndexRange}
-          onSlidingStart={undefined}
-          onSlidingComplete={undefined}
-        />
+        {items.map((item, index) => (
+          <View>
+            {index !== 0 ? <Divider style={style.divider} /> : null}
+            <View style={{ padding: 10 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={{ fontSize: 26, flex: 1 }}>{item.title}</Text>
+                <Text style={{ fontSize: 18 }}>{`${item.range[0]} ~ ${item.range[1]}`}</Text>
+              </View>
+              <View style={{ flexDirection: 'row' }}>
+                <TextInput
+                  value={item.state[0]}
+                  keyboardType="numeric"
+                  onChangeText={(text) => {
+                    let newText = '';
+                    const numbers = '0123456789';
+                    for (let i = 0; i < text.length; i++) {
+                      if (numbers.indexOf(text[i]) > -1) {
+                        newText += text[i];
+                      } else {
+                        Alert.alert('Please enter numbers only');
+                      }
+                    }
+                    if (Number(newText) < item.range[0]) {
+                      Alert.alert(`Set equal to or more than ${item.range[0]}`);
+                    } else if (item.state[1] < Number(newText)) {
+                      Alert.alert(`Set equal to or less than ${item.state}`);
+                    } else {
+                      item.setState([newText, item.state[1]]);
+                    }
+                  }}
+                  style={{ flex: 1, margin: 20 }}
+                />
+                <TextInput
+                  value={item.state[1]}
+                  keyboardType="numeric"
+                  onChangeText={(text) => {
+                    let newText = '';
+                    const numbers = '0123456789';
+                    for (let i = 0; i < text.length; i++) {
+                      if (numbers.indexOf(text[i]) > -1) {
+                        newText += text[i];
+                      } else {
+                        Alert.alert('please enter numbers only');
+                      }
+                    }
+                    if (Number(newText) > item.range[1]) {
+                      Alert.alert(`Set equal to or less than ${item.range[1]}`);
+                      // item.setState([item.state[0], item.range[1]]);
+                    } else if (Number(newText) < item.state[0]) {
+                      Alert.alert(`Set equal to or more than ${item.state[0]}`);
+                    } else {
+                      item.setState([item.state[0], newText]);
+                    }
+                  }}
+                  style={{ flex: 1, margin: 20 }}
+                />
+              </View>
+              {/* <RangeSlider
+                range={item.range}
+                minimumValue={item.state[0]}
+                maximumValue={item.state[1]}
+                step={1}
+                outboundColor={Color.gray3}
+                inboundColor={Color.gray2}
+                thumbTintColor={Color.green2}
+                thumbStyle={undefined}
+                trackStyle={undefined}
+                enabled
+                trackHeight={5}
+                thumbSize={20}
+                slideOnTap
+                onValueChange={item.setState}
+                onSlidingStart={undefined}
+                onSlidingComplete={undefined}
+              /> */}
+            </View>
+          </View>
+        ))}
         <TouchableOpacity style={style.cancelButton} onPress={() => setCustomPopUpVisible('')}>
           <Icon.Feather name="x" style={style.cancelButtonIcon} />
         </TouchableOpacity>
@@ -325,20 +403,22 @@ const Options = (props) => {
     );
     return (
       <Portal>
-        <PopUpMenu isVisible={customPopUpVisible !== ''} setVisible={() => setCustomPopUpVisible('')} renderMenu={renderMenu} containerStyle={{ justifyContent: 'center' }} />
+        <PopUpMenu isVisible={customPopUpVisible} setVisible={setCustomPopUpVisible} renderMenu={renderMenu} containerStyle={{ justifyContent: 'center' }} />
       </Portal>
     );
   };
 
   const renderStartButton = () => {
     let validVocabIDsYetToBeSorted = [];
-    // let params = {};
     switch (mode) {
       case 'all':
         validVocabIDsYetToBeSorted = allKeys;
         break;
       case 'recent':
         validVocabIDsYetToBeSorted = recentKeys;
+        break;
+      case 'custom':
+        validVocabIDsYetToBeSorted = customKeys;
         break;
       default:
     }
@@ -360,7 +440,16 @@ const Options = (props) => {
     });
     return (
       <View style={{ padding: 10 }}>
-        <Button color={Color.green2} mode="contained" onPress={navigate}>Play</Button>
+        <Button
+          color={Color.green2}
+          mode="contained"
+          onPress={() => {
+            navigate();
+            playoption.save(sortMode, { index: indexRange, x: xRange }, itemConfig);
+          }}
+        >
+          Play
+        </Button>
       </View>
     );
   };
@@ -375,8 +464,6 @@ const Options = (props) => {
         <Divider style={style.divider} />
         {renderCardFilter()}
       </ScrollView>
-      <Text>{JSON.stringify(playhistory)}</Text>
-      <Text>{JSON.stringify(recentKeys)}</Text>
       {renderStartButton()}
       {renderItemConfigPopUp()}
       {renderCustomPopUp()}

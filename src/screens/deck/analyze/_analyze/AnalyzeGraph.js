@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
-import { View, StyleSheet } from 'react-native';
+import {
+  View, StyleSheet, LayoutAnimation, TouchableOpacity, ScrollView,
+} from 'react-native';
 import { Portal } from 'react-native-paper';
 
 import { BarChart } from 'react-native-chart-kit';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
+import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 
 const style = StyleSheet.create({
   container: {
     backgroundColor: Color.white1,
     marginHorizontal: '5%',
-    marginVertical: '20%',
+    marginVertical: '10%',
     flex: 1,
     borderRadius: 10,
     // alignItems: 'center',
@@ -31,6 +34,17 @@ const style = StyleSheet.create({
   chartTitle: {
     fontSize: 18,
 
+  },
+  cancelButton: {
+    position: 'absolute',
+    top: -15,
+    right: -15,
+    height: 40,
+    width: 40,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Color.gray3,
   },
 });
 
@@ -55,6 +69,18 @@ const AnalyzeGraph = (props) => { // props
     console.log(graphDate);
   }, []);
 
+  const renderCancelButton = () => (
+    <TouchableOpacity
+      style={style.cancelButton}
+      onPress={() => {
+        setVisible(false);
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      }}
+    >
+      <Icon.Feather name="x" style={style.cancelButtonIcon} />
+    </TouchableOpacity>
+  );
+
   const renderGraph = () => {
     const data = {
       labels: JSON.parse(JSON.stringify(play)),
@@ -77,6 +103,8 @@ const AnalyzeGraph = (props) => { // props
 
     return (
       <View
+        horizontal
+        onContentSizeChange={(width) => setLayout({ width })}
         style={style.container}
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
@@ -89,6 +117,7 @@ const AnalyzeGraph = (props) => { // props
           chartConfig={chartConfig}
           verticalLabelRotation={50}
         />
+        {renderCancelButton()}
       </View>
     );
   };

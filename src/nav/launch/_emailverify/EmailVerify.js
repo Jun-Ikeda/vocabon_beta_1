@@ -17,40 +17,40 @@ const style = StyleSheet.create({
     paddingTop: header.paddingTop,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Color.green2,
   },
 
-  buttoncontainer: {
-    flex: 1,
-    // paddingTop: header.paddingTop,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Color.defaultBackground,
+  margecontainer: {
+    flexDirection: 'row',
   },
 
   mainText: {
     fontSize: 48,
-    color: Color.black,
+    color: Color.white1,
     margin: 20,
   },
 
   subText: {
-    fontSize: 30,
-    color: Color.black,
-    margin: 20,
+    fontSize: 24,
+    color: Color.white1,
+    marginVertical: 30,
   },
 
   refleshbuttoncontainer: {
-    margin: 10,
+    // flex: 1,
+    marginVertical: 24,
+    marginHorizontal: 5,
     borderRadius: 50,
     padding: 5,
+    // backgroundColor: Color.defaultBackground,
   },
 
   startbuttoncontainer: {
-    flex: 1,
+    // flex: 1,
     margin: 20,
     borderRadius: 20,
-    padding: 50,
-    backgroundColor: Color.green2,
+    padding: 10,
+    backgroundColor: Color.defaultBackground,
   },
 
   resendbuttoncontainer: {
@@ -69,7 +69,10 @@ const EmailVerify = (props) => {
     (async () => {
       const user = await getFirebaseUser();
       setEmailVerified(user.emailVerified);
-      if (!user.emailVerified) sendEmail();
+      if (!user.emailVerified) {
+        Alert.alert('Sent an email', 'Check your inbox!');
+        sendEmail();
+      }
       setLoading(false);
     })();
   }, []);
@@ -97,52 +100,49 @@ const EmailVerify = (props) => {
   }),
   [navigation]);
 
-  // if (loading) {
-  //   return (
-  //     <ActivityIndicator
-  //       animating={loading}
-  //       color={Color.gray1}
-  //       size="large"
-  //     />
-  //   );
-  // }
+  if (loading) {
+    return (
+      <ActivityIndicator
+        animating={loading}
+        color={Color.gray1}
+        size="large"
+      />
+    );
+  }
   return (
     <View style={style.container}>
       <Text style={style.mainText}>Email Verification</Text>
-      <Text style={style.subText}>{`Status: ${emailVerified ? 'Verified successfully' : 'Not yet verified'}`}</Text>
-      <TouchableOpacity
-        // style={{
-        //   width: 220, height: 36, borderRadius: 20, backgroundColor: Color.purple,
-        // }}
-        style={style.startbuttoncontainer}
+      <View style={style.margecontainer}>
+        <Text style={style.subText}>{`Status: ${emailVerified ? 'Verified successfully' : 'Not yet verified'}`}</Text>
+        <TouchableOpacity
+          style={style.refleshbuttoncontainer}
+          onPress={async () => {
+            const user = await getFirebaseUser();
+            setEmailVerified(user.emailVerified);
+          }}
+          mode="contained"
+        >
+          <Icon.Ionicons name="md-refresh-outline" style={[{ fontSize: 24, color: Color.defaultBackground }]} />
+        </TouchableOpacity>
+      </View>
+      <Button
+        color={Color.white1}
+        mode="contained"
+        style={{ padding: 10 }}
         disabled={!emailVerified}
-        // mode="contained"
         onPress={() => {
           console.log('aiueo');
           saveAccountGeneral({ emailVerified: true });
           navigation.navigate('welcome');
         }}
       >
-        <Text style={{ fontSize: 60 }}>Start</Text>
-        {/* <Icon.AntDesign name="playcircleo" /> */}
-      </TouchableOpacity>
-      <Button
-        style={style.refleshbuttoncontainer}
-        onPress={async () => {
-          const user = await getFirebaseUser();
-          setEmailVerified(user.emailVerified);
-        }}
-        color={Color.green2}
-        mode="contained"
-      >
-        <Icon.Ionicons name="md-refresh-outline" style={{ fontSize: 36 }} />
+        Start
       </Button>
       <TouchableOpacity
         style={style.resendbuttoncontainer}
         onPress={() => sendEmail()}
       >
-        {/* 認証用のメールを再送信 */}
-        <Text style={{ fontSize: 20 }}>Resend an email</Text>
+        <Text style={{ fontSize: 20, color: Color.white1 }}>Resend an email</Text>
       </TouchableOpacity>
     </View>
   );

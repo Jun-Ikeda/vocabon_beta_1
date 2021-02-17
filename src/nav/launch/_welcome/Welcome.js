@@ -20,15 +20,17 @@ const style = StyleSheet.create({
     backgroundColor: Color.green3,
   },
   button: {
+    height: 40,
     margin: 80,
     borderRadius: 100,
-    padding: 20,
+    padding: 5,
     backgroundColor: Color.white1,
   },
   text: {
     fontSize: 50,
-    padding: 30,
+    padding: 40,
     textAlign: 'center',
+    color: Color.white1,
   },
   textInButton: {
     fontSize: 30,
@@ -37,9 +39,9 @@ const style = StyleSheet.create({
   },
   picture: {
     resizeMode: 'contain',
-    height: '50%',
-    width: '70%',
-    marginHorizontal: '15%',
+    height: '40%',
+    width: '50%',
+    marginHorizontal: '25%',
     // flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -59,17 +61,32 @@ const Welcome = (props) => {
   return (
     <View style={style.container}>
       <Text style={style.text}>Welcome</Text>
-      <Image source={logo} style={style.picture} />
-      <TouchableOpacity
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <Image source={logo} style={style.picture} />
+      </View>
+      <View style={{ alignItems: 'center', paddingVertical: 120 }}>
+        <Button
+          color={Color.white1}
+          mode="contained"
+          labelStyle={{ color: Color.green2 }}
+          style={{ padding: 10, borderRadius: 40 }}
+          onPress={() => {
+            saveAccountGeneral({ loggedin: true });
+            setIsLoggedin(true);
+          }}
+        >
+          Start Vocabon
+        </Button>
+      </View>
+      {/* <TouchableOpacity
         style={style.button}
         onPress={() => {
           saveAccountGeneral({ loggedin: true });
           setIsLoggedin(true);
-          console.log('HI');
         }}
       >
         <Text style={style.textInButton}>Start Vocabon</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
