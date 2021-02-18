@@ -297,10 +297,10 @@ class TagsInput extends React.Component {
         {customElement || null}
         <View style={StyleSheet.flatten([style.tagsView, tagsViewStyle])}>
           {tags?.tagsArray?.map((item, index) => (
-            <TouchableOpacity
+            <View
               style={StyleSheet.flatten([style.tag, tagStyle])}
               key={item?.toLowerCase()}
-              onPress={() => this.handleEditExistingTag(tags, updateState, index)}
+              // onPress={() => this.handleEditExistingTag(tags, updateState, index)}
             >
               <Text style={StyleSheet.flatten([style.tagText, tagTextStyle])}>{item}</Text>
               <TouchableOpacity onPressIn={() => this.deleteTag(index, tags, updateState)}>
@@ -308,7 +308,7 @@ class TagsInput extends React.Component {
                 <Icon.AntDesign name="close" style={{ paddingRight: 5, fontSize: 16 }} />
                 )}
               </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
           ))}
         </View>
       </View>

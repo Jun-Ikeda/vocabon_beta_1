@@ -25,7 +25,8 @@ const style = StyleSheet.create({
   },
 
   mainText: {
-    fontSize: 48,
+    alignItems: 'center',
+    fontSize: 40,
     color: Color.white1,
     margin: 20,
   },
@@ -102,11 +103,14 @@ const EmailVerify = (props) => {
 
   if (loading) {
     return (
-      <ActivityIndicator
-        animating={loading}
-        color={Color.gray1}
-        size="large"
-      />
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator
+          animating={loading}
+          color={Color.gray1}
+          size="large"
+          style={{ alignSelf: 'center' }}
+        />
+      </View>
     );
   }
   return (

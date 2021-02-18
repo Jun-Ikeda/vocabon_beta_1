@@ -50,12 +50,8 @@ const style = StyleSheet.create({
   qrIcon: {
     fontSize: 23,
   },
-  button: {
-    width: 60,
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'flex-end',
+  helpButton: {
+    paddingHorizontal: 5,
   },
 });
 
@@ -172,7 +168,7 @@ const Import = (props) => {
         </TouchableOpacity>
       </View>
       <View style={{
-        position: 'absolute', right: 60, flexDirection: 'row',
+        position: 'absolute', right: 58, flexDirection: 'row',
       }}
       >
         <TouchableOpacity
@@ -186,18 +182,11 @@ const Import = (props) => {
         </TouchableOpacity>
       </View>
       <View style={{ position: 'absolute', right: 95, flexDirection: 'row' }}>
-        <TouchableOpacity style={style.button} onPress={() => setHelpVisible(true)}>
-          <Icon.Feather name="help-circle" size={20} />
+        <TouchableOpacity style={style.helpButton} onPress={() => setHelpVisible(true)}>
+          <Icon.Feather name="help-circle" size={25} />
         </TouchableOpacity>
       </View>
     </View>
-  );
-
-  const renderHelp = () => (
-    <ImportHelp
-      isVisible={helpVisible}
-      setIsVisible={setHelpVisible}
-    />
   );
 
   const renderCompileButton = () => (
@@ -231,6 +220,10 @@ const Import = (props) => {
         setInput={setInput}
         hasPermission={hasPermission}
         cardDelimiter={cardDelimiter}
+      />
+      <ImportHelp
+        isVisible={helpVisible}
+        setIsVisible={setHelpVisible}
       />
     </KeyboardAvoidingView>
   );

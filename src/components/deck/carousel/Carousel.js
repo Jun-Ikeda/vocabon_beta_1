@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-  View, StyleSheet, Dimensions,
+  View, StyleSheet, Dimensions, Text,
 } from 'react-native';
 import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
@@ -92,7 +92,6 @@ const Carousel = (props) => {
         dotStyle={{ backgroundColor: Color.gray4 }}
       />
       <Button onPress={() => console.log(deckIDs)} disabled />
-      {/* <View /> */}
     </View>
   );
 };

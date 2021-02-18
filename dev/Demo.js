@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, FlatList, TextInput,
+  View, Text, StyleSheet, FlatList, TextInput, KeyboardAvoidingView, ScrollView,
 } from 'react-native';
 import RangeSlider from 'react-native-range-slider-expo';
 // import {  } from 'react-native-paper';
@@ -17,7 +17,8 @@ import { decksContent } from '../src/config/deck/Deck';
 import DemoBarCodeScanner from './DemoBarCodeScanner';
 import DynamicallySelectedPicker from '../src/components/DynamicallySelectedPicker';
 import Icon from '../src/components/Icon';
-import NumberInput from '../src/components/NumberInput';
+import NumberInput from '../src/components/numberinput/NumberInput';
+import NumberInputRange from '../src/components/numberinput/NumberInputRange';
 // import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
@@ -68,19 +69,40 @@ const Demo = (props) => (
     {/* {renderTagsInput()} */}
     {/* {qrcode()} */}
     {/* {selectDynamic()} */}
-    {renderNumberInput()}
+    {/* {renderNumberInput()} */}
+    {renderAvoidingView()}
     {/* <DemoBarCodeScanner /> */}
   </View>
 );
 
 export default Demo;
 
+const renderAvoidingView = () => {
+  const [text, setText] = useState('');
+  return (
+    <KeyboardAvoidingView style={{ flex: 1, borderWidth: 1 }} behavior="padding">
+      <View style={{ backgroundColor: 'red' }}>
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+        <TextInput value={text} onChangeText={setText} style={{ borderWidth: 1, height: 50 }} />
+      </View>
+    </KeyboardAvoidingView>
+  );
+};
+
 const renderNumberInput = () => {
   const range = [0, 500];
+  const [min, setMin] = useState(range[0]);
+  const [max, setMax] = useState(range[1]);
+  // const [rangeState, setRangeState] = useState(range);
   return (
-    <View style={{ flexDirection: 'row' }}>
-      <NumberInput range={range} />
-      <NumberInput range={range} />
+    <View style={{}}>
+      <Text>{`${min} ~ ${max}`}</Text>
+      <NumberInputRange range={range} min={min} max={max} setMin={setMin} setMax={setMax} />
     </View>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Text, View, StyleSheet, TextInput, TouchableOpacity, Button, KeyboardAvoidingView,
+  Text, View, StyleSheet, TextInput, TouchableOpacity, Button, KeyboardAvoidingView, ScrollView,
 } from 'react-native';
 import Color from '../../../config/Color';
 import Icon from '../../Icon';
@@ -36,27 +36,30 @@ const style = StyleSheet.create({
 const Redescribe = (props) => {
   const { description, setDescription } = props;
   return (
-    <KeyboardAvoidingView style={style.container}>
-      <TextInput
-        value={description}
-        onChangeText={setDescription}
-        multiline
-        style={style.textinput}
-      />
-      <View style={{
-        position: 'absolute', right: 5, bottom: 0, top: 5,
-      }}
-      >
-        <TouchableOpacity style={style.clearbuttonContainer}>
-          <Icon.Ionicons
-            name="md-close"
-            size={iconSize}
-            style={style.clearButton}
-            onPress={() => setDescription('')}
-          />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    <ScrollView>
+      <KeyboardAvoidingView behavior="position" style={style.container}>
+        <TextInput
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          style={style.textinput}
+          placeholder="(ex) Chemistry..."
+        />
+        <View style={{
+          position: 'absolute', right: 5, bottom: 0, top: 5,
+        }}
+        >
+          <TouchableOpacity style={style.clearbuttonContainer}>
+            <Icon.Ionicons
+              name="md-close"
+              size={iconSize}
+              style={style.clearButton}
+              onPress={() => setDescription('')}
+            />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 

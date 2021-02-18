@@ -71,44 +71,9 @@ const Export = (props) => {
     cf: false,
   });
 
-  // const [termVisible, setTermVisible] = useState(true);
-  // const [definitonVisible, setDefinitionVisible] = useState(true);
-  // const [synonymVisible, setSynonymVisible] = useState(false);
-  // const [antonymVisible, serAntonymVisible] = useState(false);
-  // const [prefixVisible, setPrefixVisible] = useState(false);
-  // const [suffixVisible, setSuffixVisible] = useState(false);
-  // const [exampleTVisible, setExampleTVisible] = useState(false);
-  // const [exampleDVisible, setExampleDVisible] = useState(false);
-  // const [cfVisible, setCfVisible] = useState(false);
-
   const content = getDeckContent(deckID);
   const general = getDeckGeneral(deckGeneral, deckID);
 
-  // const output = func.convertObjectToArray(content).map((element) => [element.value.term?.join(elementDelimiter),
-  //   element.value.definition?.join(elementDelimiter)]?.join(itemDelimiter))?.join(cardDelimiter) + (cardDelimiter);
-  // // const renderExportTypes = () => {//   const exportButtons = [//     {//       title: 'JSON',//       onPress: () => func.alert('Export as JSON'),//       textStyle: {}, //       flex: 1,//     },//     {//       title: 'Excel',//       onPress: () => func.alert('Export as Excel'),//       textStyle: {},//       flex: 1,//     },//     {//       title: 'Copy',//       onPress: () => func.alert('Export as a Copy'),//       textStyle: {},//       flex: 1,//     },//   ];//   if (visible) {//     return exportButtons.map((button) => (//       <View style={[{ borderWidth: 1 }]}>//         <Button title={button.title} onPress={button.onPress} />//       </View>//     ));//   }//   return null;// };
-  // const output = func.convertObjectToArray(content).map((element) =>  { elementVisible.map((item) => {[element.value.(item.value)?.join(elementDelimiter)]?}).join(itemDelimiter)}).join(cardDelimiter) + (cardDelimiter);
-
-  // const showEachItem = (object) => {
-  //   const showArray = [];
-  //   Object.keys(object).forEach((key) => {
-  //     if (object[key]) {
-  //       showArray.push(key);
-  //     }
-  //   });
-  //   return showArray;
-  // };
-
-  // const createItemArray = (wordSet, showArray) => {
-  //   const outputByWords = [];
-  //   showArray.forEach((element) => {
-  //     outputByWords.push(wordSet.value[element]?.join(elementDelimiter));
-  //   });
-  //   // console.log(outputByWords);
-  //   return outputByWords;
-  // };
-
-  // console.log(showEachItem(elementVisible));
   const output = func.convertObjectToArray(content).map((element) => func.createItemArray(element,
     func.showEachItem(elementVisible), elementDelimiter)?.join(itemDelimiter))?.join(cardDelimiter) + (cardDelimiter);
 

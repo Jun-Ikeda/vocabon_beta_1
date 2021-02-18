@@ -2,20 +2,31 @@ import SortMode from '../screens/deck/play/_options/SortMode';
 import { func } from './Const';
 import LocalStorage from './LocalStorage';
 
+const readme = {
+  save: (bool) => {
+    LocalStorage.save({ key: 'readme', data: bool });
+  },
+  get: async () => {
+    const data = await LocalStorage.load({ key: 'readme' }).catch(() => false);
+    return data;
+  },
+};
+
 const playoption = {
-  save: (sortMode, filter, visibleItem) => {
+  save: (sortMode, filter, visibleItem, mode) => {
     // sortMode : index', 'index-reverse', 'shuffle'
     // filter: { index: { min, max }, mark: { min, max } }
     // visibleItem: { front: ['term'], back: ['definition'] }
-    LocalStorage.save({ key: 'playoption', data: { sortMode, filter, visibleItem } });
+    LocalStorage.save({
+      key: 'playoption',
+      data: {
+        sortMode, filter, visibleItem, mode,
+      },
+    });
   },
   get: async () => {
     const data = await LocalStorage.load({ key: 'playoption' }).then((result) => result)
-      .catch(() => ({
-        sortMode: 'index',
-        filter: { index: [], mark: {} },
-        visibleItem: { front: ['term'], back: ['definition'] },
-      }));
+      .catch(() => false);
     return data;
   },
 };
@@ -45,6 +56,6 @@ const playhistory = {
   },
 };
 
-export { playoption, playhistory };
+export { playoption, playhistory, readme };
 
-export default { playoption, playhistory };
+export default { playoption, playhistory, readme };

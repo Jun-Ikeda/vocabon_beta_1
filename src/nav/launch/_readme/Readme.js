@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import {
-  Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity,
+  Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 import Color, { getRandomPastel } from '../../../config/Color';
 import { header } from '../../../config/Const';
 import Icon from '../../../components/Icon';
+import { readme } from '../../../config/PersistentData';
 
 const screenshot0 = require('../../../../assets/adaptive-icon.png');
 const screenshot1 = require('../../../../assets/screenshots/S__74235908.png');
@@ -145,7 +146,18 @@ const Readme = (props) => {
   // props
   const { navigation } = props;
   // state
+  const [isLoading, setIsLoading] = useState(true);
   const [layout, setLayout] = useState({ height: heightInitial, width: widthInitial });
+
+  useEffect(() => {
+    (async () => {
+      const data = await readme.get();
+      if (data) {
+        navigation.navigate('signup');
+      }
+      setIsLoading(false);
+    })();
+  }, []);
 
   useEffect(() => {
     Dimensions.addEventListener('change', (e) => {
@@ -168,7 +180,29 @@ const Readme = (props) => {
             {slide.img ? <Image source={slide.img} style={style.picture} /> : null}
             <Text style={style.subText}>{slide.subText}</Text>
             {index === 6
-              ? <View style={style.startButton}><TouchableOpacity onPress={() => navigation.navigate('signup')}><Text style={style.startText}>START!</Text></TouchableOpacity></View>
+              ? (
+                <Button
+                  mode="contained"
+                  color={Color.white1}
+                  onPress={() => {
+                    readme.save(true);
+                    navigation.navigate('signup');
+                  }}
+                  labelStyle={{ color: Color.green2, fontSize: 16 }}
+                  style={{ padding: 10, paddingHorizontal: 50, borderRadius: 40 }}
+                >
+                  Start
+                </Button>
+                // <View style={style.startButton}>
+                //   <TouchableOpacity onPress={() => {
+                //     readme.save(true);
+                //     navigation.navigate('signup');
+                //   }}
+                //   >
+                //     <Text style={style.startText}>START!</Text>
+                //   </TouchableOpacity>
+                // </View>
+              )
               : null }
           </View>
         </View>
@@ -185,13 +219,15 @@ const Readme = (props) => {
         justifyContent: 'center',
       }}
     >
-      <ScrollView
-        horizontal
-        pagingEnabled
-        style={{ flex: 1 }}
-      >
-        {renderSlides()}
-      </ScrollView>
+      {isLoading ? <ActivityIndicator animating={isLoading} /> : (
+        <ScrollView
+          horizontal
+          pagingEnabled
+          style={{ flex: 1 }}
+        >
+          {renderSlides()}
+        </ScrollView>
+      )}
     </View>
   );
 };

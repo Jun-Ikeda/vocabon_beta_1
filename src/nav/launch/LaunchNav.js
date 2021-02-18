@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 
 const LaunchNav = () => (
   <Stack.Navigator>
-    {/* <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} /> */}
+    <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} />
     <Stack.Screen
       name="signup"
       component={SignUp}
@@ -25,6 +25,7 @@ const LaunchNav = () => (
           shadowColor: 'transparent',
           elevation: 0,
         },
+        headerLeft: null,
         headerTransparent: true,
         headerBackTitleVisible: false,
       }}

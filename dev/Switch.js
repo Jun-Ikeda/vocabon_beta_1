@@ -41,10 +41,10 @@ const style = StyleSheet.create({
 
 const buttons = [
   { title: 'Product', element: <Nav /> },
-  { title: 'Demo', element: <Demo /> },
-  { title: 'Kochiya', element: <Readme /> },
-  { title: 'Email Verify', element: <EmailVerify navigation={{ addListener: () => {} }} /> },
-  { title: 'Welcome', element: <Welcome navigation={{ addListener: () => {} }} /> },
+  // { title: 'Demo', element: <Demo /> },
+  // { title: 'Kochiya', element: <Readme /> },
+  // { title: 'Email Verify', element: <EmailVerify navigation={{ addListener: () => {} }} /> },
+  // { title: 'Welcome', element: <Welcome navigation={{ addListener: () => {} }} /> },
   // { title: 'Launch', element: <NavigationContainer><LaunchNav /></NavigationContainer> },
   // { title: 'Okuda', element: <Export />},
 ];

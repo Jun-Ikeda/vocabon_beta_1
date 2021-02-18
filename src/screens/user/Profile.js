@@ -51,32 +51,33 @@ const Profile = (props) => {
   const [inputState, setInputState] = useState(accountGeneral.name);
   const [contentVisible, setContentVisible] = useState(false);
 
-  useEffect(() => navigation.addListener('beforeRemove', (e) => {
-    if (!(Platform.OS === 'web') && isChanged) {
-      e.preventDefault();
-      Alert.alert(
-        'Discard changes?',
-        'You have unsaved changes. Are you sure to discard them and leave the screen?',
-        [
-          { text: "Don't leave", style: 'cancel', onPress: () => {} },
-          {
-            text: 'Save',
-            onPress: async () => {
-              await save();
-              navigation.dispatch(e.data.action);
-            },
-          },
-          { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
-        ],
-      );
-    }
-  }),
-  [navigation, isChanged]);
-
   const save = async () => {
-    await setIsChanged(false);
     await saveAccountGeneral({ name: inputState });
+    Alert.alert('It takes time to update the changes', '');
   };
+
+  // useEffect(() => navigation.addListener('beforeRemove', (e) => {
+  //   // alert(isChanged);
+  //   if (!(Platform.OS === 'web') && isChanged) {
+  //     e.preventDefault();
+  //     Alert.alert(
+  //       'Discard changes?',
+  //       'You have unsaved changes. Are you sure to discard them and leave the screen?',
+  //       [
+  //         { text: "Don't leave", style: 'cancel', onPress: () => {} },
+  //         {
+  //           text: 'Save',
+  //           onPress: async () => {
+  //             await save();
+  //             navigation.dispatch(e.data.action);
+  //           },
+  //         },
+  //         { text: 'Discard', style: 'destructive', onPress: () => navigation.dispatch(e.data.action) },
+  //       ],
+  //     );
+  //   }
+  // }),
+  // [navigation, isChanged]);
 
   const renderAuthButtons = () => {
     const buttons = [
@@ -160,7 +161,6 @@ const Profile = (props) => {
           title={button.title}
           titleStyle={button.titleStyle}
           onPress={button.onPress}
-          // left={() => <List.Icon icon={item.icon} color={Color.gray1} />}
         />
         {button.render}
       </View>
@@ -171,7 +171,7 @@ const Profile = (props) => {
     <View style={style.startButtonContainer}>
       <Button
         onPress={async () => {
-          // func.alert(JSON.stringify(list, null, 2));
+          setIsChanged(false);
           await save();
           navigation.goBack();
         }}
@@ -192,8 +192,8 @@ const Profile = (props) => {
           <Text style={{ fontSize: 24 }}>{user.name}</Text>
         </View>
       </View>
-      {!contentVisible ? renderSaveButton() : null}
       <ScrollView>{isMe ? renderAuthButtons() : null}</ScrollView>
+      {renderSaveButton()}
     </View>
   );
 };

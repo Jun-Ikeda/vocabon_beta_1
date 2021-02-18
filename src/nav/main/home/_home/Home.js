@@ -18,6 +18,7 @@ import Color from '../../../../config/Color';
 
 import { currentRouteState } from '../../../../../dev/DocInJapanese';
 import { getAccountContent } from '../../../../config/account/Account';
+import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
@@ -83,8 +84,12 @@ const Home = (props) => {
     <View style={style.container}>
       <ScrollView style={style.scrollContainer} contentContainerStyle={{ paddingBottom: 20 }}>
         {allDeckIDs.length === 0 ? null : renderRow({ title: 'LOCAL', deckIDs: allDeckIDs })}
-        {bookmarkDeckIDs.length === 0 ? null : (renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs }))}
-        {/* {renderRow({ title: 'ALL', deckIDs: allDeckIDs })} */}
+        {bookmarkDeckIDs.length === 0 ? null : renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })}
+        {/* {allDeckIDs.length === 0 ? (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Create Your your first deck by pushing the button below</Text>
+          </View>
+        ) : null} */}
       </ScrollView>
       <AddButton navigation={navigation} />
     </View>

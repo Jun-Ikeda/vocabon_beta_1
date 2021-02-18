@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Alert, KeyboardAvoidingView, StyleSheet, Text, View,
+  Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View,
 } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useRecoilValue } from 'recoil';
@@ -61,11 +61,11 @@ const LogIn = (props) => {
 
   return (
     <View style={style.container}>
-      <KeyboardAvoidingView behavior="position">
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
         <Text style={{ fontSize: 22, padding: 20 }}>Log In</Text>
         <AuthForms visible={{ email: true, password: true }} />
+        {renderLogInButton()}
       </KeyboardAvoidingView>
-      {renderLogInButton()}
     </View>
   );
 };
@@ -75,3 +75,17 @@ LogIn.propTypes = {
 };
 
 export default LogIn;
+
+/*
+const KeyboardAvoidingComponent = () => {
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={styles.container}
+    >
+     <Text style={{ fontSize: 22, padding: 20 }}>Log In</Text>
+     <AuthForms visible={{ email: true, password: true }} />
+     {renderLogInButton()}
+    </KeyboardAvoidingView>
+
+*/

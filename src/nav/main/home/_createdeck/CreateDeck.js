@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity,
+  View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 

@@ -45,9 +45,8 @@ export const updateEmail = async (newAddress) => {
   const user = await auth.currentUser;
   user.updateEmail(newAddress).then(() => {
     // Update successful.
-    Alert.alert('Success to update', '');
+    Alert.alert('Update successful', 'If you want to undo, please check the URL link in our email');
     saveAccountGeneral({ email: newAddress });
-    console.log(getAccountGeneral());
   }).catch((error) => {
     // An error happened.
     console.log(error.message);

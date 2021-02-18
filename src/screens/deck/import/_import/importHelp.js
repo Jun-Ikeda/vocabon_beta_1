@@ -17,12 +17,6 @@ const style = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
-  contentContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 10,
-    backgroundColor: Color.white1,
-  },
   cancelButton: {
     position: 'absolute',
     top: -15,
@@ -64,79 +58,27 @@ const style = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: Color.white1,
     borderRadius: 10,
+    justifyContent: 'flex-start',
   },
   textBox: {
     flexDirection: 'row',
+    paddingVertical: 5,
+    paddingRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dotBox: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+  dot: {
+    marginHorizontal: 10,
+    backgroundColor: 'black',
   },
 });
 
 const ImportHelp = (props) => {
   const { isVisible, setIsVisible } = props;
-
-  // const renderItems = () => {
-  //   const items = [ß
-  //     {
-  //       label: 'Term',
-  //       descEn: 'Word to learn',
-  //       descJp: '学習する言葉',
-  //     },
-  //     {
-  //       label: 'Definition',
-  //       descEn: 'What the Term means',
-  //       descJp: '意味、定義',
-  //     },
-  //     {
-  //       label: 'Synonym',
-  //       descEn: 'Similar word',
-  //       descJp: '類義語',
-  //     },
-  //     {
-  //       label: 'Antonym',
-  //       descEn: 'Opposing word',
-  //       descJp: '対義語',
-  //     },
-  //     {
-  //       label: 'Prefix',
-  //       descEn: 'Letters added to the biginning',
-  //       descJp: '接頭辞(un, dis, subなど)',
-  //     },
-  //     {
-  //       label: 'Suffix',
-  //       descEn: 'Letters added to the end',
-  //       descJp: '接尾辞(ly, nessなど)',
-  //     },
-  //     {
-  //       label: 'Example in Term\'s language',
-  //       descEn: 'Example sentence of the Term',
-  //       descJp: '例文',
-  //     },
-  //     {
-  //       label: 'Example in Definition\'s language',
-  //       descEn: 'Translation of the example sentence',
-  //       descJp: '例文の翻訳',
-  //     },
-  //     {
-  //       label: 'cf.',
-  //       descEn: 'Should be compared or considered w/ the Term',
-  //       descJp: '比較検討すべき事物',
-  //     },
-  //   ];
-  //   return items.map((item) => (
-  //     <View style={style.item} key={item.label.toLowerCase()}>
-  //       <View style={style.label}>
-  //         <Text style={style.labelText}>{item.label}</Text>
-  //       </View>
-  //       <View style={style.desc}>
-  //         <Text style={style.descText}>
-  //           {item.descEn}
-  //         </Text>
-  //         <Text style={style.descText}>
-  //           {item.descJp}
-  //         </Text>
-  //       </View>
-  //     </View>
-  //   ));
-  // };
 
   const renderCancelButton = () => (
     <TouchableOpacity style={style.cancelButton} onPress={() => setIsVisible(false)}>
@@ -151,12 +93,20 @@ const ImportHelp = (props) => {
       </View>
       <View style={style.google}>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'Enter or Copy data you want to import in the \'INPUT\' section \n'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>{'Enter or copy the data you want to import in the \'INPUT\' section'}</Text>
+          </View>
         </View>
         <View style={style.textBox}>
-          <Badge />
-          <Text>To let the application distinguish cards, items, or elements from each other, enter symbols written on each delimiter section between them.</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>To let the application distinguish cards, items, or elements from each other, enter each delimiter symbols between them</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -165,20 +115,32 @@ const ImportHelp = (props) => {
   const renderCardItemElementDescription = () => (
     <View>
       <View style={{ marginLeft: 15, marginBottom: 5 }}>
-        <Text style={{ color: Color.gray4 }}>Card, Item, Elementy</Text>
+        <Text style={{ color: Color.gray4 }}>Card, Item, Element</Text>
       </View>
       <View style={style.google}>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'\'Cards\' refers to each term. There should be at least a \'Term\' and a \'Definition\' for each card \n'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>{'\'Cards\' refer to each term. There should be at least a \'Term\' and a \'Definition\' for each card'}</Text>
+          </View>
         </View>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'\'Items\' are things such as \'Term\',\'Definition\',\'Synonym\'. Each \'Card\' should contain multiple \'Items\'\n'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>{'\'Items\' are things such as \'Term\',\'Definition\',\'Synonym\'. Each \'Card\' should contain multiple \'Items\''}</Text>
+          </View>
         </View>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'\'Elements\' are used when, for example, if there are multiple definitons in a single term.'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>{'\'Elements\' are used if there are multiple definitions, synonyms, antonyms etc. in a single term'}</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -191,12 +153,38 @@ const ImportHelp = (props) => {
       </View>
       <View style={style.google}>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'You can custom each delimiter\n'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>You can custom each delimiter</Text>
+          </View>
         </View>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'For example, if you enter \':\' in \'CARD\' section, letters surrounded by \':\' will be recognized as each card.'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>{'For example, if you enter : in the \'CARD\' section, letters surrounded by : will be recognized as cards'}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderQRDescription = () => (
+    <View>
+      <View style={{ marginLeft: 15, marginBottom: 5 }}>
+        <Text style={{ color: Color.gray4 }}>QR code</Text>
+      </View>
+      <View style={style.google}>
+        <View style={style.textBox}>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>Click the QR code button to read data from QR codes</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -209,29 +197,37 @@ const ImportHelp = (props) => {
       </View>
       <View style={style.google}>
         <View style={style.textBox}>
-          <Badge />
-          <Text>{'The option screen will be shown if you press the \'Import\' button\n'}</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>{'The option screen will be shown if you press the \'Import\' button'}</Text>
+          </View>
         </View>
         <View style={style.textBox}>
-          <Badge />
-          <Text> Assign any one of these items bellow to each item</Text>
+          <View style={style.dotBox}>
+            <Badge style={style.dot} size={8} />
+          </View>
+          <View style={{ flex: 7 }}>
+            <Text>Identify each items </Text>
+          </View>
         </View>
       </View>
     </View>
   );
 
   const renderMenu = () => (
-    <ScrollView style={style.container}>
-      {renderInputDescription()}
-      {renderCardItemElementDescription()}
-      {renderDelimiterDescription()}
-      {renderOptionDescription()}
-      {/* <ScrollView style={style.contentContainer}>
-        {renderItems()}
-      </ScrollView> */}
+    <View style={style.container}>
+      <ScrollView>
+        {renderInputDescription()}
+        {renderCardItemElementDescription()}
+        {renderDelimiterDescription()}
+        {renderQRDescription()}
+        {renderOptionDescription()}
+      </ScrollView>
       <View style={{ marginLeft: 15, marginBottom: 5 }} />
       {renderCancelButton()}
-    </ScrollView>
+    </View>
   );
   return (
     <Portal>
@@ -247,7 +243,6 @@ const ImportHelp = (props) => {
 ImportHelp.propTypes = {
   isVisible: PropTypes.bool,
   setIsVisible: PropTypes.bool,
-  setIsVisible: PropTypes.func,
 };
 
 ImportHelp.defaultProps = {

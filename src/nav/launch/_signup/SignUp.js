@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
-  StyleSheet, Text, TouchableOpacity, View,
+  StyleSheet, Text, TouchableOpacity, View, Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
@@ -37,6 +37,13 @@ const style = StyleSheet.create({
 const SignUp = (props) => {
   const { navigation } = props;
   const formsInput = useRecoilValue(formsInputState);
+
+  useEffect(() => navigation.addListener('beforeRemove', (e) => {
+    if (Platform.OS !== 'web') {
+      e.preventDefault();
+    }
+  }),
+  [navigation]);
 
   useEffect(() => {
     (async () => {
@@ -90,15 +97,28 @@ const SignUp = (props) => {
   };
 
   return (
-    <View style={style.container}>
-      <KeyboardAvoidingView behavior="position">
-        <Text style={{ fontSize: 22, padding: 20 }}>Sign Up</Text>
-        <AuthForms visible={{ name: true, email: true, password: true }} />
-      </KeyboardAvoidingView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : null}
+      style={style.container}
+    >
+      <Text style={{ fontSize: 22, padding: 20 }}>Sign Up</Text>
+      <AuthForms visible={{ name: true, email: true, password: true }} />
       {renderSignUpButton()}
       {renderSuggestions()}
+    </KeyboardAvoidingView>
+  );
+/*
+  return (
+    <View style={style.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
+        <Text style={{ fontSize: 22, padding: 20 }}>Sign Up</Text>
+        <AuthForms visible={{ name: true, email: true, password: true }} />
+        {renderSignUpButton()}
+        {renderSuggestions()}
+      </KeyboardAvoidingView>
     </View>
   );
+*/
 };
 
 SignUp.propTypes = {
@@ -106,3 +126,17 @@ SignUp.propTypes = {
 };
 
 export default SignUp;
+
+/*
+  return (
+    <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : null}
+        style={style.container}
+      >
+        <Text style={{ fontSize: 22, padding: 20 }}>Sign Up</Text>
+        <AuthForms visible={{ name: true, email: true, password: true }} />
+        {renderSignUpButton()}
+        {renderSuggestions()}
+    </KeyboardAvoidingView>
+  );
+*/

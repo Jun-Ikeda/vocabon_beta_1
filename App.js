@@ -6,6 +6,7 @@ import { Provider } from 'react-native-paper';
 import { RecoilRoot } from 'recoil';
 import { Audio } from 'expo-av';
 import * as SplashScreen from 'expo-splash-screen';
+import Nav from './src/nav/Nav';
 
 import Switch from './dev/Switch';
 
@@ -33,7 +34,8 @@ const App = () => {
     <RecoilRoot>
       <Provider>
         <View style={style.container}>
-          <Switch />
+          {/* <Switch /> */}
+          <Nav />
         </View>
       </Provider>
     </RecoilRoot>

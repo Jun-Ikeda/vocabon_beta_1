@@ -221,7 +221,7 @@ export const func = {
     // let num = 0; // 何個作られたか
 
     while (contentArray.length !== 0) { // 空になるまでのつもり
-      while (sumBytes < 500 && contentArray.length !== 0) {
+      while (sumBytes < 800 && contentArray.length !== 0) {
         const curContent = contentArray.splice(0, 1); // curContentに最初の、contentArrayは削られる
         curData += curContent.map((card) => (
           func.createItemArray(card, func.showEachItem(elementVisible), elementDelimiter)?.join(itemDelimiter)))?.join(cardDelimiter) + (cardDelimiter);// Exportでoutputされるときの形

@@ -90,7 +90,7 @@ const Edit = (props) => {
 
   const contentInitial = getDeckContent(deckID);
   const save = async () => {
-    await setIsChanged(false);
+    // await setIsChanged(false);
     await saveDeckContent(deckID, content, false);
     if (deckGeneral[deckID].num !== Object.keys(content).length) {
       saveDeckGeneral(setDeckGeneral, deckID, { ...deckGeneral[deckID], num: Object.keys(content).length });
@@ -124,8 +124,9 @@ const Edit = (props) => {
     <View style={style.startButtonContainer}>
       <Button
         onPress={async () => {
-          // func.alert(JSON.stringify(list, null, 2));
           await save();
+          setIsChanged(false);
+          // func.alert(JSON.stringify(list, null, 2));
           navigation.goBack();
         }}
         color={Color.green2}
@@ -172,13 +173,6 @@ const Edit = (props) => {
         setVisible={setContentVisible}
         setIsChanged={setIsChanged}
       />
-      {/* <EditContent
-        vocabID={editVocabID}
-        isVisible={contentVisible}
-        setVisible={setContentVisible}
-        setIsChanged={setIsChanged}
-        setEditVocabID={setEditVocabID}
-      /> */}
       <EditHelp
         isVisible={helpVisible}
         setVisible={setHelpVisible}

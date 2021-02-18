@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Dimensions,
   KeyboardAvoidingView,
   LayoutAnimation,
   ScrollView,
@@ -18,12 +19,13 @@ import RNPickerSelect from 'react-native-picker-select';
 import { divide } from 'lodash';
 import { getAccountContent } from '../../../../config/account/Account';
 import Color from '../../../../config/Color';
-import { deck, func } from '../../../../config/Const';
+import { deck, func, header } from '../../../../config/Const';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import { playhistory, playoption } from '../../../../config/PersistentData';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
 import DynamicallySelectedPicker from '../../../../components/DynamicallySelectedPicker';
+import NumberInputRange from '../../../../components/numberinput/NumberInputRange';
 
 const style = StyleSheet.create({
   container: {
@@ -39,7 +41,7 @@ const style = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     margin: 15,
-    paddingHorizontal: 10,
+    padding: 10,
     backgroundColor: Color.white1,
     borderRadius: 20,
   },
@@ -69,7 +71,7 @@ const pickerSelectStyles = StyleSheet.create({
   // eslint-disable-next-line react-native/no-unused-styles
   inputAndroidContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   // eslint-disable-next-line react-native/no-unused-styles
   inputIOS: {
@@ -104,6 +106,15 @@ const Options = (props) => {
   const [recentKeys, setRecentKeys] = useState([]);
   const [customKeys, setCustomKeys] = useState([]);
 
+  const { height: heightInitial, width: widthInitial } = Dimensions.get('screen');
+  const [screen, setScreen] = useState({ height: heightInitial, width: widthInitial });
+  useEffect(() => {
+    Dimensions.addEventListener('change', (e) => {
+      const { width, height } = e.window;
+      setScreen({ width, height });
+    });
+  }, []);
+
   useEffect(() => {
     (async () => {
       const playhistoryData = await playhistory.get(deckID);
@@ -114,9 +125,6 @@ const Options = (props) => {
         ];
         return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
       });
-      /* {
-        validVocabIDs, sortMode, itemVisible, leftVocabID, rightVocabID,
-      } or flase */
       if (playhistoryData) {
         Alert.alert(
           'Suspended',
@@ -143,11 +151,16 @@ const Options = (props) => {
 
   useEffect(() => {
     (async () => {
-      const { sortMode, filter, visibleItem } = await playoption.get();
-      setSortMode(sortMode);
-      setItemConfig(visibleItem);
-      setIndexRange(filter.index);
-      setXRange(filter.x);
+      const data = await playoption.get();
+      if (data) {
+        setMode(data.mode);
+        setSortMode(data.sortMode);
+        setItemConfig(data.visibleItem);
+        setIndexMax(data.filter.index[1]);
+        setIndexMin(data.filter.index[0]);
+        setXMax(data.filter.x[1]);
+        setXMin(data.filter.x[0]);
+      }
     })();
   }, []);
 
@@ -186,12 +199,20 @@ const Options = (props) => {
       title="Visible Items"
       onPress={() => setItemConfigVisible(!itemConfigVisible)}
       right={() => (
-        <Text style={{
-          flex: 1, color: Color.gray5, fontSize: 16, alignSelf: 'center', textAlign: 'right',
-        }}
-        >
-          {` front: ${deck.formatArrayContent(itemConfig.front)},  back: ${deck.formatArrayContent(itemConfig.back)}`}
-        </Text>
+        <View style={{ flex: 1 }}>
+          <Text style={{
+            color: Color.gray5, fontSize: 16, alignSelf: 'flex-end', textAlign: 'right',
+          }}
+          >
+            {`front: ${deck.formatArrayContent(itemConfig.front)}`}
+          </Text>
+          <Text style={{
+            color: Color.gray5, fontSize: 16, alignSelf: 'flex-end', textAlign: 'right',
+          }}
+          >
+            {`back: ${deck.formatArrayContent(itemConfig.back)}`}
+          </Text>
+        </View>
       )}
     />
   );
@@ -207,27 +228,29 @@ const Options = (props) => {
       };
       return (
         <View style={{
-          flexDirection: 'row', flex: 1, backgroundColor: Color.defaultBackground, margin: '5%', borderRadius: 10,
+          flex: 1, backgroundColor: Color.defaultBackground, margin: '5%', borderRadius: 10,
         }}
         >
-          <View style={style.card}>
-            <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Front</Text>
-            {deck.items.map((item) => (
-              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
-                <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
-                <Switch value={itemConfig.front.includes(item.key)} onValueChange={(bool) => setBool(item.key, 'front', bool)} />
-              </View>
-            ))}
-          </View>
-          <View style={style.card}>
-            <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Back</Text>
-            {deck.items.map((item) => (
-              <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
-                <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
-                <Switch value={itemConfig.back.includes(item.key)} onValueChange={(bool) => setBool(item.key, 'back', bool)} />
-              </View>
-            ))}
-          </View>
+          <ScrollView contentContainerStyle={{ flexDirection: screen.height > screen.width ? 'column' : 'row', flex: screen.height > screen.width ? 0 : 1 }}>
+            <View style={style.card}>
+              <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Front</Text>
+              {deck.items.map((item) => (
+                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
+                  <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
+                  <Switch value={itemConfig.front.includes(item.key)} onValueChange={(bool) => setBool(item.key, 'front', bool)} />
+                </View>
+              ))}
+            </View>
+            <View style={style.card}>
+              <Text style={{ fontSize: 19, textAlign: 'center', paddingVertical: 10 }}>Back</Text>
+              {deck.items.map((item) => (
+                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 5 }} key={item.title.toLowerCase()}>
+                  <Text style={{ flex: 1, fontSize: 18 }}>{item.title}</Text>
+                  <Switch value={itemConfig.back.includes(item.key)} onValueChange={(bool) => setBool(item.key, 'back', bool)} />
+                </View>
+              ))}
+            </View>
+          </ScrollView>
           <TouchableOpacity style={style.cancelButton} onPress={() => setItemConfigVisible(false)}>
             <Icon.Feather name="x" style={style.cancelButtonIcon} />
           </TouchableOpacity>
@@ -236,7 +259,7 @@ const Options = (props) => {
     };
     return (
       <Portal>
-        <PopUpMenu isVisible={itemConfigVisible} setVisible={setItemConfigVisible} renderMenu={renderMenu} />
+        <PopUpMenu isVisible={itemConfigVisible} setVisible={setItemConfigVisible} renderMenu={renderMenu} containerStyle={{ paddingTop: header.paddingTop }} />
       </Portal>
     );
   };
@@ -244,23 +267,38 @@ const Options = (props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [customPopUpVisible, setCustomPopUpVisible] = useState(false);
   const XMax = Object.keys(marks).length === 0 ? 0 : func.convertObjectToArray(marks).reduce((a, b) => (a.value.length > b.value.length ? a : b)).value.length;
-  const initialCustomProperty = { index: ['1', `${allKeys.length}`], x: ['0', `${XMax}`] };
-  const [indexRange, setIndexRange] = useState(initialCustomProperty.index);
-  const [xRange, setXRange] = useState(initialCustomProperty.x);
+  const initialCustomProperty = { index: [1, allKeys.length], x: [0, XMax] };
+  const [indexMin, setIndexMin] = useState(initialCustomProperty.index[0]);
+  const [indexMax, setIndexMax] = useState(initialCustomProperty.index[1]);
+  const [xMin, setXMin] = useState(initialCustomProperty.x[0]);
+  const [xMax, setXMax] = useState(initialCustomProperty.x[1]);
   useEffect(() => {
     const newCustomKeys = allKeys.filter((vocabID, index) => {
-      const indexInRange = (Number(indexRange[0] - 1) <= index) && (index <= Number(indexRange[1] - 1));
-      const xInRange = Number(xRange[0]) <= (marks?.[vocabID]?.length ?? 0) && (marks?.[vocabID]?.length ?? 0) <= Number(xRange[1]);
+      const indexInRange = (indexMin - 1 <= index) && (index <= indexMax - 1);
+      const xInRange = xMin <= (marks?.[vocabID]?.length ?? 0) && (marks?.[vocabID]?.length ?? 0) <= xMax;
       return indexInRange && xInRange;
     });
     setCustomKeys(newCustomKeys);
-  }, [indexRange, xRange]);
+  }, [indexMin, indexMax, xMin, xMax]);
   const renderCardFilter = () => {
     const items = [
       { title: 'All', value: 'all', num: allKeys.length },
       { title: 'Recent X', value: 'recent', num: recentKeys.length },
       { title: 'Custom', value: 'custom', num: customKeys.length },
     ];
+    let validVocabIDsYetToBeSorted = [];
+    switch (mode) {
+      case 'all':
+        validVocabIDsYetToBeSorted = allKeys;
+        break;
+      case 'recent':
+        validVocabIDsYetToBeSorted = recentKeys;
+        break;
+      case 'custom':
+        validVocabIDsYetToBeSorted = customKeys;
+        break;
+      default:
+    }
     return (
       <View>
         <List.Item
@@ -269,7 +307,7 @@ const Options = (props) => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             setIsExpanded(!isExpanded);
           }}
-          // right={() => isExpa}
+          right={() => <Text style={{ alignSelf: 'center', color: Color.gray5, fontSize: 16 }}>{validVocabIDsYetToBeSorted.length}</Text>}
         />
         {isExpanded ? <Divider style={style.divider} /> : null}
         {isExpanded ? (
@@ -288,8 +326,8 @@ const Options = (props) => {
                     titleStyle={{ color: textColor }}
                     onPress={() => {
                       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                      setMode(item.value);
                       if (item.value === 'custom') { setCustomPopUpVisible(true); }
+                      setMode(item.value);
                     }}
                     left={() => <List.Icon color={iconColor} icon={item.value === mode ? 'checkbox-blank-circle' : 'checkbox-blank-circle-outline'} /* color={Color.gray1} */ />}
                     right={() => <Text style={{ fontSize: 22, alignSelf: 'center', color: textColor }}>{item.num}</Text>}
@@ -307,16 +345,26 @@ const Options = (props) => {
   const renderCustomPopUp = () => {
     const items = [
       {
-        title: 'Index', range: [1, allKeys.length], state: indexRange, setState: setIndexRange,
+        title: 'Index',
+        range: [1, allKeys.length],
+        min: indexMin,
+        max: indexMax,
+        setMin: setIndexMin,
+        setMax: setIndexMax,
       },
       {
-        title: <Icon.Feather name="x" style={{ fontSize: 26, color: Color.red2 }} />, range: [0, XMax], state: xRange, setState: setXRange,
+        title: <Icon.Feather name="x" style={{ fontSize: 26, color: Color.red2 }} />,
+        range: [0, XMax],
+        min: xMin,
+        max: xMax,
+        setMin: setXMin,
+        setMax: setXMax,
       },
     ];
     const renderMenu = () => (
       <View
         style={{
-          /* flex: 1,  */backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 20, flex: 1,
+          backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 10, flex: 1, paddingTop: header.paddingTop,
         }}
       >
         <ScrollView>
@@ -326,90 +374,15 @@ const Options = (props) => {
               <View style={{ padding: 10 }}>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={{ fontSize: 26, flex: 1 }}>{item.title}</Text>
-                  <Text style={{ fontSize: 18 }}>{`${item.state[0]} ~ ${item.state[1]}`}</Text>
+                  <Text style={{ fontSize: 18 }}>{`${item.min} ~ ${item.max}`}</Text>
                 </View>
-                <View style={{ flexDirection: 'row' }}>
-                  <DynamicallySelectedPicker
-                    items={[...Array(item.range[1]).keys()].map((i) => ({ value: i + 1, label: i + 1 }))}
-                    width={100}
-                    height={300}
-                    onScroll={(selected) => {
-                      item.setState([selected.item.value, item.state[1]]);
-                    }}
-                  />
-                  <Text style={{ alignSelf: 'center' }}>~</Text>
-                  <DynamicallySelectedPicker
-                    items={[...Array(item.range[1]).keys()].map((i) => ({ value: i + 1, label: i + 1 }))}
-                    width={100}
-                    height={300}
-                    onScroll={(selected) => item.setState([item.state[0], selected.item.value])}
-                  />
-                  {/* <TextInput
-                    value={item.state[0]}
-                    keyboardType="numeric"
-                    onChangeText={(text) => {
-                      let newText = '';
-                      const numbers = '0123456789';
-                      for (let i = 0; i < text.length; i++) {
-                        if (numbers.indexOf(text[i]) > -1) {
-                          newText += text[i];
-                        } else {
-                          Alert.alert('Please enter numbers only');
-                        }
-                      }
-                      if (Number(newText) < item.range[0]) {
-                        Alert.alert(`Set equal to or more than ${item.range[0]}`);
-                      } else if (item.state[1] < Number(newText)) {
-                        Alert.alert(`Set equal to or less than ${item.state}`);
-                      } else {
-                        item.setState([newText, item.state[1]]);
-                      }
-                    }}
-                    style={{ flex: 1, margin: 20 }}
-                  />
-                  <TextInput
-                    value={item.state[1]}
-                    keyboardType="numeric"
-                    onChangeText={(text) => {
-                      let newText = '';
-                      const numbers = '0123456789';
-                      for (let i = 0; i < text.length; i++) {
-                        if (numbers.indexOf(text[i]) > -1) {
-                          newText += text[i];
-                        } else {
-                          Alert.alert('please enter numbers only');
-                        }
-                      }
-                      if (Number(newText) > item.range[1]) {
-                        Alert.alert(`Set equal to or less than ${item.range[1]}`);
-                        // item.setState([item.state[0], item.range[1]]);
-                      } else if (Number(newText) < item.state[0]) {
-                        Alert.alert(`Set equal to or more than ${item.state[0]}`);
-                      } else {
-                        item.setState([item.state[0], newText]);
-                      }
-                    }}
-                    style={{ flex: 1, margin: 20 }}
-                  /> */}
-                </View>
-                {/* <RangeSlider
+                <NumberInputRange
                   range={item.range}
-                  minimumValue={item.state[0]}
-                  maximumValue={item.state[1]}
-                  step={1}
-                  outboundColor={Color.gray3}
-                  inboundColor={Color.gray2}
-                  thumbTintColor={Color.green2}
-                  thumbStyle={undefined}
-                  trackStyle={undefined}
-                  enabled
-                  trackHeight={5}
-                  thumbSize={20}
-                  slideOnTap
-                  onValueChange={item.setState}
-                  onSlidingStart={undefined}
-                  onSlidingComplete={undefined}
-                /> */}
+                  min={item.min}
+                  max={item.max}
+                  setMin={item.setMin}
+                  setMax={item.setMax}
+                />
               </View>
             </View>
           ))}
@@ -462,9 +435,10 @@ const Options = (props) => {
           color={Color.green2}
           mode="contained"
           onPress={() => {
+            playoption.save(sortMode, { index: [indexMin, indexMax], x: [xMin, xMax] }, itemConfig, mode);
             navigate();
-            playoption.save(sortMode, { index: indexRange, x: xRange }, itemConfig);
           }}
+          disabled={validVocabIDsYetToBeSorted.length === 0}
         >
           Play
         </Button>

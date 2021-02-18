@@ -144,7 +144,7 @@ const Play = (props) => {
           },
         ],
       );
-    }
+    } else if (isEditChanged) saveDeckContent(deckID, content);
   }),
   [navigation, hasUnsavedHistory, leftVocabID, rightVocabID, isEditChanged, content]);
 

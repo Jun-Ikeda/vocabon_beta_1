@@ -40,7 +40,6 @@ const style = StyleSheet.create({
     fontSize: iconSize,
   },
   detailcontainer: {
-    // borderWidth: 1,
     paddingHorizontal: '8%',
     paddingVertical: 20,
     marginHorizontal: '5%',
@@ -48,7 +47,6 @@ const style = StyleSheet.create({
     backgroundColor: Color.white1,
     borderRadius: 10,
     flex: 1,
-    // flex: 1,
   },
   detailtext: {
     fontSize: iconSize * 0.66,
@@ -62,7 +60,7 @@ const style = StyleSheet.create({
   detailbutton: {
     paddingVertical: 10,
     paddingHorizontal: 30,
-    marginHorizontal: 25,
+    marginHorizontal: 10,
     backgroundColor: Color.green2,
     fontSize: iconSize * 0.66,
     borderRadius: 7,
@@ -70,17 +68,30 @@ const style = StyleSheet.create({
   popupmenu: {
     marginHorizontal: '20%',
   },
+  cancelButton: {
+    position: 'absolute',
+    top: -15,
+    right: -15,
+    height: 40,
+    width: 40,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Color.gray3,
+  },
+  cancelButtonIcon: {
+    fontSize: 24,
+    color: Color.gray1,
+  },
 });
 
 const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
-  const { marks, play /* ここ 具体的な構造は、TestData若しくは、Accountの下のコメントを参照 */ } = getAccountContent(deckID);
+  const { marks, play } = getAccountContent(deckID);
   const content = getDeckContent(deckID);
-  // state
   const [contentSorted, setContentSorted] = useState(content);
   const [detailVisibleID, setDetailVisibleID] = useState('');
-  // const [detailVisible, setDetailVisible] = useState(false);
   const [graphVisible, setGraphVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
   const [ascendOrDescend, setAscendOrDescend] = useState(true); // if true ascend; otherwise descend
@@ -88,7 +99,6 @@ const Analyze = (props) => {
   const [termLabel, setTermLabel] = useState('Term ↓');
   const [marksLabel, setMarksLabel] = useState('');
   const [index, setIndex] = useState(0);
-  // const [vocabButtonS, setvocabButtonS] = useRecoilState(vocabButtonState);
 
   const renderVocab = () => (
     <AnalyzeList
@@ -99,14 +109,6 @@ const Analyze = (props) => {
       index={index}
       setIndex={setIndex}
     />
-  );
-
-  const renderDate = (shortenedDate) => (
-    <View style={{ flex: 1 }}>
-      <Text style={style.detailtext}>
-        {func.formatDate(shortenedDate, true)}
-      </Text>
-    </View>
   );
 
   const renderButtons = () => (
@@ -135,7 +137,6 @@ const Analyze = (props) => {
       {
         label: termLabel,
         onPress: () => {
-          // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
             const nameA = a.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
             const nameB = b.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
@@ -151,7 +152,6 @@ const Analyze = (props) => {
         label: marksLabel,
         element: <Icon.AntDesign name="close" style={[style.label, { color: Color.cud.red }]} />,
         onPress: () => {
-          // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
             const markA = marks?.[a.key]?.length ?? 0; // 大文字と小文字を無視する
             const markB = marks?.[b.key]?.length ?? 0; // 大文字と小文字を無視する
@@ -189,17 +189,30 @@ const Analyze = (props) => {
     const returnNextOrPrevID = (nextOrPrev) => {
       const indexList = Object.keys(contentSorted);
       setIndex(indexList.indexOf(detailVisibleID));
+      let newIndex;
       if (nextOrPrev === true) {
-        setIndex(index + 1);
-        if (index > indexList.length) {
-          setIndex();
+        if (index >= indexList.length - 1) {
+          newIndex = 0;
+        } else {
+          newIndex = index + 1;
         }
       } else if (nextOrPrev === false) {
-        setIndex(index - 1);
+        if (index <= 0) {
+          newIndex = indexList.length - 1;
+        } else {
+          newIndex = index - 1;
+        }
       }
-      return (indexList[index]);
+      setIndex(newIndex);
+      setDetailVisibleID(indexList[newIndex]);
+      console.log(newIndex);
     };
-    // { /* Object.keys(contentSorted) のなかに 今の detailVisibleID がどのindexに入ってるかを検索する？で、index+1番目のdetailVisibleIDをセットしなおす */ }
+
+    const renderCancelButton = () => (
+      <TouchableOpacity style={style.cancelButton} onPress={() => setDetailVisibleID('')}>
+        <Icon.Feather name="x" style={style.cancelButtonIcon} />
+      </TouchableOpacity>
+    );
 
     return (
       <Portal>
@@ -209,6 +222,7 @@ const Analyze = (props) => {
           setVisible={() => setDetailVisibleID('')}
           renderMenu={() => (
             <View style={style.detailcontainer}>
+              {renderCancelButton()}
               <View style={{ flex: 1 }}>
                 <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
                 <Text style={style.detailtext}>{`Def: ${content[detailVisibleID]?.definition}`}</Text>
@@ -219,18 +233,10 @@ const Analyze = (props) => {
                     padding: 5,
                   }}
                 >
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Icon.Feather name="x" size={iconSize} />
-                    <Text style={[style.detailtext]}>
-                      history
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    style={{ marginHorizontal: 10, padding: iconSize / 2 }}
-                    onPress={() => setAscendOrDescend(!ascendOrDescend)}
-                  >
-                    <Icon.Entypo name={iconName} size={iconSize} />
-                  </TouchableOpacity>
+                  <Icon.Feather name="x" size={iconSize} color={Color.cud.red} />
+                  <Text style={[style.detailtext]}>
+                    history
+                  </Text>
                 </View>
                 <View style={{ backgroundColor: Color.white2, borderRadius: iconSize / 3 }}>
                   {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(dateList[time])}</Text>)}
@@ -238,27 +244,24 @@ const Analyze = (props) => {
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <TouchableOpacity
-                  onPress={() => {
-                    setDetailVisibleID(index + 1);
-                    setIndex(index + 1);
-                  }}
+                  onPress={() => returnNextOrPrevID(false)}
                   style={style.detailbutton}
                 >
                   <Text style={{ color: Color.white1 }}>BACK</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => {
-                    setDetailVisibleID(index - 1);
-                    setIndex(index - 1);
-                  }}
+                  style={style.detailbutton}
+                  onPress={() => setAscendOrDescend(!ascendOrDescend)}
+                >
+                  <Icon.Entypo name={iconName} size={iconSize * 0.66} color={Color.white1} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => returnNextOrPrevID(true)}
                   style={style.detailbutton}
                 >
                   <Text style={{ color: Color.white1 }}>NEXT</Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity onPress={() => setDetailVisibleID(returnNextOrPrevID(false))} style={style.detailbutton}><Text style={{ color: Color.white1 }}>BACK</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => setDetailVisibleID(returnNextOrPrevID(true))} style={style.detailbutton}><Text style={{ color: Color.white1 }}>NEXT</Text></TouchableOpacity> */}
               </View>
-              {/* Object.keys(contentSorted) のなかに 今の detailVisibleID がどのindexに入ってるかを検索する？で、index+1番目のdetailVisibleIDをセットしなおす */}
             </View>
           )}
         />

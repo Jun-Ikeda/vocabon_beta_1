@@ -67,6 +67,7 @@ const Nav = () => {
     const newAccountGeneral = { ...preAccountGeneral, name: user.displayName, emailVerified: user.emailVerified };
     // recoil/global
     account.general = newAccountGeneral;
+    // func.alertConsole(newAccountGeneral);
     // localstorage
     LocalStorage.save({ key: 'accountGeneral', data: newAccountGeneral });
     setSyncState((prev) => ([...prev, 'accountGeneral: download']));
@@ -184,6 +185,7 @@ const Nav = () => {
       await deckIDs.forEach((deckID, index) => {
         newDecksGeneral[deckID] = decks[index]?.general ?? {};
       });
+      // func.alertConsole(newDecksGeneral);
       setDeckGeneral(newDecksGeneral);
       //
       deckIDsAll = deckIDs;
@@ -281,7 +283,7 @@ const Nav = () => {
             )}
           </Stack.Navigator>
         </NavigationContainer>
-        <Button onPress={() => func.alertConsole(syncState)}>SynsState</Button>
+        {/* <Button onPress={() => func.alertConsole(syncState)}>SynsState</Button> */}
       </View>
     );
   }

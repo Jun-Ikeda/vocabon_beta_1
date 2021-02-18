@@ -35,7 +35,7 @@ const style = StyleSheet.create({
     padding: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 30,
     backgroundColor: Color.defaultBackground,
     borderRadius: 10,
   },
