@@ -17,10 +17,11 @@ const style = StyleSheet.create({
 const AnalyzeList = (props) => {
   // props
   const {
-    contentSorted, vocabDetailVisible, setVocabDetailVisible, marks,
+    contentSorted, vocabDetailVisible, setVocabDetailVisible, marks, index, setIndex,
   } = props;
   // state
   //   const [togglevisible,set]
+  const indexList = Object.keys(contentSorted);
 
   const renderVocab = () => (
     <VocabList
@@ -30,6 +31,8 @@ const AnalyzeList = (props) => {
       onPressCard={(vocab) => {
         // func.alertConsole(vocab.key);
         setVocabDetailVisible(vocab.key);
+        setIndex(indexList.indexOf(vocab.key));
+        console.log(index);
       }}
       searchBar
       // renderViewContent={(vocab) => <View style={{ width: 100, backgroundColor: 'red' }}><Text>{JSON.stringify(vocab.value, null, 2)}</Text></View>}

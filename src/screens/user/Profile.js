@@ -30,7 +30,7 @@ const style = StyleSheet.create({
     fontSize: 20,
     color: Color.gray1,
   },
-  divider: { backgroundColor: Color.gray3, height: 1.5, opacity: 0.5 },
+  divider: { backgroundColor: Color.gray3, height: 1.5, opacity: 0.8 },
   startButtonContainer: {
     position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
   },
@@ -102,7 +102,7 @@ const Profile = (props) => {
         title: 'Log out',
         onPress: () => {
           Alert.alert('Caution', 'Would you really want to log out?', [
-            { text: 'cancel', style: 'cancel', onPress: () => {} },
+            { text: 'Cancel', style: 'cancel', onPress: () => {} },
             {
               text: 'log out',
               onPress: async () => {
@@ -118,27 +118,38 @@ const Profile = (props) => {
       {
         title: 'Delete',
         onPress: () => {
-          Alert.alert('Caution', 'Would you really want to delete your account?', [
-            { text: 'cancel', style: 'cancel', onPress: () => {} },
+          Alert.alert('Caution', 'Would you really want to delete your account and whole decks data?', [
+            { text: 'Cancel', style: 'cancel', onPress: () => {} },
             {
               text: 'Delete',
               style: 'destructive',
-              onPress: async () => {
-                try {
-                  deleteAllDecks(setDeckGeneral);
-                  deleteAccountContentAll();
-                  saveAccountGeneral({}, false);
-                  await deleteAccount();
-                  setIsLoggedIn(false);
-                } catch (error) {
-                  func.alertConsole(error);
-                }
+              onPress: () => {
+                Alert.alert('Caution', 'ARE YOU REALLY SURE?YOU CANNOT RECOVER YOUR DATA', [
+                  { text: 'Cancel', style: 'cancel', onPress: () => {} },
+                  {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: async () => {
+                      try {
+                        deleteAllDecks(setDeckGeneral);
+                        deleteAccountContentAll();
+                        saveAccountGeneral({}, false);
+                        await deleteAccount();
+                        setIsLoggedIn(false);
+                      } catch (error) {
+                        func.alertConsole(error);
+                      }
+                    },
+                  },
+
+                ]);
               },
             },
           ]);
         },
+
         render: null,
-        titleStyle: { color: Color.red1, fontSize: 20 },
+        titleStyle: { color: Color.cud.red, fontSize: 20 },
       },
     ];
     return buttons.map((button, index) => (

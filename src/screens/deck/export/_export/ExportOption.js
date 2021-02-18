@@ -55,7 +55,7 @@ const ExportOption = (props) => {
       onChangeText={(newValue) => {
         (options.delimiterState[1])(newValue);
         (options.delimiterInputState[1])(newValue);
-        (options.radioState[1])(newValue);
+        (options.radioState[1])('Custom');
       }}
       style={style.delimiterInput}
     />

@@ -1,5 +1,5 @@
 import { Alert } from 'react-native';
-import { getAccountGeneral } from '../account/Account';
+import { getAccountGeneral, saveAccountGeneral } from '../account/Account';
 import { auth } from './Firebase';
 
 export const signup = (email, password, name) => auth.createUserWithEmailAndPassword(email, password)
@@ -45,10 +45,13 @@ export const updateEmail = async (newAddress) => {
   const user = await auth.currentUser;
   user.updateEmail(newAddress).then(() => {
     // Update successful.
-    Alert.alert('Scuccess to update', '');
+    Alert.alert('Success to update', '');
+    saveAccountGeneral({ email: newAddress });
+    console.log(getAccountGeneral());
   }).catch((error) => {
     // An error happened.
-    Alert.alert('Error', error);
+    console.log(error.message);
+    Alert.alert('Error', error.message);
   });
 };
 

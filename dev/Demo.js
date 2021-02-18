@@ -8,12 +8,16 @@ import RangeSlider from 'react-native-range-slider-expo';
 import lodash from 'lodash';
 import { Button } from 'react-native-paper';
 import SvgQRCode from 'react-native-qrcode-svg';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import TagsInput from '../src/components/TagsInput';
 import VocabList from '../src/components/deck/vocab/VocabList';
 import ProfileIcon from '../src/components/user/profileicon/ProfileIcon';
 import Color, { PastelColors } from '../src/config/Color';
 import { decksContent } from '../src/config/deck/Deck';
 import DemoBarCodeScanner from './DemoBarCodeScanner';
+import DynamicallySelectedPicker from '../src/components/DynamicallySelectedPicker';
+import Icon from '../src/components/Icon';
+import NumberInput from '../src/components/NumberInput';
 // import Icon from '../../../../components/Icon';
 
 const style = StyleSheet.create({
@@ -63,11 +67,23 @@ const Demo = (props) => (
     {/* {renderSearchFlatList()} */}
     {/* {renderTagsInput()} */}
     {/* {qrcode()} */}
-    <DemoBarCodeScanner />
+    {/* {selectDynamic()} */}
+    {renderNumberInput()}
+    {/* <DemoBarCodeScanner /> */}
   </View>
 );
 
 export default Demo;
+
+const renderNumberInput = () => {
+  const range = [0, 500];
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      <NumberInput range={range} />
+      <NumberInput range={range} />
+    </View>
+  );
+};
 
 const renderTagsInput = () => {
   const [tags, setTags] = useState({ tag: '', tagsArray: [] });
@@ -228,6 +244,53 @@ const object = {
     exampleD: ['全ての事象を考慮した'],
     cf: [],
   },
+};
+
+const selectDynamic = () => {
+  const [selectedValue, setSelectedValue] = useState(0);
+  return (
+    <View style={{
+      backgroundColor: Color.white,
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    >
+      <View style={{ margin: 30 }}>
+        <Text>
+          Item index
+          {selectedValue}
+        </Text>
+      </View>
+      <DynamicallySelectedPicker
+        items={[
+          {
+            value: 1,
+            label: 'Item 1',
+          },
+          {
+            value: 2,
+            label: 'Item 2',
+          },
+          {
+            value: 3,
+            label: 'Item 3',
+          },
+          {
+            value: 4,
+            label: 'Item 4',
+          },
+          {
+            value: 5,
+            label: 'Item 5',
+          },
+        ]}
+        width={300}
+        height={300}
+        onScroll={(selected) => setSelectedValue(selected.index)}
+      />
+    </View>
+  );
 };
 
 const renderSearchFlatList = () => {

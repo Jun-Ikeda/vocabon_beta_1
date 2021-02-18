@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text,
+  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text, KeyboardAvoidingView,
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { useRecoilState } from 'recoil';
@@ -212,7 +212,7 @@ const EditContent = (props) => {
     ) : null));
   };
 
-  const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
+  const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text style={{ fontSize: 20 }}>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
 
   const renderSaveButton = () => (
     <View style={style.buttonsContainer}>

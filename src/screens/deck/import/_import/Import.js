@@ -13,7 +13,7 @@ import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 import ImportList from '../ImportList';
 import ImportQRcode from '../_importQRcode/ImportQRcode';
-import ImportHelp from './importHelp';
+import ImportHelp from './ImportHelp';
 import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
@@ -185,7 +185,19 @@ const Import = (props) => {
           <Icon.Ionicons style={style.expandIcon} name={inputExpand ? 'contract' : 'expand'} />
         </TouchableOpacity>
       </View>
+      <View style={{ position: 'absolute', right: 95, flexDirection: 'row' }}>
+        <TouchableOpacity style={style.button} onPress={() => setHelpVisible(true)}>
+          <Icon.Feather name="help-circle" size={20} />
+        </TouchableOpacity>
+      </View>
     </View>
+  );
+
+  const renderHelp = () => (
+    <ImportHelp
+      isVisible={helpVisible}
+      setIsVisible={setHelpVisible}
+    />
   );
 
   const renderCompileButton = () => (
@@ -220,16 +232,6 @@ const Import = (props) => {
         hasPermission={hasPermission}
         cardDelimiter={cardDelimiter}
       />
-      {/* <TouchableOpacity
-        style={style.button}
-        onPress={() => setHelpVisible(true)}
-      >
-        <Icon.Feather name="help-circle" size={20} />
-      </TouchableOpacity>
-      <ImportHelp
-        isVisible={helpVisible}
-        setIsVisible={setHelpVisible}
-      /> */}
     </KeyboardAvoidingView>
   );
 };

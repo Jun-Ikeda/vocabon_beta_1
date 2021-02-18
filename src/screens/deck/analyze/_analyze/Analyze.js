@@ -96,6 +96,8 @@ const Analyze = (props) => {
       contentSorted={contentSorted}
       vocabDetailVisible={detailVisibleID}
       setVocabDetailVisible={setDetailVisibleID}
+      index={index}
+      setIndex={setIndex}
     />
   );
 
@@ -189,6 +191,9 @@ const Analyze = (props) => {
       setIndex(indexList.indexOf(detailVisibleID));
       if (nextOrPrev === true) {
         setIndex(index + 1);
+        if (index > indexList.length) {
+          setIndex();
+        }
       } else if (nextOrPrev === false) {
         setIndex(index - 1);
       }
@@ -232,8 +237,26 @@ const Analyze = (props) => {
                 </View>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={() => setDetailVisibleID(returnNextOrPrevID(false))} style={style.detailbutton}><Text style={{ color: Color.white1 }}>BACK</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => setDetailVisibleID(returnNextOrPrevID(true))} style={style.detailbutton}><Text style={{ color: Color.white1 }}>NEXT</Text></TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setDetailVisibleID(index + 1);
+                    setIndex(index + 1);
+                  }}
+                  style={style.detailbutton}
+                >
+                  <Text style={{ color: Color.white1 }}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setDetailVisibleID(index - 1);
+                    setIndex(index - 1);
+                  }}
+                  style={style.detailbutton}
+                >
+                  <Text style={{ color: Color.white1 }}>NEXT</Text>
+                </TouchableOpacity>
+                {/* <TouchableOpacity onPress={() => setDetailVisibleID(returnNextOrPrevID(false))} style={style.detailbutton}><Text style={{ color: Color.white1 }}>BACK</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => setDetailVisibleID(returnNextOrPrevID(true))} style={style.detailbutton}><Text style={{ color: Color.white1 }}>NEXT</Text></TouchableOpacity> */}
               </View>
               {/* Object.keys(contentSorted) のなかに 今の detailVisibleID がどのindexに入ってるかを検索する？で、index+1番目のdetailVisibleIDをセットしなおす */}
             </View>

@@ -15,6 +15,7 @@ const style = StyleSheet.create({
   },
   signupButtonContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
   signupButton: {
@@ -49,7 +50,6 @@ const ResetPassword = (props) => {
             // An error happened.
             setIsError(true);
             setIsSent(false);
-            console.log(error);
             Alert.alert('Opps!', error.message);
           })}
         >

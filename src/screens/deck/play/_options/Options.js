@@ -23,6 +23,7 @@ import { getDeckContent } from '../../../../config/deck/Deck';
 import { playhistory, playoption } from '../../../../config/PersistentData';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
+import DynamicallySelectedPicker from '../../../../components/DynamicallySelectedPicker';
 
 const style = StyleSheet.create({
   container: {
@@ -318,84 +319,101 @@ const Options = (props) => {
           /* flex: 1,  */backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 20, flex: 1,
         }}
       >
-        {items.map((item, index) => (
-          <View>
-            {index !== 0 ? <Divider style={style.divider} /> : null}
-            <View style={{ padding: 10 }}>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ fontSize: 26, flex: 1 }}>{item.title}</Text>
-                <Text style={{ fontSize: 18 }}>{`${item.range[0]} ~ ${item.range[1]}`}</Text>
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <TextInput
-                  value={item.state[0]}
-                  keyboardType="numeric"
-                  onChangeText={(text) => {
-                    let newText = '';
-                    const numbers = '0123456789';
-                    for (let i = 0; i < text.length; i++) {
-                      if (numbers.indexOf(text[i]) > -1) {
-                        newText += text[i];
-                      } else {
-                        Alert.alert('Please enter numbers only');
+        <ScrollView>
+          {items.map((item, index) => (
+            <View>
+              {index !== 0 ? <Divider style={style.divider} /> : null}
+              <View style={{ padding: 10 }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ fontSize: 26, flex: 1 }}>{item.title}</Text>
+                  <Text style={{ fontSize: 18 }}>{`${item.state[0]} ~ ${item.state[1]}`}</Text>
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <DynamicallySelectedPicker
+                    items={[...Array(item.range[1]).keys()].map((i) => ({ value: i + 1, label: i + 1 }))}
+                    width={100}
+                    height={300}
+                    onScroll={(selected) => {
+                      item.setState([selected.item.value, item.state[1]]);
+                    }}
+                  />
+                  <Text style={{ alignSelf: 'center' }}>~</Text>
+                  <DynamicallySelectedPicker
+                    items={[...Array(item.range[1]).keys()].map((i) => ({ value: i + 1, label: i + 1 }))}
+                    width={100}
+                    height={300}
+                    onScroll={(selected) => item.setState([item.state[0], selected.item.value])}
+                  />
+                  {/* <TextInput
+                    value={item.state[0]}
+                    keyboardType="numeric"
+                    onChangeText={(text) => {
+                      let newText = '';
+                      const numbers = '0123456789';
+                      for (let i = 0; i < text.length; i++) {
+                        if (numbers.indexOf(text[i]) > -1) {
+                          newText += text[i];
+                        } else {
+                          Alert.alert('Please enter numbers only');
+                        }
                       }
-                    }
-                    if (Number(newText) < item.range[0]) {
-                      Alert.alert(`Set equal to or more than ${item.range[0]}`);
-                    } else if (item.state[1] < Number(newText)) {
-                      Alert.alert(`Set equal to or less than ${item.state}`);
-                    } else {
-                      item.setState([newText, item.state[1]]);
-                    }
-                  }}
-                  style={{ flex: 1, margin: 20 }}
-                />
-                <TextInput
-                  value={item.state[1]}
-                  keyboardType="numeric"
-                  onChangeText={(text) => {
-                    let newText = '';
-                    const numbers = '0123456789';
-                    for (let i = 0; i < text.length; i++) {
-                      if (numbers.indexOf(text[i]) > -1) {
-                        newText += text[i];
+                      if (Number(newText) < item.range[0]) {
+                        Alert.alert(`Set equal to or more than ${item.range[0]}`);
+                      } else if (item.state[1] < Number(newText)) {
+                        Alert.alert(`Set equal to or less than ${item.state}`);
                       } else {
-                        Alert.alert('please enter numbers only');
+                        item.setState([newText, item.state[1]]);
                       }
-                    }
-                    if (Number(newText) > item.range[1]) {
-                      Alert.alert(`Set equal to or less than ${item.range[1]}`);
-                      // item.setState([item.state[0], item.range[1]]);
-                    } else if (Number(newText) < item.state[0]) {
-                      Alert.alert(`Set equal to or more than ${item.state[0]}`);
-                    } else {
-                      item.setState([item.state[0], newText]);
-                    }
-                  }}
-                  style={{ flex: 1, margin: 20 }}
-                />
+                    }}
+                    style={{ flex: 1, margin: 20 }}
+                  />
+                  <TextInput
+                    value={item.state[1]}
+                    keyboardType="numeric"
+                    onChangeText={(text) => {
+                      let newText = '';
+                      const numbers = '0123456789';
+                      for (let i = 0; i < text.length; i++) {
+                        if (numbers.indexOf(text[i]) > -1) {
+                          newText += text[i];
+                        } else {
+                          Alert.alert('please enter numbers only');
+                        }
+                      }
+                      if (Number(newText) > item.range[1]) {
+                        Alert.alert(`Set equal to or less than ${item.range[1]}`);
+                        // item.setState([item.state[0], item.range[1]]);
+                      } else if (Number(newText) < item.state[0]) {
+                        Alert.alert(`Set equal to or more than ${item.state[0]}`);
+                      } else {
+                        item.setState([item.state[0], newText]);
+                      }
+                    }}
+                    style={{ flex: 1, margin: 20 }}
+                  /> */}
+                </View>
+                {/* <RangeSlider
+                  range={item.range}
+                  minimumValue={item.state[0]}
+                  maximumValue={item.state[1]}
+                  step={1}
+                  outboundColor={Color.gray3}
+                  inboundColor={Color.gray2}
+                  thumbTintColor={Color.green2}
+                  thumbStyle={undefined}
+                  trackStyle={undefined}
+                  enabled
+                  trackHeight={5}
+                  thumbSize={20}
+                  slideOnTap
+                  onValueChange={item.setState}
+                  onSlidingStart={undefined}
+                  onSlidingComplete={undefined}
+                /> */}
               </View>
-              {/* <RangeSlider
-                range={item.range}
-                minimumValue={item.state[0]}
-                maximumValue={item.state[1]}
-                step={1}
-                outboundColor={Color.gray3}
-                inboundColor={Color.gray2}
-                thumbTintColor={Color.green2}
-                thumbStyle={undefined}
-                trackStyle={undefined}
-                enabled
-                trackHeight={5}
-                thumbSize={20}
-                slideOnTap
-                onValueChange={item.setState}
-                onSlidingStart={undefined}
-                onSlidingComplete={undefined}
-              /> */}
             </View>
-          </View>
-        ))}
+          ))}
+        </ScrollView>
         <TouchableOpacity style={style.cancelButton} onPress={() => setCustomPopUpVisible('')}>
           <Icon.Feather name="x" style={style.cancelButtonIcon} />
         </TouchableOpacity>

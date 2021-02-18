@@ -19,7 +19,7 @@ const EditAddButton = (props) => {
   return isVisible ? (
     <FloatingButton
       icon={{ collection: 'AntDesign', name: 'plus' }}
-      buttonStyle={{ bottom: 75 }}
+      buttonStyle={{ bottom: 75, right: 60 }}
       onPress={() => {
         setContentVisible(true);
         setEditVocabID(UUID.generate(8));

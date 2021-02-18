@@ -148,7 +148,7 @@ const EditHelp = (props) => {
       </View>
       <View style={style.google}>
         <Text>You can google each term directly by long press</Text>
-        <Text>{'You can add a tag by \'/\'\''}</Text>
+        <Text>{'You can add a tag by \'/\''}</Text>
       </View>
       <View style={{ marginLeft: 15, marginBottom: 5 }} />
       <ScrollView style={style.contentContainer}>
