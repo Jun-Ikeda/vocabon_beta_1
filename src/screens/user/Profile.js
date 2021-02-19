@@ -105,7 +105,7 @@ const Profile = (props) => {
           Alert.alert('Caution', 'Would you really want to log out?', [
             { text: 'Cancel', style: 'cancel', onPress: () => {} },
             {
-              text: 'log out',
+              text: 'Log out',
               onPress: async () => {
                 await clearStorage();
                 setIsLoggedIn(false);

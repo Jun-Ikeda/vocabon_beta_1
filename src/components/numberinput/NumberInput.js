@@ -75,7 +75,7 @@ const NumberInput = (props) => {
         <Icon.AntDesign style={style.text} name="minus" />
       </TouchableOpacity>
       <View style={style.numContainer}>
-        <TextInput style={style.text} value={String(num)} onChangeText={handleInputChange} />
+        <TextInput style={style.text} value={String(num)} onChangeText={handleInputChange} keyboardType="numeric" />
       </View>
       <TouchableOpacity onPressIn={() => startLongPress('plus')} onPressOut={endLongPress} onPress={increase} disabled={range[1] === num} style={style.button}>
         <Icon.AntDesign style={style.text} name="plus" />
