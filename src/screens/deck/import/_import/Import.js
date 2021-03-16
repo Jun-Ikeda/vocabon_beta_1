@@ -13,7 +13,7 @@ import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 import ImportList from '../ImportList';
 import ImportQRcode from '../_importQRcode/ImportQRcode';
-import ImportHelp from './ImportHelp';
+import ImportHelp from './importHelp';
 import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({

@@ -67,6 +67,9 @@ const style = StyleSheet.create({
     fontSize: 24,
     color: Color.gray1,
   },
+  expandText: {
+    backgroundColor:'blue',
+  },
 });
 
 /**
@@ -212,7 +215,12 @@ const EditContent = (props) => {
     ) : null));
   };
 
-  const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text style={{ fontSize: 20 }}>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
+  const renderExpandButton = () => 
+  <TouchableOpacity
+    style={style.expandText} 
+    onPress={() => setExpand(!expand)}>
+    <Text style={{ fontSize: 20 }}>{expand ? 'Close' : 'More'}</Text>
+  </TouchableOpacity>;
 
   const renderSaveButton = () => (
     <View style={style.buttonsContainer}>

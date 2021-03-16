@@ -30,6 +30,7 @@ const style = StyleSheet.create({
   },
   headerIcon: {
     textAlign: 'right',
+    // justifyContent: 'flex'
     fontSize: 30,
     paddingHorizontal: 10,
     alignSelf: 'center',
@@ -94,7 +95,7 @@ class PlayCard extends Component {
       >
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
           {frontItems.map((item) => (itemVisible.front.includes(item.item) ? (
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', borderWidth: 1 }}>
               <Text style={style.label} key={item.item}>{deck.formatArrayContent(item.array)}</Text>
               <Icon.MaterialIcons
                 name="record-voice-over"

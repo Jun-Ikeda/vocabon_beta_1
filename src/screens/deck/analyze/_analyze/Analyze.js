@@ -179,10 +179,10 @@ const Analyze = (props) => {
     let dateList = [];
     let iconName = '';
     if (ascendOrDescend === true) {
-      dateList = play.sort((a, b) => a - b);
+      dateList = play.sort((a, b) => a > b ? -1 : 1);
       iconName = 'chevron-up';
     } else {
-      dateList = play.sort((a, b) => b - a);
+      dateList = play.sort((a, b) => b > a ? -1  : 1);
       iconName = 'chevron-down';
     }
 

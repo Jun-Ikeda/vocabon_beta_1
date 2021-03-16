@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-  View, StyleSheet, LayoutAnimation, TouchableOpacity, ScrollView,
+  View, StyleSheet, LayoutAnimation, TouchableOpacity, ScrollView,Text, Alert,
 } from 'react-native';
-import { Portal } from 'react-native-paper';
+import { Portal ,Button} from 'react-native-paper';
 
 import { BarChart } from 'react-native-chart-kit';
 import Color from '../../../../config/Color';
@@ -22,18 +22,25 @@ const style = StyleSheet.create({
     // justifyContent: 'center',
   },
   graphContainer: {
-    borderRadius: 10,
+    // flex:4
+    // borderRadius: 10,
     // paddingHorizontal: 5,
     // marginHorizontal: -200,
 
   },
   graph: {
-    borderRadius: 20,
+    // borderRadius: 20,
     // marginHorizontal: -100,
   },
-  chartTitle: {
+  button: {
     fontSize: 18,
-
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    height: 40,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cancelButton: {
     position: 'absolute',
@@ -46,6 +53,15 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Color.gray3,
   },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    margin: 10,
+  },
+  buttonContainer: {
+    flex: 1,
+    padding: 20,
+  },
 });
 
 const AnalyzeGraph = (props) => { // props
@@ -55,6 +71,7 @@ const AnalyzeGraph = (props) => { // props
   const [layout, setLayout] = useState({ height: 0, width: 0 });
   const graphDate = play;
   const [graphMarks, setGraphMarks] = useState([]);
+  const [showNum, setShowNum] = useState(0);
 
   useEffect(() => {
     const newGraphMarks = [];
@@ -65,7 +82,13 @@ const AnalyzeGraph = (props) => { // props
       newGraphMarks.push(sum);
     });
     setGraphMarks(newGraphMarks);
-    console.log(newGraphMarks);
+
+    // graphMarks=func.separateListItem(graphMarks,5);
+    // graphDate=func.separateListItem(graphDate,5);
+    // console.log(func.separateListItem(newGraphMarks,2));
+    // func.alertConsole(newGraphMarks);
+    // func.separateListItem(graphMarks,5)
+    console.log(graphMarks);
     console.log(graphDate);
   }, []);
 
@@ -81,9 +104,34 @@ const AnalyzeGraph = (props) => { // props
     </TouchableOpacity>
   );
 
+  const renderNavButton=()=>(
+    <View style={style.buttonsContainer}>
+      {showNum!==graphDate.length-1?(
+      <View style={style.buttonContainer}>
+        <Button
+          onPress={setShowNum(showNum+1)}
+          mode="contained"
+          color={Color.green2}
+        >
+          Next
+        </Button>
+      </View>
+      ):null}
+      {showNum!==0?(<View style={style.buttonContainer}>
+        <Button
+          onPress={setShowNum(showNum-1)}
+          mode="contained"
+          color={Color.green2}
+        >
+          Back
+        </Button>
+      </View>):null}
+    </View>
+  );
+
   const renderGraph = () => {
     const data = {
-      labels: JSON.parse(JSON.stringify(play)),
+      labels: JSON.parse(JSON.stringify(graphDate)),
       datasets: [
         {
           data: graphMarks,
@@ -108,7 +156,6 @@ const AnalyzeGraph = (props) => { // props
         style={style.container}
         onLayout={(e) => setLayout(func.onLayoutContainer(e))}
       >
-        {/* <Text style={style.chartTitle}> Marks </Text> */}
         <BarChart
           style={style.graphContainer}
           data={data}
@@ -117,7 +164,10 @@ const AnalyzeGraph = (props) => { // props
           chartConfig={chartConfig}
           verticalLabelRotation={50}
         />
+        <View style={style.button}>
+        </View>
         {renderCancelButton()}
+        {/* {renderNavButton()} */}
       </View>
     );
   };

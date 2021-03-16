@@ -240,6 +240,20 @@ export const func = {
     }
     return resultArray;
   },
+  separateListItem: (content,eachLength)=>{
+    const contentArray=content;
+    const resultArray=[];
+    let curArray = [];
+    while(contentArray.length!==0){
+      if(contentArray.length <= eachLength){
+        resultArray.push(contentArray)
+      }else{
+        // resultArray.push(contentArray.splice(0, eachLength))
+        func.alertConsole(contentArray.splice(0, eachLength))
+      }
+    }
+    return resultArray;
+  },
 };
 
 export const deck = {
