@@ -94,8 +94,8 @@ class PlayCard extends Component {
         ref={(card) => { this.card = card; }}
       >
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          {frontItems.map((item) => (itemVisible.front.includes(item.item) ? (
-            <View style={{ flexDirection: 'row', borderWidth: 1 }}>
+          {frontItems.map((item) => (itemVisible.front.includes(item.item) && item.array.length !== 0 ? (
+            <View style={{ flexDirection: 'row' }}>
               <Text style={style.label} key={item.item}>{deck.formatArrayContent(item.array)}</Text>
               <Icon.MaterialIcons
                 name="record-voice-over"
@@ -111,7 +111,7 @@ class PlayCard extends Component {
         </TouchableOpacity>
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
           {backItems.map((item) => (itemVisible.back.includes(item.item) ? (
-            <View>
+            <View style={{ flexDirection: 'row' }}>
               <Text style={style.label} key={item.item}>{deck.formatArrayContent(item.array)}</Text>
               <Icon.MaterialIcons
                 name="record-voice-over"

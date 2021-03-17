@@ -12,6 +12,7 @@ import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
 import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 import { getAccountContent } from '../../../../config/account/Account';
+import MenuShareButton from './MenuShareButton';
 
 // import DeckMenuButtons from './DeckMenuButtons';
 // import DeckMenuUtilities from './DeckMenuUtilities';
@@ -85,15 +86,18 @@ const Menu = (props) => {
   );
 
   return (
-    <ScrollView
-      style={style.container}
-      contentContainerStyle={{ paddingBottom: 10 }}
-      // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
-    >
-      {renderThumbnail()}
-      {renderContent()}
-      {renderButtons()}
-    </ScrollView>
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        style={style.container}
+        contentContainerStyle={{ paddingBottom: 10 }}
+        // onLayout={(e) => setLayout(func.onLayoutContainer(e))}
+      >
+        {renderThumbnail()}
+        {renderContent()}
+        {renderButtons()}
+      </ScrollView>
+      <MenuShareButton deckID={deckID} />
+    </View>
   );
 };
 

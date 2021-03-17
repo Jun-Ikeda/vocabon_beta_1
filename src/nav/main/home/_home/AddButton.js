@@ -1,29 +1,108 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { useRecoilValue } from 'recoil';
-import { Alert } from 'react-native';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import {
+  Alert, Image, LayoutAnimation, StyleSheet, Text, View,
+} from 'react-native';
+import { Button, Portal, TextInput } from 'react-native-paper';
 import FloatingButton from '../../../../components/FloatingButton';
-import { decksGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, saveDeckGeneral } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
 import { getAccountGeneral } from '../../../../config/account/Account';
+import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import Color from '../../../../config/Color';
+import { firestore } from '../../../../config/firebase/Firebase';
+import { unshortenURI } from '../../../../config/Unsplash';
 
 const AddButton = (props) => {
   const { navigation } = props;
-  const deckGeneral = useRecoilValue(decksGeneral);
+  const [idInputVisible, setIDInputVisible] = useState(false);
+  const [id, setID] = useState('');
+  const [tentativeDeckGeneral, setTentativeDeckGeneral] = useState({});
+  const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
   const accountGeneral = getAccountGeneral();
+
+  const createnew = () => {
+    const num = func.convertObjectToArray(deckGeneral).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
+    if (num >= 10) {
+      Alert.alert('Storage full', 'You can save up to 10 decks.');
+    } else {
+      navigation.navigate('createdeck');
+    }
+  };
+  const useshared = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setTentativeDeckGeneral({});
+    setIDInputVisible(true);
+    // saveDeckGeneral(setDeckGeneral);
+    // navigation.navigate('');
+  };
   return (
-    <FloatingButton
-      onPress={() => {
-        const num = func.convertObjectToArray(deckGeneral).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
-        if (num >= 10) {
-          Alert.alert('Storage full', 'You can save up to 10 decks.');
-        } else {
-          navigation.navigate('createdeck');
-        }
-      }}
-      icon={{ collection: 'AntDesign', name: 'plus' }}
-    />
+    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+      <FloatingButton
+        onPress={() => {
+          Alert.alert('New Deck', 'Would you like to create a new deck or use one your friend shared?', [
+            { text: 'Create New', onPress: createnew },
+            { text: 'Use Shared', onPress: useshared },
+            { text: 'Cancel', onPress: () => {}, style: 'default' },
+          ], { cancelable: true });
+        }}
+        icon={{ collection: 'AntDesign', name: 'plus' }}
+      />
+      <Portal>
+        <PopUpMenu
+          isVisible={idInputVisible}
+          setVisible={setIDInputVisible}
+          renderMenu={() => (
+            <View style={{
+              backgroundColor: 'white',
+              flex: 1,
+              margin: 60,
+              padding: 20,
+              borderRadius: 10,
+            }}
+            >
+              <TextInput value={id} onChangeText={setID} placeholder="Paste ID here" />
+              <Button
+                mode="contained"
+                color={Color.green2}
+                style={{ marginHorizontal: 50, marginVertical: 20 }}
+                onPress={() => {
+                  firestore.collection('deck').doc(id).get().then(async (doc) => {
+                    if (doc.exists) {
+                      const data = doc.data();
+                      if (data.user === accountGeneral.userID) {
+                        Alert.alert('Error', 'This deck is yours');
+                      } else {
+                        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                        setTentativeDeckGeneral(data);
+                      }
+                    } else {
+                      Alert.alert('Error', 'No deck corresonding to the ID exist');
+                    }
+                  });
+                }}
+              >
+                Search
+              </Button>
+              <Image style={{ width: '100%', flex: 1 }} source={{ uri: unshortenURI(tentativeDeckGeneral?.thumbnail?.uri ?? '') }} />
+              <Button
+                mode="contained"
+                color={Color.green2}
+                style={{ marginHorizontal: 50, marginVertical: 20 }}
+                onPress={() => {
+                  Alert.alert('This function is under construction');
+                }}
+                disabled={Object.keys(tentativeDeckGeneral).length === 0}
+              >
+                Use this deck
+              </Button>
+            </View>
+          )}
+        />
+      </Portal>
+    </View>
   );
 };
 
