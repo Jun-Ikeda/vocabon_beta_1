@@ -69,7 +69,8 @@ const AnalyzeGraph = (props) => { // props
     isVisible, setVisible, play, marks,
   } = props;
   const [layout, setLayout] = useState({ height: 0, width: 0 });
-  const graphDate = play;
+  // const graphDate = play;
+  const [graphDate, setGraphDate] = useState(play);
   const [graphMarks, setGraphMarks] = useState([]);
   const [showNum, setShowNum] = useState(0);
 
@@ -81,15 +82,16 @@ const AnalyzeGraph = (props) => { // props
       Object.values(marks).forEach((mark) => { sum = mark.includes(index) ? sum + 1 : sum; });
       newGraphMarks.push(sum);
     });
-    setGraphMarks(newGraphMarks);
+    // setGraphMarks(newGraphMarks);
 
-    // graphMarks=func.separateListItem(graphMarks,5);
+    setGraphMarks(func.separateListItem(newGraphMarks,5));
+    setGraphDate(func.separateListItem(graphDate,5))
     // graphDate=func.separateListItem(graphDate,5);
     // console.log(func.separateListItem(newGraphMarks,2));
-    // func.alertConsole(newGraphMarks);
+    // func.alertConsole(newGraphMarks,'newGraphmarks');
     // func.separateListItem(graphMarks,5)
-    console.log(graphMarks);
-    console.log(graphDate);
+    // func.alertConsole(graphMarks,'graphMarks');
+    // console.log(graphDate);
   }, []);
 
   const renderCancelButton = () => (

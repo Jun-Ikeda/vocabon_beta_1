@@ -66,7 +66,7 @@ export const func = {
     }
     return null;
   },
-  alertConsole: (object) => {
+  alertConsole: (object,title='CONSOLE') => {
     const string = JSON.stringify(object, null, 4);
     console.log(object);
     if (Platform.OS === 'web') {
@@ -74,7 +74,7 @@ export const func = {
       ExpoClipboard.setString(string);
     } else {
       Alert.alert(
-        'CONSOLE',
+        title,
         string,
         [{ text: 'Copy', onPress: () => ExpoClipboard.setString(string) }, { text: 'OK', onPress: () => {} }],
       );
@@ -241,16 +241,11 @@ export const func = {
     return resultArray;
   },
   separateListItem: (content,eachLength)=>{
+    const array=Array(Math.ceil(content.length/eachLength)); 
     const contentArray=content;
     const resultArray=[];
-    let curArray = [];
-    while(contentArray.length!==0){
-      if(contentArray.length <= eachLength){
-        resultArray.push(contentArray)
-      }else{
-        // resultArray.push(contentArray.splice(0, eachLength))
-        func.alertConsole(contentArray.splice(0, eachLength))
-      }
+    for (let i = 0;i < array.length ;i++ ) {
+        resultArray.push(contentArray.splice(0, eachLength))
     }
     return resultArray;
   },
