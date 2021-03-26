@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text,
+  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text,LayoutAnimation
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -14,7 +14,7 @@ import { deck, func } from '../../../config/Const';
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: Color.white1,
+    backgroundColor: Color.defaultBackground,
     flex: 1,
     marginHorizontal: '5%',
     marginVertical: '5%',
@@ -65,6 +65,11 @@ const style = StyleSheet.create({
   cancelButtonIcon: {
     fontSize: 24,
     color: Color.gray1,
+  },
+  expandText: {
+    margin:10,
+    height: 30,
+    borderRadius: 3,
   },
 });
 
@@ -197,10 +202,10 @@ const VocabEdit = (props) => {
         label: 'Definition', value: definition, setState: setDefinition, isVisible: true, keysForTags: ['/'],
       },
       {
-        label: 'Example in Term\'s language', value: exampleT, setState: setExampleT, isVisible: true, keysForTags: ['/'],
+        label: 'e.g. in Term\'s language', value: exampleT, setState: setExampleT, isVisible: true, keysForTags: ['/'],
       },
       {
-        label: 'Example in Definition\'s language', value: exampleD, setState: setExampleD, isVisible: true, keysForTags: ['/'],
+        label: 'e.g. in Definition\'s language', value: exampleD, setState: setExampleD, isVisible: true, keysForTags: ['/'],
       },
       {
         label: 'Synonym', value: synonym, setState: setSynonym, isVisible: expand, keysForTags: ['/'],
@@ -241,7 +246,18 @@ const VocabEdit = (props) => {
     );
   };
 
-  const renderExpandButton = () => <TouchableOpacity onPress={() => setExpand(!expand)}><Text>{expand ? 'Close' : 'More'}</Text></TouchableOpacity>;
+  const renderExpandButton = () => 
+  <Button
+    style={style.expandText} 
+    mode="contained"
+    color={Color.green2}　
+    onPress={() => {
+    setExpand(!expand)
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);}
+    }>
+    <Text style={{}}>{expand ? 'Close' : 'More'}</Text>
+  </Button>
+  ;
 
   const renderSaveButton = () => (
     <View style={style.buttonsContainer}>
@@ -274,7 +290,11 @@ const VocabEdit = (props) => {
   );
 
   const renderCancelButton = () => (
-    <TouchableOpacity style={style.cancelButton} onPress={() => setVisible(false)}>
+    <TouchableOpacity 
+      style={style.cancelButton} 
+      onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setVisible(false);}}>
       <Icon.Feather name="x" style={style.cancelButtonIcon} />
     </TouchableOpacity>
   );

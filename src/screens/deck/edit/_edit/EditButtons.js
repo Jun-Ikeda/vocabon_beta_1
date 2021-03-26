@@ -91,7 +91,10 @@ const EditButtons = (props) => {
       title: 'help',
       icon: { collection: 'Feather', name: 'help-circle' },
       visible: mode === 'edit',
-      onPress: () => setHelpVisible(true),
+      onPress: () => {
+      setHelpVisible(true);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      },
       element: null,
     },
     {

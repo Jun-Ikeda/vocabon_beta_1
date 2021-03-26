@@ -64,7 +64,9 @@ const AnalyzeButtons = (props) => {
     {
       title: 'graph',
       icon: { collection: 'Ionicons', name: 'bar-chart' },
-      onPress: () => setGraphVisible(true),
+      onPress: () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setGraphVisible(true);},
       visible: true,
     },
   ];

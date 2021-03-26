@@ -6,7 +6,7 @@ import {
 import PropTypes from 'prop-types';
 
 import { Button, Portal } from 'react-native-paper';
-import { getAccountContent } from '../../../../config/account/Account';
+import { account, getAccountContent } from '../../../../config/account/Account';
 import { getDeckContent } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
@@ -209,7 +209,12 @@ const Analyze = (props) => {
     };
 
     const renderCancelButton = () => (
-      <TouchableOpacity style={style.cancelButton} onPress={() => setDetailVisibleID('')}>
+      <TouchableOpacity style={style.cancelButton} onPress={() => 
+        {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setDetailVisibleID('');
+        }
+        }>
         <Icon.Feather name="x" style={style.cancelButtonIcon} />
       </TouchableOpacity>
     );
@@ -244,7 +249,9 @@ const Analyze = (props) => {
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <TouchableOpacity
-                  onPress={() => returnNextOrPrevID(false)}
+                  onPress={() => {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    returnNextOrPrevID(false);}}
                   style={style.detailbutton}
                 >
                   <Text style={{ color: Color.white1 }}>BACK</Text>
@@ -256,7 +263,9 @@ const Analyze = (props) => {
                   <Icon.Entypo name={iconName} size={iconSize * 0.66} color={Color.white1} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => returnNextOrPrevID(true)}
+                  onPress={() => {
+                    returnNextOrPrevID(true); 
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);}}
                   style={style.detailbutton}
                 >
                   <Text style={{ color: Color.white1 }}>NEXT</Text>
@@ -271,6 +280,17 @@ const Analyze = (props) => {
 
   return (
     <View style={{ flex: 1 }}>
+      {/* <ScrollView>
+        <Button onPress={async () => {
+          const content = await getAccountContent(deckID)
+          func.alertConsole(account, 'Account Content')
+        }} title="account content" />
+        <Text>
+          {JSON.stringify(marks, null, 2)}
+          a
+          {JSON.stringify(play, null, 2)}
+        </Text>
+      </ScrollView> */}
       {renderButtons()}
       {renderLabels()}
       {renderGraphPopup()}

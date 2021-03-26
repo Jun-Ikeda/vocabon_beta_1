@@ -4,12 +4,13 @@ import {
   View, StyleSheet, LayoutAnimation, TouchableOpacity, ScrollView,Text, Alert,
 } from 'react-native';
 import { Portal ,Button} from 'react-native-paper';
-
+import DeckCarousel, { Pagination } from 'react-native-snap-carousel';
 import { BarChart } from 'react-native-chart-kit';
 import Color from '../../../../config/Color';
 import { func } from '../../../../config/Const';
 import Icon from '../../../../components/Icon';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
+import { result } from 'lodash';
 
 const style = StyleSheet.create({
   container: {
@@ -18,19 +19,10 @@ const style = StyleSheet.create({
     marginVertical: '10%',
     flex: 1,
     borderRadius: 10,
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   graphContainer: {
-    // flex:4
-    // borderRadius: 10,
-    // paddingHorizontal: 5,
-    // marginHorizontal: -200,
-
   },
   graph: {
-    // borderRadius: 20,
-    // marginHorizontal: -100,
   },
   button: {
     fontSize: 18,
@@ -62,6 +54,16 @@ const style = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  carouselView: {
+    // marginVertical: 5,
+    flex: 1,
+    // borderWidth: 1,
+    justifyContent: 'center',
+  },
+  paginationView: {
+    // height: 60,
+    marginHorizontal: 5,
+  },
 });
 
 const AnalyzeGraph = (props) => { // props
@@ -72,27 +74,25 @@ const AnalyzeGraph = (props) => { // props
   // const graphDate = play;
   const [graphDate, setGraphDate] = useState(play);
   const [graphMarks, setGraphMarks] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [showNum, setShowNum] = useState(0);
 
   useEffect(() => {
     const newGraphMarks = [];
-
+    
     graphDate.forEach((date, index) => {
       let sum = 0;
       Object.values(marks).forEach((mark) => { sum = mark.includes(index) ? sum + 1 : sum; });
       newGraphMarks.push(sum);
     });
-    // setGraphMarks(newGraphMarks);
-
-    setGraphMarks(func.separateListItem(newGraphMarks,5));
-    setGraphDate(func.separateListItem(graphDate,5))
-    // graphDate=func.separateListItem(graphDate,5);
-    // console.log(func.separateListItem(newGraphMarks,2));
-    // func.alertConsole(newGraphMarks,'newGraphmarks');
-    // func.separateListItem(graphMarks,5)
-    // func.alertConsole(graphMarks,'graphMarks');
-    // console.log(graphDate);
+    setGraphMarks(newGraphMarks);
   }, []);
+
+  // useEffect(()=>{
+  //   setGraphMarks(func.separateListItem(graphMarks,5));
+  //   setGraphDate(func.separateListItem(graphDate,5));
+  //   func.alertConsole(graphDate,'h')
+  // },[]);
 
   const renderCancelButton = () => (
     <TouchableOpacity
@@ -106,30 +106,30 @@ const AnalyzeGraph = (props) => { // props
     </TouchableOpacity>
   );
 
-  const renderNavButton=()=>(
-    <View style={style.buttonsContainer}>
-      {showNum!==graphDate.length-1?(
-      <View style={style.buttonContainer}>
-        <Button
-          onPress={setShowNum(showNum+1)}
-          mode="contained"
-          color={Color.green2}
-        >
-          Next
-        </Button>
-      </View>
-      ):null}
-      {showNum!==0?(<View style={style.buttonContainer}>
-        <Button
-          onPress={setShowNum(showNum-1)}
-          mode="contained"
-          color={Color.green2}
-        >
-          Back
-        </Button>
-      </View>):null}
-    </View>
-  );
+  // const renderNavButton=()=>(
+  //   <View style={style.buttonsContainer}>
+  //     {showNum!==graphDate.length-1?(
+  //     <View style={style.buttonContainer}>
+  //       <Button
+  //         onPress={setShowNum(showNum+1)}
+  //         mode="contained"
+  //         color={Color.green2}
+  //       >
+  //         Next
+  //       </Button>
+  //     </View>
+  //     ):null}
+  //     {showNum!==0?(<View style={style.buttonContainer}>
+  //       <Button
+  //         onPress={setShowNum(showNum-1)}
+  //         mode="contained"
+  //         color={Color.green2}
+  //       >
+  //         Back
+  //       </Button>
+  //     </View>):null}
+  //   </View>
+  // );
 
   const renderGraph = () => {
     const data = {
@@ -166,8 +166,38 @@ const AnalyzeGraph = (props) => { // props
           chartConfig={chartConfig}
           verticalLabelRotation={50}
         />
-        <View style={style.button}>
-        </View>
+        {/* <View style={style.carouselView}>
+          <DeckCarousel
+            data={graphMarks}
+            layout="tinder"
+            layoutCardOffset="10"
+            renderItem={()=>
+            ( <BarChart
+                style={style.graphContainer}
+                data={data}
+                width={layout.width}
+                height={layout.height}
+                chartConfig={chartConfig}
+                verticalLabelRotation={50}
+              />)
+            }
+            // itemWidth={260}
+            sliderWidth={layout.width}
+            onSnapToItem={(index) => setActiveIndex(index)}
+          />
+      </View> */}
+      {/* <View style={style.paginationView}>
+        <Pagination
+          dotsLength={graphMarks.length}
+          inactiveDotStyle={{ backgroundColor: Color.white1 }}
+          activeDotIndex={activeIndex}
+          containerStyle={{ padding: 25 }}
+          countainerStyle={{ paddingVertical: 10 }}
+          dotStyle={{ backgroundColor: Color.white3 }}
+        />
+      </View> */}
+        {/* <View style={style.button}>
+        </View> */}
         {renderCancelButton()}
         {/* {renderNavButton()} */}
       </View>

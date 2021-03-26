@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, Text, View, Alert, Platform, ScrollView, LayoutAnimation,
+  StyleSheet, Text, View, Alert, Platform, ScrollView, LayoutAnimation,Linking
 } from 'react-native';
 import { Divider, List, Button } from 'react-native-paper';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -100,12 +100,18 @@ const Profile = (props) => {
         titleStyle: style.text1,
       },
       {
-        title: 'Log out',
+        title: 'Contact Us',
+        render: null,
+        titleStyle: style.text1,
+        onPress: ()=> Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSd0GgwtmG0PYp3sN224qERPWjQqC0WgyniGg2ZxlkfeDseung/viewform?usp=sf_link'),
+      },
+      {
+        title: 'Log Out',
         onPress: () => {
-          Alert.alert('Caution', 'Would you really want to log out?', [
+          Alert.alert('Caution', 'Would you really want to Log Out?', [
             { text: 'Cancel', style: 'cancel', onPress: () => {} },
             {
-              text: 'Log out',
+              text: 'Log Out',
               onPress: async () => {
                 await clearStorage();
                 setIsLoggedIn(false);

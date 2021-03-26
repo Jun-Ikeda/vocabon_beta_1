@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  Platform, StyleSheet, UIManager, View,
+  Platform, StyleSheet, UIManager, View,StatusBar,
 } from 'react-native';
 import { Provider } from 'react-native-paper';
 import { RecoilRoot } from 'recoil';
@@ -27,12 +27,15 @@ const App = () => {
       if (Platform.OS === 'ios') {
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
       }
-      await SplashScreen.preventAutoHideAsync();
+      // await SplashScreen.preventAutoHideAsync();
     })();
   }, []);
   return (
     <RecoilRoot>
       <Provider>
+      <StatusBar
+        barStyle="dark-content"
+      />
         <View style={style.container}>
           {/* <Switch /> */}
           <Nav />

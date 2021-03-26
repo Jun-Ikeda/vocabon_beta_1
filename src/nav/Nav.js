@@ -260,11 +260,11 @@ const Nav = () => {
         setIsInitialized(false);
         await initialize();
         await setIsInitialized(true);
-        await SplashScreen.hideAsync();
+        // await SplashScreen.hideAsync();
       } else if (isLoggedIn === false) {
         account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => {});
         await setIsInitialized(true);
-        await SplashScreen.hideAsync();
+        // await SplashScreen.hideAsync();
       }
     })();
   }, [isLoggedIn]);
