@@ -17,6 +17,7 @@ const style = StyleSheet.create({
 const AnalyzeList = (props) => {
   // props
   const {
+    content,
     contentSorted, vocabDetailVisible, setVocabDetailVisible, marks, index, setIndex,
   } = props;
   // state
@@ -28,6 +29,7 @@ const AnalyzeList = (props) => {
       content={contentSorted}
       itemVisible={{ term: true, definition: true }}
       renderCardRight={(vocab) => <Text>{marks?.[vocab.key]?.length ?? 0}</Text>}
+      renderCardLeft={(vocab) => <Text style={{ fontSize: 18, paddingRight: 10 }}>{Object.keys(content).indexOf(vocab.key) + 1}</Text>}
       onPressCard={(vocab) => {
         // func.alertConsole(vocab.key);
         setVocabDetailVisible(vocab.key);

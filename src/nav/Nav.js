@@ -139,13 +139,13 @@ const Nav = () => {
     let fireTimeStamp = 0;
     await database.ref(`timestamp/deckGeneral/${userIDSelf}`).once('value', (snapshot) => { fireTimeStamp = snapshot.val(); });
     const localTimeStamp = await LocalStorage.load({ key: 'deckGeneral' }).catch(() => null);
+    const newDecksGeneral = {};
     if (fireTimeStamp < localTimeStamp) {
       setSyncState((prev) => ([...prev, 'deckGeneral: upload']));
       // get localstorage
       const deckIDs = await LocalStorage.getIdsForKey('deck');
       const decks = await LocalStorage.getAllDataForKey('deck');
       // apply to recoil/global
-      const newDecksGeneral = {};
       deckIDs.forEach((deckID, index) => {
         newDecksGeneral[deckID] = decks[index]?.general;
       });
@@ -162,7 +162,6 @@ const Nav = () => {
       deckIDsAll = deckIDs;
     } else if (fireTimeStamp > localTimeStamp) {
       setSyncState((prev) => ([...prev, 'deckGeneral: download']));
-      const newDeckGeneral = {};
       // get firebase
       await firestore.collection('deck').where('user', '==', userIDSelf).get().then(async (snapshot) => {
         await snapshot.forEach(async (doc) => {
@@ -174,21 +173,20 @@ const Nav = () => {
         const deckIDs = await LocalStorage.getIdsForKey('deck');
         const decks = await LocalStorage.getAllDataForKey('deck');
         deckIDs.forEach((deckID, index) => {
-          newDeckGeneral[deckID] = decks[index]?.general;
+          newDecksGeneral[deckID] = decks[index]?.general;
         });
-        setDeckGeneral(newDeckGeneral);
+        setDeckGeneral(newDecksGeneral);
       });
       // set timestamp
       await LocalStorage.save({ key: 'deckGeneral', data: fireTimeStamp });
       //
-      deckIDsAll = Object.keys(newDeckGeneral);
+      deckIDsAll = Object.keys(newDecksGeneral);
     } else { // firestoreの内容とlocalstorageの内容は同じ
       setSyncState((prev) => ([...prev, `deckGeneral: nochange (fire: ${fireTimeStamp} local: ${localTimeStamp})`]));
       // get local
       const deckIDs = await LocalStorage.getIdsForKey('deck');
       const decks = await LocalStorage.getAllDataForKey('deck');
       // apply to recoil/global
-      const newDecksGeneral = {};
       await deckIDs.forEach((deckID, index) => {
         newDecksGeneral[deckID] = decks[index]?.general ?? {};
       });
@@ -211,8 +209,8 @@ const Nav = () => {
 
     // content
     deckIDsAll.forEach(async (deckID) => {
-      if (decksGeneral[deckID].user === account.general.userID) {
-        // timestamp
+      // alert(JSON.stringify({ decksGeneral: newDecksGeneral[deckID], general: account.general }));
+      if (newDecksGeneral[deckID].user === account.general.userID) { // timestamp
         let fireTimeStampDeck = null;
         const localstorage = await LocalStorage.load({ key: 'deck', id: deckID }).catch(() => null);
         const localTimeStampDeck = localstorage?.timestamp ?? null;
@@ -249,6 +247,8 @@ const Nav = () => {
           // apply to recoil/global
           decksContent[deckID] = deck.content;
         }
+      } else {
+        decksContent[deckID] = { user: decksGeneral[deckID].user, userID: account.general.userID };
       }
     });
     // deleteされてたらlocalstorage削除

@@ -49,6 +49,7 @@ const VocabList = (props) => {
     labelVisible: labelVisibleProps,
     itemVisible,
     renderCardRight,
+    renderCardLeft,
     textStyle,
     itemStyle,
     state,
@@ -108,6 +109,7 @@ const VocabList = (props) => {
     const { key, value } = vocab;
     const renderContent = () => (
       <View style={style.card}>
+        {renderCardLeft(vocab)}
         <View style={style.contentContainer}>
           {deck.items.map((item) => {
             const { key, title } = item;
@@ -204,6 +206,7 @@ VocabList.propTypes = {
     PropTypes.func,
   ]),
   renderCardRight: PropTypes.func,
+  renderCardLeft: PropTypes.func,
   textStyle: PropTypes.object,
   itemStyle: PropTypes.shape({
     term: PropTypes.object,
@@ -244,6 +247,7 @@ VocabList.defaultProps = {
     cf: false,
   },
   renderCardRight: () => null,
+  renderCardLeft: () => null,
   textStyle: {},
   itemStyle: {
     term: {},

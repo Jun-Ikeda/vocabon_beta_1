@@ -99,7 +99,8 @@ const Analyze = (props) => {
   const [dateVisible, setDateVisible] = useState(false);
   const [ascendOrDescend, setAscendOrDescend] = useState(true); // if true ascend; otherwise descend
   const [mode, setMode] = useState('noDate');
-  const [termLabel, setTermLabel] = useState('Term ↓');
+  const [indexLabel, setIndexLabel] = useState('Index ↓');
+  const [termLabel, setTermLabel] = useState('Term');
   const [marksLabel, setMarksLabel] = useState('');
   const [index, setIndex] = useState(0);
 
@@ -125,6 +126,7 @@ const Analyze = (props) => {
   const renderVocab = () => (
     <AnalyzeList
       marks={marks}
+      content={content}
       contentSorted={contentSorted}
       vocabDetailVisible={detailVisibleID}
       setVocabDetailVisible={setDetailVisibleID}
@@ -157,6 +159,21 @@ const Analyze = (props) => {
   const renderLabels = () => {
     const labels = [
       {
+        label: indexLabel,
+        onPress: () => {
+          const newContentSorted = JSON.parse(JSON.stringify(content)); /* func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
+            const nameA = a.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
+            const nameB = b.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
+            return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
+          })); */
+          setContentSorted(newContentSorted);
+          setIndexLabel('Index ↓');
+          setTermLabel('Term');
+          setMarksLabel('');
+          console.log(typeof (termLabel));
+        },
+      },
+      {
         label: termLabel,
         onPress: () => {
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -165,6 +182,7 @@ const Analyze = (props) => {
             return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
+          setIndexLabel('Index');
           setTermLabel('Term ↓');
           setMarksLabel('');
           console.log(typeof (termLabel));
@@ -172,6 +190,7 @@ const Analyze = (props) => {
       },
       {
         label: marksLabel,
+        style: { flex: 1, justifyContent: 'flex-end' },
         element: <Icon.AntDesign name="close" style={[style.label, { color: Color.cud.red }]} />,
         onPress: () => {
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -180,6 +199,7 @@ const Analyze = (props) => {
             return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
+          setIndexLabel('Index');
           setTermLabel('Term');
           setMarksLabel('↓');
         },
@@ -188,7 +208,7 @@ const Analyze = (props) => {
     return (
       <View style={style.labelContainer}>
         {labels.map((label) => (
-          <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={label.onPress} key={label.label.toLowerCase()}>
+          <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center' }, label?.style]} onPress={label.onPress} key={label.label.toLowerCase()}>
             <Text style={style.label}>{label.label}</Text>
             {label?.element ?? null}
           </TouchableOpacity>
