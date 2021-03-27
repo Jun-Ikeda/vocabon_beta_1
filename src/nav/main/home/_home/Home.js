@@ -13,11 +13,11 @@ import { useNavigationState } from '@react-navigation/native';
 import AddButton from './AddButton';
 
 import Carousel from '../../../../components/deck/carousel/Carousel';
-import { decksGeneral } from '../../../../config/deck/Deck';
+import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
 import Color from '../../../../config/Color';
 
 import { currentRouteState } from '../../../../../dev/DocInJapanese';
-import { getAccountContent } from '../../../../config/account/Account';
+import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
 import { func } from '../../../../config/Const';
 
 const style = StyleSheet.create({
@@ -63,7 +63,7 @@ const Home = (props) => {
   useNavigationState(({ routes }) => setCurrentRoute(routes[routes.length - 1].name));
 
   // const allDeckIDs = Object.keys(general);
-  // const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
+  const myDeckIDs = allDeckIDs.filter((deckID) => getDeckGeneral(general, deckID).user === getAccountGeneral().userID);
   const bookmarkDeckIDs = allDeckIDs.filter((deckID) => getAccountContent(deckID).bookmark);
 
   useEffect(() => {
@@ -83,7 +83,8 @@ const Home = (props) => {
   return (
     <View style={style.container}>
       <ScrollView style={style.scrollContainer} contentContainerStyle={{ paddingBottom: 20 }}>
-        {allDeckIDs.length === 0 ? null : renderRow({ title: 'LOCAL', deckIDs: allDeckIDs })}
+        {myDeckIDs.length === 0 ? null : renderRow({ title: 'LOCAL', deckIDs: myDeckIDs })}
+        {allDeckIDs.length === 0 ? null : renderRow({ title: 'All', deckIDs: allDeckIDs })}
         {bookmarkDeckIDs.length === 0 ? null : renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })}
         {/* {allDeckIDs.length === 0 ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

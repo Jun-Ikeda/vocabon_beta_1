@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet, Text, View, Alert, Platform, ScrollView, LayoutAnimation,Linking
+  StyleSheet, Text, View, Alert, Platform, ScrollView, LayoutAnimation, Linking,
 } from 'react-native';
 import { Divider, List, Button } from 'react-native-paper';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -103,7 +103,7 @@ const Profile = (props) => {
         title: 'Contact Us',
         render: null,
         titleStyle: style.text1,
-        onPress: ()=> Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSd0GgwtmG0PYp3sN224qERPWjQqC0WgyniGg2ZxlkfeDseung/viewform?usp=sf_link'),
+        onPress: () => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSd0GgwtmG0PYp3sN224qERPWjQqC0WgyniGg2ZxlkfeDseung/viewform?usp=sf_link'),
       },
       {
         title: 'Log Out',
@@ -138,7 +138,7 @@ const Profile = (props) => {
                     style: 'destructive',
                     onPress: async () => {
                       try {
-                        deleteAllDecks(setDeckGeneral);
+                        deleteAllDecks(setDeckGeneral, deckGeneral);
                         deleteAccountContentAll();
                         saveAccountGeneral({}, false);
                         await deleteAccount();

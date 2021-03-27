@@ -89,7 +89,7 @@ const MenuButtons = (props) => {
 
   const deleteDeckAndAccountContent = async () => {
     setIsDeleted(true);
-    await deleteDeck(setDecksGeneralState, deckID);
+    await deleteDeck(setDecksGeneralState, deckID, deckGeneral);
     await deleteAccountContent(deckID);
     navigation.goBack();
   };

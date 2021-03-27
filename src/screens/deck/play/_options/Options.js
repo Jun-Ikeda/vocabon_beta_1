@@ -17,19 +17,21 @@ import { RangeSlider } from '@sharcoux/slider';
 import RNPickerSelect from 'react-native-picker-select';
 
 import { divide } from 'lodash';
-import { getAccountContent } from '../../../../config/account/Account';
+import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
 import Color from '../../../../config/Color';
 import { deck, func, header } from '../../../../config/Const';
-import { getDeckContent } from '../../../../config/deck/Deck';
+import { decksContent, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
 import { playhistory, playoption } from '../../../../config/PersistentData';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
 import DynamicallySelectedPicker from '../../../../components/DynamicallySelectedPicker';
 import NumberInputRange from '../../../../components/numberinput/NumberInputRange';
+import { storage } from '../../../../config/firebase/Firebase';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
   },
   divider: {
     backgroundColor: Color.gray3,
@@ -99,7 +101,9 @@ const Options = (props) => {
   const [mode, setMode] = useState('all');
 
   const deckContent = getDeckContent(deckID);
+  const general = getDeckGeneral(deckID);
   const { marks, play } = getAccountContent(deckID);
+  const accountGeneral = getAccountGeneral();
 
   const [isLoading, setIsLoading] = useState(true);
   const allKeys = Object.keys(deckContent);
@@ -113,6 +117,24 @@ const Options = (props) => {
       const { width, height } = e.window;
       setScreen({ width, height });
     });
+  }, []);
+
+  const [deckContentLoaded, setDeckContentLoaded] = useState(false);
+  // load deck content
+  useEffect(() => {
+    if (general?.user === accountGeneral.userID/* my deck */ || Object.keys(deckContent).length !== 0/* other's deck previously loaded */) {
+      setDeckContentLoaded(true);
+    } else {
+      (async () => {
+        await storage.ref('deck').child(deckID).getDownloadURL().then((url) => fetch(url)
+          .then(async (response) => response.json())
+          .then(async (result) => {
+            // apply to recoil/global
+            decksContent[deckID] = result;
+          }));
+        setDeckContentLoaded(true);
+      })();
+    }
   }, []);
 
   useEffect(() => {
@@ -446,7 +468,7 @@ const Options = (props) => {
     );
   };
 
-  return (
+  return deckContentLoaded ? (
     <View style={style.container}>
       <ActivityIndicator animating={isLoading} />
       <ScrollView style={{ flex: 1 }}>
@@ -460,7 +482,7 @@ const Options = (props) => {
       {renderItemConfigPopUp()}
       {renderCustomPopUp()}
     </View>
-  );
+  ) : <View style={style.container}><ActivityIndicator animating /></View>;
 };
 
 Options.propTypes = {

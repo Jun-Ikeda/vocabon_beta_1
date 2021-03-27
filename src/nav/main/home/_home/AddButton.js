@@ -14,6 +14,17 @@ import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
 import { firestore } from '../../../../config/firebase/Firebase';
 import { unshortenURI } from '../../../../config/Unsplash';
+import langs from '../../../../config/Langs';
+
+const style = StyleSheet.create({
+  popupContainer: {
+    backgroundColor: 'white',
+    flex: 1,
+    margin: 60,
+    // padding: 20,
+    borderRadius: 10,
+  },
+});
 
 const AddButton = (props) => {
   const { navigation } = props;
@@ -38,6 +49,21 @@ const AddButton = (props) => {
     // saveDeckGeneral(setDeckGeneral);
     // navigation.navigate('');
   };
+  const getDeckGeneralTentative = () => {
+    firestore.collection('deck').doc(id).get().then(async (doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+        if (data.user === accountGeneral.userID) {
+          Alert.alert('Error', 'This deck is yours');
+        } else {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          setTentativeDeckGeneral(data);
+        }
+      } else {
+        Alert.alert('Error', 'No deck corresonding to the ID exist');
+      }
+    });
+  };
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
       <FloatingButton
@@ -55,49 +81,48 @@ const AddButton = (props) => {
           isVisible={idInputVisible}
           setVisible={setIDInputVisible}
           renderMenu={() => (
-            <View style={{
-              backgroundColor: 'white',
-              flex: 1,
-              margin: 60,
-              padding: 20,
-              borderRadius: 10,
-            }}
-            >
-              <TextInput value={id} onChangeText={setID} placeholder="Paste ID here" />
-              <Button
-                mode="contained"
-                color={Color.green2}
-                style={{ marginHorizontal: 50, marginVertical: 20 }}
-                onPress={() => {
-                  firestore.collection('deck').doc(id).get().then(async (doc) => {
-                    if (doc.exists) {
-                      const data = doc.data();
-                      if (data.user === accountGeneral.userID) {
-                        Alert.alert('Error', 'This deck is yours');
-                      } else {
-                        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                        setTentativeDeckGeneral(data);
-                      }
-                    } else {
-                      Alert.alert('Error', 'No deck corresonding to the ID exist');
-                    }
-                  });
+            <View style={style.popupContainer}>
+              <Image
+                style={{
+                  height: '50%', width: '100%', borderTopLeftRadius: 10, borderTopRightRadius: 10,
                 }}
-              >
-                Search
-              </Button>
-              <Image style={{ width: '100%', flex: 1 }} source={{ uri: unshortenURI(tentativeDeckGeneral?.thumbnail?.uri ?? '') }} />
+                source={{ uri: unshortenURI(tentativeDeckGeneral?.thumbnail?.uri ?? '') }}
+              />
+              <View style={{ padding: 10 }}>
+                <Text style={{ fontSize: 30 }}>{tentativeDeckGeneral?.title}</Text>
+                <Text style={{ fontSize: 18 }}>{`Term in ${langs.filter((lang) => (tentativeDeckGeneral?.language?.term === lang.tag))[0]?.name ?? 'Not Found'}`}</Text>
+                <Text style={{ fontSize: 18 }}>{`Definition in ${langs.filter((lang) => (tentativeDeckGeneral?.language?.definition === lang.tag))[0]?.name ?? 'Not Found'}`}</Text>
+                <Text style={{ fontSize: 18 }}>{`${tentativeDeckGeneral?.num} words`}</Text>
+              </View>
               <Button
                 mode="contained"
                 color={Color.green2}
                 style={{ marginHorizontal: 50, marginVertical: 20 }}
                 onPress={() => {
-                  Alert.alert('This function is under construction');
+                  saveDeckGeneral(setDeckGeneral, id, tentativeDeckGeneral);
+                  setIDInputVisible(false);
+                  navigation.navigate('menu', { deckID: id });
+                  // Alert.alert('This function is under construction');
                 }}
                 disabled={Object.keys(tentativeDeckGeneral).length === 0}
               >
                 Use this deck
               </Button>
+              <TextInput
+                value={id}
+                onChangeText={setID}
+                placeholder="Paste ID here"
+                style={{
+                  position: 'absolute', right: 20, left: 20, top: 20, opacity: 0.8,
+                }}
+                right={(
+                  <TextInput.Icon
+                    name="search-web"
+                    disabled={id.length !== 10}
+                    onPress={getDeckGeneralTentative}
+                  />
+                )}
+              />
             </View>
           )}
         />

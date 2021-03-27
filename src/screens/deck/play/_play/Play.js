@@ -6,6 +6,7 @@ import {
   Platform,
   Alert,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button } from 'react-native-paper';
@@ -18,7 +19,7 @@ import Color from '../../../../config/Color';
 import {
   decksGeneral, getDeckContent, getDeckGeneral, saveDeckContent,
 } from '../../../../config/deck/Deck';
-import { getAccountContent, saveAccountContent } from '../../../../config/account/Account';
+import { getAccountContent, getAccountGeneral, saveAccountContent } from '../../../../config/account/Account';
 
 import Icon from '../../../../components/Icon';
 
@@ -33,6 +34,7 @@ import { playhistory } from '../../../../config/PersistentData';
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
   },
   checker: {
     textAlign: 'center',
@@ -95,6 +97,7 @@ const Play = (props) => {
   // state
   const [content, setContent] = useState(getDeckContent(deckID));
   const { marks, play } = getAccountContent(deckID);
+  const accountGeneral = getAccountGeneral();
 
   const validVocabIDs = validVocabIDsProp;
   const validVocab = returnValidVocab(content, validVocabIDsProp);
@@ -114,10 +117,14 @@ const Play = (props) => {
   const [hasUnsavedHistory, setHasUnsavedHistory] = useState(false);
   const [isEditChanged, setIsEditChanged] = useState(false);
 
+  // const [deckContentLoaded, setDeckContentLoaded] = useState(false);
+
+  // suspend
   useEffect(() => navigation.addListener('beforeRemove', (e) => {
     const suspend = async () => {
       playhistory.save(deckID, validVocabIDs, sortMode, itemVisible, leftVocabID, rightVocabID);
     };
+    if (isEditChanged) saveDeckContent(deckID, content);
     if (!(Platform.OS === 'web') && hasUnsavedHistory) {
       e.preventDefault();
       Alert.alert(
@@ -144,7 +151,7 @@ const Play = (props) => {
           },
         ],
       );
-    } else if (isEditChanged) saveDeckContent(deckID, content);
+    }
   }),
   [navigation, hasUnsavedHistory, leftVocabID, rightVocabID, isEditChanged, content]);
 

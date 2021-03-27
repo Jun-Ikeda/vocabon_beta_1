@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Speech from 'expo-speech';
 import { account, getAccountContent, getAccountGeneral } from '../../src/config/account/Account';
-import { func } from '../../src/config/Const';
+import { deck, func } from '../../src/config/Const';
 import LocalStorage from '../../src/config/LocalStorage';
-import Deck, { getDeckContent } from '../../src/config/deck/Deck';
+import Deck, { decksContent, getDeckContent } from '../../src/config/deck/Deck';
 import { getRandomImage } from '../../src/config/Unsplash';
 import UUID from '../../src/config/UUID';
 
@@ -27,6 +27,10 @@ const Button = [
       const generalLocalStorage = await LocalStorage.load({ key: 'accountGeneral' });
       return ({ global: generalRecoilGlobal, local: generalLocalStorage });
     },
+  },
+  {
+    title: 'Deck Content',
+    onPress: async () => ({ content: decksContent }),
   },
   {
     title: 'Deck General',

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   LayoutAnimation,
-  StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView,
+  StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView, ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import { Button, Portal } from 'react-native-paper';
-import { account, getAccountContent } from '../../../../config/account/Account';
-import { getDeckContent } from '../../../../config/deck/Deck';
+import { account, getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
+import { decksContent, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
@@ -16,6 +16,7 @@ import AnalyzeList from './AnalyzeList';
 import AnalyzeButtons from './AnalyzeButtons';
 import AnalyzeGraph from './AnalyzeGraph';
 import Icon from '../../../../components/Icon';
+import { storage } from '../../../../config/firebase/Firebase';
 
 const iconSize = 30;
 
@@ -89,7 +90,9 @@ const Analyze = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
 
   const { marks, play } = getAccountContent(deckID);
-  const content = getDeckContent(deckID);
+  const accountGeneral = getAccountGeneral();
+  let content = getDeckContent(deckID);
+  const general = getDeckGeneral(deckID);
   const [contentSorted, setContentSorted] = useState(content);
   const [detailVisibleID, setDetailVisibleID] = useState('');
   const [graphVisible, setGraphVisible] = useState(false);
@@ -99,6 +102,25 @@ const Analyze = (props) => {
   const [termLabel, setTermLabel] = useState('Term ↓');
   const [marksLabel, setMarksLabel] = useState('');
   const [index, setIndex] = useState(0);
+
+  const [deckContentLoaded, setDeckContentLoaded] = useState(false);
+  // load deck content
+  useEffect(() => {
+    if (general?.user === accountGeneral.userID/* my deck */ || Object.keys(content).length !== 0/* other's deck previously loaded */) {
+      setDeckContentLoaded(true);
+    } else {
+      (async () => {
+        await storage.ref('deck').child(deckID).getDownloadURL().then((url) => fetch(url)
+          .then(async (response) => response.json())
+          .then(async (result) => {
+            // apply to recoil/global
+            decksContent[deckID] = result;
+            content = result;
+          }));
+        setDeckContentLoaded(true);
+      })();
+    }
+  }, []);
 
   const renderVocab = () => (
     <AnalyzeList
@@ -179,10 +201,10 @@ const Analyze = (props) => {
     let dateList = [];
     let iconName = '';
     if (ascendOrDescend === true) {
-      dateList = play.sort((a, b) => a > b ? -1 : 1);
+      dateList = play.sort((a, b) => (a > b ? -1 : 1));
       iconName = 'chevron-up';
     } else {
-      dateList = play.sort((a, b) => b > a ? -1  : 1);
+      dateList = play.sort((a, b) => (b > a ? -1 : 1));
       iconName = 'chevron-down';
     }
 
@@ -209,12 +231,13 @@ const Analyze = (props) => {
     };
 
     const renderCancelButton = () => (
-      <TouchableOpacity style={style.cancelButton} onPress={() => 
-        {
+      <TouchableOpacity
+        style={style.cancelButton}
+        onPress={() => {
           LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setDetailVisibleID('');
-        }
-        }>
+        }}
+      >
         <Icon.Feather name="x" style={style.cancelButtonIcon} />
       </TouchableOpacity>
     );
@@ -251,7 +274,8 @@ const Analyze = (props) => {
                 <TouchableOpacity
                   onPress={() => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    returnNextOrPrevID(false);}}
+                    returnNextOrPrevID(false);
+                  }}
                   style={style.detailbutton}
                 >
                   <Text style={{ color: Color.white1 }}>BACK</Text>
@@ -264,8 +288,9 @@ const Analyze = (props) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    returnNextOrPrevID(true); 
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);}}
+                    returnNextOrPrevID(true);
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                  }}
                   style={style.detailbutton}
                 >
                   <Text style={{ color: Color.white1 }}>NEXT</Text>
@@ -278,7 +303,7 @@ const Analyze = (props) => {
     );
   };
 
-  return (
+  return deckContentLoaded ? (
     <View style={{ flex: 1 }}>
       {/* <ScrollView>
         <Button onPress={async () => {
@@ -297,7 +322,7 @@ const Analyze = (props) => {
       {renderVocab()}
       {renderVocabDetail()}
     </View>
-  );
+  ) : <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator animating /></View>;
 };
 
 Analyze.propTypes = {

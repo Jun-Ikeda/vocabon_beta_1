@@ -82,7 +82,7 @@ export const saveDeckContent = async (deckID, newData, merge = true) => {
   database.ref(`timestamp/deckContent/${deckID}`).set(timestamp);
 };
 
-export const deleteDeck = (setDeckGeneral, deckID) => {
+export const deleteDeck = (setDeckGeneral, deckID, deckGeneral) => {
   const account = getAccountGeneral();
   const timestamp = func.compressUnix();
   // recoil/global variables
@@ -94,15 +94,17 @@ export const deleteDeck = (setDeckGeneral, deckID) => {
   delete decksContent[deckID];
   // localstorage
   LocalStorage.remove({ key: 'deck', id: deckID });
-  // firebase
-  storage.ref('deck').child(deckID).delete();
-  firestore.collection('deck').doc(deckID).delete().then(() => Alert.alert('The deck was successfully deleted'));
-  // timestamp
-  database.ref(`timestamp/deckContent/${deckID}`).set(0);
-  database.ref(`timestamp/deckGeneral/${account.userID}`).set(timestamp);
+  if (deckGeneral?.user === account.userID) {
+    // firebase
+    storage.ref('deck').child(deckID).delete();
+    firestore.collection('deck').doc(deckID).delete().then(() => Alert.alert('The deck was successfully deleted'));
+    // timestamp
+    database.ref(`timestamp/deckContent/${deckID}`).set(0);
+    database.ref(`timestamp/deckGeneral/${account.userID}`).set(timestamp);
+  }
 };
 
-export const deleteAllDecks = (setDeckGeneral) => {
+export const deleteAllDecks = (setDeckGeneral, deckGeneral) => {
   const account = getAccountGeneral();
   const deckIDsAll = Object.keys(decksContent);
   // recoil/global variables
@@ -119,11 +121,11 @@ export const deleteAllDecks = (setDeckGeneral) => {
     });
   });
   deckIDsAll.forEach((deckID) => {
-    storage.ref('deck').child(deckID).delete();
+    if (deckGeneral[deckID]?.user === account.userID) storage.ref('deck').child(deckID).delete();
   });
   // timestamp
   deckIDsAll.forEach((deckID) => {
-    database.ref(`timestamp/deckContent/${deckID}`).remove();
+    if (deckGeneral[deckID]?.user === account.userID) database.ref(`timestamp/deckContent/${deckID}`).remove();
   });
   database.ref(`timestamp/deckGeneral/${account.userID}`).remove();
 };

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  Platform, StyleSheet, UIManager, View,StatusBar,
+  Platform, StyleSheet, UIManager, View, StatusBar,
 } from 'react-native';
 import { Provider } from 'react-native-paper';
 import { RecoilRoot } from 'recoil';
@@ -9,6 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import Nav from './src/nav/Nav';
 
 import Switch from './dev/Switch';
+import ControlPanel from './dev/controlpanel/ControlPanel';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -33,12 +34,13 @@ const App = () => {
   return (
     <RecoilRoot>
       <Provider>
-      <StatusBar
-        barStyle="dark-content"
-      />
+        <StatusBar
+          barStyle="dark-content"
+        />
         <View style={style.container}>
           {/* <Switch /> */}
           <Nav />
+          <ControlPanel />
         </View>
       </Provider>
     </RecoilRoot>
