@@ -11,12 +11,13 @@ import { decksContent, getDeckContent, getDeckGeneral } from '../../../../config
 import { func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
+import Icon from '../../../../components/Icon';
+import { storage } from '../../../../config/firebase/Firebase';
 
 import AnalyzeList from './AnalyzeList';
 import AnalyzeButtons from './AnalyzeButtons';
 import AnalyzeGraph from './AnalyzeGraph';
-import Icon from '../../../../components/Icon';
-import { storage } from '../../../../config/firebase/Firebase';
+import AnalyzeDetailPopUp from './AnalyzeDetailPopUp';
 
 const iconSize = 30;
 
@@ -103,8 +104,8 @@ const Analyze = (props) => {
   const [termLabel, setTermLabel] = useState('Term');
   const [marksLabel, setMarksLabel] = useState('');
   const [index, setIndex] = useState(0);
-
   const [deckContentLoaded, setDeckContentLoaded] = useState(false);
+
   // load deck content
   useEffect(() => {
     if (general?.user === accountGeneral.userID/* my deck */ || Object.keys(content).length !== 0/* other's deck previously loaded */) {
@@ -156,10 +157,26 @@ const Analyze = (props) => {
     />
   );
 
+  const renderDetailPopUp = () =>(
+    <AnalyzeDetailPopUp
+      play={play}
+      marks={marks}
+      detailVisibleID={detailVisibleID}
+      setDetailVisibleID={setDetailVisibleID}
+      index={index}
+      setIndex={setIndex}
+      ascendOrDescend={ascendOrDescend}
+      setAscendOrDescend={setAscendOrDescend}
+      content={content}
+      contentSorted={contentSorted}
+    />
+  );
+
   const renderLabels = () => {
     const labels = [
       {
         label: indexLabel,
+        element: <Icon.MaterialCommunityIcons name="order-numeric-ascending" style={style.label} />,
         onPress: () => {
           const newContentSorted = JSON.parse(JSON.stringify(content)); /* func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
             const nameA = a.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
@@ -175,6 +192,7 @@ const Analyze = (props) => {
       },
       {
         label: termLabel,
+        element: <Icon.MaterialCommunityIcons name="order-alphabetical-ascending" style={style.label} />,
         onPress: () => {
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
             const nameA = a.value.term.toString().toLowerCase(); // 大文字と小文字を無視する
@@ -217,112 +235,6 @@ const Analyze = (props) => {
     );
   };
 
-  const renderVocabDetail = () => {
-    let dateList = [];
-    let iconName = '';
-    if (ascendOrDescend === true) {
-      dateList = play.sort((a, b) => (a > b ? -1 : 1));
-      iconName = 'chevron-up';
-    } else {
-      dateList = play.sort((a, b) => (b > a ? -1 : 1));
-      iconName = 'chevron-down';
-    }
-
-    const returnNextOrPrevID = (nextOrPrev) => {
-      const indexList = Object.keys(contentSorted);
-      setIndex(indexList.indexOf(detailVisibleID));
-      let newIndex;
-      if (nextOrPrev === true) {
-        if (index >= indexList.length - 1) {
-          newIndex = 0;
-        } else {
-          newIndex = index + 1;
-        }
-      } else if (nextOrPrev === false) {
-        if (index <= 0) {
-          newIndex = indexList.length - 1;
-        } else {
-          newIndex = index - 1;
-        }
-      }
-      setIndex(newIndex);
-      setDetailVisibleID(indexList[newIndex]);
-      console.log(newIndex);
-    };
-
-    const renderCancelButton = () => (
-      <TouchableOpacity
-        style={style.cancelButton}
-        onPress={() => {
-          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-          setDetailVisibleID('');
-        }}
-      >
-        <Icon.Feather name="x" style={style.cancelButtonIcon} />
-      </TouchableOpacity>
-    );
-
-    return (
-      <Portal>
-        <PopUpMenu
-          style={style.popupmenu}
-          isVisible={!(detailVisibleID === '')}
-          setVisible={() => setDetailVisibleID('')}
-          renderMenu={() => (
-            <View style={style.detailcontainer}>
-              {renderCancelButton()}
-              <View style={{ flex: 1 }}>
-                <Text style={style.detailtext}>{`Term: ${content[detailVisibleID]?.term}`}</Text>
-                <Text style={style.detailtext}>{`Def: ${content[detailVisibleID]?.definition}`}</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    padding: 5,
-                  }}
-                >
-                  <Icon.Feather name="x" size={iconSize} color={Color.cud.red} />
-                  <Text style={[style.detailtext]}>
-                    history
-                  </Text>
-                </View>
-                <View style={{ backgroundColor: Color.white2, borderRadius: iconSize / 3 }}>
-                  {marks[detailVisibleID]?.map((time) => <Text style={style.detaildate}>{func.formatDate(dateList[time])}</Text>)}
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    returnNextOrPrevID(false);
-                  }}
-                  style={style.detailbutton}
-                >
-                  <Text style={{ color: Color.white1 }}>BACK</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={style.detailbutton}
-                  onPress={() => setAscendOrDescend(!ascendOrDescend)}
-                >
-                  <Icon.Entypo name={iconName} size={iconSize * 0.66} color={Color.white1} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    returnNextOrPrevID(true);
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                  }}
-                  style={style.detailbutton}
-                >
-                  <Text style={{ color: Color.white1 }}>NEXT</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        />
-      </Portal>
-    );
-  };
-
   return deckContentLoaded ? (
     <View style={{ flex: 1 }}>
       {/* <ScrollView>
@@ -340,7 +252,7 @@ const Analyze = (props) => {
       {renderLabels()}
       {renderGraphPopup()}
       {renderVocab()}
-      {renderVocabDetail()}
+      {renderDetailPopUp()}
     </View>
   ) : <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator animating /></View>;
 };

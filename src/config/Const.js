@@ -403,8 +403,8 @@ export const deck = {
   items: [
     { key: 'term', title: 'Term' },
     { key: 'definition', title: 'Definition' },
-    { key: 'exampleT', title: 'Example in Term\'s language' },
-    { key: 'exampleD', title: 'Example in Definition\'s language' },
+    { key: 'exampleT', title: 'e.g. in Term\'s language' },
+    { key: 'exampleD', title: 'e.g. in Definition\'s language' },
     { key: 'synonym', title: 'Synonym' },
     { key: 'antonym', title: 'Antonym' },
     { key: 'prefix', title: 'Prefix' },
