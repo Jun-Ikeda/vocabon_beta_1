@@ -9,7 +9,6 @@ import { Button, Portal } from 'react-native-paper';
 import { account, getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
 import { decksContent, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
 import { func } from '../../../../config/Const';
-import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
 import { storage } from '../../../../config/firebase/Firebase';
@@ -19,71 +18,28 @@ import AnalyzeButtons from './AnalyzeButtons';
 import AnalyzeGraph from './AnalyzeGraph';
 import AnalyzeDetailPopUp from './AnalyzeDetailPopUp';
 
-const iconSize = 30;
+const unPressedColor = Color.defaultBackground;
+const pressedColor = Color.white3;
 
 const style = StyleSheet.create({
   container: {
     padding: 10,
     margin: 5,
-    borderRadius: iconSize / 3,
-    flexDirection: 'row',
+    borderRadius: 10,
   },
   labelContainer: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    marginVertical: 10,
+    marginHorizontal: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+  eachLabelContainer: {
+    marginLeft: 10,
+    padding: 3,
+    borderRadius: 5,
   },
   label: {
-    fontSize: iconSize * 0.66,
-    marginLeft: 20,
-  },
-  text: {
-    fontSize: iconSize,
-  },
-  detailcontainer: {
-    paddingHorizontal: '8%',
-    paddingVertical: 20,
-    marginHorizontal: '5%',
-    marginVertical: '15%',
-    backgroundColor: Color.white1,
-    borderRadius: 10,
-    flex: 1,
-  },
-  detailtext: {
-    fontSize: iconSize * 0.66,
-    padding: iconSize * 0.176,
-  },
-  detaildate: {
-    fontSize: iconSize * 0.66,
-    paddingVertical: iconSize * 0.176,
-    paddingHorizontal: 20,
-  },
-  detailbutton: {
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    marginHorizontal: 10,
-    backgroundColor: Color.green2,
-    fontSize: iconSize * 0.66,
-    borderRadius: 7,
-  },
-  popupmenu: {
-    marginHorizontal: '20%',
-  },
-  cancelButton: {
-    position: 'absolute',
-    top: -15,
-    right: -15,
-    height: 40,
-    width: 40,
-    borderRadius: 40 / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Color.gray3,
-  },
-  cancelButtonIcon: {
-    fontSize: 24,
-    color: Color.gray1,
+    fontSize: 20,
   },
 });
 
@@ -100,9 +56,9 @@ const Analyze = (props) => {
   const [dateVisible, setDateVisible] = useState(false);
   const [ascendOrDescend, setAscendOrDescend] = useState(true); // if true ascend; otherwise descend
   const [mode, setMode] = useState('noDate');
-  const [indexLabel, setIndexLabel] = useState('Index ↓');
-  const [termLabel, setTermLabel] = useState('Term');
-  const [marksLabel, setMarksLabel] = useState('');
+  const [indexLabel, setIndexLabel] = useState(pressedColor);
+  const [termLabel, setTermLabel] = useState(unPressedColor);
+  const [marksLabel, setMarksLabel] = useState(unPressedColor);
   const [index, setIndex] = useState(0);
   const [deckContentLoaded, setDeckContentLoaded] = useState(false);
 
@@ -157,7 +113,7 @@ const Analyze = (props) => {
     />
   );
 
-  const renderDetailPopUp = () =>(
+  const renderDetailPopUp = () => (
     <AnalyzeDetailPopUp
       play={play}
       marks={marks}
@@ -176,6 +132,7 @@ const Analyze = (props) => {
     const labels = [
       {
         label: indexLabel,
+        style: { backgroundColor: indexLabel },
         element: <Icon.MaterialCommunityIcons name="order-numeric-ascending" style={style.label} />,
         onPress: () => {
           const newContentSorted = JSON.parse(JSON.stringify(content)); /* func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -184,14 +141,15 @@ const Analyze = (props) => {
             return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
           })); */
           setContentSorted(newContentSorted);
-          setIndexLabel('Index ↓');
-          setTermLabel('Term');
-          setMarksLabel('');
+          setIndexLabel(pressedColor);
+          setTermLabel(unPressedColor);
+          setMarksLabel(unPressedColor);
           console.log(typeof (termLabel));
         },
       },
       {
         label: termLabel,
+        style: { backgroundColor: termLabel },
         element: <Icon.MaterialCommunityIcons name="order-alphabetical-ascending" style={style.label} />,
         onPress: () => {
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -200,15 +158,15 @@ const Analyze = (props) => {
             return (nameA === nameB) ? 0 : (nameA > nameB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
-          setIndexLabel('Index');
-          setTermLabel('Term ↓');
-          setMarksLabel('');
+          setIndexLabel(unPressedColor);
+          setTermLabel(pressedColor);
+          setMarksLabel(unPressedColor);
           console.log(typeof (termLabel));
         },
       },
       {
         label: marksLabel,
-        style: { flex: 1, justifyContent: 'flex-end' },
+        style: { backgroundColor: marksLabel },
         element: <Icon.AntDesign name="close" style={[style.label, { color: Color.cud.red }]} />,
         onPress: () => {
           const newContentSorted = func.convertArrayToObject(func.convertObjectToArray(contentSorted).sort((a, b) => {
@@ -217,17 +175,17 @@ const Analyze = (props) => {
             return (markA === markB) ? 0 : (markA < markB ? 1 : -1);
           }));
           setContentSorted(newContentSorted);
-          setIndexLabel('Index');
-          setTermLabel('Term');
-          setMarksLabel('↓');
+          setIndexLabel(unPressedColor);
+          setTermLabel(unPressedColor);
+          setMarksLabel(pressedColor);
         },
       },
     ];
     return (
       <View style={style.labelContainer}>
         {labels.map((label) => (
-          <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center' }, label?.style]} onPress={label.onPress} key={label.label.toLowerCase()}>
-            <Text style={style.label}>{label.label}</Text>
+          <TouchableOpacity style={[style.eachLabelContainer, label?.style]} onPress={label.onPress}>
+            {/* <Text style={style.label}>{label.label}</Text> */}
             {label?.element ?? null}
           </TouchableOpacity>
         ))}
@@ -236,7 +194,7 @@ const Analyze = (props) => {
   };
 
   return deckContentLoaded ? (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: Color.defaultBackground }}>
       {/* <ScrollView>
         <Button onPress={async () => {
           const content = await getAccountContent(deckID)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text,LayoutAnimation
+  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text, LayoutAnimation,
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -19,6 +19,7 @@ const style = StyleSheet.create({
     marginHorizontal: '5%',
     marginVertical: '5%',
     borderRadius: 10,
+    paddingTop: 10,
     height: Platform.OS === 'web' ? 500 : null,
   },
   contentContainer: {
@@ -66,8 +67,8 @@ const style = StyleSheet.create({
     fontSize: 24,
     color: Color.gray1,
   },
-  expandText: {
-    margin:10,
+  expandButton: {
+    margin: 15,
     height: 30,
     borderRadius: 3,
   },
@@ -246,18 +247,19 @@ const VocabEdit = (props) => {
     );
   };
 
-  const renderExpandButton = () => 
-  <Button
-    style={style.expandText} 
-    mode="contained"
-    color={Color.green2}　
-    onPress={() => {
-    setExpand(!expand)
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);}
-    }>
-    <Text style={{}}>{expand ? 'Close' : 'More'}</Text>
-  </Button>
-  ;
+  const renderExpandButton = () => (
+    <Button
+      style={style.expandButton}
+      mode="contained"
+      color={Color.green2}
+      onPress={() => {
+        setExpand(!expand);
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      }}
+    >
+      <Text style={{}}>{expand ? 'Close' : 'More'}</Text>
+    </Button>
+  );
 
   const renderSaveButton = () => (
     <View style={style.buttonsContainer}>
@@ -290,11 +292,13 @@ const VocabEdit = (props) => {
   );
 
   const renderCancelButton = () => (
-    <TouchableOpacity 
-      style={style.cancelButton} 
+    <TouchableOpacity
+      style={style.cancelButton}
       onPress={() => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setVisible(false);}}>
+        setVisible(false);
+      }}
+    >
       <Icon.Feather name="x" style={style.cancelButtonIcon} />
     </TouchableOpacity>
   );

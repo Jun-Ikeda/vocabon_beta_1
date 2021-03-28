@@ -12,7 +12,7 @@ import Icon from '../../../../components/Icon';
 const style = StyleSheet.create({
   container: {
     backgroundColor: Color.defaultBackground,
-    marginHorizontal: '8%',
+    marginHorizontal: '5%',
     marginVertical: '16%',
     borderRadius: 10,
     padding: 10,

@@ -78,7 +78,11 @@ const ProfileChange = (props) => {
         label="Name"
         onChangeText={(newValue) => {
           setInputState(newValue);
-          setIsChanged(true);
+          if (newValue.length !== 0) {
+            setIsChanged(true);
+          } else {
+            setIsChanged(false);
+          }
         }}
       />
     </View>

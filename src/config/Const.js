@@ -66,7 +66,7 @@ export const func = {
     }
     return null;
   },
-  alertConsole: (object,title='CONSOLE') => {
+  alertConsole: (object, title = 'CONSOLE') => {
     const string = JSON.stringify(object, null, 4);
     console.log(object);
     if (Platform.OS === 'web') {
@@ -240,134 +240,16 @@ export const func = {
     }
     return resultArray;
   },
-  separateListItem: (content,eachLength)=>{
-    const array=Array(Math.ceil(content.length/eachLength)); 
-    const contentArray=content;
-    const resultArray=[];
-    for (let i = 0;i < array.length ;i++ ) {
-        resultArray.push(contentArray.splice(0, eachLength))
+  separateListItem: (content, eachLength) => {
+    const array = Array(Math.ceil(content.length / eachLength));
+    const contentArray = content;
+    const resultArray = [];
+    for (let i = 0; i < array.length; i++) {
+      resultArray.push(contentArray.splice(0, eachLength));
     }
     // func.alertConsole(resultArray)
     return resultArray;
   },
-  playDemo: [
-    "20210220",
-    "20210220",
-    "20210220",
-    "20210220",
-    "20210220",
-    "20210220"
-],
-marksDemo: {
-  "Fs{nu|cH": [
-      0,
-      1,
-      2
-  ],
-  "(U7g5enl": [
-      0,
-      1
-  ],
-  "GHsX-i1x": [
-      0
-  ],
-  "KpIg)Ui)": [
-      0,
-      1,
-      2
-  ],
-  "n{w>Z2=i": [
-      0
-  ],
-  "}VPIh}aC": [
-      0,
-      1,
-      2
-  ],
-  "LHQCW2FX": [
-      0,
-      1,
-      2,
-      3
-  ],
-  "i2Sj2UL&": [
-      0
-  ],
-  "z:bkpONH": [
-      0
-  ],
-  "!~!2^Cxe": [
-      0,
-      1,
-      2,
-      3,
-      4
-  ],
-  "uPq>xmn|": [
-      0
-  ],
-  "{%CHpmSs": [
-      0,
-      1,
-      2
-  ],
-  "KOoGfw^s": [
-      0,
-      1,
-      2
-  ],
-  "sA&WQ+q1": [
-      0
-  ],
-  "=wW-lCJ:": [
-      0
-  ],
-  "ad%+Ql1R": [
-      0,
-      1
-  ],
-  "PGH(tq4C": [
-      0
-  ],
-  "C9jHj+j)": [
-      0,
-      1,
-      2
-  ],
-  "ZSM=0gJ*": [
-      0,
-      1
-  ],
-  "apV5y:vC": [
-      0
-  ],
-  "sZ%or!DE": [
-      0,
-      1
-  ],
-  "uHyyO2d0": [
-      0,
-      1,
-      2,
-      3,
-      4
-  ],
-  "5bbFW)o2": [
-      0,
-      1
-  ],
-  "i*|MO&nX": [
-      0,
-      1,
-      2
-  ],
-  "Sb!wQg*-": [
-      0,
-      1,
-      2,
-      3
-  ]
-},
 };
 
 export const deck = {

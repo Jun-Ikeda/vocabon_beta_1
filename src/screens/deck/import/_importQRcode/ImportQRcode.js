@@ -41,6 +41,9 @@ const style = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: Color.defaultBackground,
   },
+  qrcodeCam: {
+    ...StyleSheet.absoluteFillObject,
+  },
   popUp: {
     backgroundColor: Color.defaultBackground,
   },
@@ -186,7 +189,7 @@ const ImportQRcode = (props) => {
           : (
             <BarCodeScanner
               onBarCodeScanned={scanned ? () => {} : handleBarCodeScanned}
-              style={StyleSheet.absoluteFillObject}
+              style={style.qrcodeCam}
             />
           )}
       </View>

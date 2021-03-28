@@ -55,7 +55,7 @@ const Profile = (props) => {
     await saveAccountGeneral({ name: inputState });
     Alert.alert('It takes time to update the changes', '');
   };
-
+  
   // useEffect(() => navigation.addListener('beforeRemove', (e) => {
   //   // alert(isChanged);
   //   if (!(Platform.OS === 'web') && isChanged) {
