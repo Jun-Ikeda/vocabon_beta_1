@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from '../Icon';
+import Color from '../../config/Color';
 
 const style = StyleSheet.create({
   container: {
@@ -11,10 +12,19 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     justifyContent: 'center',
+    // backgroundColor: Color.white1,
   },
-  button: { padding: 10 },
+  button: {
+    padding: 10,
+  },
   numContainer: {
-    borderWidth: 1, borderBottomColor: 'transparent', borderTopColor: 'transparent', width: 40, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1,
+    borderBottomColor: 'transparent',
+    borderTopColor: 'transparent',
+    // backgroundColor: Color.white1,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
     fontSize: 20,

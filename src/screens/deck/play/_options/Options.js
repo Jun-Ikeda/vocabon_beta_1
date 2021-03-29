@@ -375,7 +375,7 @@ const Options = (props) => {
         setMax: setIndexMax,
       },
       {
-        title: <Icon.Feather name="x" style={{ fontSize: 26, color: Color.red2 }} />,
+        title: <Icon.Feather name="x" style={{ fontSize: 30, color: Color.cud.red }} />,
         range: [0, XMax],
         min: xMin,
         max: xMax,
@@ -386,7 +386,7 @@ const Options = (props) => {
     const renderMenu = () => (
       <View
         style={{
-          backgroundColor: Color.white1, margin: '10%', borderRadius: 20, padding: 10, flex: 1, paddingTop: header.paddingTop,
+          backgroundColor: Color.defaultBackground, margin: '10%', borderRadius: 20, padding: 10, flex: 1, paddingTop: header.paddingTop,
         }}
       >
         <ScrollView>
@@ -394,7 +394,7 @@ const Options = (props) => {
             <View>
               {index !== 0 ? <Divider style={style.divider} /> : null}
               <View style={{ padding: 10 }}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
                   <Text style={{ fontSize: 26, flex: 1 }}>{item.title}</Text>
                   <Text style={{ fontSize: 18 }}>{`${item.min} ~ ${item.max}`}</Text>
                 </View>

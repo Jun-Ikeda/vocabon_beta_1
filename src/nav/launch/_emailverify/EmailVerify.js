@@ -132,7 +132,7 @@ const EmailVerify = (props) => {
       <Button
         color={Color.white1}
         mode="contained"
-        style={{ padding: 10 }}
+        style={{ height: 40, width: 200, justifyContent: 'center' }}
         disabled={!emailVerified}
         onPress={() => {
           console.log('aiueo');

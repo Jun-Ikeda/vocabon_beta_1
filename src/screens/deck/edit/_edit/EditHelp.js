@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,LayoutAnimation
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Portal } from 'react-native-paper';
@@ -136,13 +136,13 @@ const EditHelp = (props) => {
   };
 
   const renderCancelButton = () => (
-    <TouchableOpacity 
-    style={style.cancelButton} 
-    onPress={() => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      setVisible(false);
-    }
-    }>
+    <TouchableOpacity
+      style={style.cancelButton}
+      onPress={() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setVisible(false);
+      }}
+    >
       <Icon.Feather name="x" style={style.cancelButtonIcon} />
     </TouchableOpacity>
   );

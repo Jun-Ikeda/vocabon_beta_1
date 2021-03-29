@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Text, View, StyleSheet, LayoutAnimation, TouchableOpacity,
+  Text, View, StyleSheet, LayoutAnimation, TouchableOpacity, ScrollView,
 } from 'react-native';
 
 import { Button, Portal, Divider } from 'react-native-paper';
-import { func } from '../../../../config/Const';
+import { deck, func } from '../../../../config/Const';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Color from '../../../../config/Color';
 import Icon from '../../../../components/Icon';
@@ -73,6 +73,7 @@ const AnalyzeDetailPopUp = (props) => {
   } = props;
   let dateList = [];
   let iconName = '';
+  const [isClosed, setIsClosed] = useState(true);
   if (ascendOrDescend === true) {
     dateList = play.sort((a, b) => (a > b ? -1 : 1));
     iconName = 'chevron-up';
@@ -115,6 +116,32 @@ const AnalyzeDetailPopUp = (props) => {
     </TouchableOpacity>
   );
 
+  const renderTermInfo = () => (
+    <View>
+      <TouchableOpacity
+        style={{ marginLeft: 15, marginBottom: 5, flexDirection: 'row' }}
+        onPress={() => {
+          setIsClosed((prev) => !prev);
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        }}
+      >
+        <Text style={{ color: Color.gray4, fontSize: 18, flex: 1 }}>Term & Def</Text>
+        <Icon.FontAwesome name={isClosed ? 'caret-down' : 'caret-up'} style={{ fontSize: 24, color: Color.gray4, marginHorizontal: 10 }} />
+      </TouchableOpacity>
+      <View style={style.descriptionView}>
+        <Text style={style.detailtext}>{content[detailVisibleID]?.term}</Text>
+        <Divider style={style.divider} />
+        <Text style={style.detailtext}>{content[detailVisibleID]?.definition}</Text>
+        {isClosed ? null : deck.items.map((item, _index) => {
+          if (_index !== 0 && _index !== 1) {
+            return <Text style={[style.detailtext, { fontSize: 15 }]}>{`${item.title}: ${content[detailVisibleID]?.[item.key] ?? ''}`}</Text>;
+          }
+          return null;
+        })}
+      </View>
+    </View>
+  );
+
   return (
     <Portal>
       <PopUpMenu
@@ -125,14 +152,8 @@ const AnalyzeDetailPopUp = (props) => {
           <View style={style.detailcontainer}>
             {renderCancelButton()}
             <View style={{ flex: 1 }}>
-              <View style={{ marginLeft: 15, marginBottom: 5 }}>
-                <Text style={{ color: Color.gray4, fontSize: 18 }}>Term & Def</Text>
-              </View>
-              <View style={style.descriptionView}>
-                <Text style={style.detailtext}>{content[detailVisibleID]?.term}</Text>
-                <Divider style={style.divider} />
-                <Text style={style.detailtext}>{content[detailVisibleID]?.definition}</Text>
-              </View>
+
+              {renderTermInfo()}
               <View
                 style={{
                   flexDirection: 'row',
@@ -141,18 +162,20 @@ const AnalyzeDetailPopUp = (props) => {
                 }}
               >
                 <Icon.Feather name="x" size={iconSize} color={Color.cud.red} />
-                <View style={{ marginLeft: 15, marginBottom: 5 }}>
+                <View style={{ marginLeft: 10 }}>
                   <Text style={{ color: Color.gray4, fontSize: 18 }}>History</Text>
                 </View>
               </View>
-              <View style={{ backgroundColor: Color.white1, borderRadius: 10 }}>
-                {marks[detailVisibleID]?.map((time, index) => (
-                  <View>
-                    <Text style={style.detailtext}>{func.formatDate(dateList[time])}</Text>
-                    {index !== marks[detailVisibleID].length - 1 ? <Divider style={style.divider} /> : null}
-                  </View>
-                ))}
-              </View>
+              <ScrollView>
+                <View style={{ backgroundColor: Color.white1, borderRadius: 10 }}>
+                  {marks[detailVisibleID]?.map((time, index) => (
+                    <View>
+                      <Text style={style.detailtext}>{func.formatDate(dateList[time])}</Text>
+                      {index !== marks[detailVisibleID].length - 1 ? <Divider style={style.divider} /> : null}
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
 
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>

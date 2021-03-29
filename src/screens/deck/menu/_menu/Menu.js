@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  View, StyleSheet, Image, ScrollView,
+  View, StyleSheet, Image, ScrollView, StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
 

@@ -10,11 +10,12 @@ import Icon from '../../../components/Icon';
 import { readme } from '../../../config/PersistentData';
 
 const screenshot0 = require('../../../../assets/adaptive-icon.png');
-const screenshot1 = require('../../../../assets/screenshots/S__74235908.png');
-const screenshot2 = require('../../../../assets/screenshots/S__74235909.png');
-const screenshot3 = require('../../../../assets/screenshots/S__74235910.png');
-const screenshot4 = require('../../../../assets/screenshots/S__74235911.png');
-const screenshot5 = require('../../../../assets/screenshots/S__74235912.png');
+
+const screenshot1 = require('../../../../assets/screenshots/IMG_4686.png');
+const screenshot2 = require('../../../../assets/screenshots/IMG_4688.png');
+const screenshot3 = require('../../../../assets/screenshots/IMG_4685.png');
+const screenshot4 = require('../../../../assets/screenshots/IMG_4684.png');
+const screenshot5 = require('../../../../assets/screenshots/IMG_4687.png');
 
 const style = StyleSheet.create({
   container: {
@@ -61,7 +62,6 @@ const style = StyleSheet.create({
     height: '70%',
     width: '70%',
     marginHorizontal: '15%',
-    // flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -189,7 +189,7 @@ const Readme = (props) => {
                     navigation.navigate('signup');
                   }}
                   labelStyle={{ color: Color.green2, fontSize: 16 }}
-                  style={{ padding: 10, paddingHorizontal: 50, borderRadius: 40 }}
+                  style={{ borderRadius: 40, height: 40, width: 200, justifyContent: 'center' }}
                 >
                   Start
                 </Button>

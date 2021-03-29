@@ -20,7 +20,8 @@ const style = StyleSheet.create({
   popupContainer: {
     backgroundColor: 'white',
     flex: 1,
-    margin: 60,
+    marginVertical: 40,
+    marginHorizontal: 30,
     // padding: 20,
     borderRadius: 10,
   },
@@ -97,7 +98,7 @@ const AddButton = (props) => {
               <Button
                 mode="contained"
                 color={Color.green2}
-                style={{ marginHorizontal: 50, marginVertical: 20 }}
+                style={{ marginHorizontal: 50, marginTop: 40 }}
                 onPress={() => {
                   saveDeckGeneral(setDeckGeneral, id, tentativeDeckGeneral);
                   setIDInputVisible(false);

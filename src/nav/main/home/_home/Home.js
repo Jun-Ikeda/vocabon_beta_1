@@ -84,8 +84,8 @@ const Home = (props) => {
     <View style={style.container}>
       <ScrollView style={style.scrollContainer} contentContainerStyle={{ paddingBottom: 20 }}>
         {myDeckIDs.length === 0 ? null : renderRow({ title: 'LOCAL', deckIDs: myDeckIDs })}
-        {allDeckIDs.length === 0 ? null : renderRow({ title: 'All', deckIDs: allDeckIDs })}
         {bookmarkDeckIDs.length === 0 ? null : renderRow({ title: 'BOOKMARK', deckIDs: bookmarkDeckIDs })}
+        {allDeckIDs.length === 0 ? null : renderRow({ title: 'All', deckIDs: allDeckIDs })}
         {/* {allDeckIDs.length === 0 ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>Create Your your first deck by pushing the button below</Text>
