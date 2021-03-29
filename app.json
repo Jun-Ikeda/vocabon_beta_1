@@ -18,6 +18,8 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "jp.co.ylab.Vocabon",
+      "buildNumber": "1.0.0",
       "infoPlist": {
         "NSCameraUsageDescription": "[テスト文言]写真をアップロードするためにカメラを使用します",
         "NSPhotoLibraryUsageDescription": "[テスト文言]アカウント画像をアップロードするためにフォトライブラリを使用します",
