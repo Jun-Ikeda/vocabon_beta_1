@@ -86,6 +86,25 @@ const SignUp = (props) => {
     const suggestions = [
       { title: 'Already have an account?', onPress: () => navigation.navigate('login') },
       { title: 'Forgot the password?', onPress: () => navigation.navigate('resetpassword') },
+      {
+        title: 'Log In as a guest',
+        onPress: () => Alert.alert(
+          'Caution',
+          'Your play data won\'t be saved and you can\'t create your own deck. (Or you can sign up later to unlock these features)',
+          [{
+            text: 'Sure',
+            onPress: () => {
+              saveAccountGeneral({
+                email: '',
+                name: 'Guest User',
+                password: '',
+                userID: '',
+              });
+              navigation.navigate('welcome');
+            },
+          }, { text: 'Cancel', style: 'cancel', onPress: () => {} }],
+        ),
+      },
     ];
     return (
       suggestions.map((suggestion) => (

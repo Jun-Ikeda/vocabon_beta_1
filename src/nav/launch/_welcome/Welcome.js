@@ -69,7 +69,9 @@ const Welcome = (props) => {
           color={Color.white1}
           mode="contained"
           labelStyle={{ color: Color.green2 }}
-          style={{ borderRadius: 40, width: 200, height: 40, justifyContent: 'center' }}
+          style={{
+            borderRadius: 40, width: 200, height: 40, justifyContent: 'center',
+          }}
           onPress={() => {
             saveAccountGeneral({ loggedin: true });
             setIsLoggedin(true);

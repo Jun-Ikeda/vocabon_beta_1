@@ -18,7 +18,7 @@ import langs from '../../../../config/Langs';
 
 const style = StyleSheet.create({
   popupContainer: {
-    backgroundColor: 'white',
+    backgroundColor: Color.defaultBackground,
     flex: 1,
     marginVertical: 40,
     marginHorizontal: 30,
@@ -30,10 +30,10 @@ const style = StyleSheet.create({
 const AddButton = (props) => {
   const { navigation } = props;
   const [idInputVisible, setIDInputVisible] = useState(false);
-  const [id, setID] = useState('');
   const [tentativeDeckGeneral, setTentativeDeckGeneral] = useState({});
   const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
   const accountGeneral = getAccountGeneral();
+  const [id, setID] = useState('');
 
   const createnew = () => {
     const num = func.convertObjectToArray(deckGeneral).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
@@ -67,16 +67,35 @@ const AddButton = (props) => {
   };
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <FloatingButton
-        onPress={() => {
-          Alert.alert('New Deck', 'Would you like to create a new deck or use one your friend shared?', [
-            { text: 'Create New', onPress: createnew },
-            { text: 'Use Shared', onPress: useshared },
-            { text: 'Cancel', onPress: () => {}, style: 'default' },
-          ], { cancelable: true });
-        }}
-        icon={{ collection: 'AntDesign', name: 'plus' }}
-      />
+      {accountGeneral.name === 'Guest User' ? (
+        <FloatingButton
+          onPress={() => {
+            Alert.alert('New Deck', 'Guest User are available nothing but your friend\'s deck or demo deck', [
+              {
+                text: 'Use Shared',
+                onPress: async () => {
+                  await setID('NiQkK>=D^1');
+                  getDeckGeneralTentative();
+                  useshared();
+                },
+              },
+              { text: 'Cancel', onPress: () => {}, style: 'default' },
+            ], { cancelable: true });
+          }}
+          icon={{ collection: 'AntDesign', name: 'plus' }}
+        />
+      ) : (
+        <FloatingButton
+          onPress={() => {
+            Alert.alert('New Deck', 'Would you like to create a new deck or use one your friend shared?', [
+              { text: 'Create New', onPress: createnew },
+              { text: 'Use Shared', onPress: useshared },
+              { text: 'Cancel', onPress: () => {}, style: 'default' },
+            ], { cancelable: true });
+          }}
+          icon={{ collection: 'AntDesign', name: 'plus' }}
+        />
+      )}
       <Portal>
         <PopUpMenu
           isVisible={idInputVisible}
@@ -89,11 +108,11 @@ const AddButton = (props) => {
                 }}
                 source={{ uri: unshortenURI(tentativeDeckGeneral?.thumbnail?.uri ?? '') }}
               />
-              <View style={{ padding: 10 }}>
+              <View style={{ padding: 10, marginLeft: 20 }}>
                 <Text style={{ fontSize: 30 }}>{tentativeDeckGeneral?.title}</Text>
-                <Text style={{ fontSize: 18 }}>{`Term in ${langs.filter((lang) => (tentativeDeckGeneral?.language?.term === lang.tag))[0]?.name ?? 'Not Found'}`}</Text>
-                <Text style={{ fontSize: 18 }}>{`Definition in ${langs.filter((lang) => (tentativeDeckGeneral?.language?.definition === lang.tag))[0]?.name ?? 'Not Found'}`}</Text>
-                <Text style={{ fontSize: 18 }}>{`${tentativeDeckGeneral?.num} words`}</Text>
+                <Text style={{ fontSize: 18 }}>{`Term in ${langs.filter((lang) => (tentativeDeckGeneral?.language?.term === lang.tag))[0]?.name ?? ''}`}</Text>
+                <Text style={{ fontSize: 18 }}>{`Definition in ${langs.filter((lang) => (tentativeDeckGeneral?.language?.definition === lang.tag))[0]?.name ?? ''}`}</Text>
+                <Text style={{ fontSize: 18 }}>{`${tentativeDeckGeneral?.num ?? 0} words`}</Text>
               </View>
               <Button
                 mode="contained"
@@ -111,6 +130,7 @@ const AddButton = (props) => {
               </Button>
               <TextInput
                 value={id}
+                label="ID"
                 onChangeText={setID}
                 placeholder="Paste ID here"
                 style={{

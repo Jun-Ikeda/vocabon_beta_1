@@ -40,7 +40,7 @@ const App = () => {
         <View style={style.container}>
           {/* <Switch /> */}
           <Nav />
-          {/* <ControlPanel /> */}
+          <ControlPanel />
         </View>
       </Provider>
     </RecoilRoot>

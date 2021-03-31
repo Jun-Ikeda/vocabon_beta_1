@@ -94,7 +94,7 @@ export const deleteDeck = (setDeckGeneral, deckID, deckGeneral) => {
   delete decksContent[deckID];
   // localstorage
   LocalStorage.remove({ key: 'deck', id: deckID });
-  if (deckGeneral?.user === account.userID) {
+  if (deckGeneral?.user === account.userID && account.name !== 'Guest User') {
     // firebase
     storage.ref('deck').child(deckID).delete();
     firestore.collection('deck').doc(deckID).delete().then(() => Alert.alert('The deck was successfully deleted'));

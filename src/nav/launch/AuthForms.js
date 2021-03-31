@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView, Platform, StyleSheet, Text, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -45,6 +46,12 @@ const AuthForms = (props) => {
       setPassword(formsInput.password);
     }
   }, [formsInput]);
+
+  useEffect(() => {
+    if (name.toLowerCase() === 'guest user') {
+      Alert.alert('Caution', 'Can\'t use this name as your user name');
+    }
+  }, [name]);
 
   const inputs = [
     {

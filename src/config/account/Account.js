@@ -22,16 +22,17 @@ export const saveAccountGeneral = (newData, merge = true) => {
   account.general = merge ? { ...initialAccountGeneral, ...account.general, ...newData } : newData;
   LocalStorage.save({ key: 'accountGeneral', data: account.general });
   // もし名前が変更されてたらauth.updateProfile({ displayName: '' })
-  const user = auth.currentUser;
-  if (Object.keys(newData).includes('name')) {
+  if (account.general.name !== 'Guest User' && account.general.name !== '') {
+    const user = auth.currentUser;
+    if (Object.keys(newData).includes('name')) {
     // 変更されたら
-    user.updateProfile({ displayName: newData.name }).then(() => {
+      user.updateProfile({ displayName: newData.name }).then(() => {
       // Update successful.
-    }).catch((error) => {
+      }).catch((error) => {
       // An error happened.
-    });
+      });
+    }
   }
-  // saveAccountGeneral({ name: 'aiueo' })
 };
 
 export const getAccountContent = (deckID = '') => {
@@ -96,6 +97,10 @@ export const deleteAccountContentAll = () => {
   database.ref(`timestamp/account/${getAccountGeneral().userID}`).remove();
   LocalStorage.remove({ key: 'accountContent' });
 };
+
+export const logout = () => {
+  auth.signOut();
+}
 
 export default { account, getAccountGeneral, getAccountContent };
 

@@ -159,13 +159,13 @@ const Play = (props) => {
     const newMark = JSON.parse(JSON.stringify(marks));
     leftVocabID.forEach((vocabID) => {
       const vocabMarks = newMark?.[vocabID] ?? [];
-      vocabMarks.push(play.length);
+      vocabMarks.push(play?.length ?? 0);
       newMark[vocabID] = vocabMarks;
     });
     const newPlay = play ? play.slice() : [];
     newPlay.push(func.getDate());
     if (hasUnsavedHistory) {
-      saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);
+      if (accountGeneral.name !== 'Guest User') {saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);}
     }
     if (isEditChanged) saveDeckContent(deckID, content);
     await playhistory.remove(deckID);

@@ -103,7 +103,7 @@ const EmailVerify = (props) => {
 
   if (loading) {
     return (
-      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: 'center', justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator
           animating={loading}
           color={Color.gray1}
@@ -135,7 +135,6 @@ const EmailVerify = (props) => {
         style={{ height: 40, width: 200, justifyContent: 'center' }}
         disabled={!emailVerified}
         onPress={() => {
-          console.log('aiueo');
           saveAccountGeneral({ emailVerified: true });
           navigation.navigate('welcome');
         }}

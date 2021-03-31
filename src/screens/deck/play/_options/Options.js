@@ -122,7 +122,7 @@ const Options = (props) => {
   const [deckContentLoaded, setDeckContentLoaded] = useState(false);
   // load deck content
   useEffect(() => {
-    if (general?.user === accountGeneral.userID/* my deck */ || Object.keys(deckContent).length !== 0/* other's deck previously loaded */) {
+    if ((general?.user === accountGeneral.userID/* my deck */ || Object.keys(deckContent).length !== 0/* other's deck previously loaded */) && accountGeneral.name !== 'Guest User') {
       setDeckContentLoaded(true);
     } else {
       (async () => {
@@ -165,7 +165,7 @@ const Options = (props) => {
 
   useEffect(() => {
     (async () => {
-      const playMax = play.length - 1;
+      const playMax = play?.length ?? 0 - 1;
       const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.includes(playMax)));
       setRecentKeys(Object.keys(newRecent));
     })();

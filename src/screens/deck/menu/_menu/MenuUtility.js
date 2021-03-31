@@ -72,8 +72,8 @@ const MenuUtility = (props) => {
       { title: 'Definition in ', value: langs.filter((lang) => (language.definition === lang.tag))[0]?.name ?? 'Not Found' },
       { title: 'Term in ', value: langs.filter((lang) => (language.term === lang.tag))[0]?.name ?? 'Not Found' },
     ];
-    const playLength = accountContent.play.length;
-    const recentMarks = Object.values(accountContent.marks).filter((mark) => mark.includes(playLength - 1)).length;
+    const playLength = accountContent?.play?.length ?? 0;
+    const recentMarks = Object.values(accountContent?.marks ?? {}).filter((mark) => mark.includes(playLength - 1)).length;
     return (
       <View style={{ flex: 1 }}>
         {languages.map((lang) => (

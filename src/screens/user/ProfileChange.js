@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Text, View, StyleSheet, Alert, LayoutAnimation,
+  Text, View, StyleSheet, Alert, LayoutAnimation, Linking,
 } from 'react-native';
 import {
   TextInput, Button, List, Divider,

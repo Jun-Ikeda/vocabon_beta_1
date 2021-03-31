@@ -16,7 +16,7 @@ const OptionRadioButton = (props) => {
 
   useEffect(() => {
     let newRecentMarkLength = 0;
-    Object.values(marks).forEach((mark) => { newRecentMarkLength = mark.includes(play.length - 1) ? newRecentMarkLength + 1 : newRecentMarkLength; });
+    Object.values(marks).forEach((mark) => { newRecentMarkLength = mark.includes(play?.length ?? 0 - 1) ? newRecentMarkLength + 1 : newRecentMarkLength; });
     setRecentMarkLength(newRecentMarkLength);
   }, []);
 

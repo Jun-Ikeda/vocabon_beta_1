@@ -82,7 +82,9 @@ const MenuButtons = (props) => {
 
   useEffect(() => navigation.addListener('state', (e) => {
     if ((bookmark !== accountContent.bookmark) && (!isDeleted)) {
-      saveAccountContent(deckID, { bookmark }, true);
+      if (accountGeneral.name !== 'Guest User') {
+        saveAccountContent(deckID, { bookmark }, true);
+      }
     }
   }),
   [navigation, bookmark, isDeleted]);
@@ -90,7 +92,9 @@ const MenuButtons = (props) => {
   const deleteDeckAndAccountContent = async () => {
     setIsDeleted(true);
     await deleteDeck(setDecksGeneralState, deckID, deckGeneral);
-    await deleteAccountContent(deckID);
+    if (accountGeneral.name !== 'Guest User') {
+      await deleteAccountContent(deckID);
+    }
     navigation.goBack();
   };
 
@@ -122,9 +126,13 @@ const MenuButtons = (props) => {
       },
       {
         title: 'Analyze',
-        icon: () => <Icon.Entypo name="line-graph" size={iconsize} style={style.icon} />,
-        onPress: () => navigation.navigate('analyze', { deckID }),
-        textStyle: {},
+        icon: () => <Icon.Entypo name="line-graph" size={iconsize} style={[style.icon, { color: accountGeneral.name !== 'Guest User' ? Color.black : Color.gray3 }]} />,
+        onPress: () => {
+          if (accountGeneral.name !== 'Guest User') {
+            navigation.navigate('analyze', { deckID });
+          }
+        },
+        textStyle: { color: accountGeneral.name !== 'Guest User' ? Color.black : Color.gray3 },
         flex: 1,
       },
       {
@@ -195,30 +203,36 @@ const MenuButtons = (props) => {
           icon: () => (
             <Icon.MaterialCommunityIcons
               name={bookmark ? 'bookmark-check' : 'bookmark-outline'}
-              style={[style.icon, { color: bookmark ? Color.red2 : 'black' }]}
+              style={[style.icon,  { color: accountGeneral.name !== 'Guest User' ? bookmark ? Color.red2 : 'black' : Color.gray3 }]}
               size={iconsize}
             />
           ),
-          onPress: () => setBookmark(!bookmark),
-          textStyle: {},
+          onPress: () => {
+            if (accountGeneral.name !== 'Guest User') {
+              setBookmark(!bookmark);
+            }
+          },
+          textStyle: { color: accountGeneral.name !== 'Guest User' ? Color.black : Color.gray3 },
           flex: 1,
         },
         {
           title: 'Duplicate',
-          icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { /* color: Color.gray3 */ }]} />,
+          icon: () => <Icon.Feather name="copy" size={iconsize} style={[style.icon, { color: accountGeneral.name !== 'Guest User' ? Color.black : Color.gray3 }]} />,
           onPress: async () => {
-            const num = func.convertObjectToArray(decksGeneralState).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
-            if (num >= 10) {
-              Alert.alert('Storage is full', 'You can save up to 10 decks.');
-            } else {
-              const newDeckID = UUID.generate(10);
-              const newDeckGeneral = { ...deckGeneral, user: accountGeneral?.userID };
-              await saveDeckGeneral(setDecksGeneralState, newDeckID, newDeckGeneral);
-              await saveDeckContent(newDeckID, deckContent);
-              navigation.goBack();
+            if (accountGeneral.name !== 'Guest User') {
+              const num = func.convertObjectToArray(decksGeneralState).filter((vocab) => vocab.value.user === accountGeneral.userID).length;
+              if (num >= 10) {
+                Alert.alert('Storage is full', 'You can save up to 10 decks.');
+              } else {
+                const newDeckID = UUID.generate(10);
+                const newDeckGeneral = { ...deckGeneral, user: accountGeneral?.userID };
+                await saveDeckGeneral(setDecksGeneralState, newDeckID, newDeckGeneral);
+                await saveDeckContent(newDeckID, deckContent);
+                navigation.goBack();
+              }
             }
           },
-          textStyle: { /* color: Color.gray3 */ },
+          textStyle: { color: accountGeneral.name !== 'Guest User' ? Color.black : Color.gray3 },
           flex: 1,
         },
       ],

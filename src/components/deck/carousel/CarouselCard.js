@@ -109,7 +109,7 @@ const CarouselCard = (props) => {
         color: Color.white2,
       }}
       >
-        {`${accountContent.play.length} times played`}
+        {`${accountContent?.play?.length ?? 0} times played`}
       </Text>
       <View>
         <Text style={[style.languageText, { fontSize: cardStyle.height * 0.06 }]}>

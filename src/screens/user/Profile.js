@@ -5,9 +5,10 @@ import {
 import { Divider, List, Button } from 'react-native-paper';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import ProfileIcon from '../../components/user/profileicon/ProfileIcon';
 import {
-  deleteAccountContent, deleteAccountContentAll, getAccountGeneral, saveAccountGeneral,
+  deleteAccountContent, deleteAccountContentAll, getAccountGeneral, saveAccountGeneral, logout,
 } from '../../config/account/Account';
 import Color from '../../config/Color';
 import { getUserGeneral } from '../../config/user/User';
@@ -34,6 +35,13 @@ const style = StyleSheet.create({
   startButtonContainer: {
     position: 'absolute', bottom: 0, right: 0, left: 0, padding: 15,
   },
+  button: {
+    borderRadius: 5,
+  },
+  suggestionContainer: {
+    // alignItems: 'center',
+    marginLeft: 18,
+  },
 });
 
 const Profile = (props) => {
@@ -42,6 +50,7 @@ const Profile = (props) => {
   const isMe = accountGeneral.userID === userID;
   const user = getUserGeneral(userID);
   const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
+  const isMame = accountGeneral.name === 'まめ学生' || accountGeneral.name.toLowerCase() === 'Bean Student' || accountGeneral.name === 'まめ' || accountGeneral.name === 'student';
 
   // recoil
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
@@ -49,13 +58,13 @@ const Profile = (props) => {
   const [isChanged, setIsChanged] = useState(false);
   const [changeProfileVisible, setChangeProfileVisible] = useState(false);
   const [inputState, setInputState] = useState(accountGeneral.name);
-  const [contentVisible, setContentVisible] = useState(false);
+  // const [contentVisible, setContentVisible] = useState(false);
 
   const save = async () => {
     await saveAccountGeneral({ name: inputState });
     Alert.alert('It takes time to update the changes', '');
   };
-  
+
   // useEffect(() => navigation.addListener('beforeRemove', (e) => {
   //   // alert(isChanged);
   //   if (!(Platform.OS === 'web') && isChanged) {
@@ -94,13 +103,12 @@ const Profile = (props) => {
             setInputState={setInputState}
             isChanged={isChanged}
             setIsChanged={setIsChanged}
-            // user={user}
           />
         ) : null),
         titleStyle: style.text1,
       },
       {
-        title: 'Contact Us',
+        title: 'Contact us',
         render: null,
         titleStyle: style.text1,
         onPress: () => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSd0GgwtmG0PYp3sN224qERPWjQqC0WgyniGg2ZxlkfeDseung/viewform?usp=sf_link'),
@@ -114,6 +122,7 @@ const Profile = (props) => {
               text: 'Log Out',
               onPress: async () => {
                 await clearStorage();
+                logout();
                 setIsLoggedIn(false);
               },
             },
@@ -148,17 +157,31 @@ const Profile = (props) => {
                       }
                     },
                   },
-
                 ]);
               },
             },
           ]);
         },
-
         render: null,
         titleStyle: { color: Color.cud.red, fontSize: 20 },
       },
     ];
+
+    if (accountGeneral.name === 'Guest User') {
+      return (
+        <Button
+          mode="contained"
+          style={[style.button, { margin: 30 }]}
+          color={Color.green2}
+          onPress={() => {
+            saveAccountGeneral({ name: '', loggedin: false });
+            setIsLoggedIn(false);
+          }}
+        >
+          Sign Up / Log In
+        </Button>
+      );
+    }
     return buttons.map((button, index) => (
       <View key={button.title.toLowerCase()}>
         {index !== 0 ? <Divider style={style.divider} /> : null}
@@ -174,30 +197,36 @@ const Profile = (props) => {
   };
 
   const renderSaveButton = () => (
-    <View style={style.startButtonContainer}>
-      <Button
-        onPress={async () => {
-          setIsChanged(false);
-          await save();
-          navigation.goBack();
-        }}
-        color={Color.green2}
-        mode="contained"
-        disabled={!isChanged}
-      >
-        Save
-      </Button>
-    </View>
+    (accountGeneral.name !== 'Guest User' ? (
+      <View style={style.startButtonContainer}>
+        <Button
+          onPress={async () => {
+            setIsChanged(false);
+            await save();
+            navigation.goBack();
+          }}
+          color={Color.green2}
+          mode="contained"
+          disabled={!isChanged}
+        >
+          Save
+        </Button>
+      </View>
+    ) : null)
   );
-
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flexDirection: 'row', padding: 20, alignItems: 'center' }}>
         <ProfileIcon userID={userID} size={92} />
         <View style={{ flex: 1, paddingHorizontal: 30 }}>
-          <Text style={{ fontSize: 24 }}>{user.name}</Text>
+          <Text style={{ fontSize: 24 }}>{accountGeneral.name === 'Guest User' ? accountGeneral.name : user.name}</Text>
         </View>
       </View>
+      {isMame ? (
+        <TouchableOpacity style={style.suggestionContainer} onPress={() => Linking.openURL('https://store.line.me/stickershop/product/8294183/ja')}>
+          <Text style={{ color: Color.gray2, fontSize: 16 }}>Purchase his Line Stamp here!!</Text>
+        </TouchableOpacity>
+      ) : null}
       <ScrollView>{isMe ? renderAuthButtons() : null}</ScrollView>
       {renderSaveButton()}
     </View>

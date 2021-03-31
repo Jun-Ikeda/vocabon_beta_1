@@ -76,7 +76,7 @@ const AnalyzeButtons = (props) => {
     if (isDateVisible) {
       return (
         <View style={style.textConteiner}>
-          <Text style={style.text}>{`Last use on\n${func.formatDate(play[play.length - 1], false)}`}</Text>
+          <Text style={style.text}>{`Last use on\n${func.formatDate(play[play?.length ?? 0 - 1], false)}`}</Text>
         </View>
       );
     }

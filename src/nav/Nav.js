@@ -15,7 +15,9 @@ import MainNav from './main/MainNav';
 import { Account, User } from '../../dev/TestData';
 import { decksContent, decksGeneral } from '../config/deck/Deck';
 import { saveUserGeneral, users } from '../config/user/User';
-import { account, initialAccountGeneral, saveAccountGeneral } from '../config/account/Account';
+import {
+  account, initialAccountGeneral, saveAccountGeneral, getAccountGeneral,
+} from '../config/account/Account';
 import LocalStorage from '../config/LocalStorage';
 import { func } from '../config/Const';
 import { getFirebaseUser, login } from '../config/firebase/Auth';
@@ -51,6 +53,7 @@ const Nav = () => {
     setSyncState([]);
     const preLocalGeneral = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => initialAccountGeneral);
     let preIsLoggedIn = (preLocalGeneral?.loggedin ?? false) && (preLocalGeneral?.emailVerified ?? false);
+    account.general = { name: preLocalGeneral?.name ?? '', ...account.general };
     if (preIsLoggedIn) {
       await login(preLocalGeneral?.email, preLocalGeneral?.password, () => {
         clearStorage();
@@ -276,13 +279,16 @@ const Nav = () => {
 
   useEffect(() => {
     (async () => {
-      if (isLoggedIn) {
+      if (getAccountGeneral().name === 'Guest User') {
+        setIsLoggedIn(true);
+        setIsInitialized(true);
+      } else if (isLoggedIn) { // isLoggedIn=true:emailVerifyかつloginしてる
         setIsInitialized(false);
         await initialize();
         await setIsInitialized(true);
         // await SplashScreen.hideAsync();
-      } else if (isLoggedIn === false) {
-        account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => {});
+      } else if (isLoggedIn === false) { // falseの場合emailVerifyだけしてない、またはともにしていない
+        account.general = await LocalStorage.load({ key: 'accountGeneral' }).catch(() => {}); // 前者の場合、emailVerifyの画面で止まる
         await setIsInitialized(true);
         // await SplashScreen.hideAsync();
       }
@@ -303,11 +309,17 @@ const Nav = () => {
             )}
           </Stack.Navigator>
         </NavigationContainer>
+        {/* <Button onPress={() => alert(JSON.stringify({ isLoggedIn, isInitialized }))}>state</Button> */}
         {/* <Button onPress={() => func.alertConsole(syncState)}>SynsState</Button> */}
       </View>
     );
   }
-  return null;
+  return <View style={{ flex: 1 }} />;
+  // return (
+  //   <View style={{ flex: 1, backgroundColor: 'red', justifyContent: 'center' }}>
+  //     <Button onPress={() => alert(JSON.stringify({ isLoggedIn, isInitialized }))}>state</Button>
+  //   </View>
+  // );
 };
 
 export default Nav;
