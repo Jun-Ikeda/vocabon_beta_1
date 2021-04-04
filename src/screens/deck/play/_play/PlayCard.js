@@ -110,7 +110,7 @@ class PlayCard extends Component {
           ) : null))}
         </TouchableOpacity>
         <TouchableOpacity style={[style.card]} onPress={() => this.flip()}>
-          {backItems.map((item) => (itemVisible.back.includes(item.item) ? (
+          {backItems.map((item) => (itemVisible.back.includes(item.item) && item.array.length !== 0 ? (
             <View style={{ flexDirection: 'row' }}>
               <Text style={style.label} key={item.item}>{deck.formatArrayContent(item.array)}</Text>
               <Icon.MaterialIcons

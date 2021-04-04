@@ -184,12 +184,11 @@ const Readme = (props) => {
                 <Button
                   mode="contained"
                   color={Color.white1}
-                  onPress={() => {
-                    readme.save(true);
-                    navigation.navigate('signup');
-                  }}
+                  onPress={() => navigation.navigate('termsandconditions')}
                   labelStyle={{ color: Color.green2, fontSize: 16 }}
-                  style={{ borderRadius: 40, height: 40, width: 200, justifyContent: 'center' }}
+                  style={{
+                    borderRadius: 40, height: 40, width: 200, justifyContent: 'center',
+                  }}
                 >
                   Start
                 </Button>

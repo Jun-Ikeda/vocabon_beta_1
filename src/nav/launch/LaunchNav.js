@@ -10,12 +10,14 @@ import LogIn from './_login/LogIn';
 import ResetPassword from './_resetpassword/ResetPassword';
 import EmailVerify from './_emailverify/EmailVerify';
 import Welcome from './_welcome/Welcome';
+import TermsAndCondition from './_termsandconditions/TermsAndConditions';
 
 const Stack = createStackNavigator();
 
 const LaunchNav = () => (
   <Stack.Navigator>
     <Stack.Screen name="readme" component={Readme} options={{ headerTitle: '', headerTransparent: true }} />
+    <Stack.Screen name="termsandconditions" component={TermsAndCondition} options={{ headerTitle: '', headerTransparent: true, headerLeft: null }} />
     <Stack.Screen
       name="signup"
       component={SignUp}

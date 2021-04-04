@@ -49,7 +49,7 @@ const ProfileIcon = (props) => {
   };
   const isButton = !((onPress.toString() === 'function onPress() {}') || (onPress.toString() === 'function (){}'));
   const username = accountGeneral?.name;
-  const isCat = username === 'ねこ' || username === '猫' || username === 'ネコ' || username === 'cat' || username === 'kitten';
+  const isCat = username === 'ねこ' || username === '猫' || username === 'ネコ' || username.toLowerCase() === 'cat' || username.toLowerCase() === 'kitten';
   const isMame = username === 'まめ学生' || username.toLowerCase() === 'Bean Student' || username === 'まめ' || username === 'student';
 
   const renderColorIcon = () => (
