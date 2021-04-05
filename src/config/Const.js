@@ -1,6 +1,5 @@
 // import React from 'react';
 import ExpoClipboard from 'expo-clipboard';
-import { element } from 'prop-types';
 import {
   Platform, Dimensions, StyleSheet, Alert, StatusBar,
 } from 'react-native';
@@ -248,6 +247,68 @@ export const func = {
       resultArray.push(contentArray.splice(0, eachLength));
     }
     // func.alertConsole(resultArray)
+    return resultArray;
+  },
+  detectSwearWord: (word) => {
+    const racial = ['negro', 'nigger', 'ebony', 'spic', 'jap', 'chink'];
+    const sexual = ['pussy', 'cunt', 'boob', 'dick', 'dickhead', 'poo', 'poop', 'asshole', 'anal', 'anus', 'bollock',
+      'bugger', 'choad', 'shag', 'wank', 'wanker', 'twat', 'missionary', 'handjob', 'blowjob', 'bitch', 'slut', 'whore'];
+    const other = ['fuck', 'shit', 'damn', 'motherfucker', 'suck', 'jerk', 'scum'];
+    const detectedSwearWords = [];
+    racial.forEach((racialWord) => {
+      if (word.toLowerCase().includes(racialWord)) {
+        detectedSwearWords.push(racialWord);
+      }
+    });
+    sexual.forEach((sexualWord) => {
+      if (word.toLowerCase().includes(sexualWord)) {
+        detectedSwearWords.push(sexualWord);
+      }
+    });
+    other.forEach((otherWord) => {
+      if (word.toLowerCase().includes(otherWord)) {
+        detectedSwearWords.push(otherWord);
+      }
+    });
+    return detectedSwearWords;
+    // for (let i = 0; i < deckList.length; i++) {
+    //   if (racial.includes(deckList[i]) === true) {
+    //     detectedSwearWords.push(deckList[i]);
+    //   }
+    //   if (sexual.includes(deckList[i]) === true) {
+    //     detectedSwearWords.push(deckList[i]);
+    //   }
+    //   if (other.includes(deckList[i]) === true) {
+    //     detectedSwearWords.push(deckList[i]);
+    //   }
+    // }
+    // for (let i = 0; i < racial.length; i++) {
+    //   for (let j = 0; j < deckList.length; j++) {
+    //     if (deckList[j].includes(racial[i]) === true) {
+    //       detectedSwearWords.push(deckList[j]);
+    //     }
+    //   }
+    // }
+    // for (let k = 0; k < sexual.length; k++) {
+    //   for (let l = 0; l < deckList.length; l++) {
+    //     if (deckList[l].includes(sexual[k]) === true) {
+    //       detectedSwearWords.push(deckList[l]);
+    //     }
+    //   }
+    // }
+    // for (let m = 0; m < other.length; m++) {
+    //   for (let n = 0; n < deckList.length; n++) {
+    //     if (deckList[n].includes(other[m]) === true) {
+    //       detectedSwearWords.push(deckList[n]);
+    //     }
+    //   }
+    // }
+  },
+  detectSwearWordArray: (array) => {
+    let resultArray = [];
+    array.forEach((word) => {
+      resultArray = resultArray.concat(func.detectSwearWord(word));
+    });
     return resultArray;
   },
 };

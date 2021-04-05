@@ -50,7 +50,7 @@ const ProfileIcon = (props) => {
   const isButton = !((onPress.toString() === 'function onPress() {}') || (onPress.toString() === 'function (){}'));
   const username = accountGeneral?.name;
   const isCat = username === 'ねこ' || username === '猫' || username === 'ネコ' || username.toLowerCase() === 'cat' || username.toLowerCase() === 'kitten';
-  const isMame = username === 'まめ学生' || username.toLowerCase() === 'Bean Student' || username === 'まめ' || username === 'student';
+  const isMame = username === 'まめ学生' || username.toLowerCase() === 'Bean Student' || username === 'まめ' || username.toLowerCase() === 'student' || username.toLowerCase() === 'students';
 
   const renderColorIcon = () => (
     <View style={[circle, style.color, { backgroundColor: color || general?.icon.color }]}>

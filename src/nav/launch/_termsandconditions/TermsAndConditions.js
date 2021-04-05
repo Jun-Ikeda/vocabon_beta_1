@@ -27,7 +27,7 @@ const TermsAndCondition = (props) => {
   const [checked, setChecked] = useState(false);
   return (
     <View style={style.container}>
-      <View style={{ flex: 1, padding: 50, paddingBottom: 20 }}>
+      <View style={{ flex: 1, padding: 20, paddingBottom: 5 }}>
         <WebView
           originWhitelist={['*']}
           source={{ html: HTMLContent }}
@@ -35,7 +35,7 @@ const TermsAndCondition = (props) => {
       </View>
       <TouchableOpacity onPress={() => setChecked((prev) => !prev)} style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'center' }}>
         <Icon.MaterialIcons name={checked ? 'check-box' : 'check-box-outline-blank'} style={{ fontSize: 22, padding: 5, color: checked ? Color.blue2 : Color.black }} />
-        <Text style={{ fontSize: 20 }}>Yes I accept terms and conditions</Text>
+        <Text style={{ fontSize: 18 }}>Yes I accept the terms</Text>
       </TouchableOpacity>
       <View style={{ padding: 10 }}>
         <Button

@@ -6,6 +6,7 @@ import { Divider, List, Button } from 'react-native-paper';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import WebView from 'react-native-webview';
 import ProfileIcon from '../../components/user/profileicon/ProfileIcon';
 import {
   deleteAccountContent, deleteAccountContentAll, getAccountGeneral, saveAccountGeneral, logout,
@@ -19,6 +20,7 @@ import {
 import { deleteAccount } from '../../config/firebase/Auth';
 import { func } from '../../config/Const';
 import ProfileChange from './ProfileChange';
+import HTMLContent from '../../nav/launch/_termsandconditions/HTMLContent';
 
 const style = StyleSheet.create({
   itemContainer: {
@@ -50,12 +52,13 @@ const Profile = (props) => {
   const isMe = accountGeneral.userID === userID;
   const user = getUserGeneral(userID);
   const [deckGeneral, setDeckGeneral] = useRecoilState(decksGeneral);
-  const isMame = accountGeneral.name === 'まめ学生' || accountGeneral.name.toLowerCase() === 'Bean Student' || accountGeneral.name === 'まめ' || accountGeneral.name === 'student';
+  const isMame = accountGeneral.name === 'まめ学生' || accountGeneral.name.toLowerCase() === 'Bean Student' || accountGeneral.name === 'まめ' || accountGeneral.name.toLowerCase() === 'student' || accountGeneral.name.toLowerCase() === 'students';
 
   // recoil
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
   // state
   const [isChanged, setIsChanged] = useState(false);
+  const [conditionsVisble, setConditionsVisble] = useState(false);
   const [changeProfileVisible, setChangeProfileVisible] = useState(false);
   const [inputState, setInputState] = useState(accountGeneral.name);
   // const [contentVisible, setContentVisible] = useState(false);
@@ -112,6 +115,22 @@ const Profile = (props) => {
         render: null,
         titleStyle: style.text1,
         onPress: () => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSd0GgwtmG0PYp3sN224qERPWjQqC0WgyniGg2ZxlkfeDseung/viewform?usp=sf_link'),
+      },
+      {
+        title: 'Terms and Conditions',
+        render: (conditionsVisble ? (
+          <View style={{ height: 500, padding: 25, paddingBottom: 5 }}>
+            <WebView
+              originWhitelist={['*']}
+              source={{ html: HTMLContent }}
+            />
+          </View>
+        ) : null),
+        onPress: () => {
+          setConditionsVisble(!conditionsVisble);
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        },
+        titleStyle: style.text1,
       },
       {
         title: 'Log Out',

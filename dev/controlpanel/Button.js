@@ -200,6 +200,13 @@ const Button = [
       return data;
     },
   },
+  {
+    title: 'Offensive word',
+    onPress: () => {
+      const result = func.detectSwearWord('');
+      return result;
+    },
+  },
 ];
 
 export default Button;

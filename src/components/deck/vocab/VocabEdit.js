@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text, LayoutAnimation,
+  View, StyleSheet, ScrollView, TouchableOpacity, Platform, Text, LayoutAnimation, Alert,
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -148,6 +148,30 @@ const VocabEdit = (props) => {
   }, [isVisible]);
 
   const save = () => {
+    const offensive = func.detectSwearWordArray([
+      term.tag,
+      ...term.tagsArray,
+      definition.tag,
+      ...definition.tagsArray,
+      synonym.tag,
+      ...synonym.tagsArray,
+      antonym.tag,
+      ...antonym.tagsArray,
+      prefix.tag,
+      ...prefix.tagsArray,
+      suffix.tag,
+      ...suffix.tagsArray,
+      exampleT.tag,
+      ...exampleT.tagsArray,
+      exampleD.tag,
+      ...exampleD.tagsArray,
+      cf.tag,
+      ...cf.tagsArray,
+    ]);
+    if (offensive.length !== 0) {
+      Alert.alert('Violation of terms', `Offensive words are contained: ${JSON.stringify(offensive)}`);
+      return false;
+    }
     const newTerm = createNewTag([term, setTerm]);
     const newDefinition = createNewTag([definition, setDefinition]);
     const newSynonym = createNewTag([synonym, setSynonym]);
@@ -157,7 +181,6 @@ const VocabEdit = (props) => {
     const newExampleT = createNewTag([exampleT, setExampleT]);
     const newExampleD = createNewTag([exampleD, setExampleD]);
     const newCf = createNewTag([cf, setCf]);
-    console.log(newTerm, newDefinition);
     setContent((prev) => {
       const result = JSON.parse(JSON.stringify(prev));
       const newVocab = {};
@@ -176,21 +199,23 @@ const VocabEdit = (props) => {
       return result;
     });
     setIsChanged(true);
+    return true;
   };
   const next = () => {
-    save();
-    setTerm(initialTag);
-    setDefinition(initialTag);
-    setSynonym(initialTag);
-    setAntonym(initialTag);
-    setPrefix(initialTag);
-    setSuffix(initialTag);
-    setExampleT(initialTag);
-    setExampleD(initialTag);
-    setCf(initialTag);
-    setExpand(false);
-    setEditVocabID(UUID.generate(8));
-    tagsinputs[0]?.focus();
+    if (save()) {
+      setTerm(initialTag);
+      setDefinition(initialTag);
+      setSynonym(initialTag);
+      setAntonym(initialTag);
+      setPrefix(initialTag);
+      setSuffix(initialTag);
+      setExampleT(initialTag);
+      setExampleD(initialTag);
+      setCf(initialTag);
+      setExpand(false);
+      setEditVocabID(UUID.generate(8));
+      tagsinputs[0]?.focus();
+    }
   };
 
   const renderTextInputs = () => {
@@ -278,8 +303,7 @@ const VocabEdit = (props) => {
       <View style={style.buttonContainer}>
         <Button
           onPress={() => {
-            save();
-            setVisible(false);
+            if (save()) setVisible(false);
           }}
           mode="contained"
           color={Color.green2}
@@ -336,9 +360,6 @@ VocabEdit.propTypes = {
 VocabEdit.defaultProps = {
   vocabID: null,
   setIsChanged: () => {},
-};
-
-VocabEdit.defaultProps = {
 };
 
 export default VocabEdit;

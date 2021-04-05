@@ -34,13 +34,11 @@ const App = () => {
   return (
     <RecoilRoot>
       <Provider>
-        <StatusBar
-          barStyle="dark-content"
-        />
+        <StatusBar barStyle="dark-content" translucent={Platform.OS === 'android'} backgroundColor="transparent" />
         <View style={style.container}>
           {/* <Switch /> */}
           <Nav />
-          <ControlPanel />
+          {/* <ControlPanel /> */}
         </View>
       </Provider>
     </RecoilRoot>

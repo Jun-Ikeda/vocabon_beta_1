@@ -17,10 +17,13 @@ import { RangeSlider } from '@sharcoux/slider';
 import RNPickerSelect from 'react-native-picker-select';
 
 import { divide } from 'lodash';
+import { useRecoilValue } from 'recoil';
 import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
 import Color from '../../../../config/Color';
 import { deck, func, header } from '../../../../config/Const';
-import { decksContent, getDeckContent, getDeckGeneral } from '../../../../config/deck/Deck';
+import {
+  decksContent, decksGeneral, getDeckContent, getDeckGeneral,
+} from '../../../../config/deck/Deck';
 import { playhistory, playoption } from '../../../../config/PersistentData';
 import PopUpMenu from '../../../../components/popup/PopUpMenu';
 import Icon from '../../../../components/Icon';
@@ -99,9 +102,10 @@ const pickerSelectStyles = StyleSheet.create({
 const Options = (props) => {
   const { navigation, route: { params: { deckID } } } = props;
   const [mode, setMode] = useState('all');
+  const deckGeneralState = useRecoilValue(decksGeneral);
 
   const deckContent = getDeckContent(deckID);
-  const general = getDeckGeneral(deckID);
+  const general = getDeckGeneral(deckGeneralState, deckID);
   const { marks, play } = getAccountContent(deckID);
   const accountGeneral = getAccountGeneral();
 
@@ -147,6 +151,12 @@ const Options = (props) => {
         ];
         return CommonActions.reset({ ...state, routes, index: routes.length - 1 });
       });
+
+      // const playMax = play?.length ?? 0 - 1;
+      // const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.includes(playMax)));
+      // setRecentKeys(Object.keys(newRecent));
+      // alert(JSON.stringify(marks));
+
       if (playhistoryData) {
         Alert.alert(
           'Suspended',
@@ -165,7 +175,7 @@ const Options = (props) => {
 
   useEffect(() => {
     (async () => {
-      const playMax = play?.length ?? 0 - 1;
+      const playMax = (play?.length ?? 0) - 1;
       const newRecent = func.convertArrayToObject(func.convertObjectToArray(marks).filter(({ value }) => value?.includes(playMax)));
       setRecentKeys(Object.keys(newRecent));
     })();
