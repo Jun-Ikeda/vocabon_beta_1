@@ -148,30 +148,30 @@ const VocabEdit = (props) => {
   }, [isVisible]);
 
   const save = () => {
-    const offensive = func.detectSwearWordArray([
-      term.tag,
-      ...term.tagsArray,
-      definition.tag,
-      ...definition.tagsArray,
-      synonym.tag,
-      ...synonym.tagsArray,
-      antonym.tag,
-      ...antonym.tagsArray,
-      prefix.tag,
-      ...prefix.tagsArray,
-      suffix.tag,
-      ...suffix.tagsArray,
-      exampleT.tag,
-      ...exampleT.tagsArray,
-      exampleD.tag,
-      ...exampleD.tagsArray,
-      cf.tag,
-      ...cf.tagsArray,
-    ]);
-    if (offensive.length !== 0) {
-      Alert.alert('Violation of terms', `Offensive words are contained: ${JSON.stringify(offensive)}`);
-      return false;
-    }
+    // const offensive = func.detectSwearWordArray([
+    //   term.tag,
+    //   ...term.tagsArray,
+    //   definition.tag,
+    //   ...definition.tagsArray,
+    //   synonym.tag,
+    //   ...synonym.tagsArray,
+    //   antonym.tag,
+    //   ...antonym.tagsArray,
+    //   prefix.tag,
+    //   ...prefix.tagsArray,
+    //   suffix.tag,
+    //   ...suffix.tagsArray,
+    //   exampleT.tag,
+    //   ...exampleT.tagsArray,
+    //   exampleD.tag,
+    //   ...exampleD.tagsArray,
+    //   cf.tag,
+    //   ...cf.tagsArray,
+    // ]);
+    // if (offensive.length !== 0) {
+    //   Alert.alert('Violation of terms', `Offensive words are contained: ${JSON.stringify(offensive)}`);
+    //   return false;
+    // }
     const newTerm = createNewTag([term, setTerm]);
     const newDefinition = createNewTag([definition, setDefinition]);
     const newSynonym = createNewTag([synonym, setSynonym]);
@@ -184,15 +184,15 @@ const VocabEdit = (props) => {
     setContent((prev) => {
       const result = JSON.parse(JSON.stringify(prev));
       const newVocab = {};
-      newVocab.term = newTerm.tagsArray;
-      newVocab.definition = newDefinition.tagsArray;
-      if (newSynonym.length !== 0) { newVocab.synonym = newSynonym.tagsArray; }
-      if (newAntonym.length !== 0) { newVocab.antonym = newAntonym.tagsArray; }
-      if (newPrefix.length !== 0) { newVocab.prefix = newPrefix.tagsArray; }
-      if (newSuffix.length !== 0) { newVocab.suffix = newSuffix.tagsArray; }
-      if (newExampleT.length !== 0) { newVocab.exampleT = newExampleT.tagsArray; }
-      if (newExampleD.length !== 0) { newVocab.exampleD = newExampleD.tagsArray; }
-      if (newCf.length !== 0) { newVocab.cf = newCf.tagsArray; }
+      newVocab.term = func.badwordsArray(newTerm.tagsArray);
+      newVocab.definition = func.badwordsArray(newDefinition.tagsArray);
+      if (newSynonym.length !== 0) { newVocab.synonym = func.badwordsArray(newSynonym.tagsArray); }
+      if (newAntonym.length !== 0) { newVocab.antonym = func.badwordsArray(newAntonym.tagsArray); }
+      if (newPrefix.length !== 0) { newVocab.prefix = func.badwordsArray(newPrefix.tagsArray); }
+      if (newSuffix.length !== 0) { newVocab.suffix = func.badwordsArray(newSuffix.tagsArray); }
+      if (newExampleT.length !== 0) { newVocab.exampleT = func.badwordsArray(newExampleT.tagsArray); }
+      if (newExampleD.length !== 0) { newVocab.exampleD = func.badwordsArray(newExampleD.tagsArray); }
+      if (newCf.length !== 0) { newVocab.cf = func.badwordsArray(newCf.tagsArray); }
       result[vocabID] = newVocab;
       // alert(JSON.stringify(result));
       console.log(result);

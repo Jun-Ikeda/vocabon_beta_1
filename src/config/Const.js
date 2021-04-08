@@ -4,6 +4,10 @@ import {
   Platform, Dimensions, StyleSheet, Alert, StatusBar,
 } from 'react-native';
 
+const BadWords = require('bad-words');
+
+const badwords = new BadWords();
+
 export const header = {
   mainHeaderStyles: StyleSheet.create({
     headerStyle: {
@@ -311,6 +315,7 @@ export const func = {
     });
     return resultArray;
   },
+  badwordsArray: (array) => array.map((word) => badwords.clean(word)),
 };
 
 export const deck = {

@@ -12,6 +12,10 @@ import firebase, {
 } from '../../src/config/firebase/Firebase';
 import { playoption } from '../../src/config/PersistentData';
 
+const Filter = require('bad-words');
+
+const filter = new Filter();
+
 const Button = [
   {
     title: 'Clear Local Storage',
@@ -203,8 +207,8 @@ const Button = [
   {
     title: 'Offensive word',
     onPress: () => {
-      const result = func.detectSwearWord('');
-      return result;
+      const filtered = filter.clean('');
+      return filtered;
     },
   },
 ];

@@ -2,8 +2,8 @@
   "expo": {
     "name": "vocabon",
     "slug": "vocabon",
-    "version": "1.0.4",
-    "orientation": "portrait",
+    "version": "1.0.5",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",

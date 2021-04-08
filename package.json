@@ -15,6 +15,7 @@
     "@react-navigation/native": "^5.8.10",
     "@react-navigation/stack": "^5.12.8",
     "@sharcoux/slider": "^5.0.4",
+    "bad-words": "^3.0.4",
     "expo": "^40.0.0",
     "expo-av": "~8.7.0",
     "expo-barcode-scanner": "~9.1.0",
@@ -47,9 +48,9 @@
     "react-native-tags-input": "^1.0.10",
     "react-native-vector-icons": "^7.1.0",
     "react-native-web": "~0.13.12",
+    "react-native-webview": "11.0.0",
     "recoil": "^0.1.2",
-    "unsplash-js": "^6.3.0",
-    "react-native-webview": "11.0.0"
+    "unsplash-js": "^6.3.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
