@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 const MenuUtility = (props) => {
   // props
   const {
-    deckGeneral, accountContent, navigation, deckID,
+    deckGeneral, accountContent, navigation, deckID, accountGeneral,
   } = props;
   // state
   const [expand, setExpand] = useState(false);
@@ -58,14 +58,30 @@ const MenuUtility = (props) => {
   const {
     user, title, language, thumbnail, num, description,
   } = deckGeneral;
+  const identity = (user === accountGeneral.userID);
 
-  const renderTitle = () => (
+  const renderTitle = () => {
+    const renderContent = () => (
+      <Text style={styles.title}>
+        {title}
+      </Text>
+    );
+    if (identity) {
+      return (
+        <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}>
+          {renderContent()}
+        </TouchableOpacity>
+      );
+    }
+    return renderContent();
+    /* (
     <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}>
       <Text style={styles.title}>
         {title}
       </Text>
     </TouchableOpacity>
-  );
+  ) */
+  };
 
   const renderLanguages = () => {
     const languages = [
@@ -76,14 +92,22 @@ const MenuUtility = (props) => {
     const recentMarks = Object.values(accountContent?.marks ?? {}).filter((mark) => mark.includes(playLength - 1)).length;
     return (
       <View style={{ flex: 1 }}>
-        {languages.map((lang) => (
-          <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })} key={lang.title.toLowerCase()}>
+        {languages.map((lang) => {
+          const renderContent = () => (
             <Text key={lang.title}>
               {lang.title}
               <Text style={styles.languageBold}>{lang.value}</Text>
             </Text>
-          </TouchableOpacity>
-        ))}
+          );
+          if (identity) {
+            return (
+              <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })} key={lang.title.toLowerCase()}>
+                {renderContent()}
+              </TouchableOpacity>
+            );
+          }
+          return renderContent();
+        })}
         <Text>{`${num} terms`}</Text>
         <TouchableOpacity onPress={() => navigation.navigate('analyze', { deckID })}>
           <Text>{`${playLength} times play`}</Text>
@@ -98,9 +122,9 @@ const MenuUtility = (props) => {
         {expand
           ? (
             <View>
-              <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}>
-                <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
-              </TouchableOpacity>
+              {/* <TouchableOpacity onPress={() => navigation.navigate('property', { deckID })}> */}
+              <Text style={description === '' ? { color: Color.gray2, fontStyle: 'italic' } : null}>{description === '' ? 'no description' : description}</Text>
+              {/* </TouchableOpacity> */}
             </View>
           )
           : null}

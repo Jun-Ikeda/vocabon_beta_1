@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  View, StyleSheet, Image, ScrollView, StatusBar
+  View, StyleSheet, Image, ScrollView, StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -11,7 +11,7 @@ import { unshortenURI } from '../../../../config/Unsplash';
 import MenuButtons from './MenuButtons';
 import MenuUtility from './MenuUtility';
 import { decksGeneral, getDeckGeneral } from '../../../../config/deck/Deck';
-import { getAccountContent } from '../../../../config/account/Account';
+import { getAccountContent, getAccountGeneral } from '../../../../config/account/Account';
 import MenuShareButton from './MenuShareButton';
 
 // import DeckMenuButtons from './DeckMenuButtons';
@@ -61,6 +61,7 @@ const Menu = (props) => {
   //
   const deckGeneral = getDeckGeneral(decksGeneralState, deckID);
   const accountContent = getAccountContent(deckID);
+  const accountGeneral = getAccountGeneral();
 
   const routes = useNavigationState((_state) => _state.routes);
   useEffect(() => console.log(routes), []);
@@ -76,7 +77,7 @@ const Menu = (props) => {
   );
 
   const renderContent = () => (
-    <MenuUtility accountContent={accountContent} deckGeneral={deckGeneral} deckID={deckID} navigation={navigation} />
+    <MenuUtility accountContent={accountContent} deckGeneral={deckGeneral} accountGeneral={accountGeneral} deckID={deckID} navigation={navigation} />
   );
 
   const renderButtons = () => (
