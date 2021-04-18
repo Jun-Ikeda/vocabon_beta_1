@@ -10,6 +10,7 @@ import { getAccountGeneral } from '../../../config/account/Account';
 
 const bean = require('../../../../assets/Aboutusmame.png');
 const coo = require('../../../../assets/cat.jpg');
+const kuma = require('../../../../assets/kuma_student.png');
 
 const style = StyleSheet.create({
   container: {
@@ -51,6 +52,7 @@ const ProfileIcon = (props) => {
   const username = accountGeneral?.name;
   const isCat = username === 'ねこ' || username === '猫' || username === 'ネコ' || username.toLowerCase() === 'cat' || username.toLowerCase() === 'kitten';
   const isMame = username === 'まめ学生' || username.toLowerCase() === 'Bean Student' || username === 'まめ' || username.toLowerCase() === 'student' || username.toLowerCase() === 'students';
+  const isOzawa = username.toLowerCase() === 'ozawa' || username === 'くま' || username.toLowerCase === 'bear' || username === 'e' || username === '小澤' || username === '嘉康' || username.toLowerCase === 'math' || username === '海城' || username=== 'おざわ';
 
   const renderColorIcon = () => (
     <View style={[circle, style.color, { backgroundColor: color || general?.icon.color }]}>
@@ -68,9 +70,11 @@ const ProfileIcon = (props) => {
     if (username === 'Guest User') {
       return <Icon.Octicons name="gist-secret" style={[style.icon, { fontSize: size * 0.8 }]} />;
     } if (isMame) {
-      return (<Image source={bean} style={[style.picture, { width: size, height: size }]} />);
+      return <Image source={bean} style={[style.picture, { width: size, height: size }]} />;
     } if (isCat) {
       return <Image source={coo} style={[style.picture, { width: size, height: size, borderRadius: size / 2 }]} />;
+    } if (isOzawa) {
+      return <Image source={kuma} style={[style.picture, { width: size, height: size }]} />;
     } if (general?.icon?.uri === undefined) {
       return renderColorIcon();
     }

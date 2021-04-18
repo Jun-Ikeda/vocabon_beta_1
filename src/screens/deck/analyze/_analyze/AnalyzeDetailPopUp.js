@@ -151,8 +151,7 @@ const AnalyzeDetailPopUp = (props) => {
         renderMenu={() => (
           <View style={style.detailcontainer}>
             {renderCancelButton()}
-            <View style={{ flex: 1 }}>
-
+            <ScrollView style={{ flex: 1 }}>
               {renderTermInfo()}
               <View
                 style={{
@@ -177,7 +176,7 @@ const AnalyzeDetailPopUp = (props) => {
                 </View>
               </ScrollView>
 
-            </View>
+            </ScrollView>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Button
                 onPress={() => {
