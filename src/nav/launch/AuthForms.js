@@ -55,15 +55,16 @@ const AuthForms = (props) => {
 
   const inputs = [
     {
-      title: 'Name', value: name, onChangeText: setName, buttons: [{ icon: { collection: 'Feather', name: 'x' }, onPress: () => setName('') }],
+      title: 'Name', value: name, onChangeText: setName, type: 'username', buttons: [{ icon: { collection: 'Feather', name: 'x' }, onPress: () => setName('') }],
     },
     {
-      title: 'Email', value: email, onChangeText: setEmail, buttons: [{ icon: { collection: 'Feather', name: 'x' }, onPress: () => setEmail('') }],
+      title: 'Email', value: email, onChangeText: setEmail, type: 'emailAddress', buttons: [{ icon: { collection: 'Feather', name: 'x' }, onPress: () => setEmail('') }],
     },
     {
       title: 'Password',
       value: password,
       onChangeText: setPassword,
+      type: 'password',
       buttons: [
         { icon: { collection: 'Ionicons', name: hidePassword ? 'md-eye' : 'md-eye-off' }, onPress: () => setHidePassword(!hidePassword) },
         { icon: { collection: 'Feather', name: 'x' }, onPress: () => setPassword('') },
@@ -82,6 +83,7 @@ const AuthForms = (props) => {
               value={input.value}
               onChangeText={input.onChangeText}
               label={input.title}
+              textContentType={input.type}
               secureTextEntry={(input.title.toLowerCase() === 'password') && hidePassword}
               // style={{ color: Color.green2 }}
             />

@@ -32,8 +32,8 @@ const style = StyleSheet.create({
 const itemNames = [
   'term',
   'definition',
-  'exampleT',
-  'exampleD',
+  'e.g. in Term\'s language',
+  'e.g. in Definition\'s language',
   'synonym',
   'antonym',
   'prefix',

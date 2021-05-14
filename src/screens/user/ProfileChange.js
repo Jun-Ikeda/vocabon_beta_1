@@ -76,6 +76,7 @@ const ProfileChange = (props) => {
         value={inputState}
         mode="outlined"
         label="Name"
+        textContentType="emailAddress"
         onChangeText={(newValue) => {
           setInputState(newValue);
           if (newValue.length !== 0) {
