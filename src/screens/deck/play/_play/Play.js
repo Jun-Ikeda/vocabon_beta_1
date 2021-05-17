@@ -117,6 +117,8 @@ const Play = (props) => {
   const [hasUnsavedHistory, setHasUnsavedHistory] = useState(false);
   const [isEditChanged, setIsEditChanged] = useState(false);
 
+  const identity = general.user === accountGeneral.userID;
+
   // const [deckContentLoaded, setDeckContentLoaded] = useState(false);
 
   // suspend
@@ -165,7 +167,7 @@ const Play = (props) => {
     const newPlay = play ? play.slice() : [];
     newPlay.push(func.getDate());
     if (hasUnsavedHistory) {
-      if (accountGeneral.name !== 'Guest User') {saveAccountContent(deckID, { marks: newMark, play: newPlay }, true);}
+      if (accountGeneral.name !== 'Guest User') { saveAccountContent(deckID, { marks: newMark, play: newPlay }, true); }
     }
     if (isEditChanged) saveDeckContent(deckID, content);
     await playhistory.remove(deckID);
@@ -257,14 +259,16 @@ const Play = (props) => {
     const uri = finished ? '' : `https://www.google.com/search?q=${validVocab[leftVocabID.length + rightVocabID.length].term}`;
     return (
       <View style={{ flexDirection: 'row' }}>
-        <Icon.Feather
-          name="edit"
-          style={[style.headerIcon, { fontSize: 24 }]}
-          onPress={async () => {
-            await setOnEditVocabID(validVocabIDs[rightVocabID.length + leftVocabID.length]);
-            setEditVisible(true);
-          }}
-        />
+        {identity ? (
+          <Icon.Feather
+            name="edit"
+            style={[style.headerIcon, { fontSize: 24 }]}
+            onPress={async () => {
+              await setOnEditVocabID(validVocabIDs[rightVocabID.length + leftVocabID.length]);
+              setEditVisible(true);
+            }}
+          />
+        ) : null}
         <Icon.AntDesign name="google" style={style.headerIcon} onPress={() => Linking.openURL(uri)} />
         <Icon.MaterialCommunityIcons name="cards-outline" style={style.headerIcon} onPress={() => setDetailVisible(true)} />
       </View>
@@ -288,6 +292,7 @@ const Play = (props) => {
       <PlayCounter leftVocabID={leftVocabID} rightVocabID={rightVocabID} />
       {renderBottomButtons()}
       <PlayDetail
+        identity={identity}
         modalVisible={detailVisible}
         setModalVisible={setDetailVisible}
         setEditVisible={setEditVisible}

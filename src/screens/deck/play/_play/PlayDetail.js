@@ -62,7 +62,7 @@ const returnValidVocabObject = (content, validVocabIDs) => {
 const PlayDetail = (props) => {
   // props
   const {
-    modalVisible, setModalVisible, validVocabIDs, content, leftVocabID, rightVocabID, setEditVisible,
+    modalVisible, setModalVisible, validVocabIDs, content, leftVocabID, rightVocabID, setEditVisible, identity,
   } = props;
   // recoil
   const setOnEditVocabID = useSetRecoilState(onEditVocabIDState);
@@ -94,7 +94,7 @@ const PlayDetail = (props) => {
             setEditVisible(true);
           }}
         >
-          <Icon.Feather name="edit" style={style.iconEditButton} />
+          {identity ? <Icon.Feather name="edit" style={style.iconEditButton} /> : null}
         </TouchableOpacity>
       </View>
     );
